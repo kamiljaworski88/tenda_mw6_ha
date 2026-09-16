@@ -32,8 +32,8 @@ jobs:
             echo "--- $s ---" >> "$out"
             mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$conf" >> "$out" 2>/dev/null || true
           done
-          echo '===== DIRECT CALLS TO NETLINK/RATE (relocations + context) =====' >> "$out"
-          grep -a -nE 'netlink_get_statistic_info|fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info' /tmp/conf.asm | head -n 100 >> "$out" || true
+          echo '===== DIRECT CALLS TO NETLINK/RATE =====' >> "$out"
+          grep -a -nE 'netlink_get_statistic_info|fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info' /tmp/conf.asm | head -n 160 >> "$out" || true
           echo '===== UCAPI APP REGISTRY TRAFFIC =====' >> "$out"
           strings -a -t x "$uc" | grep -a -iE -C 35 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN|TRAFFIC|GetHostList|M_MESH_HOSTS' >> "$out" || true
           echo '===== UCAPI SYMBOLS =====' >> "$out"
@@ -42,9 +42,22 @@ jobs:
           grep -a -nE -C 80 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN' /tmp/uc.asm | head -n 9000 >> "$out" || true
           python3 -c "from pathlib import Path; p=Path('$out'); p.write_text(p.read_bytes().decode('utf-8','backslashreplace'),encoding='utf-8')"
           head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
-      - name: Commit report
+          echo '## Reverse report highlights' >> "$GITHUB_STEP_SUMMARY"
+          grep -a -E 'confctl_get_host_list|fill_host_lists_rate|netlink_get_statistic_info|GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN' "$out" | head -n 120 >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Upload reverse report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rate-callgraph
+          path: docs/reverse-generated/rate-callgraph.txt
+          if-no-files-found: error
+          retention-days: 7
+      - name: Commit report (best effort)
+        continue-on-error: true
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/reverse-generated/rate-callgraph.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: map rate call graph and traffic command'; git push; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'reverse: map rate call graph and traffic command'
+            git push || true
+          fi
