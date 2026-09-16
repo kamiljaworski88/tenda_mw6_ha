@@ -10,7 +10,8 @@ Protocol recovered from MW6 libredis.so:
 Only PING and SUBSCRIBE are exposed. No SET/PUBLISH support.
 """
 from __future__ import annotations
-import argparse, socket, struct
+import argparse, socket, struct, time
+from pathlib import Path
 
 MAGIC = bytes.fromhex("f7 c6 89 be")
 MASK32 = 0xffffffff
@@ -36,7 +37,6 @@ def xxh32(data: bytes, seed=0):
     return h&MASK32
 
 def lz4_literals(data: bytes) -> bytes:
-    # Valid LZ4 block containing one literal-only sequence.
     n=len(data); out=bytearray(); out.append(min(n,15)<<4)
     if n>=15:
         x=n-15
@@ -94,15 +94,32 @@ def recv_frame(s):
     if not plain.endswith(MAGIC): raise ValueError('MW6 magic mismatch')
     return plain[:-4]
 
+def show(data: bytes, index: int, capture_dir: Path | None):
+    print(f'\n--- message {index}: {len(data)} B ---')
+    try:
+        text=data.decode('utf-8')
+        print(text.rstrip())
+    except UnicodeDecodeError:
+        print('BINARY HEX:', data.hex(' '))
+    if capture_dir:
+        capture_dir.mkdir(parents=True,exist_ok=True)
+        p=capture_dir/f'mw6_message_{index:04d}.bin'; p.write_bytes(data)
+        print('saved:',p)
+
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--host',default='192.168.5.1'); ap.add_argument('--port',type=int,default=12598)
     sub=ap.add_subparsers(dest='cmd',required=True); sub.add_parser('ping')
-    sp=sub.add_parser('subscribe'); sp.add_argument('channel'); sp.add_argument('--count',type=int,default=3)
+    sp=sub.add_parser('subscribe'); sp.add_argument('channel'); sp.add_argument('--count',type=int,default=0,help='0 = listen until Ctrl+C'); sp.add_argument('--timeout',type=float,default=0,help='0 = no read timeout'); sp.add_argument('--capture-dir',default='mw6_capture')
     a=ap.parse_args(); command=('PING',) if a.cmd=='ping' else ('SUBSCRIBE',a.channel)
     with socket.create_connection((a.host,a.port),3) as s:
-        s.settimeout(10); s.sendall(frame(resp(*command)))
-        limit=1 if a.cmd=='ping' else a.count
-        for _ in range(limit):
-            data=recv_frame(s)
-            print(data.decode('utf-8','backslashreplace').rstrip())
+        s.settimeout(10 if a.cmd=='ping' else (a.timeout or None)); s.sendall(frame(resp(*command)))
+        limit=1 if a.cmd=='ping' else a.count; i=0
+        try:
+            while limit==0 or i<limit:
+                data=recv_frame(s); i+=1
+                show(data,i,None if a.cmd=='ping' else Path(a.capture_dir))
+        except KeyboardInterrupt:
+            print(f'\nStopped. Received {i} message(s).')
+        except TimeoutError:
+            print(f'\nNo new message for {a.timeout:g}s. Received {i} message(s).')
 if __name__=='__main__': main()
