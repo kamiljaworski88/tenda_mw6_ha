@@ -14,39 +14,41 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Trace local online-hosts API
+      - name: Resolve OL_HOSTS module and command IDs
         run: |
           root='firmware-src/RootFS-unpacked'
           lib="$root/lib/libucapi.so"
-          out='docs/reverse-generated/ol-hosts-api.txt'
+          out='docs/reverse-generated/ol-hosts-wire-map.txt'
           mipsel-linux-gnu-objdump -drwC "$lib" > /tmp/u.objdump
           mipsel-linux-gnu-readelf -aW "$lib" > /tmp/u.readelf
           strings -a -t x "$lib" > /tmp/u.strings
           : > "$out"
-          echo '===== online-host symbols =====' >> "$out"
-          grep -iE 'ol_hosts|host_info|host_list|traffic|uprate|downrate|m_ol' /tmp/u.readelf >> "$out" || true
-          echo '===== online-host strings =====' >> "$out"
-          grep -iE -C 12 'ol_hosts|host_info|host_list|traffic|uprate|downrate|GetHostList' /tmp/u.strings >> "$out" || true
-          echo '===== uc_api_lib_ol_hosts_get_hdl_reg =====' >> "$out"
+          echo '===== symbols =====' >> "$out"
+          grep -iE 'uc_api_enable_m_ol_host|uc_api_lib_ol_hosts_get_hdl_reg|uc_api_lib_cmd_register|uc_api_lib_cmd_send' /tmp/u.readelf >> "$out" || true
+          echo '===== uc_api_enable_m_ol_host =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_enable_m_ol_host "$lib" >> "$out" 2>&1 || true
+          echo '===== ol_hosts get registration wrapper =====' >> "$out"
           mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_ol_hosts_get_hdl_reg "$lib" >> "$out" 2>&1 || true
-          echo '===== _m_ol_hosts_reg =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=_m_ol_hosts_reg "$lib" >> "$out" 2>&1 || true
-          echo '===== _ol_hosts_get_hdl_cb =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=_ol_hosts_get_hdl_cb "$lib" >> "$out" 2>&1 || true
-          echo '===== m_ol_hosts =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=m_ol_hosts "$lib" >> "$out" 2>&1 || true
-          echo '===== all references around ol_hosts names =====' >> "$out"
-          grep -n -B100 -A180 -iE 'ol_hosts|m_ol_hosts' /tmp/u.objdump >> "$out" || true
-          echo '===== registration constants / module command hints =====' >> "$out"
-          grep -n -B120 -A180 -E 'li[[:space:]]+a[0-3],(8|14|15|16|17|18|19|20|21|22|23|24)|240[4567]00(08|0e|0f|10|11|12|13|14|15|16|17|18)' /tmp/u.objdump | grep -i -B20 -A40 -E 'ol_hosts|host|^[0-9]+-' >> "$out" || true
+          echo '===== command registration implementation =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_cmd_register "$lib" >> "$out" 2>&1 || true
+          echo '===== command send implementation =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_cmd_send "$lib" >> "$out" 2>&1 || true
+          echo '===== exact OL_HOST strings with file offsets =====' >> "$out"
+          grep -iE 'M_OL_HOSTS|CMD_OL_HOSTS_GET|_m_ol_hosts_reg|_ol_hosts_get_hdl_cb|uc_lib_m_ol_host' /tmp/u.strings >> "$out" || true
+          echo '===== code window around uc_api_enable_m_ol_host =====' >> "$out"
+          grep -n -B20 -A220 '<uc_api_enable_m_ol_host' /tmp/u.objdump >> "$out" || true
+          echo '===== references to registration wrapper =====' >> "$out"
+          grep -n -B80 -A120 'uc_api_lib_ol_hosts_get_hdl_reg' /tmp/u.objdump >> "$out" || true
+          echo '===== numeric registration calls near M_OL_HOSTS =====' >> "$out"
+          grep -n -B60 -A100 -E '2404000c|2404000d|2404000e|2404000f|24040010|24040011|24040012|24040013|24040014|24040015|24040016|24040017|24040018' /tmp/u.objdump >> "$out" || true
           head -c 950000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ol-hosts-api.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh local online-hosts API map'; git push; fi
+          git add docs/reverse-generated/ol-hosts-wire-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh OL_HOSTS wire map'; git push; fi
