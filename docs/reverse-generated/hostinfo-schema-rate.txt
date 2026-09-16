@@ -1,0 +1,1559 @@
+===== LIVE WIRE FACTS =====
+TCP9000 module 0x14 command 0x00 returns HostLists.
+Observed HostInfo: f1 IP; f2 MAC; f3 enum/type; f4 assoc_sn; f5-f8 numeric; f9 signed RSSI; f10 hostname.
+===== LIBPB HOST SYMBOLS =====
+    44: 0001193c   152 FUNC    GLOBAL DEFAULT   10 host_info__get_packed_size
+   101: 000119d4   160 FUNC    GLOBAL DEFAULT   10 host_info__pack
+   159: 00011dc4   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack_to_buffer
+   187: 00011c8c   152 FUNC    GLOBAL DEFAULT   10 host_lists__get_packed_size
+   207: 00011d24   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack
+   223: 00011ecc   160 FUNC    GLOBAL DEFAULT   10 host_lists__free_unpacked
+   280: 00011e64   104 FUNC    GLOBAL DEFAULT   10 host_lists__unpack
+   354: 00011a74   160 FUNC    GLOBAL DEFAULT   10 host_info__pack_to_buffer
+   381: 00011b7c   160 FUNC    GLOBAL DEFAULT   10 host_info__free_unpacked
+   412: 00011b14   104 FUNC    GLOBAL DEFAULT   10 host_info__unpack
+   502: 0003ee6c    60 OBJECT  GLOBAL DEFAULT   18 host_info__descriptor
+   539: 0003eed8    60 OBJECT  GLOBAL DEFAULT   18 host_lists__descriptor
+   548: 00011c1c   112 FUNC    GLOBAL DEFAULT   10 host_lists__init
+   595: 000118d0   108 FUNC    GLOBAL DEFAULT   10 host_info__init
+===== LIBPB HOST/RATE STRINGS =====
+  1a954 <'B$!
+  1ab3c <'B$!
+  1ac81 'B$!
+  1accd 'B$!
+  1ad49 'B$!
+  1ad95 'B$!
+  1ae19 'B$!
+  1ae5d 'B$!
+  1aea9 'B$!
+  1b101 'B$!
+  1b195 'B$!
+  1b265 'B$!
+  1b321 'B$!
+  1b3f5 'B$!
+  1b521 'B$!
+  1b57d 'B$!
+  1b59d 'B$!
+  1be51 sB$!
+  1c0c1 sB$!
+  1d423 $!(`
+  1f59f $!(`
+  21a43 $!(`
+  220df $!(`
+  2277b $!(`
+  23173 $!(`
+  23b8f $!(`
+  23edb $!(`
+  24227 $!(`
+  24573 $!(`
+  252b7 $!(`
+  25603 $!(`
+  25dcf 'message->base.descriptor == &dhcp_cfg__descriptor
+  25e04 advance.pb-c.c
+  25e14 message->base.descriptor == &port_fwd_cfg__descriptor
+  25e4c message->base.descriptor == &port_fwd_list__descriptor
+  25e84 message->base.descriptor == &upn_pcfg__descriptor
+  25eb8 message->base.descriptor == &auto_maint__descriptor
+  25eec message->base.descriptor == &qos_rule__descriptor
+  25f20 message->base.descriptor == &device_assistant__descriptor
+  25f5c message->base.descriptor == &elink_config__descriptor
+  25f94 message->base.descriptor == &high_device_config__descriptor
+  25fd0 lanip
+  25fd8 dhcpmask
+  25fe4 timestamp
+  2600c DhcpCfg
+  26018 ethaddr
+  26020 protocol
+  2602c in_port
+  26034 ext_port
+  26040 ipadr
+  26048 name
+  26050 in_port_end
+  2605c ext_port_end
+  2609c PortFwdCfg
+  260a8 rule
+  260c8 PortFwdList
+  260d4 status
+  260fc UPnPCfg
+  26104 time
+  2610c freq
+  26114 delay
+  26148 AutoMaint
+  26158 down
+  26180 QosRule
+  26188 conntype
+  261b8 DeviceAssistant
+  261e0 ElinkConfig
+  26204 HighDeviceConfig
+  26218 high_device_config__free_unpacked
+  2623c high_device_config__pack_to_buffer
+  26260 high_device_config__pack
+  2627c high_device_config__get_packed_size
+  262a0 elink_config__free_unpacked
+  262bc elink_config__pack_to_buffer
+  262dc elink_config__pack
+  262f0 elink_config__get_packed_size
+  26310 device_assistant__free_unpacked
+  26330 device_assistant__pack_to_buffer
+  26354 device_assistant__pack
+  2636c device_assistant__get_packed_size
+  26390 qos_rule__free_unpacked
+  263a8 qos_rule__pack_to_buffer
+  263c4 qos_rule__pack
+  263d4 qos_rule__get_packed_size
+  263f0 auto_maint__free_unpacked
+  2640c auto_maint__pack_to_buffer
+  26428 auto_maint__pack
+  2643c auto_maint__get_packed_size
+  26458 upn_pcfg__free_unpacked
+  26470 upn_pcfg__pack_to_buffer
+  2648c upn_pcfg__pack
+--
+  26a58 applang__free_unpacked
+  26a70 applang__pack_to_buffer
+  26a88 applang__pack
+  26a98 applang__get_packed_size
+  26ab4 time_info__free_unpacked
+  26ad0 time_info__pack_to_buffer
+  26aec time_info__pack
+  26afc time_info__get_packed_size
+  26b18 mesh_time_zone__free_unpacked
+  26b38 mesh_time_zone__pack_to_buffer
+  26b58 mesh_time_zone__pack
+  26b70 mesh_time_zone__get_packed_size
+  26b90 is_suit__free_unpacked
+  26ba8 is_suit__pack_to_buffer
+  26bc0 is_suit__pack
+  26bd0 is_suit__get_packed_size
+  26bf0 message->base.descriptor == &device_bind__descriptor
+  26c28 device.pb-c.c
+  26c38 message->base.descriptor == &login_sta__descriptor
+  26c6c message->base.descriptor == &login_msg__descriptor
+  26ca0 account
+  26cbc DeviceBind
+  26ce4 LoginSta
+  26cf0 qrmsg
+  26d10 LoginMsg
+  26d1c login_msg__free_unpacked
+  26d38 login_msg__pack_to_buffer
+  26d54 login_msg__pack
+  26d64 login_msg__get_packed_size
+  26d80 login_sta__free_unpacked
+  26d9c login_sta__pack_to_buffer
+  26db8 login_sta__pack
+  26dc8 login_sta__get_packed_size
+  26de4 device_bind__free_unpacked
+  26e00 device_bind__pack_to_buffer
+  26e1c device_bind__pack
+  26e30 device_bind__get_packed_size
+  26e50 message->base.descriptor == &device_info__descriptor
+  26e88 family.pb-c.c
+  26e98 message->base.descriptor == &user_group__descriptor
+  26ecc message->base.descriptor == &time_rule__descriptor
+  26f00 message->base.descriptor == &time_group__descriptor
+  26f34 message->base.descriptor == &family_rule__descriptor
+  26f6c message->base.descriptor == &family_group__descriptor
+  26fa8 name
+  26fb0 ethaddr
+  26fd4 DeviceInfo
+  26fe8 timestamp
+  2700c UserGroup
+  27018 desc
+  27020 enable
+  27028 week
+  27030 begin_in_min
+  27040 end_in_min
+  27074 TimeRule
+  27080 tm_rule
+  270a0 TimeGroup
+  270ac ref_tm_id
+  270b8 ref_usr_id
+  270c4 block
+  270cc tm_grp_enable
+  27104 familyRule
+  27110 FamilyRule
+  2711c family_rule
+  27140 familyGroup
+  2714c FamilyGroup
+  27158 family_group__free_unpacked
+  27174 family_group__pack_to_buffer
+  27194 family_group__pack
+  271a8 family_group__get_packed_size
+  271c8 family_rule__free_unpacked
+  271e4 family_rule__pack_to_buffer
+  27200 family_rule__pack
+  27214 family_rule__get_packed_size
+  27234 time_group__free_unpacked
+  27250 time_group__pack_to_buffer
+  2726c time_group__pack
+  27280 time_group__get_packed_size
+  2729c time_rule__free_unpacked
+  272b8 time_rule__pack_to_buffer
+  272d4 time_rule__pack
+  272e4 time_rule__get_packed_size
+  27300 user_group__free_unpacked
+  2731c user_group__pack_to_buffer
+  27338 user_group__pack
+  2734c user_group__get_packed_size
+  27368 device_info__free_unpacked
+  27384 device_info__pack_to_buffer
+  273a0 device_info__pack
+  273b4 device_info__get_packed_size
+  273e0 message->base.descriptor == &mf_rule__descriptor
+  27414 macfilter.pb-c.c
+  27428 message->base.descriptor == &mf_lists__descriptor
+  2745c ethaddr
+  27464 name
+  27484 mf_rule
+  2748c MfRule
+  27498 mode
+  274a0 rules
+  274a8 timestamp
+  274d0 mf_lists
+  274dc MfLists
+  274e4 MESH_MF_BLACK
+  274f4 MESH__MF__T__MESH_MF_BLACK
+  27510 MESH_MF_WHITE
+  27520 MESH__MF__T__MESH_MF_WHITE
+  2754c MESH_MF_T
+  27558 MESHMFT
+  27560 mf_lists__free_unpacked
+  27578 mf_lists__pack_to_buffer
+  27594 mf_lists__pack
+  275a4 mf_lists__get_packed_size
+  275c0 mf_rule__free_unpacked
+  275d8 mf_rule__pack_to_buffer
+  275f0 mf_rule__pack
+  27600 mf_rule__get_packed_size
+  27620 message->base.descriptor == &assoc_node_info__descriptor
+  2765c node.pb-c.c
+  27668 message->base.descriptor == &mxp_info__descriptor
+  2769c message->base.descriptor == &mesh_node_list__descriptor
+  276d4 message->base.descriptor == &mxp_manage__descriptor
+  27708 message->base.descriptor == &mxp_manage_list__descriptor
+  27744 message->base.descriptor == &node_location__descriptor
+  2777c message->base.descriptor == &node_led_status__descriptor
+  277b8 message->base.descriptor == &manual_node_info__descriptor
+  277f4 assoc_sn
+  27800 wl2g_rssi
+  2780c wl5g_rssi
+  27818 wired_en
+  27844 AssocNodeInfo
+  27858 serialNum
+  27864 role
+  2786c status
+  27874 location
+  27884 mode
+  2788c fwversion
+  27898 ipaddr
+  278a0 ethaddr_l
+  278ac ethaddr_r
+  278b8 bssid_nband
+  278c4 bssid_aband
+  278d0 assoc_list
+  27920 MxpInfo
+  27928 node
+  27944 MeshNodeList
+  27970 MxpManage
+  27980 timestamp
+  279a4 MxpManageList
+  279d0 NodeLocation
+  27a00 NodeLedStatus
+  27a10 serialNumMd5
+  27a38 ManualNodeInfo
+  27a48 manual_node_info__free_unpacked
+  27a68 manual_node_info__pack_to_buffer
+  27a8c manual_node_info__pack
+  27aa4 manual_node_info__get_packed_size
+  27ac8 node_led_status__free_unpacked
+  27ae8 node_led_status__pack_to_buffer
+  27b08 node_led_status__pack
+  27b20 node_led_status__get_packed_size
+  27b44 node_location__free_unpacked
+  27b64 node_location__pack_to_buffer
+  27b84 node_location__pack
+  27b98 node_location__get_packed_size
+  27bb8 mxp_manage_list__free_unpacked
+  27bd8 mxp_manage_list__pack_to_buffer
+  27bf8 mxp_manage_list__pack
+  27c10 mxp_manage_list__get_packed_size
+  27c34 mxp_manage__free_unpacked
+  27c50 mxp_manage__pack_to_buffer
+  27c6c mxp_manage__pack
+  27c80 mxp_manage__get_packed_size
+  27c9c mesh_node_list__free_unpacked
+  27cbc mesh_node_list__pack_to_buffer
+  27cdc mesh_node_list__pack
+  27cf4 mesh_node_list__get_packed_size
+  27d14 mxp_info__free_unpacked
+  27d2c mxp_info__pack_to_buffer
+  27d48 mxp_info__pack
+  27d58 mxp_info__get_packed_size
+  27d74 assoc_node_info__free_unpacked
+  27d94 assoc_node_info__pack_to_buffer
+  27db4 assoc_node_info__pack
+  27dcc assoc_node_info__get_packed_size
+  27df0 message->base.descriptor == &host_info__descriptor
+  27e24 onhosts.pb-c.c
+  27e34 message->base.descriptor == &host_lists__descriptor
+  27e68 message->base.descriptor == &devic_marks__descriptor
+  27ea0 message->base.descriptor == &device_mark_list__descriptor
+  27edc ipaddr
+  27ee4 ethaddr
+  27eec access
+  27ef4 assoc_sn
+  27f00 condtion_time
+  27f10 online
+  27f18 uprate
+  27f20 downrate
+  27f2c signal
+  27f34 name
+  27f74 hostInfo
+  27f80 HostInfo
+  27f90 hosts
+  27fac hostLists
+  27fb8 HostLists
+  27fc4 remark
+  27fe4 DevicMarks
+  27ff0 marks
+  27ff8 timestamp
+  2801c DeviceMarkList
+  2802c device_mark_list__free_unpacked
+  2804c device_mark_list__pack_to_buffer
+  28070 device_mark_list__pack
+  28088 device_mark_list__get_packed_size
+  280ac devic_marks__free_unpacked
+  280c8 devic_marks__pack_to_buffer
+  280e4 devic_marks__pack
+  280f8 devic_marks__get_packed_size
+  28118 host_lists__free_unpacked
+  28134 host_lists__pack_to_buffer
+  28150 host_lists__pack
+  28164 host_lists__get_packed_size
+  28180 host_info__free_unpacked
+  2819c host_info__pack_to_buffer
+  281b8 host_info__pack
+  281c8 host_info__get_packed_size
+  281f0 1.1.1
+  281fc protobuf-c.c
+  28294 ((message)->descriptor)->magic == 0x28aaeef9
+  2834c actual_length_size == length_size_min + 1
+  28464 tmp == payload_len
+  28570 (desc)->magic == 0x28aaeef9
+  2858c rv->descriptor != ((void *)0)
+  285ac method_index < service->descriptor->n_methods
+  285dc (descriptor)->magic == 0x14159bc3
+  28600 protobuf_c_service_generated_init
+  28624 protobuf_c_service_invoke_internal
+  28648 protobuf_c_message_free_unpacked
+  2866c protobuf_c_message_unpack
+  28688 sizeof_elt_in_repeated_array
+  286a8 parse_member
+  286b8 parse_packed_repeated_member
+  286d8 protobuf_c_message_pack_to_buffer
+  286fc repeated_field_pack_to_buffer
+--
+  29fc4 proto_sys_basic_info__free_unpacked
+  29fe8 proto_sys_basic_info__pack_to_buffer
+  2a010 proto_sys_basic_info__pack
+  2a02c proto_sys_basic_info__get_packed_size
+  2a054 proto_supt_mod_cmd__free_unpacked
+  2a078 proto_supt_mod_cmd__pack_to_buffer
+  2a09c proto_supt_mod_cmd__pack
+  2a0b8 proto_supt_mod_cmd__get_packed_size
+  2a0dc proto_init_setup_info__free_unpacked
+  2a104 proto_init_setup_info__pack_to_buffer
+  2a12c proto_init_setup_info__pack
+  2a148 proto_init_setup_info__get_packed_size
+  2a170 proto_product_info__free_unpacked
+  2a194 proto_product_info__pack_to_buffer
+  2a1b8 proto_product_info__pack
+  2a1d4 proto_product_info__get_packed_size
+  2a200 message->base.descriptor == &wan_port_power__descriptor
+  2a238 wan.pb-c.c
+  2a244 message->base.descriptor == &wan_conn_type__descriptor
+  2a27c message->base.descriptor == &wan_diag__descriptor
+  2a2b0 message->base.descriptor == &n_wan_diag__descriptor
+  2a2e4 message->base.descriptor == &wan_port_rate__descriptor
+  2a31c message->base.descriptor == &wan_rate__descriptor
+  2a350 message->base.descriptor == &wan_port_status__descriptor
+  2a38c message->base.descriptor == &wan_status__descriptor
+  2a3c0 message->base.descriptor == &adsl_cfg__descriptor
+  2a3f4 message->base.descriptor == &static_cfg__descriptor
+  2a428 message->base.descriptor == &dynamic_cfg__descriptor
+  2a460 message->base.descriptor == &wan_port_cfg__descriptor
+  2a498 message->base.descriptor == &wan_cfg__descriptor
+  2a4cc message->base.descriptor == &wan_dns_cfg__descriptor
+  2a504 message->base.descriptor == &ipnet_cfg__descriptor
+  2a538 message->base.descriptor == &russia_adsl_cfg__descriptor
+  2a574 message->base.descriptor == &russia_pptpcfg__descriptor
+  2a5ac message->base.descriptor == &russia_l2tp_cfg__descriptor
+  2a5e8 status
+  2a604 WanPortPower
+  2a618 conntype
+  2a624 RsaCntType
+  2a648 WanConnType
+  2a658 errcode
+  2a67c WanDiag
+  2a684 diags
+  2a6a0 nWanDiag
+  2a6ac NWanDiag
+  2a6b8 uprate
+  2a6c0 downrate
+  2a6cc total_up
+  2a6d8 total_down
+  2a708 WanPortRate
+  2a72c WanRate
+  2a734 mode
+  2a73c ipaddr
+  2a744 mask
+  2a74c gateway
+  2a754 dns1
+  2a75c dns2
+  2a790 WanPortStatus
+  2a7b4 WanStatus
+  2a7c0 uname
+  2a7c8 passwd
+  2a7d8 service_name
+  2a7e8 server_name
+  2a820 AdslCfg
+  2a850 StaticCfg
+  2a870 DynamicCfg
+  2a87c adsl
+  2a884 static_info
+  2a890 dhcp
+  2a898 rsadsl
+  2a8a0 rsapptp
+  2a8a8 rsal2tp
+  2a8e0 WanPortCfg
+  2a8ec timestamp
+  2a910 WanCfg
+  2a918 automic
+  2a93c WanDnsCfg
+  2a970 IpnetCfg
+  2a97c autoIp
+  2a984 service
+  2a98c srvName
+  2a994 netcfg
+  2a9c8 RussiaAdslCfg
+  2a9d8 pptpSrv
+  2aa08 RussiaPPTPCfg
+  2aa18 l2tpSrv
+  2aa48 RussiaL2tpCfg
+  2aa58 MESH_UNPLUG
+  2aa64 MESH__CONN__TYPE__MESH_UNPLUG
+  2aa84 MESH_DECTING
+  2aa94 MESH__CONN__TYPE__MESH_DECTING
+  2aab4 MESH_DHCP
+  2aac0 MESH__CONN__TYPE__MESH_DHCP
+  2aadc MESH_STATIC
+  2aae8 MESH__CONN__TYPE__MESH_STATIC
+  2ab08 MESH_ADSL
+  2ab14 MESH__CONN__TYPE__MESH_ADSL
+  2ab30 MESH_RUSSIA_ADSL
+===== host_info__init =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+000118d0 <host_info__init@@Base>:
+   118d0:	3c1c0003 	lui	gp,0x3
+   118d4:	279c7ed0 	addiu	gp,gp,32464
+   118d8:	0399e021 	addu	gp,gp,t9
+   118dc:	27bdffe0 	addiu	sp,sp,-32
+   118e0:	afbf001c 	sw	ra,28(sp)
+   118e4:	afbe0018 	sw	s8,24(sp)
+   118e8:	03a0f021 	move	s8,sp
+   118ec:	afbc0010 	sw	gp,16(sp)
+   118f0:	afc40020 	sw	a0,32(s8)
+   118f4:	8fc30020 	lw	v1,32(s8)
+   118f8:	8f828018 	lw	v0,-32744(gp)
+   118fc:	00602021 	move	a0,v1
+   11900:	24431218 	addiu	v1,v0,4632
+   11904:	24020038 	li	v0,56
+   11908:	00602821 	move	a1,v1
+   1190c:	00403021 	move	a2,v0
+   11910:	8f828180 	lw	v0,-32384(gp)
+   11914:	0040c821 	move	t9,v0
+   11918:	0320f809 	jalr	t9
+   1191c:	00000000 	nop
+   11920:	8fdc0010 	lw	gp,16(s8)
+   11924:	03c0e821 	move	sp,s8
+   11928:	8fbf001c 	lw	ra,28(sp)
+   1192c:	8fbe0018 	lw	s8,24(sp)
+   11930:	27bd0020 	addiu	sp,sp,32
+   11934:	03e00008 	jr	ra
+   11938:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== host_info__get_packed_size =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+0001193c <host_info__get_packed_size@@Base>:
+   1193c:	3c1c0003 	lui	gp,0x3
+   11940:	279c7e64 	addiu	gp,gp,32356
+   11944:	0399e021 	addu	gp,gp,t9
+   11948:	27bdffe0 	addiu	sp,sp,-32
+   1194c:	afbf001c 	sw	ra,28(sp)
+   11950:	afbe0018 	sw	s8,24(sp)
+   11954:	03a0f021 	move	s8,sp
+   11958:	afbc0010 	sw	gp,16(sp)
+   1195c:	afc40020 	sw	a0,32(s8)
+   11960:	8fc20020 	lw	v0,32(s8)
+   11964:	8c430000 	lw	v1,0(v0)
+   11968:	8f82812c 	lw	v0,-32468(gp)
+   1196c:	1062000c 	beq	v1,v0,119a0 <host_info__get_packed_size@@Base+0x64>
+   11970:	00000000 	nop
+   11974:	8f82802c 	lw	v0,-32724(gp)
+   11978:	24447df0 	addiu	a0,v0,32240
+   1197c:	8f82802c 	lw	v0,-32724(gp)
+   11980:	24457e24 	addiu	a1,v0,32292
+   11984:	24060013 	li	a2,19
+   11988:	8f828024 	lw	v0,-32732(gp)
+   1198c:	244781c8 	addiu	a3,v0,-32312
+   11990:	8f82805c 	lw	v0,-32676(gp)
+   11994:	0040c821 	move	t9,v0
+   11998:	0320f809 	jalr	t9
+   1199c:	00000000 	nop
+   119a0:	8fc20020 	lw	v0,32(s8)
+   119a4:	00402021 	move	a0,v0
+   119a8:	8f82810c 	lw	v0,-32500(gp)
+   119ac:	0040c821 	move	t9,v0
+   119b0:	0320f809 	jalr	t9
+   119b4:	00000000 	nop
+   119b8:	8fdc0010 	lw	gp,16(s8)
+   119bc:	03c0e821 	move	sp,s8
+   119c0:	8fbf001c 	lw	ra,28(sp)
+   119c4:	8fbe0018 	lw	s8,24(sp)
+   119c8:	27bd0020 	addiu	sp,sp,32
+   119cc:	03e00008 	jr	ra
+   119d0:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== host_info__pack =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+000119d4 <host_info__pack@@Base>:
+   119d4:	3c1c0003 	lui	gp,0x3
+   119d8:	279c7dcc 	addiu	gp,gp,32204
+   119dc:	0399e021 	addu	gp,gp,t9
+   119e0:	27bdffe0 	addiu	sp,sp,-32
+   119e4:	afbf001c 	sw	ra,28(sp)
+   119e8:	afbe0018 	sw	s8,24(sp)
+   119ec:	03a0f021 	move	s8,sp
+   119f0:	afbc0010 	sw	gp,16(sp)
+   119f4:	afc40020 	sw	a0,32(s8)
+   119f8:	afc50024 	sw	a1,36(s8)
+   119fc:	8fc20020 	lw	v0,32(s8)
+   11a00:	8c430000 	lw	v1,0(v0)
+   11a04:	8f82812c 	lw	v0,-32468(gp)
+   11a08:	1062000c 	beq	v1,v0,11a3c <host_info__pack@@Base+0x68>
+   11a0c:	00000000 	nop
+   11a10:	8f82802c 	lw	v0,-32724(gp)
+   11a14:	24447df0 	addiu	a0,v0,32240
+   11a18:	8f82802c 	lw	v0,-32724(gp)
+   11a1c:	24457e24 	addiu	a1,v0,32292
+   11a20:	2406001a 	li	a2,26
+   11a24:	8f828024 	lw	v0,-32732(gp)
+   11a28:	244781b8 	addiu	a3,v0,-32328
+   11a2c:	8f82805c 	lw	v0,-32676(gp)
+   11a30:	0040c821 	move	t9,v0
+   11a34:	0320f809 	jalr	t9
+   11a38:	00000000 	nop
+   11a3c:	8fc20020 	lw	v0,32(s8)
+   11a40:	00402021 	move	a0,v0
+   11a44:	8fc50024 	lw	a1,36(s8)
+   11a48:	8f828188 	lw	v0,-32376(gp)
+   11a4c:	0040c821 	move	t9,v0
+   11a50:	0320f809 	jalr	t9
+   11a54:	00000000 	nop
+   11a58:	8fdc0010 	lw	gp,16(s8)
+   11a5c:	03c0e821 	move	sp,s8
+   11a60:	8fbf001c 	lw	ra,28(sp)
+   11a64:	8fbe0018 	lw	s8,24(sp)
+   11a68:	27bd0020 	addiu	sp,sp,32
+   11a6c:	03e00008 	jr	ra
+   11a70:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== host_info__unpack =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00011b14 <host_info__unpack@@Base>:
+   11b14:	3c1c0003 	lui	gp,0x3
+   11b18:	279c7c8c 	addiu	gp,gp,31884
+   11b1c:	0399e021 	addu	gp,gp,t9
+   11b20:	27bdffe0 	addiu	sp,sp,-32
+   11b24:	afbf001c 	sw	ra,28(sp)
+   11b28:	afbe0018 	sw	s8,24(sp)
+   11b2c:	03a0f021 	move	s8,sp
+   11b30:	afbc0010 	sw	gp,16(sp)
+   11b34:	afc40020 	sw	a0,32(s8)
+   11b38:	afc50024 	sw	a1,36(s8)
+   11b3c:	afc60028 	sw	a2,40(s8)
+   11b40:	8f84812c 	lw	a0,-32468(gp)
+   11b44:	8fc50020 	lw	a1,32(s8)
+   11b48:	8fc60024 	lw	a2,36(s8)
+   11b4c:	8fc70028 	lw	a3,40(s8)
+   11b50:	8f8280a8 	lw	v0,-32600(gp)
+   11b54:	0040c821 	move	t9,v0
+   11b58:	0320f809 	jalr	t9
+   11b5c:	00000000 	nop
+   11b60:	8fdc0010 	lw	gp,16(s8)
+   11b64:	03c0e821 	move	sp,s8
+   11b68:	8fbf001c 	lw	ra,28(sp)
+   11b6c:	8fbe0018 	lw	s8,24(sp)
+   11b70:	27bd0020 	addiu	sp,sp,32
+   11b74:	03e00008 	jr	ra
+   11b78:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== host_lists__init =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00011c1c <host_lists__init@@Base>:
+   11c1c:	3c1c0003 	lui	gp,0x3
+   11c20:	279c7b84 	addiu	gp,gp,31620
+   11c24:	0399e021 	addu	gp,gp,t9
+   11c28:	27bdfff8 	addiu	sp,sp,-8
+   11c2c:	afbe0004 	sw	s8,4(sp)
+   11c30:	03a0f021 	move	s8,sp
+   11c34:	afc40008 	sw	a0,8(s8)
+   11c38:	8fc20008 	lw	v0,8(s8)
+   11c3c:	8f838018 	lw	v1,-32744(gp)
+   11c40:	8c671204 	lw	a3,4612(v1)
+   11c44:	24641204 	addiu	a0,v1,4612
+   11c48:	8c860004 	lw	a2,4(a0)
+   11c4c:	24641204 	addiu	a0,v1,4612
+   11c50:	8c850008 	lw	a1,8(a0)
+   11c54:	24641204 	addiu	a0,v1,4612
+   11c58:	8c84000c 	lw	a0,12(a0)
+   11c5c:	24631204 	addiu	v1,v1,4612
+   11c60:	8c630010 	lw	v1,16(v1)
+   11c64:	ac470000 	sw	a3,0(v0)
+   11c68:	ac460004 	sw	a2,4(v0)
+   11c6c:	ac450008 	sw	a1,8(v0)
+   11c70:	ac44000c 	sw	a0,12(v0)
+   11c74:	ac430010 	sw	v1,16(v0)
+   11c78:	03c0e821 	move	sp,s8
+   11c7c:	8fbe0004 	lw	s8,4(sp)
+   11c80:	27bd0008 	addiu	sp,sp,8
+   11c84:	03e00008 	jr	ra
+   11c88:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== host_lists__pack =====
+
+firmware-src/RootFS-unpacked/lib/libpb.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00011d24 <host_lists__pack@@Base>:
+   11d24:	3c1c0003 	lui	gp,0x3
+   11d28:	279c7a7c 	addiu	gp,gp,31356
+   11d2c:	0399e021 	addu	gp,gp,t9
+   11d30:	27bdffe0 	addiu	sp,sp,-32
+   11d34:	afbf001c 	sw	ra,28(sp)
+   11d38:	afbe0018 	sw	s8,24(sp)
+   11d3c:	03a0f021 	move	s8,sp
+   11d40:	afbc0010 	sw	gp,16(sp)
+   11d44:	afc40020 	sw	a0,32(s8)
+   11d48:	afc50024 	sw	a1,36(s8)
+   11d4c:	8fc20020 	lw	v0,32(s8)
+   11d50:	8c430000 	lw	v1,0(v0)
+   11d54:	8f8281c0 	lw	v0,-32320(gp)
+   11d58:	1062000c 	beq	v1,v0,11d8c <host_lists__pack@@Base+0x68>
+   11d5c:	00000000 	nop
+   11d60:	8f82802c 	lw	v0,-32724(gp)
+   11d64:	24447e34 	addiu	a0,v0,32308
+   11d68:	8f82802c 	lw	v0,-32724(gp)
+   11d6c:	24457e24 	addiu	a1,v0,32292
+   11d70:	24060045 	li	a2,69
+   11d74:	8f828024 	lw	v0,-32732(gp)
+   11d78:	24478150 	addiu	a3,v0,-32432
+   11d7c:	8f82805c 	lw	v0,-32676(gp)
+   11d80:	0040c821 	move	t9,v0
+   11d84:	0320f809 	jalr	t9
+   11d88:	00000000 	nop
+   11d8c:	8fc20020 	lw	v0,32(s8)
+   11d90:	00402021 	move	a0,v0
+   11d94:	8fc50024 	lw	a1,36(s8)
+   11d98:	8f828188 	lw	v0,-32376(gp)
+   11d9c:	0040c821 	move	t9,v0
+   11da0:	0320f809 	jalr	t9
+   11da4:	00000000 	nop
+   11da8:	8fdc0010 	lw	gp,16(s8)
+   11dac:	03c0e821 	move	sp,s8
+   11db0:	8fbf001c 	lw	ra,28(sp)
+   11db4:	8fbe0018 	lw	s8,24(sp)
+   11db8:	27bd0020 	addiu	sp,sp,32
+   11dbc:	03e00008 	jr	ra
+   11dc0:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== CONFSRV HOST/RATE SYMBOLS =====
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   338: 00465ee0     0 FUNC    GLOBAL DEFAULT  UND wan_rate__get_packed_size
+   387: 00465be0     0 FUNC    GLOBAL DEFAULT  UND netlink_get_statistic_info
+   555: 00465280     0 FUNC    GLOBAL DEFAULT  UND get_interface_statistics
+   560: 00465240     0 FUNC    GLOBAL DEFAULT  UND wan_rate__pack
+   566: 004651f0     0 FUNC    GLOBAL DEFAULT  UND wan_port_rate__init
+   591: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_rate__descriptor
+   606: 00464fb0     0 FUNC    GLOBAL DEFAULT  UND get_wan_statistics
+===== CONFSRV RELEVANT STRINGS =====
+  673e0 prod_common_so
+  674a4 ../confctl_extern.c
+  674b8      malloc failed      
+  674d4 [%s][%d][luminais] invalid param.
+  674f8 /var/mib.mem
+  67508 assist.dev.stime
+  6751c assist.dev.ltime
+  67530 assist.dev.mac
+  67540 echo "%s %d" > %s
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+  67654 client remark list recorded on cloud
+  6767c device list status
+  67690 all device list status uploaded by device_list
+  676c0 SetHostMarks
+  676d0 app set client remark
+  676e8 update grp map
+  676f8 update group config and node opt to MAP
+  67720 SetSysTimeZone
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  677b8 SetWanCfg
+  677c4 send_all_node_status_list
+  677e0 upload all node status to cloud
+  67800 GetWanDiag
+  6780c get wan diag status and error code
+  67830 print client list get online ip info(app)
+  6785c print client lists status(app)
+  6787c upload_status_start
+  67890 upload client and node status start cmd
+  678b8 /var/confctl_debug
+  678d5 module_id	%-32s		%-32s
+  678f0 module_name
+  678fc description
+  6790c 		%-32s
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67a8c GetNodeStatus
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+  67b90 GetTrafficInfo
+  67ba0 NewNodeReport
+  67bb0 NewNodeAddResults
+  67bc4 QuerryNodeRslt
+  67bd4 GetIsSuilt
+  67be0 SetSysTimeZone
+  67bf0 SetSysTime
+  67bfc SetLang
+  67c04 SetGuideDone
+  67c14 GetUPnPCfg
+  67c20 SetUPnPCfg
+  67c2c GetMacfilter
+  67c3c SetMacfilter
+  67c4c GetPortFwdCfg
+  67c5c SetPortFwdCfg
+  67c6c GetAutoMaintainCfg
+--
+  702fc  fill new node list failed ! 
+  7031c    DEBUG  
+  70328     in is null !     
+  70340      unpack failed !     
+  7035d [1;32m[%s][%d] : 
+  70373 [1;35madd node : %s
+  7038c echo %s >> /proc/mesh/authorized
+  703b0 %llu
+  703b8 %s(%d)
+  703c0 ManualNodeInfo is NULL%s(%d)
+  703e0 manual_node_info__unpack error%s(%d)
+  70408 [arainc][NodeInfo->serialnummd5 = %s]%s(%d)
+  70438 [arainc][NodeInfo->serialnummd5 = NULL]%s(%d)
+  70468 [arainc][cmd_tmp = %s]%s(%d)
+  70488 [%s][%d][luminais] mpp is delete by app
+  704b4 cmdsrv
+  704bc mesh_status_check
+  704d0 pann
+  704d8 netctrl
+  704e0 [%s][%d][kg] groupsn = %s
+  704fc    in is null !
+  7050c    unpack  failed !  
+  7052c    unpack failed !     
+  70548   assoc_node%d: sn:%s    wl2g_rssi:%d    wl5g_rssi:%d    wired_rssi:%d
+  70590 [%s][%d][luminais] count = %d
+  705b0 [%s][%d][luminais] timestamp = %d
+  705d4 [%s][%d][luminais] <%d> : 
+  705f0 [%s][%d][luminais] 	serialNum : %s
+  70614 [%s][%d][luminais] 	opt : %d
+  70634 [%s][%d][luminais] 	role : %d
+  70654 [%s][%d][luminais] 	%d	status : %d
+  70678 [%s][%d][luminais] 	%d	led : %d
+  7069c [%s][%d][luminais] 	%d	location : %s
+  706c4 [%s][%d][luminais] 	%d	mode : %s
+  706e8 [%s][%d][luminais] 	%d	fwversion : %s
+  70710 [%s][%d][luminais] 	%d	ipaddr : %s
+  70734 [%s][%d][luminais] 	%d	ethaddr_l : %s
+  7075c [%s][%d][luminais] 	%d	ethaddr_r : %s
+  70784 [%s][%d][luminais] 	%d	bssid_nband : %s
+  707b0 [%s][%d][luminais] 	%d	bssid_aband : %s
+  707dc [%s][%d][luminais] 	assoc_sn_cnt : %d
+  70804 [%s][%d][luminais] assoc_list<%d> : 
+  7082c [%s][%d][luminais] 	%d	assoc_sn : %s
+  70854 [%s][%d][luminais] 	%d	wl2g_rssi : %d
+  7087c [%s][%d][luminais] 	%d	wl5g_rssi : %d
+  708a4 [%s][%d][luminais] 	%d	wired_en : %d
+  708cc [%s][%d][luminais] 0 == assoc_num
+  708f0 [%s][%d]%s check_node_is_assoc fail, change to offline!!!
+  7092d [1;32m[%s][%d] : 
+  70943 [1;35mprint_node_msg_list 1
+  70965 [1;32m[%s][%d] : 
+  7097b [1;35mprint_node_msg_list 2
+  7099d [1;32m[%s][%d] : 
+  709b3 [1;35mprint_all_node_status
+  709d4 [%s][%d][luminais] uc_api_m_cloud_info_send_node_status failed.
+  70a18 [%s][%d][luminais] all node cfg same with cloud.
+  70a4d [1;32m[%s][%d] : 
+  70a63 [1;35mupload_num = %d
+  70a81 [1;32m[%s][%d] : 
+  70a97 [1;35mtotal_len = %d
+  70ab5 [1;32m[%s][%d] : 
+  70acb [1;35mprint_cloud_info_mesh_node : 
+  70af5 [1;32m[%s][%d] : 
+  70b0b [1;35mdelete %s
+  70b20 [%s][%d][kg]del sn = %s
+  70b3d [1;32m[%s][%d] : 
+  70b53 [1;35mupdate %s
+  70b69 [1;32m[%s][%d] : 
+  70b7f [1;35madd %s
+  70b94 [%s][%d][luminais] malloc failed, (%d)%m
+  70bc1 [1;32m[%s][%d] : 
+  70bd7 [1;35mlocal_sn = %s
+  70bf0 update_grp_info
+  70c01 [1;32m[%s][%d] : 
+  70c17 [1;35mmsghr->length = %u
+  70c38 confctl_cli_key
+  70c49 [1;32m[%s][%d] : 
+  70c5f [1;35mmap_key = %s
+  70c78 wl2g.mesh.id
+  70c88 ucloud
+  70c90 [%s][%d]
+  70c9c [%s][%d][luminais] cloud has removed this mesh
+  70ccc 888888888
+--
+  71b74 arp_receive
+  71b94 /var/arp_receive
+  71bf8 /var/ate
+  71c3c auto_discover
+  71c5c /var/auto_discover
+  71ca0 device_list
+  71cc0 /var/device_list_socket
+  71d04 ucloud_ctl
+  71d68 common_so
+  71dcc ap_common_so
+  71e30 prod_common_so
+  71ef4 wired
+  71f04 gst_2g
+  71f0c gst_5g
+  71f14 unknow
+  71f60 [%s][%d][luminais] invalid param
+  71f84 malloc failed : (%d)%m
+  71f9c [%s][%d][luminais] alloc_client_mac_str failed
+  71fcc [%s][%d][luminais] hal_get_mac failed
+  71ff4 [%s][%d][luminais] num : %d
+  72014  	<%d>	mac : %s
+  72028 	host_name : %s
+  7203c  	ip : %s
+  72048  	mac : %s
+  72054  	conn_type : %s
+  72068  	duration : %d
+  7207c  	device_node_sn : %s
+  72094  	rssi : %d
+  720a4  	online : %d
+  720b4  	last_upload_time : %d
+  720d0 [%s][%d][luminais] client hash num = %d
+  720fc [%s][%d][luminais] <%d> : 
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+  725eb [1;35mgoto offline
+  72604 malloc device_client_info failed : (%d)%m
+  72630 [%s][%d][luminais] alloc_roam_client_info failed.
+  72664 [%s][%d][luminais] not find any roam client info
+  72698 [%s][%d][luminais] malloc failed, (%d)%m
+  726c4 rsp_client_hostname
+  726d8 device_list@%s
+  726e8 [%s][%d][luminais] map_key = %s
+  7270c [%s][%d][luminais] strdup failed
+  72731 [1;32m[%s][%d] : 
+  72747 [1;35mnow - last_time < 500000
+  7276c [%s][%d][luminais] NULL == g_ip_info
+  72795 [1;32m[%s][%d] : 
+  727ab [1;35mnow : %llu, last_time : %llu, time_interval : %f
+  727e8 [%s][%d][luminais] ifaddrs_ethaddr_aton %s failed.
+  7281d [1;32m[%s][%d] : 
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+--
+  73fa8 op=%d,wl_rate=%d
+  73fbc wl.guest.dhcps_enable
+  73fd4 malloc failed. (%d)%m
+  73fec confctl_set_dhcps_cfg
+  74004 change_wifi_guest_ip
+  74088 monitor
+  740a8 /var/pm_socket
+  740ec timer
+  7410c /var/tm_socket
+  74150 cfms
+  74170 /var/cfm_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  74218 netctrl
+  74238 /var/nt_socket
+  7427c multiWAN
+  7429c /var/mw_socket
+  742e0 network_check
+  74300 /var/network_ck_socket
+  74344 cfmc
+  74364 /var/cfmc_socket
+  743a8 dhcpc
+  743c8 /var/dhcpc
+  7440c httpd
+  7442c /var/httpd
+  74470 apmng_svr
+  74490 /var/apmng_svr
+  744d4 arp_receive
+  744f4 /var/arp_receive
+  74558 /var/ate
+  7459c auto_discover
+  745bc /var/auto_discover
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+  74a48 wan%d.ppoe.ac
+  74a58 wan%d.ppoe.sev
+  74a68 [%s][%d][lilin] invalid param.
+  74a88 [%s][%d][lilin] malloc failed. (%d)%m
+  74ab0 [%s][%d][lilin] strdup failed
+  74ad0 wan%d.ppoe.mode
+  74ae4 ppoe
+  74aec wan%d.pptp.user
+  74afc wan%d.pptp.pwd
+  74b0c wan%d.pptp.serverip
+  74b20 wan%d.pptp.mode
+  74b30 wan%d.pptp.mtu
+  74b40 1452
+  74b48 pptp
+  74b50 wan%d.l2tp.user
+  74b60 wan%d.l2tp.pwd
+  74b70 wan%d.l2tp.serverip
+  74b84 wan%d.l2tp.mode
+  74b94 wan%d.l2tp.mtu
+  74ba4 1460
+--
+  7e3f8 wl5g.public.dot11k
+  7e40c wl5g.public.dot11v
+  7e420 wl5g.public.dot11r
+  7e434 %llu
+  7e43c sys.cfg.stamp
+  7e44c op=%d,wl_rate=%d
+  7e4c8 monitor
+  7e4e8 /var/pm_socket
+  7e52c timer
+  7e54c /var/tm_socket
+  7e590 cfms
+  7e5b0 /var/cfm_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+  7e658 netctrl
+  7e678 /var/nt_socket
+  7e6bc multiWAN
+  7e6dc /var/mw_socket
+  7e720 network_check
+  7e740 /var/network_ck_socket
+  7e784 cfmc
+  7e7a4 /var/cfmc_socket
+  7e7e8 dhcpc
+  7e808 /var/dhcpc
+  7e84c httpd
+  7e86c /var/httpd
+  7e8b0 apmng_svr
+  7e8d0 /var/apmng_svr
+  7e914 arp_receive
+  7e934 /var/arp_receive
+  7e998 /var/ate
+  7e9dc auto_discover
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+  84720 .dynamic
+  84729 .hash
+  8472f .dynsym
+  84737 .dynstr
+  8473f .gnu.version
+  8474c .gnu.version_r
+  8475b .rel.plt
+  84764 .init
+  8476a .text
+  84770 .MIPS.stubs
+  8477c .fini
+  84782 .rodata
+  8478a .eh_frame_hdr
+  84798 .eh_frame
+  847a2 .ctors
+  847a9 .dtors
+  847b0 .jcr
+  847b5 .data
+  847bb .rld_map
+  847c4 .got.plt
+===== confctl_get_host_list =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+00434f9c <confctl_get_host_list@@Base>:
+  434f9c:	3c1c0006 	lui	gp,0x6
+  434fa0:	279c21c4 	addiu	gp,gp,8644
+  434fa4:	0399e021 	addu	gp,gp,t9
+  434fa8:	27bdffb8 	addiu	sp,sp,-72
+  434fac:	afbf0044 	sw	ra,68(sp)
+  434fb0:	afbe0040 	sw	s8,64(sp)
+  434fb4:	afb0003c 	sw	s0,60(sp)
+  434fb8:	03a0f021 	move	s8,sp
+  434fbc:	afbc0010 	sw	gp,16(sp)
+  434fc0:	afc40048 	sw	a0,72(s8)
+  434fc4:	afc5004c 	sw	a1,76(s8)
+  434fc8:	afc60050 	sw	a2,80(s8)
+  434fcc:	afc70054 	sw	a3,84(s8)
+  434fd0:	8fc20054 	lw	v0,84(s8)
+  434fd4:	10400004 	beqz	v0,434fe8 <confctl_get_host_list@@Base+0x4c>
+  434fd8:	00000000 	nop
+  434fdc:	8fc20058 	lw	v0,88(s8)
+  434fe0:	1440000f 	bnez	v0,435020 <confctl_get_host_list@@Base+0x84>
+  434fe4:	00000000 	nop
+  434fe8:	8f82822c 	lw	v0,-32212(gp)
+  434fec:	2442237c 	addiu	v0,v0,9084
+  434ff0:	00402021 	move	a0,v0
+  434ff4:	8f82822c 	lw	v0,-32212(gp)
+  434ff8:	24452f98 	addiu	a1,v0,12184
+  434ffc:	24060793 	li	a2,1939
+  435000:	8f8287c8 	lw	v0,-30776(gp)
+  435004:	0040c821 	move	t9,v0
+  435008:	0320f809 	jalr	t9
+  43500c:	00000000 	nop
+  435010:	8fdc0010 	lw	gp,16(s8)
+  435014:	2402ffff 	li	v0,-1
+  435018:	100000fb 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  43501c:	00000000 	nop
+  435020:	8f8288d0 	lw	v0,-30512(gp)
+  435024:	afc20024 	sw	v0,36(s8)
+  435028:	afc00028 	sw	zero,40(s8)
+  43502c:	afc0002c 	sw	zero,44(s8)
+  435030:	afc00030 	sw	zero,48(s8)
+  435034:	afc00034 	sw	zero,52(s8)
+  435038:	afc0001c 	sw	zero,28(s8)
+  43503c:	8f82802c 	lw	v0,-32724(gp)
+  435040:	2442fdf0 	addiu	v0,v0,-528
+  435044:	8c42020c 	lw	v0,524(v0)
+  435048:	afc20030 	sw	v0,48(s8)
+  43504c:	8fc20030 	lw	v0,48(s8)
+  435050:	afc20020 	sw	v0,32(s8)
+  435054:	8fc20020 	lw	v0,32(s8)
+  435058:	00021080 	sll	v0,v0,0x2
+  43505c:	00402021 	move	a0,v0
+  435060:	8f828904 	lw	v0,-30460(gp)
+  435064:	0040c821 	move	t9,v0
+  435068:	0320f809 	jalr	t9
+  43506c:	00000000 	nop
+  435070:	8fdc0010 	lw	gp,16(s8)
+  435074:	afc20034 	sw	v0,52(s8)
+  435078:	8fc20034 	lw	v0,52(s8)
+  43507c:	14400016 	bnez	v0,4350d8 <confctl_get_host_list@@Base+0x13c>
+  435080:	00000000 	nop
+  435084:	8f82822c 	lw	v0,-32212(gp)
+  435088:	24502404 	addiu	s0,v0,9220
+  43508c:	8f828684 	lw	v0,-31100(gp)
+  435090:	0040c821 	move	t9,v0
+  435094:	0320f809 	jalr	t9
+  435098:	00000000 	nop
+  43509c:	8fdc0010 	lw	gp,16(s8)
+  4350a0:	8c420000 	lw	v0,0(v0)
+  4350a4:	02002021 	move	a0,s0
+  4350a8:	8f83822c 	lw	v1,-32212(gp)
+  4350ac:	24652f98 	addiu	a1,v1,12184
+  4350b0:	240607a3 	li	a2,1955
+  4350b4:	00403821 	move	a3,v0
+  4350b8:	8f8287c8 	lw	v0,-30776(gp)
+  4350bc:	0040c821 	move	t9,v0
+  4350c0:	0320f809 	jalr	t9
+  4350c4:	00000000 	nop
+  4350c8:	8fdc0010 	lw	gp,16(s8)
+  4350cc:	2402ffff 	li	v0,-1
+  4350d0:	100000cd 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4350d4:	00000000 	nop
+  4350d8:	8fc30034 	lw	v1,52(s8)
+  4350dc:	8fc20020 	lw	v0,32(s8)
+  4350e0:	00021080 	sll	v0,v0,0x2
+  4350e4:	00602021 	move	a0,v1
+  4350e8:	00002821 	move	a1,zero
+  4350ec:	00403021 	move	a2,v0
+  4350f0:	8f828930 	lw	v0,-30416(gp)
+  4350f4:	0040c821 	move	t9,v0
+  4350f8:	0320f809 	jalr	t9
+  4350fc:	00000000 	nop
+  435100:	8fdc0010 	lw	gp,16(s8)
+  435104:	8fc20020 	lw	v0,32(s8)
+  435108:	000210c0 	sll	v0,v0,0x3
+  43510c:	000218c0 	sll	v1,v0,0x3
+  435110:	00621023 	subu	v0,v1,v0
+  435114:	00402021 	move	a0,v0
+  435118:	8f828904 	lw	v0,-30460(gp)
+  43511c:	0040c821 	move	t9,v0
+  435120:	0320f809 	jalr	t9
+  435124:	00000000 	nop
+  435128:	8fdc0010 	lw	gp,16(s8)
+  43512c:	afc20018 	sw	v0,24(s8)
+  435130:	8fc20018 	lw	v0,24(s8)
+  435134:	1440001d 	bnez	v0,4351ac <confctl_get_host_list@@Base+0x210>
+  435138:	00000000 	nop
+  43513c:	8f82822c 	lw	v0,-32212(gp)
+  435140:	24502404 	addiu	s0,v0,9220
+  435144:	8f828684 	lw	v0,-31100(gp)
+  435148:	0040c821 	move	t9,v0
+  43514c:	0320f809 	jalr	t9
+  435150:	00000000 	nop
+  435154:	8fdc0010 	lw	gp,16(s8)
+  435158:	8c420000 	lw	v0,0(v0)
+  43515c:	02002021 	move	a0,s0
+  435160:	8f83822c 	lw	v1,-32212(gp)
+  435164:	24652f98 	addiu	a1,v1,12184
+  435168:	240607ab 	li	a2,1963
+  43516c:	00403821 	move	a3,v0
+  435170:	8f8287c8 	lw	v0,-30776(gp)
+  435174:	0040c821 	move	t9,v0
+  435178:	0320f809 	jalr	t9
+  43517c:	00000000 	nop
+  435180:	8fdc0010 	lw	gp,16(s8)
+  435184:	8fc20034 	lw	v0,52(s8)
+  435188:	00402021 	move	a0,v0
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  435190:	0040c821 	move	t9,v0
+  435194:	0320f809 	jalr	t9
+  435198:	00000000 	nop
+  43519c:	8fdc0010 	lw	gp,16(s8)
+  4351a0:	2402ffff 	li	v0,-1
+  4351a4:	10000098 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4351a8:	00000000 	nop
+  4351ac:	8fc20020 	lw	v0,32(s8)
+  4351b0:	000210c0 	sll	v0,v0,0x3
+  4351b4:	000218c0 	sll	v1,v0,0x3
+  4351b8:	00621023 	subu	v0,v1,v0
+  4351bc:	8fc40018 	lw	a0,24(s8)
+  4351c0:	00002821 	move	a1,zero
+  4351c4:	00403021 	move	a2,v0
+  4351c8:	8f828930 	lw	v0,-30416(gp)
+  4351cc:	0040c821 	move	t9,v0
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	nop
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	move	a0,v0
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	move	t9,v0
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	nop
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	nop
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	move	a0,v0
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	move	a0,v0
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	li	a2,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	move	a0,v0
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	move	t9,v0
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	nop
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+  4352c0:	27c20024 	addiu	v0,s8,36
+  4352c4:	00402021 	move	a0,v0
+  4352c8:	8f828700 	lw	v0,-30976(gp)
+  4352cc:	0040c821 	move	t9,v0
+  4352d0:	0320f809 	jalr	t9
+  4352d4:	00000000 	nop
+  4352d8:	8fdc0010 	lw	gp,16(s8)
+  4352dc:	00401821 	move	v1,v0
+  4352e0:	8fc20058 	lw	v0,88(s8)
+  4352e4:	ac430000 	sw	v1,0(v0)
+  4352e8:	8fc20058 	lw	v0,88(s8)
+  4352ec:	8c420000 	lw	v0,0(v0)
+  4352f0:	00402021 	move	a0,v0
+  4352f4:	8f828904 	lw	v0,-30460(gp)
+  4352f8:	0040c821 	move	t9,v0
+  4352fc:	0320f809 	jalr	t9
+  435300:	00000000 	nop
+  435304:	8fdc0010 	lw	gp,16(s8)
+  435308:	00401821 	move	v1,v0
+  43530c:	8fc20054 	lw	v0,84(s8)
+  435310:	ac430000 	sw	v1,0(v0)
+  435314:	8fc20054 	lw	v0,84(s8)
+  435318:	8c420000 	lw	v0,0(v0)
+  43531c:	14400017 	bnez	v0,43537c <confctl_get_host_list@@Base+0x3e0>
+  435320:	00000000 	nop
+  435324:	8f82822c 	lw	v0,-32212(gp)
+  435328:	24502404 	addiu	s0,v0,9220
+  43532c:	8f828684 	lw	v0,-31100(gp)
+  435330:	0040c821 	move	t9,v0
+  435334:	0320f809 	jalr	t9
+  435338:	00000000 	nop
+  43533c:	8fdc0010 	lw	gp,16(s8)
+  435340:	8c420000 	lw	v0,0(v0)
+  435344:	02002021 	move	a0,s0
+  435348:	8f83822c 	lw	v1,-32212(gp)
+  43534c:	24652f98 	addiu	a1,v1,12184
+  435350:	240607c2 	li	a2,1986
+  435354:	00403821 	move	a3,v0
+  435358:	8f8287c8 	lw	v0,-30776(gp)
+  43535c:	0040c821 	move	t9,v0
+  435360:	0320f809 	jalr	t9
+  435364:	00000000 	nop
+  435368:	8fdc0010 	lw	gp,16(s8)
+  43536c:	2402ffff 	li	v0,-1
+  435370:	afc2001c 	sw	v0,28(s8)
+  435374:	1000000e 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  435378:	00000000 	nop
+  43537c:	8fc20054 	lw	v0,84(s8)
+  435380:	8c420000 	lw	v0,0(v0)
+  435384:	27c30024 	addiu	v1,s8,36
+  435388:	00602021 	move	a0,v1
+  43538c:	00402821 	move	a1,v0
+  435390:	8f828740 	lw	v0,-30912(gp)
+  435394:	0040c821 	move	t9,v0
+  435398:	0320f809 	jalr	t9
+  43539c:	00000000 	nop
+  4353a0:	8fdc0010 	lw	gp,16(s8)
+  4353a4:	10000002 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  4353a8:	00000000 	nop
+  4353ac:	00000000 	nop
+  4353b0:	27c20024 	addiu	v0,s8,36
+  4353b4:	00402021 	move	a0,v0
+  4353b8:	8f82832c 	lw	v0,-31956(gp)
+  4353bc:	244239e4 	addiu	v0,v0,14820
+  4353c0:	0040c821 	move	t9,v0
+  4353c4:	0320f809 	jalr	t9
+  4353c8:	00000000 	nop
+  4353cc:	8fdc0010 	lw	gp,16(s8)
+  4353d0:	8fc20034 	lw	v0,52(s8)
+  4353d4:	00402021 	move	a0,v0
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353dc:	0040c821 	move	t9,v0
+  4353e0:	0320f809 	jalr	t9
+  4353e4:	00000000 	nop
+  4353e8:	8fdc0010 	lw	gp,16(s8)
+  4353ec:	8fc40018 	lw	a0,24(s8)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4353f4:	0040c821 	move	t9,v0
+  4353f8:	0320f809 	jalr	t9
+  4353fc:	00000000 	nop
+  435400:	8fdc0010 	lw	gp,16(s8)
+  435404:	8fc2001c 	lw	v0,28(s8)
+  435408:	03c0e821 	move	sp,s8
+  43540c:	8fbf0044 	lw	ra,68(sp)
+  435410:	8fbe0040 	lw	s8,64(sp)
+  435414:	8fb0003c 	lw	s0,60(sp)
+  435418:	27bd0048 	addiu	sp,sp,72
+  43541c:	03e00008 	jr	ra
+  435420:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== fill_host_lists_rate =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== fill_host_lists_info =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== fill_host_info_from_client_status =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== find_client_in_online_ip_info =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
