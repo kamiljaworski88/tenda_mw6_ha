@@ -1,0 +1,1997 @@
+===== firmware-wide UC API enable/register references =====
+firmware-src/boot.log:659:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_GET[0] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:660:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_SET[1] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:661:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_GET[2] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:662:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_SET[3] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:663:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_GET[4] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:664:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_SET[5] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:665:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_GET[6] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:666:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_SET[7] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:667:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_GET[8] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:668:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_SET[9] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:669:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_GET[10] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:670:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_SET[11] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:671:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_SHAREDACC_GET[12] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:672:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_GET[15] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:673:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_SET[16] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:677:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_GET_STA[0] in module: M_MESH_AUTH[24]...
+firmware-src/boot.log:678:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_LOGIN[1] in module: M_MESH_AUTH[24]...
+firmware-src/boot.log:1613:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_GET[0] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1614:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_SET[1] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1615:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_GET[2] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1616:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_SET[3] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1617:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_GET[4] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1618:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_SET[5] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1619:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_GET[6] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1620:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_SET[7] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1621:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_GET[8] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1622:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_SET[9] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1623:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_GET[10] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1624:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_SET[11] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1625:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_SHAREDACC_GET[12] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1626:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_GET[15] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1627:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_SET[16] in module: M_MESH_ADVANCE[23]...
+firmware-src/boot.log:1631:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_GET_STA[0] in module: M_MESH_AUTH[24]...
+firmware-src/boot.log:1632:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_LOGIN[1] in module: M_MESH_AUTH[24]...
+firmware-src/README-ru.md:746:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_GET[0] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:747:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_PORTFWD_SET[1] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:748:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_GET[2] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:749:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_UPNP_SET[3] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:750:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_GET[4] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:751:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_MAINT_SET[5] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:752:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_GET[6] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:753:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DHCPS_SET[7] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:754:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_GET[8] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:755:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_QOS_SET[9] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:756:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_GET[10] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:757:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_DEV_ASSISTANT_SET[11] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:758:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_SHAREDACC_GET[12] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:759:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_GET[15] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:760:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_ADV_HIGH_DEVICE_SET[16] in module: M_MESH_ADVANCE[23]...
+firmware-src/README-ru.md:764:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_GET_STA[0] in module: M_MESH_AUTH[24]...
+firmware-src/README-ru.md:765:2011-05-01 00:00:16 [INFO ][uc_api_lib.c, 344][uc_api_lib_cmd_register] Successfully registered command: CMD_MESH_MNGMT_LOGIN[1] in module: M_MESH_AUTH[24]...
+firmware-src/RootFS-unpacked/lib/libucapi.so:291:  _GLOBAL_OFFSET_TABLE_ _gp_disp _fini __cxa_finalize __deregister_frame_info __register_frame_info _Jv_RegisterClasses assign_poll_start assign_poll_stop fcntl __errno_location strerror stdout _cs_print _stop_session_write_ev _cs_assert uc_list_empty _start_session_write_ev ucloud_event_write uc_api_lib_commit malloc memcpy pthread_mutex_lock uc_list_add free pthread_mutex_unlock uc_api_lib_cmd_resp_notify uc_api_lib_cmd_resp default_uc_ev_default puts start_uc_io_ev_default uc_api_enable_m_usb uc_api_lib_usb_supt_reg uc_api_enable_m_parent_control uc_api_lib_parent_control_get_hdl_reg uc_api_lib_parent_control_set_hdl_reg uc_api_lib_parent_control_get_type_hdl_reg uc_api_enable_m_dev_nickname uc_api_lib_dev_nickname_get_hdl_reg uc_api_lib_dev_nickname_set_hdl_reg uc_api_enable_m_energy uc_api_lib_led_get_hdl_reg uc_api_lib_led_set_hdl_reg uc_api_lib_wl_timer_get_hdl_reg uc_api_lib_wl_timer_set_hdl_reg uc_api_lib_energy_mode_get_hdl_reg uc_api_lib_energy_mode_set_hdl_reg uc_api_enable_m_hand_qos uc_api_lib_hand_qos_get_hdl_reg uc_api_lib_hand_qos_set_hdl_reg uc_api_lib_hand_qos_get_genable_hdl_reg uc_api_lib_hand_qos_set_genable_hdl_reg uc_api_lib_hand_qos_get_uplimit_hdl_reg uc_api_enable_m_ol_host uc_api_lib_ol_hosts_get_hdl_reg uc_api_enable_m_rub_net uc_api_lib_access_user_hdl_reg uc_api_lib_rub_net_get_hdl_reg uc_api_lib_rub_net_set_hdl_reg uc_api_lib_history_list_get_hdl_reg uc_api_lib_history_list_clear_hdl_reg uc_api_lib_black_list_get_hdl_reg uc_api_lib_black_list_flush_hdl_reg uc_api_lib_whitelist_get_hdl_reg uc_api_lib_whitelist_add_hdl_reg uc_api_lib_whitelist_del_hdl_reg uc_api_lib_whitelist_flush_hdl_reg uc_api_lib_blacklist_add_hdl_reg uc_api_lib_blacklist_del_hdl_reg uc_api_lib_macfilter_mode_get_hdl_reg uc_api_lib_macfilter_mode_set_hdl_reg uc_api_enable_m_wan uc_api_lib_wan_basic_get_hdl_reg uc_api_lib_wan_basic_set_hdl_reg uc_api_lib_wan_rate_get_hdl_reg uc_api_lib_wan_detect_type_hdl_reg uc_api_enable_m_safe_check uc_api_lib_guard_get_hdl_reg uc_api_lib_guard_set_hdl_reg uc_api_lib_safe_check_hdl_reg uc_api_lib_dns_optimize_hdl_reg uc_api_enable_m_wifi uc_api_lib_wifi_basic_get_hdl_reg uc_api_lib_wifi_basic_set_hdl_reg uc_api_lib_wifi_guest_get_hdl_reg uc_api_lib_wifi_guest_set_hdl_reg uc_api_lib_wifi_channel_get_hdl_reg uc_api_lib_wifi_channel_set_hdl_reg uc_api_lib_wifi_power_get_hdl_reg uc_api_lib_wifi_power_set_hdl_reg uc_api_enable_m_login uc_api_lib_login_hdl_reg uc_api_lib_up_pwd_hdl_reg uc_api_lib_get_pwd_sta_hdl_reg uc_api_enable_m_sys uc_api_lib_sys_basic_info_hdl_reg uc_api_lib_sys_advance_info_hdl_reg uc_api_lib_sys_reset_hdl_reg uc_api_lib_sys_reboot_hdl_reg uc_api_lib_sys_time_zone_hdl_reg uc_api_lib_run pthread_attr_init pthread_attr_setdetachstate pthread_create pthread_attr_destroy uc_lib_creat_tcp_client socket _uc_con_to_lib sleep uc_api_lib_init signal pthread_mutex_init create_tcp_server ucloud_event_accept2 ucloud_event_accept uc_api_lib_cmd_send uc_api_m_wifi_push_wifi_info uc_api_m_cloud_info_send_sys_basic_info uc_api_m_cloud_info_send_dev_config_u uc_api_m_cloud_info_send_dev_config_q uc_api_m_cloud_info_send_dev_mark_list_u uc_api_m_cloud_info_send_node_status uc_api_m_cloud_info_send_dev_device uc_api_m_cloud_info_send_dev_traffic uc_api_m_cloud_info_mesh_node_u uc_api_m_cloud_info_send_force_upgrade uc_api_m_cloud_info_send_clear_account uc_api_m_rub_net_push_strange_host_info uc_api_lib_connect uc_api_lib_cmd_register strdup dyn_arr_expand uc_api_enable_m_cloud_info uc_api_lib_cloud_info_manage_en_get_hdl_reg uc_api_lib_cloud_info_manage_en_set_hdl_reg uc_api_lib_cloud_info_account_info_a_hdl_reg uc_api_lib_cloud_info_clear_account_ack_hdl_reg uc_api_lib_cloud_info_mesh_node_a_hdl_reg uc_api_lib_cloud_info_upload_status_start_hdl_reg uc_api_lib_cloud_info_upload_device_start_hdl_reg uc_api_lib_cloud_info_dev_mark_list_a_hdl_reg uc_api_lib_cloud_info_dev_config_time_a_hdl_reg uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg uc_api_lib_cloud_info_web_auth_config_time_a_hdl_reg uc_api_enable_speed_test uc_api_enable_upgrade uc_api_lib_cloud_info_upgrade_dir_set uc_api_lib_check_memory_hdl_reg uc_api_lib_begin_upgrade_hdl_reg uc_api_set_basic_info ucloud_event_read2 uc_list_del ucloud_event_read active_queue_cb init_mesh_modlules uc_api_lib_destroy dyn_arr_destroy pthread_mutex_destroy pthread_cancel pthread_join memset pthread_self select login_param up_pwd_param assign_set_cfg_fn assign_get_cfg_fn cmd_args command_exec_set_noreply command_exec_set_nohdr command_exec_set command_exec_get_hashdr command_exec_get enable_device_id_hdl enable_conn_innernet strncpy enable_upgrade_hdl enable_cloud_get_sys_basic eanble_inter_chk_request _lib_inet_chk_hdl send_self_upgrade send_sync_firmware protobuf_c_version protobuf_c_version_number protobuf_c_message_init protobuf_c_message_check protobuf_c_service_destroy protobuf_c_enum_descriptor_get_value protobuf_c_message_descriptor_get_field protobuf_c_service_descriptor_get_method_by_name strcmp protobuf_c_message_descriptor_get_field_by_name protobuf_c_enum_descriptor_get_value_by_name protobuf_c_service_invoke_internal protobuf_c_message_free_unpacked protobuf_c_service_generated_init protobuf_c_message_unpack protobuf_c_buffer_simple_append strlen protobuf_c_message_pack_to_buffer protobuf_c_message_get_packed_size protobuf_c_message_pack memmove set_debug_level get_debug_level set_dump_full_header enable_hex_dump _cs_print_plain vfprintf gettimeofday localtime_r vsnprintf _net_send _net_recv create_tcp_client ioctl create_unix_client strcpy create_udp_server bind check_and_create_dir strrchr opendir mkdir closedir create_unix_server unlink listen sockopt_keepalive setsockopt sockopt_reuseaddr sockopt_bind_local_interface abort uc__list_add uc_list_add_tail uc__list_del uc_list_del_init uc_list_splice ccJSON_GetErrorPtr ccJSON_InitHooks ccJSON_Delete ccJSON_GetArraySize ccJSON_GetArrayItem ccJSON_GetObjectItem __ctype_tolower ccJSON_AddItemToArray ccJSON_AddItemToObjectCS ccJSON_DetachItemFromArray ccJSON_DeleteItemFromArray ccJSON_DetachItemFromObject ccJSON_DeleteItemFromObject ccJSON_InsertItemInArray ccJSON_ReplaceItemInArray ccJSON_Minify ccJSON_CreateObject ccJSON_CreateArray ccJSON_CreateNumber ccJSON_CreateDoubleArray ccJSON_CreateFloatArray ccJSON_CreateIntArray ccJSON_CreateBool ccJSON_CreateFalse ccJSON_CreateTrue ccJSON_CreateNull ccJSON_Duplicate ccJSON_CreateString ccJSON_CreateStringArray ccJSON_ReplaceItemInObject ccJSON_AddItemToObject ccJSON_AddItemReferenceToObject ccJSON_AddItemReferenceToArray sprintf floor strchr ccJSON_PrintBuffered ccJSON_PrintUnformatted ccJSON_Print strncmp pow ccJSON_ParseWithOpts ccJSON_Parse json2str struct2json simple_struct2str json2struct atoi simple_str2struct ccJSON_PrintArrayToBuffer ccJSON_PrintObjValueToBuffer ccJSON_PrintValueToBuffer set_ucloud_errno g_cgi_ucloud_errno get_ucloud_errno cgi_common_err_handle cgi_ucloud_destory g_cgi_ucloud_sys cgi_sock_close _cgi_recv cgi_check_header select_timeout cgi_select_recv do_cgi_data_recv do_cgi_header_recv cgi_select_send do_cgi_send cgi_ucloud_init cgi_connect_ucloud cgi_recv_from_ucloud realloc do_cgi_send_and_conn cgi_send_to_ucloud cgi_ucloud_common_send cgi_ucloud_get_manage_en cgi_ucloud_set_manage_en cgi_ucloud_update_uc_account cgi_ucloud_query_uc_account cgi_ucloud_common_test cgi_ucloud_sys_set_time_zone cgi_ucloud_sys_reset cgi_ucloud_sys_reboot cgi_ucloud_sys_advance_info_get cgi_ucloud_sys_basic_info_get cgi_ucloud_login_sta_update cgi_ucloud_update_pwd cgi_ucloud_login cgi_ucloud_speedtest_enable _cgi_ucloud_upgrade_enable cgi_ucloud_policy_upgrade_enable cgi_ucloud_policy_query_version cgi_ucloud_query_version passive_nofify_queue flush_conn_estab_cbs unregister_conn_estab_notify_cb register_conn_esta_notify_cb libz.so libm.so.0 libpthread.so.0 libgcc_s.so.1 libc.so.0 _ftext _fdata _edata __bss_start _fbss _end GLIBC_2.0                                                                                                                                                                                                                                                                                                                                                                                                                                           y         ii   Ω              |    Ä    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    x    Ä    à    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    x    Ä    à    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    x    Ä    à    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    x    Ä    à    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    x    Ä    à    ê    ò    †    ®    ∞    ∏    ¿    »    –    ÿ    ‡    Ë        ¯                          (    0    8    @    H    P    X    `    h    p    ê    î    ƒ"    ¥ Ö  – ( ‘ ( ∞ , < ] § ^ d ^ î ^ ƒ ^ Ù ^ $ ^ < ^ ú ^ ¥ ^ Ã ^ ‰ ^ , ^ \ ^ § ^ ‘ ^  ^ 4 ^ d ^ î ^ ƒ ^ Ù ^ $ ^ T ^ ú ^ º _ ‘ _ Ï _  _  _ 4 _ L _ | _ ¨ _ ‹ _ T _ l _ Ñ _ ¸ _  _ D _ t _ å _ º _ Ï _  _ L _ | _ ¨ _ ‹ _  _ l _ Ñ _ ¸ _  _ , _ D _ ¥ ` Ã ` ‰ ` \ ` t `  a à b Ñ c  <‡Rú'!‡ô‡ˇΩ' ºØ øØ ºØ      <ºRú'!‡ü(ÄôèDM9'F      ºè      <îRú'!‡ü$Äôè ·9'3e     ºè øè ‡  Ω'         <`Rú'!‡ôÿˇΩ'$ øØ  ≤Ø ±Ø ∞Ø ºØÄÇè‡"Bê# @ ÉÇè @ÄÇè Éôè	¯   Då ºèÄëè ÄíèÄêè1&#êQÉê   ˇˇR&  ôå	¯ ‰"Æ ºè‰"é C$Ä  +R ˜ˇ@! ë ÄÇÇè @ÄÇôè$ÄÑè	¯ Ñ$ ºèÄÇè $‡"C†$ øè  ≤è ±è ∞è ‡( Ω' <åQú'!‡ô‡ˇΩ' øØ ºØXÉÇè @$ÄÑèÄÖèXÉôèÑ$	¯ Ë"•$ ºèÄÑè$Çå @¥Äôè   øè$Ñ$    Ω' øè ‡  Ω' < Qú'!‡ôÄÇè ‡ÑD¨ <Qú'!‡ôÄÇè ‡àD¨ <Pú'!‡ô‡ˇΩ' øØ ∞Ø ºØ®Äôè $	¯ !ÄÄ  ºè!   øè®Äôè ∞èÄ F4 $    Ω' <†Pú'!‡ô¿ˇΩ'< øØ8 ¥Ø4 ≥Ø0 ≤Ø, ±Ø( ∞Ø  ºØ!òÄ !ê† !à¿ !Ä  0Çôè!(P#00	¯ ! `  ºè @!†@ !Ä+ˆˇ@0Çôè#  ! Åôè	¯       Dåˇˇ$ Ç  ºè $ Ç!  $ Ç! êÉôè¨ÉÇèˇˇ$	¯   Qå  ºè$ £Ø$ÄÉè$ÄÜè$ÄáèƒÅôèêÂc$ £Ø ¢Ø!  àˆ∆$ÄÂÁ$	¯  $! < øè8 ¥è4 ≥è0 ≤è, ±è( ∞è ‡@ Ω' <ÑOú'!‡ôÿ˚Ω'$øØ ≤Ø±Ø∞Ø ºØ(Äêè!êÄ  ±'0N&! @!( !» 	¯  $˚ˇ@! @$øè ≤è±è∞è ‡(Ω' <Oú'!‡ôÿˇΩ'$ øØ  ±Ø ∞Ø ºØ!ÄÄ 	 Ä!à† $ÄÑè$ÄÜèòÉôèÄÂÑ$Ñ∆$	¯ C$ ºè é B0 @$ øèÄÅôè	¯ L& @ ºèÄÇè é!  àYå˛ˇ$$b  Æ$ øè  ±è ∞è  ( Ω'$ øè  ±è ∞è ‡( Ω' <hNú'!‡ôÿˇΩ'$ øØ  ±Ø ∞Ø ºØ!ÄÄ 	 Ä!à¿ $ÄÑè$ÄÜèòÉôèÄÂÑ$Ñ∆$	¯ 4$ ºè é B0 @$ øèÄÅôè	¯ L& @ ºè éÄÉè é B4 Æ!( Ñyå`ÅÜè$ øè  ±è ∞è  ( Ω'$ øè  ±è ∞è ‡( Ω' <∞Mú'!‡ô∏ˇΩ'D øØ@ µØ< ¥Ø8 ≥Ø4 ≤Ø0 ±Ø, ∞Ø  ºØ!®Ä !†† !à¿ !Ä   $ $|Çôè!(ê#00	¯ ! † A  ºèÅôè	¯       Då ì  ºè íP+êÉôè¨ÉÇèˇˇ$	¯   Qå  ºè$ £Ø$ÄÉè$ÄÜè$ÄáèƒÅôè§Âc$ £Ø ¢Ø!  îˆ∆$ÄÂÁ$	¯  $	  !  @!Ä  !Ä  +÷ˇ@|Çôè! D øè@ µè< ¥è8 ≥è4 ≤è0 ±è, ∞è ‡H Ω' <êLú'!‡ô‡ˇΩ' øØ ºØ$ÄÖè|Çôè $	¯ ∏Â•$ øè!   ‡  Ω' <TLú'!‡ô∏ˇΩ'D øØ@ ∂Ø< µØ8 ¥Ø4 ≥Ø0 ≤Ø, ±Ø( ∞Ø  ºØ!ê¿ !àÄ !ò† !∞‡ X µè ¿!†¿  †!†   ÄÉôè   îåÉôè	¯ , Ñ&  ºè	  !Ä@ $ÄÑè$ÄÜèòÉôèÄÂÑ$ºÂ∆$	¯ ◊$  ºè{   Ç& Æ\ ¢è4Éôè & Æ!( 	¯  $ Ä  ºè ¿R "é T$ÄÑè$ÄÜèòÉôèÄÂÑ$¿Â∆$	¯ ·$  ºè4Éôè  !(¿ T$ÄÑè$ÄÜèòÉôèÄÂÑ$ÿÂ∆$	¯ ‰$  ºè4Éôè %&, &	¯ !0Ä  ºèÄÇè( Æ ¢0B$0Cå,Bå+b  `ÄÑè4 †¨ÉÉèÅôè	¯ dÑ$  ºèÄÇè0B$0Cå,Bå+b  `ÄÖè †¨ÉÉèúÇôè!  	¯ |•$  ºè!Ä  ÄÇè0B$0Cå c$  0C¨$ÄÜè$Äáè  dåæ$ £Ø$ÄÉèƒÅôè˜∆$Âc$ £ØÄÂÁ$ $	¯  ¢Ø  ºè!  xÄôè	¯ ˇˇ$  ºèÄÑè¨Åôè	¯ dÑ$&  ! $ÄÜè$Äáè  dåƒ$ £Ø$ÄÉèƒÅôè ¢ØÂc$ £Ø˜∆$ÄÂÁ$	¯  $  ºè!  xÄôè	¯ ˇˇ$  ! ¨ÉÇè$ÄÜè$Äáè  DåÛ$ ¢Ø$ÄÇèƒÅôèÏˆ∆$$ÊB$ ¢ØÄÂÁ$ $	¯ ˇˇ$! D øè@ ∂è< µè8 ¥è4 ≥è0 ≤è, ±è( ∞è ‡H Ω' <\Iú'!‡ôòˇΩ'd øØ` ≥Ø\ ≤ØX ±ØT ∞Ø( ºØ!àÄ !Ä† B Ä!ò¿   Çå? @    	 †0 †Ø( Gå$ Yå •å!  	¯  &( ºè0 ¢Ø  "é  BåM @ $K r(Äëè0 ¢è4 ≥'|R1& @4Éôè!( ! ` $4 †Ø8 †Ø< †Ø@ †ØD †ØH †Ø	¯ L †Ø! `!(  !0  !8  5 †£  6 †£!( ! ` $4 †Ø8 †Ø< †Ø@ †ØD †ØH †Ø	¯ L †Ø! `!(   $0 ß'6 ≤£5 †£ †Ø!» 	¯  †Ø        ÄÇè í í !  #B$!Ç   Bå¨ÉÑè @  Ñå$ÄÇè8ÊB$Z$ ¶Ø$ÄÜè$ÄáèƒÅôè@Ê∆$ ¶Ø$ÄÜè •Ø ¢Ø  £Ø‹ˆ∆$ÄÂÁ$	¯  $d øè` ≥è\ ≤èX ±èT ∞è!   ‡h Ω' <êGú'!‡ô–ˇΩ', øØ( ≤Ø$ ±Ø  ∞Ø ºØ¨ÉÇè9$!à¿   Bå £Ø$ÄÉè!Ä‡ $ÄÜè$ÄáèƒÅôèlÊc$ £Ø!êÄ t˜∆$! @ ÄÂÁ$	¯ !(   ºè@ ¢è! @(Äôè!0 !8  $ ¢Ø|R9'	¯  †Ø, øè( ≤è$ ±è  ∞è!   ‡0 Ω' <‹Fú'!‡ô–ˇΩ', øØ( ≤Ø$ ±Ø  ∞Ø ºØ¨ÉÇè-$!à¿   Bå £Ø$ÄÉè!Ä‡ $ÄÜè$ÄáèƒÅôè†Êc$ £Ø!êÄ ê˜∆$! @ ÄÂÁ$	¯ !(   ºè! @!0 (Äôè!8  $ †Ø|R9'	¯  †Ø, øè( ≤è$ ±è  ∞è!   ‡0 Ω' <,Fú'!‡ô‡ˇΩ' øØ ºØ$ÄÑè$Éôè	¯ »ÊÑ$ øè!   ‡  Ω' <ÙEú'!‡ô‡ˇΩ' øØ ºØ$ÄÑè$Éôè	¯ ÏÊÑ$ øè!   ‡  Ω' <ºEú'!‡ôÿˇΩ'$ øØ ºØ Äˇˇ$  Çå @$ÄÖè Éå$Äáè‘Çôè ¢Ø £ØÁ•$ÁÁ$ $	¯ !0    $ øèˇˇ$$ øè ‡( Ω' <PEú'!‡ô–ˇΩ', øØ( ±Ø$ ∞Ø ºØ	 Ä!ÄÄ $ÄÑè$ÄÜèòÉôèÄÂÑ$,Á∆$	¯ ˜$ ºè  é @P é é `P é é$Äëè$Äáè(Éôè ¢Ø £ØHÁÁ$ $4Á%&	¯ !0   @ ºè é é$ÄáèPÉôè £Ø ¢Ø4Á%&`ÁÁ$ $	¯  $ @ ºè é @P!   é$ÄÖè$ÄáèDÇôè ¢Ø £Ø4Á•$xÁÁ$ $	¯  $ @P!  ˇˇ$, øè( ±è$ ∞è ‡0 Ω' <0Dú'!‡ôÿˇΩ'$ øØ  ∞Ø ºØ	 Ä!ÄÄ $ÄÑè$ÄÜèòÉôèÄÂÑ$,Á∆$	¯ ∆$ ºè  é @P é é$ÄÖè$Äáè¿Äôè ¢Ø £ØîÁ•$úÁÁ$ $	¯  $ @ ºè é @P!   é$ÄÖè$ÄáèƒÉôè ¢Ø £ØîÁ•$¥ÁÁ$ $	¯ !0   @P!  ˇˇ$$ øè  ∞è ‡( Ω' <XCú'!‡ô–ˇΩ', øØ( ±Ø$ ∞Ø ºØ	 Ä!ÄÄ $ÄÑè$ÄÜèòÉôèÄÂÑ$,Á∆$	¯ £$ ºè  é @P é é `P é é$Äëè$Äáè$Åôè ¢Ø £ØÿÁÁ$ $ÃÁ%&	¯ !0  N @ ºè é é$Äáè8Éôè £Ø ¢ØÃÁ%&ÙÁÁ$ $	¯  $A @ ºè é @P  é é `P  é é$Äëè$ÄáèÇôè ¢Ø £ØËÁ$ $ÃÁ%&	¯  $. @ ºè é é$Äáè®Éôè £Ø ¢ØÃÁ%&,ËÁ$ $	¯  $! @ ºè  é @P!  ( é `P!  $ é$Äëè$Äáè`Éôè ¢Ø £ØHËÁ$ $ÃÁ%&	¯  $ @ ºè, é( é$Äáè¸Çôè £Ø ¢ØÃÁ%&\ËÁ$ $	¯  $ @P!  ˇˇ$, øè( ±è$ ∞è ‡0 Ω' <xAú'!‡ô–ˇΩ', øØ( ±Ø$ ∞Ø ºØ	 Ä!ÄÄ $ÄÑè$ÄÜèòÉôèÄÂÑ$,Á∆$	¯ Œ$ ºè  éN @Pˇˇ$ éK `Pˇˇ$ é$Äëè$ÄáèhÅôè ¢Ø £Ø|ËÁ$ $pË%&	¯ !0  = @ ºè é é$ÄáèÅôè £Ø ¢ØêËÁ$ $pË%&	¯  $0 @ ºè é @P  é é `P  é é$ÄáèTÉôè ¢Ø £Ø§ËÁ$ $pË%&	¯  $ @ ºè é é$ÄáèòÄôè £Ø ¢ØpË%&¿ËÁ$ $	¯  $ @ ºè  é @P!  $ é$ÄÖè$Äáè<Çôè ¢Ø £ØpË•$‹ËÁ$ $	¯  $ @P!  ˇˇ$, øè( ±è$ ∞è ‡0 Ω' <‹?ú'!‡ôÿˇΩ'$ øØ  ∞Ø ºØ	 Ä!ÄÄ $ÄÑè$ÄÜèòÉôèÄÂÑ$,Á∆$	¯ º$ ºè  é @$ÄÖè é$ÄáèòÇôè £Ø ¢Ø¯Ë•$ÈÁ$
+firmware-src/RootFS-unpacked/lib/libucapi.so:516: [Warn] No poll event stop callbacks [Warn] No poll event start callbacks    M_USB   CMD_USB_SUPT    data    M_PARENT_CONTROL    CMD_PARENT_CONTROL_GET  CMD_PARENT_CONTROL_SET  CMD_PARENT_CONTROL_GET_TYPE M_DEV   CMD_DEV_NICKNAME_GET    CMD_DEV_NICKNAME_SET    M_ENERGY    CMD_ENERGY_LED_STATUS_GET   CMD_ENERGY_LED_STATUS_SET   CMD_ENERGY_WIRE_TIMER_GET   CMD_ENERGY_WIRE_TIMER_SET   CMD_ENERGY_MODE_GET CMD_ENERGY_MODE_SET M_HAND_QOS  CMD_HAND_QOS_GET    CMD_HAND_QOS_SET    CMD_HAND_QOS_GET_GENABLE    CMD_HAND_QOS_SET_GENABLE    CMD_HAND_QOS_MAX_UPLIMIT    M_OL_HOSTS  CMD_OL_HOSTS_GET    M_RUB_NET   CMD_RUB_NET_ACCESS_USER_OPERATE CMD_RUB_NET_STATUS_GET  CMD_RUB_NET_STATUS_SET  CMD_RUB_NET_HISTORY_LIST_GET    CMD_RUB_NET_HISTORY_LIST_CLEAR  CMD_RUB_NET_BLACK_LIST_GET  CMD_RUB_NET_BLACK_LIST_FLUSH    CMD_RUB_NET_WHITE_LIST_GET  CMD_RUB_NET_WHITE_LIST_ADD  CMD_RUB_NET_WHITE_LIST_DEL  CMD_RUB_NET_WHITE_LIST_FLUSH    CMD_RUB_NET_BLACK_LIST_ADD  CMD_RUB_NET_BLACK_LIST_DEL  CMD_RUB_NET_MAC_FILTER_MODE_GET CMD_RUB_NET_MAC_FILTER_MODE_SET M_WAN   CMD_WAN_BASIC_GET   CMD_WAN_BASIC_SET   CMD_WAN_RATE_GET    CMD_WAN_DETECT_TYPE M_SAFE_CHECK    CMD_GUARD_GET   CMD_GUARD_SET   CMD_SAFE_CHECK_GET  CMD_DNS_OPTIMIZE_SET    M_WIFI  CMD_WIFI_BASIC_GET  CMD_WIFI_BASIC_SET  CMD_WIFI_GUEST_GET  CMD_WIFI_GUEST_SET  CMD_WIFI_CHANNEL_GET    CMD_WIFI_CHANNEL_SET    CMD_WIFI_POWER_GET  CMD_WIFI_POWER_SET  M_LOGIN CMD_LOGIN_LOGIN CMD_LOGIN_UPDATE_PWD    CMD_LOGIN_GET_PWD_STA   M_SYS   CMD_SYS_BASIC_INFO_GET  CMD_SYS_ADVANCE_INFO_GET    CMD_SYS_RESET   CMD_SYS_REBOOT  CMD_SYS_SET_TIME_ZONE   pthread_create() failed: %s
+firmware-src/RootFS-unpacked/lib/libucapi.so:556:           uc_api_lib_init ucloud_event_accept2    _uc_lib_accept  _con_fd_event   _net_read   _net_write  ucloud_event_read   _session_read_and_dispatch  _cmd_read   _exec_command   _cmd_pakage_build_and_send  _add_to_sending_queue   uc_api_enable_m_cloud_info  uc_api_lib_module_destroy   uc_api_lib_cmd_unregister   uc_api_lib_cmd_resp_notify  uc_api_lib_cmd_resp _uc_api_lib_cmd_send    uc_api_lib_run  _uc_api_lib_run _uc_api_lib_connect _uc_api_lib_server  _io_handler uc_lib_creat_tcp_client uc_api_lib_cmd_register _new_command    _uc_con_to_lib  SetWanCfg   MESH_WAN    MESH_WAN_SET    GetWanCfg   MESH_WAN_GET    GetWanDetect    M_MESH_WAN  CMD_MESH_WAN_DETECT GetWanStatus    CMD_MESH_WAN_STATUS GetWanDiag  CMD_MESH_WAN_DIAG   IsWanLineUp CMD_MESH_WAN_LINEUP_GET GetTrafficInfo  CMD_MESH_WAN_TRAFFIC    GetWlanCfg  M_MESH_WLAN CMD_MESH_WLAN_GET   SetWlanCfg  CMD_MESH_WLAN_SET   GetGuestCfg SetGuestCfg GetWlRoaming    CMD_MESH_WLAN_ROAMING_GET   SetWlRoaming    CMD_MESH_WLAN_ROAMING_SET   GetIsSuilt  M_MESH_BASIC    CMD_MESH_BASIC_SUILT    SetSysTimeZone  CMD_MESH_BASIC_TZ_SET   SetSysTime  CMD_MESH_BASIC_TIME_SET SetLang CMD_MESH_BASIC_LANG_SET SetGuideDone    CMD_MESH_BASIC_FAST_DONE    GetMeshID   CMD_MESH_BASIC_GET_MESH_ID  DiagLogUpload   CMD_MESH_BASIC_UPLOAD_LOG   GetNodeStatus   M_MESH_NODE CMD_MESH_NODE_BROWS GrantNodeAdd    CMD_MESH_NODE_ADD   GrantNodeDel    CMD_MESH_NODE_DEL   SetNodeLocation CMD_MESH_NODE_SET_LOCATION  SetLedStatus    CMD_MESH_NODE_SET_LED   QuerryNodeRslt  CMD_MESH_NODE_QUERY_RSLT    MultiUpgradeStart   CMD_MESH_NODE_MULTI_UPGRADE_START   ManualNodeAdd   CMD_MESH_NODE_MANUAL_ADD    GetHostList M_MESH_HOSTS    CMD_MESH_HOSTS_GET  SetHostMarks    CMD_MESH_HOSTS_MARK GetRemarklist   CMD_MESH_HOSTS_GET_REMARK   GetMacfilter    M_MESH_MACFILTER    CMD_MESH_MF_GET SetMacfilter    CMD_MESH_MF_SET GetTimeGrp  M_MESH_FAMILY   CMD_MESH_FAMILY_GET_TMGRP   SetTimeGrp  CMD_MESH_FAMILY_SET_TMGRP   GetUsrGrp   CMD_MESH_FAMILY_GET_USRGRP  SetUsrGrp   CMD_MESH_FAMILY_SET_USRGRP  GetFmlyGrp  CMD_MESH_FAMILY_GET_FMLYGRP SetFmlyGrp  CMD_MESH_FAMILY_SET_FMLYGRP GetPortFwdCfg   M_MESH_ADVANCE  CMD_MESH_ADV_PORTFWD_GET    SetPortFwdCfg   CMD_MESH_ADV_PORTFWD_SET    GetUPnPCfg  CMD_MESH_ADV_UPNP_GET   SetUPnPCfg  CMD_MESH_ADV_UPNP_SET   GetAutoMaintainCfg  CMD_MESH_ADV_MAINT_GET  SetAutoMaintainCfg  CMD_MESH_ADV_MAINT_SET  GetDhcpsCfg CMD_MESH_ADV_DHCPS_GET  SetDhcpsCfg CMD_MESH_ADV_DHCPS_SET  GetNosCfg   CMD_MESH_ADV_QOS_GET    SetNosCfg   CMD_MESH_ADV_QOS_SET    GetDevAssistantCfg  CMD_MESH_ADV_DEV_ASSISTANT_GET  SetDevAssistantCfg  CMD_MESH_ADV_DEV_ASSISTANT_SET  SupAccountShare CMD_MESH_ADV_SHAREDACC_GET  GetHighDeviceCfg    CMD_MESH_ADV_HIGH_DEVICE_GET    SetHighDeviceCfg    CMD_MESH_ADV_HIGH_DEVICE_SET    VersionNotify   M_CLOUD CMD_CLOUD_VERSION_Q UnbindConfirm   AccoutACK   GetAuthSTA  M_MESH_AUTH CMD_MESH_MNGMT_GET_STA  Login   CMD_MESH_MNGMT_LOGIN    GetBasicInfo    GetCategory M_CATEGORY  CMD_CATEGORY_MESH   CommonSuccess   M_COMMON    CMD_COMMON_SUCCESS  CommonFailure   CMD_COMMON_FAILURE  tenda_nova.c    Basic Info already registerd , drop this request(%d:%d)
+firmware-src/RootFS-unpacked/lib/libcloud.so:1891:   CMD_COMMON_ECHO M_DEV   CMD_DEV_NICKNAME_SET    CMD_DEV_NICKNAME_GET    M_LOGIN CMD_LOGIN_LOGIN CMD_LOGIN_UPDATE_PWD    CMD_LOGIN_GET_PWD_STA   M_WIFI  CMD_WIFI_BASIC_SET  CMD_WIFI_BASIC_GET  CMD_WIFI_GUEST_SET  CMD_WIFI_GUEST_GET  CMD_WIFI_CHANNEL_SET    CMD_WIFI_CHANNEL_GET    CMD_WIFI_POWER_SET  CMD_WIFI_POWER_GET  CMD_WIFI_BASIC_REPORT   M_WAN   CMD_WAN_BASIC_SET   CMD_WAN_BASIC_GET   CMD_WAN_RATE_GET    CMD_WAN_DETECT_TYPE M_ENERGY    CMD_ENERGY_LED_STATUS_GET   CMD_ENERGY_LED_STATUS_SET   CMD_ENERGY_WIRE_TIMER_GET   CMD_ENERGY_WIRE_TIMER_SET   CMD_ENERGY_MODE_GET CMD_ENERGY_MODE_SET M_RUB_NET   CMD_RUB_NET_ACCESS_USER_OPERATE CMD_RUB_NET_STATUS_GET  CMD_RUB_NET_STATUS_SET  CMD_RUB_NET_HISTORY_LIST_GET    CMD_RUB_NET_HISTORY_LIST_CLEAR  CMD_RUB_NET_BLACK_LIST_GET  CMD_RUB_NET_BLACK_LIST_FLUSH    CMD_RUB_NET_MAC_FILTER_MODE_GET CMD_RUB_NET_MAC_FILTER_MODE_SET CMD_RUB_NET_WHITE_LIST_GET  CMD_RUB_NET_WHITE_LIST_ADD  CMD_RUB_NET_WHITE_LIST_DEL  CMD_RUB_NET_WHITE_LIST_FLUSH    CMD_RUB_NET_BLACK_LIST_ADD  CMD_RUB_NET_BLACK_LIST_DEL  M_OL_HOSTS  CMD_OL_HOSTS_GET    M_USB   CMD_USB CMD_USB_SUPT    Unsupported module[%d]
+firmware-src/RootFS-unpacked/bin/ucloud:46:  CMD_MESH_WAN_STATUS CMD_MESH_WAN_DETECT CMD_MESH_WAN_SET    CMD_MESH_WAN_GET    CMD_MESH_WAN_DIAG   CMD_MESH_WAN_DNS_SET    CMD_MESH_WAN_DNS_GET    CMD_MESH_WAN_LINEUP_GET CMD_MESH_WAN_TRAFFIC    CMD_MESH_WAN_INTERNET   CMD_MESH_WLAN_GUEST_GET CMD_MESH_WLAN_GUEST_SET CMD_MESH_BASIC_ROAMING_GET  CMD_MESH_BASIC_ROAMING_SET  CMD_MESH_BASIC_SUILT    CMD_MESH_BASIC_TZ_SET   CMD_MESH_BASIC_TIME_SET CMD_MESH_BASIC_LANG_SET CMD_MESH_BASIC_FAST_DONE    CMD_MESH_BASIC_GET_MESH_ID  CMD_MESH_BASIC_UPLOAD_LOG   CMD_MESH_NODE_BROWS CMD_MESH_NODE_ADD   CMD_MESH_NODE_DEL   CMD_MESH_NODE_SET_LOCATION  CMD_MESH_NODE_SET_LED   CMD_MESH_NODE_QUERY_RSLT    CMD_MESH_NODE_MULTI_UPGRADE_START   CMD_MESH_NODE_MANUAL_ADD    CMD_MESH_HOSTS_GET  CMD_MESH_HOSTS_MARK CMD_MESH_HOSTS_GET_REMARK   CMD_MESH_MF_GET CMD_MESH_MF_SET CMD_MESH_FAMILY_GET_TMGRP   CMD_MESH_FAMILY_SET_TMGRP   CMD_MESH_FAMILY_GET_USRGRP  CMD_MESH_FAMILY_SET_USRGRP  CMD_MESH_FAMILY_GET_FMLYGRP CMD_MESH_FAMILY_SET_FMLYGRP CMD_MESH_ADV_PORTFWD_GET    CMD_MESH_ADV_PORTFWD_SET    CMD_MESH_ADV_UPNP_GET   CMD_MESH_ADV_UPNP_SET   CMD_MESH_ADV_MAINT_GET  CMD_MESH_ADV_MAINT_SET  CMD_MESH_ADV_DHCPS_GET  CMD_MESH_ADV_DHCPS_SET  CMD_MESH_ADV_QOS_GET    CMD_MESH_ADV_QOS_SET    CMD_MESH_ADV_DEV_ASSISTANT_GET  CMD_MESH_ADV_DEV_ASSISTANT_SET  CMD_MESH_ADV_SHAREDACC_GET  CMD_MESH_ADV_ELINK_GET  CMD_MESH_ADV_ELINK_SET  CMD_MESH_ADV_HIGH_DEVICE_GET    CMD_MESH_ADV_HIGH_DEVICE_SET    CMD_MESH_ADV_STATIC_ROUTER_GET  CMD_MESH_ADV_STATIC_ROUTER_SET  CMD_MESH_ADV_WEB_AUTH_GET   CMD_MESH_ADV_WEB_AUTH_SET   CMD_MESH_ADV_DAILY_LIGHT_GET    CMD_MESH_ADV_DAILY_LIGHT_SET    CMD_MESH_ADV_IPTV_GET   CMD_MESH_ADV_IPTV_SET   CMD_MESH_AUTH_GET_STA   CMD_MESH_AUTH_LOGIN CMD_MESH_AUTH_UPDATE_PWD    CMD_SYS_BASIC_INFO_GET  CMD_CATEGORY_MESH   M_CATEGORY  M_MESH_WAN  M_MESH_WLAN M_MESH_BASIC    M_MESH_NODE M_MESH_HOSTS    M_MESH_MACFILTER    M_MESH_FAMILY   M_MESH_ADVANCE  M_MESH_AUTH M_SYS           try_conn_to_conf    connect_to_inner    mesh_inner_write    mesh_inner_read user_cmds_reg   def_pb_parse    update_cmd_ack_fn   login_cmd_ack_fn                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ˇˇˇˇ    ˇˇˇˇ                                    2@         v   2@        l   (2@        c   02@         h   82@        p   @2@        c   D2@        i   L2@        H   T2@        D                   –@A –@A                         ê'@  '@ ƒ)@             ê'@  '@ `(@             ê'@  '@  (@             ê'@  '@     Ä4@ ‡@A    î4@ ‡@A    ®4@ ‡@A    º4@ ‡@A    –4@ ‡@A    ‰4@ ‡@A    ¸4@ ‡@A    5@ ‡@A    ,5@ ‡@A 	   D5@ (AA ˇˇˇˇ           º4@ ‡@A     ®4@ ‡@A    \5@ ‡@A    t5@ ‡@A    å5@ ‡@A    ®5@ ‡@A ˇˇˇˇ                                    ƒ5@ ‡@A    ‹5@ ‡@A    Ù5@ ‡@A    6@ ‡@A    $6@ ‡@A    @6@ ‡@A    \6@ ‡@A ˇˇˇˇ            x6@ ‡@A    å6@ ‡@A    †6@ ‡@A    ¥6@ ‡@A    –6@ ‡@A    Ë6@ ‡@A    7@ ‡@A    (7@ ‡@A ˇˇˇˇ            D7@ ‡@A    X7@ ‡@A    l7@ ‡@A ˇˇˇˇ            à7@ ‡@A    ò7@ ‡@A ˇˇˇˇ            ®7@ ‡@A    ƒ7@ ‡@A    ‡7@ ‡@A    ¸7@ ‡@A    8@ ‡@A    48@ ‡@A ˇˇˇˇ            P8@ ‡@A    l8@ ‡@A    à8@ ‡@A    †8@ ‡@A    ∏8@ ‡@A    –8@ ‡@A    Ë8@ ‡@A     9@ ‡@A    9@ ‡@A 	   09@ ‡@A 
+===== FILE firmware-src/RootFS-unpacked/lib/libcloud.so =====
+  67928 CMD_RUB_NET_HISTORY_LIST_GET
+  67948 CMD_RUB_NET_HISTORY_LIST_CLEAR
+  67968 CMD_RUB_NET_BLACK_LIST_GET
+  67984 CMD_RUB_NET_BLACK_LIST_FLUSH
+  679a4 CMD_RUB_NET_MAC_FILTER_MODE_GET
+  679c4 CMD_RUB_NET_MAC_FILTER_MODE_SET
+  679e4 CMD_RUB_NET_WHITE_LIST_GET
+  67a00 CMD_RUB_NET_WHITE_LIST_ADD
+  67a1c CMD_RUB_NET_WHITE_LIST_DEL
+  67a38 CMD_RUB_NET_WHITE_LIST_FLUSH
+  67a58 CMD_RUB_NET_BLACK_LIST_ADD
+  67a74 CMD_RUB_NET_BLACK_LIST_DEL
+  67a90 M_OL_HOSTS
+  67a9c CMD_OL_HOSTS_GET
+  67ab0 M_USB
+  67ab8 CMD_USB
+  67ac0 CMD_USB_SUPT
+  67ad0 Unsupported module[%d]
+  67ae8 Unsupported data...
+  67b00 CMD_CLOUD_ECOS_SN_AUTH_Q
+  67b1c CMD_CLOUD_ECOS_SN_AUTH_A
+  67b38 CMD_CLOUD_ECOS_SN_AUTH_K
+  67b54 CMD_CLOUD_ECOS_SN_AUTH_L
+  67b70 CMD_CLOUD_ECOS_ENCRYPT_Q
+  67b8c CMD_CLOUD_ECOS_ENCRYPT_A
+  67ba8 CMD_CLOUD_ECOS_ENCRYPT_K
+--
+  67cc0 CMD_CLOUD_BANDWIDTH_TEST_E
+  67e24 _cmd_reg_ack
+  67e34 _cmd_reg_exec
+  67e44 _cmd_reg_exec_real
+  67e58 _m_common_cmd_reg
+  67e6c _m_dev_cmd_reg
+  67e7c _m_cloud_cmd_reg
+  67e90 _m_login_cmd_reg
+  67ea4 _m_wifi_cmd_reg
+  67eb4 _m_wan_cmd_reg
+  67ec4 _m_energy_cmd_reg
+  67ed8 _m_rub_net_cmd_reg
+  67eec _m_ol_hosts_cmd_reg
+  67f00 _m_hand_qos_cmd_reg
+  67f14 _m_parent_control_cmd_reg
+  67f30 _m_cloud_info_cmd_reg
+  67f48 _m_safe_check_cmd_reg
+  67f60 _m_usb_cmd_reg
+  67f70 _cmd_reg_check
+  67f80 cmd_dispatcher.c
+  67f94 DYN_ARR_BASE(&(modules[tmod].command)) == sizeof(command_t *)
+  67fd4 DYN_ARR_BASE(&(modules[module].command)) == sizeof(command_t *)
+  68014 No command module(%d) cmd(%d) now, do nothing.
+  68044 Unknown handler type %d.
+  68060 Successfully initialized.
+    94: 0005d4f4   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack_to_buffer
+   100: 0005d738   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack_to_buffer
+   198: 0005d4c4    48 FUNC    GLOBAL DEFAULT   10 ol_host_dev__unpack
+   240: 0005da64   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack
+   254: 0005d7ac   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack_to_buffer
+   341: 0005dda4   100 FUNC    GLOBAL DEFAULT   10 ol_host_dev__get_packed_size
+   362: 0005d2bc   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__free_unpacked
+   369: 0005d330   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__free_unpacked
+   412: 0005dd40   100 FUNC    GLOBAL DEFAULT   10 ol_host_info__get_packed_size
+   467: 0005d078   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__free_unpacked
+   506: 0005d3a4    48 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__unpack
+   549: 0005d494    48 FUNC    GLOBAL DEFAULT   10 ol_host_info__unpack
+   590: 0005dad8   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack
+   738: 0005db4c   100 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__get_packed_size
+   754: 0005cef0    56 FUNC    GLOBAL DEFAULT   10 ol_host_dev__init
+   768: 0005c800  1772 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_json
+   932: 0008a200    60 OBJECT  GLOBAL DEFAULT   18 ol_host_dev__descriptor
+  1076: 0005d820   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack
+  1096: 0008a23c    60 OBJECT  GLOBAL DEFAULT   18 ol_host_info__descriptor
+  1196: 0005c1a0  1632 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_pbuf
+  1254: 0008a368    60 OBJECT  GLOBAL DEFAULT   18 ol_host_common_ack__descriptor
+  1486: 0005d040    56 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__init
+  1512: 0005cf28    56 FUNC    GLOBAL DEFAULT   10 ol_host_info__init
+===== FILE firmware-src/RootFS-unpacked/lib/libucapi.so =====
+   251e uc_api_lib_led_get_hdl_reg
+   2539 uc_api_lib_led_set_hdl_reg
+   2554 uc_api_lib_wl_timer_get_hdl_reg
+   2574 uc_api_lib_wl_timer_set_hdl_reg
+   2594 uc_api_lib_energy_mode_get_hdl_reg
+   25b7 uc_api_lib_energy_mode_set_hdl_reg
+   25da uc_api_enable_m_hand_qos
+   25f3 uc_api_lib_hand_qos_get_hdl_reg
+   2613 uc_api_lib_hand_qos_set_hdl_reg
+   2633 uc_api_lib_hand_qos_get_genable_hdl_reg
+   265b uc_api_lib_hand_qos_set_genable_hdl_reg
+   2683 uc_api_lib_hand_qos_get_uplimit_hdl_reg
+   26ab uc_api_enable_m_ol_host
+   26c3 uc_api_lib_ol_hosts_get_hdl_reg
+   26e3 uc_api_enable_m_rub_net
+   26fb uc_api_lib_access_user_hdl_reg
+   271a uc_api_lib_rub_net_get_hdl_reg
+   2739 uc_api_lib_rub_net_set_hdl_reg
+   2758 uc_api_lib_history_list_get_hdl_reg
+   277c uc_api_lib_history_list_clear_hdl_reg
+   27a2 uc_api_lib_black_list_get_hdl_reg
+   27c4 uc_api_lib_black_list_flush_hdl_reg
+   27e8 uc_api_lib_whitelist_get_hdl_reg
+   2809 uc_api_lib_whitelist_add_hdl_reg
+   282a uc_api_lib_whitelist_del_hdl_reg
+--
+  1e7d8 CMD_ENERGY_LED_STATUS_GET
+  1e7f4 CMD_ENERGY_LED_STATUS_SET
+  1e810 CMD_ENERGY_WIRE_TIMER_GET
+  1e82c CMD_ENERGY_WIRE_TIMER_SET
+  1e848 CMD_ENERGY_MODE_GET
+  1e85c CMD_ENERGY_MODE_SET
+  1e870 M_HAND_QOS
+  1e87c CMD_HAND_QOS_GET
+  1e890 CMD_HAND_QOS_SET
+  1e8a4 CMD_HAND_QOS_GET_GENABLE
+  1e8c0 CMD_HAND_QOS_SET_GENABLE
+  1e8dc CMD_HAND_QOS_MAX_UPLIMIT
+  1e8f8 M_OL_HOSTS
+  1e904 CMD_OL_HOSTS_GET
+  1e918 M_RUB_NET
+  1e924 CMD_RUB_NET_ACCESS_USER_OPERATE
+  1e944 CMD_RUB_NET_STATUS_GET
+  1e95c CMD_RUB_NET_STATUS_SET
+  1e974 CMD_RUB_NET_HISTORY_LIST_GET
+  1e994 CMD_RUB_NET_HISTORY_LIST_CLEAR
+  1e9b4 CMD_RUB_NET_BLACK_LIST_GET
+  1e9d0 CMD_RUB_NET_BLACK_LIST_FLUSH
+  1e9f0 CMD_RUB_NET_WHITE_LIST_GET
+  1ea0c CMD_RUB_NET_WHITE_LIST_ADD
+  1ea28 CMD_RUB_NET_WHITE_LIST_DEL
+  1ea44 CMD_RUB_NET_WHITE_LIST_FLUSH
+--
+  1fd8c CMD_MESH_FAMILY_GET_TMGRP
+  1fda8 SetTimeGrp
+  1fdb4 CMD_MESH_FAMILY_SET_TMGRP
+  1fdd0 GetUsrGrp
+  1fddc CMD_MESH_FAMILY_GET_USRGRP
+  1fdf8 SetUsrGrp
+  1fe04 CMD_MESH_FAMILY_SET_USRGRP
+  1fe20 GetFmlyGrp
+  1fe2c CMD_MESH_FAMILY_GET_FMLYGRP
+  1fe48 SetFmlyGrp
+  1fe54 CMD_MESH_FAMILY_SET_FMLYGRP
+  1fe70 GetPortFwdCfg
+  1fe80 M_MESH_ADVANCE
+  1fe90 CMD_MESH_ADV_PORTFWD_GET
+  1feac SetPortFwdCfg
+  1febc CMD_MESH_ADV_PORTFWD_SET
+  1fed8 GetUPnPCfg
+  1fee4 CMD_MESH_ADV_UPNP_GET
+  1fefc SetUPnPCfg
+  1ff08 CMD_MESH_ADV_UPNP_SET
+  1ff20 GetAutoMaintainCfg
+  1ff34 CMD_MESH_ADV_MAINT_GET
+  1ff4c SetAutoMaintainCfg
+  1ff60 CMD_MESH_ADV_MAINT_SET
+  1ff78 GetDhcpsCfg
+--
+  20070 SupAccountShare
+  20080 CMD_MESH_ADV_SHAREDACC_GET
+  2009c GetHighDeviceCfg
+  200b0 CMD_MESH_ADV_HIGH_DEVICE_GET
+  200d0 SetHighDeviceCfg
+  200e4 CMD_MESH_ADV_HIGH_DEVICE_SET
+  20104 VersionNotify
+  20114 M_CLOUD
+  2011c CMD_CLOUD_VERSION_Q
+  20130 UnbindConfirm
+  20140 AccoutACK
+  2014c GetAuthSTA
+  20158 M_MESH_AUTH
+  20164 CMD_MESH_MNGMT_GET_STA
+  2017c Login
+  20184 CMD_MESH_MNGMT_LOGIN
+  2019c GetBasicInfo
+  201ac GetCategory
+  201b8 M_CATEGORY
+  201c4 CMD_CATEGORY_MESH
+  201d8 CommonSuccess
+  201e8 M_COMMON
+  201f4 CMD_COMMON_SUCCESS
+  20208 CommonFailure
+  20218 CMD_COMMON_FAILURE
+--
+  2131c malloc is fail
+  21330 _m_login_reg
+  21340 _get_pwd_sta_hdl_cb
+  21360 uc_lib_m_parent_control.c
+  2137c m_pc && m_pc->fn
+  21390 _m_parent_control_reg
+  213b0 uc_lib_m_hand_qos.c
+  213c4 m_hand_qos && m_hand_qos->fn
+  213e4 ---LEN[%d--%d]--count[%d]-info[%p]-
+  21424 _m_hand_qos_reg
+  21434 _hand_qos_get_hdl_cb
+  21450 uc_lib_m_ol_host.c
+  21464 m_ol_hosts && m_ol_hosts->fn
+  21490 _m_ol_hosts_reg
+  214a0 _ol_hosts_get_hdl_cb
+  214c0 uc_lib_m_safe_check.c
+  214d8 m_safe_check && m_safe_check->fn
+  21500 _m_safe_check_reg
+  21520 uc_lib_m_cloud_info.c
+  21538 m_cloud_info && fn
+  2157c _m_cloud_info_reg
+  21590 uc_lib_m_dev.c
+  215a0 m_dev_nickname && m_dev_nickname->fn
+  215c8 ----ret[%d]---
+  215d8 dev info is error
+  215ec out of memory
+     5: 00005d58   412 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_hand_qos
+    20: 00005914   108 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_usb
+    22: 00005ef4   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_ol_host
+    38: 00006664   608 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_wifi
+    43: 000081e8   352 FUNC    GLOBAL DEFAULT   10 uc_api_enable_upgrade
+    45: 00006508   348 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_safe_check
+    49: 00005aa0   216 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_dev_nickname
+    83: 000068c4   288 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_login
+    88: 00008150   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_speed_test
+    92: 00007c7c  1236 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_cloud_info
+    97: 000063ac   348 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_wan
+   101: 00005f8c  1056 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_rub_net
+   106: 00005980   288 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_parent_control
+   108: 000069e4   416 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_sys
+   118: 00005b78   480 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_energy
+   269: 0001af3c   260 FUNC    GLOBAL DEFAULT   10 uc_api_lib_ol_hosts_get_hdl_reg
+===== FILE firmware-src/RootFS-unpacked/bin/ucloud =====
+   3b14 CMD_MESH_AUTH_LOGIN
+   3b28 CMD_MESH_AUTH_UPDATE_PWD
+   3b44 CMD_SYS_BASIC_INFO_GET
+   3b5c CMD_CATEGORY_MESH
+   3b70 M_CATEGORY
+   3b7c M_MESH_WAN
+   3b88 M_MESH_WLAN
+   3b94 M_MESH_BASIC
+   3ba4 M_MESH_NODE
+   3bb0 M_MESH_HOSTS
+   3bc0 M_MESH_MACFILTER
+   3bd4 M_MESH_FAMILY
+   3be4 M_MESH_ADVANCE
+   3bf4 M_MESH_AUTH
+   3c00 M_SYS
+   3c10 try_conn_to_conf
+   3c24 connect_to_inner
+   3c38 mesh_inner_write
+   3c4c mesh_inner_read
+   3c5c user_cmds_reg
+   3c6c def_pb_parse
+   3c7c update_cmd_ack_fn
+   3c90 login_cmd_ack_fn
+   4774 GCC: (GNU) 3.3.2
+   4785 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+   4ae1 .shstrtab
+===== all uc_api_enable module functions =====
+     5: 00005d58   412 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_hand_qos
+    20: 00005914   108 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_usb
+    22: 00005ef4   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_ol_host
+    38: 00006664   608 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_wifi
+    45: 00006508   348 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_safe_check
+    49: 00005aa0   216 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_dev_nickname
+    83: 000068c4   288 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_login
+    92: 00007c7c  1236 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_cloud_info
+    97: 000063ac   348 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_wan
+   101: 00005f8c  1056 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_rub_net
+   106: 00005980   288 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_parent_control
+   108: 000069e4   416 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_sys
+   118: 00005b78   480 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_energy
+===== DISASM uc_api_enable_m_cloud_info =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00007c7c <uc_api_enable_m_cloud_info@@Base>:
+    7c7c:	3c1c0003 	lui	gp,0x3
+    7c80:	279c2254 	addiu	gp,gp,8788
+    7c84:	0399e021 	addu	gp,gp,t9
+    7c88:	27bdffd0 	addiu	sp,sp,-48
+    7c8c:	afbf002c 	sw	ra,44(sp)
+    7c90:	afb00028 	sw	s0,40(sp)
+    7c94:	afbc0020 	sw	gp,32(sp)
+    7c98:	14800009 	bnez	a0,7cc0 <uc_api_enable_m_cloud_info@@Base+0x44>
+    7c9c:	00808021 	move	s0,a0
+    7ca0:	8f848024 	lw	a0,-32732(gp)
+    7ca4:	8f868024 	lw	a2,-32732(gp)
+    7ca8:	8f998398 	lw	t9,-31848(gp)
+    7cac:	2484e580 	addiu	a0,a0,-6784
+    7cb0:	24c6e72c 	addiu	a2,a2,-6356
+    7cb4:	0320f809 	jalr	t9
+    7cb8:	240505f3 	li	a1,1523
+    7cbc:	8fbc0020 	lw	gp,32(sp)
+    7cc0:	8e020000 	lw	v0,0(s0)
+    7cc4:	10400016 	beqz	v0,7d20 <uc_api_enable_m_cloud_info@@Base+0xa4>
+    7cc8:	8f858024 	lw	a1,-32732(gp)
+    7ccc:	8e030004 	lw	v1,4(s0)
+    7cd0:	8f878024 	lw	a3,-32732(gp)
+    7cd4:	8f99819c 	lw	t9,-32356(gp)
+    7cd8:	afa30014 	sw	v1,20(sp)
+    7cdc:	afa20010 	sw	v0,16(sp)
+    7ce0:	24a5f018 	addiu	a1,a1,-4072
+    7ce4:	24e7f028 	addiu	a3,a3,-4056
+    7ce8:	24040008 	li	a0,8
+    7cec:	0320f809 	jalr	t9
+    7cf0:	24060006 	li	a2,6
+    7cf4:	2403ffff 	li	v1,-1
+    7cf8:	14430009 	bne	v0,v1,7d20 <uc_api_enable_m_cloud_info@@Base+0xa4>
+    7cfc:	8fbc0020 	lw	gp,32(sp)
+    7d00:	8f8283ac 	lw	v0,-31828(gp)
+    7d04:	8f9981c4 	lw	t9,-32316(gp)
+    7d08:	8c440000 	lw	a0,0(v0)
+    7d0c:	240205f7 	li	v0,1527
+    7d10:	afa20010 	sw	v0,16(sp)
+    7d14:	8f828024 	lw	v0,-32732(gp)
+    7d18:	100000e7 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    7d1c:	2442f048 	addiu	v0,v0,-4024
+    7d20:	8e020008 	lw	v0,8(s0)
+    7d24:	10400013 	beqz	v0,7d74 <uc_api_enable_m_cloud_info@@Base+0xf8>
+    7d28:	8f858024 	lw	a1,-32732(gp)
+    7d2c:	8e03000c 	lw	v1,12(s0)
+    7d30:	8f878024 	lw	a3,-32732(gp)
+    7d34:	8f998174 	lw	t9,-32396(gp)
+    7d38:	afa30014 	sw	v1,20(sp)
+    7d3c:	afa20010 	sw	v0,16(sp)
+    7d40:	24a5f018 	addiu	a1,a1,-4072
+    7d44:	24e7f078 	addiu	a3,a3,-3976
+    7d48:	24040008 	li	a0,8
+    7d4c:	0320f809 	jalr	t9
+    7d50:	24060007 	li	a2,7
+    7d54:	2403ffff 	li	v1,-1
+    7d58:	14430006 	bne	v0,v1,7d74 <uc_api_enable_m_cloud_info@@Base+0xf8>
+    7d5c:	8fbc0020 	lw	gp,32(sp)
+    7d60:	8f8283ac 	lw	v0,-31828(gp)
+    7d64:	8f9981c4 	lw	t9,-32316(gp)
+    7d68:	8c440000 	lw	a0,0(v0)
+    7d6c:	100000cf 	b	80ac <uc_api_enable_m_cloud_info@@Base+0x430>
+    7d70:	240205fd 	li	v0,1533
+    7d74:	8e020020 	lw	v0,32(s0)
+    7d78:	10400016 	beqz	v0,7dd4 <uc_api_enable_m_cloud_info@@Base+0x158>
+    7d7c:	8f858024 	lw	a1,-32732(gp)
+    7d80:	8e030024 	lw	v1,36(s0)
+    7d84:	8f878024 	lw	a3,-32732(gp)
+    7d88:	8f998084 	lw	t9,-32636(gp)
+    7d8c:	afa30014 	sw	v1,20(sp)
+    7d90:	afa20010 	sw	v0,16(sp)
+    7d94:	24a5f018 	addiu	a1,a1,-4072
+    7d98:	24e7f0c8 	addiu	a3,a3,-3896
+    7d9c:	24040008 	li	a0,8
+    7da0:	0320f809 	jalr	t9
+    7da4:	24060010 	li	a2,16
+    7da8:	2403ffff 	li	v1,-1
+    7dac:	14430009 	bne	v0,v1,7dd4 <uc_api_enable_m_cloud_info@@Base+0x158>
+    7db0:	8fbc0020 	lw	gp,32(sp)
+    7db4:	8f8283ac 	lw	v0,-31828(gp)
+    7db8:	8f9981c4 	lw	t9,-32316(gp)
+    7dbc:	8c440000 	lw	a0,0(v0)
+    7dc0:	24020604 	li	v0,1540
+    7dc4:	afa20010 	sw	v0,16(sp)
+    7dc8:	8f828024 	lw	v0,-32732(gp)
+    7dcc:	100000ba 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    7dd0:	2442f0e8 	addiu	v0,v0,-3864
+    7dd4:	8e020010 	lw	v0,16(s0)
+    7dd8:	10400016 	beqz	v0,7e34 <uc_api_enable_m_cloud_info@@Base+0x1b8>
+    7ddc:	8f858024 	lw	a1,-32732(gp)
+    7de0:	8e030014 	lw	v1,20(s0)
+    7de4:	8f878024 	lw	a3,-32732(gp)
+    7de8:	8f99814c 	lw	t9,-32436(gp)
+    7dec:	afa30014 	sw	v1,20(sp)
+    7df0:	afa20010 	sw	v0,16(sp)
+    7df4:	24a5f018 	addiu	a1,a1,-4072
+    7df8:	24e7f110 	addiu	a3,a3,-3824
+    7dfc:	24040008 	li	a0,8
+    7e00:	0320f809 	jalr	t9
+    7e04:	24060009 	li	a2,9
+    7e08:	2403ffff 	li	v1,-1
+    7e0c:	14430009 	bne	v0,v1,7e34 <uc_api_enable_m_cloud_info@@Base+0x1b8>
+    7e10:	8fbc0020 	lw	gp,32(sp)
+    7e14:	8f8283ac 	lw	v0,-31828(gp)
+    7e18:	8f9981c4 	lw	t9,-32316(gp)
+    7e1c:	8c440000 	lw	a0,0(v0)
+    7e20:	2402060a 	li	v0,1546
+    7e24:	afa20010 	sw	v0,16(sp)
+    7e28:	8f828024 	lw	v0,-32732(gp)
+    7e2c:	100000a2 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    7e30:	2442f130 	addiu	v0,v0,-3792
+    7e34:	8e020018 	lw	v0,24(s0)
+    7e38:	10400016 	beqz	v0,7e94 <uc_api_enable_m_cloud_info@@Base+0x218>
+    7e3c:	8f858024 	lw	a1,-32732(gp)
+    7e40:	8e03001c 	lw	v1,28(s0)
+    7e44:	8f878024 	lw	a3,-32732(gp)
+    7e48:	8f99811c 	lw	t9,-32484(gp)
+    7e4c:	afa30014 	sw	v1,20(sp)
+    7e50:	afa20010 	sw	v0,16(sp)
+    7e54:	24a5f018 	addiu	a1,a1,-4072
+    7e58:	24e7f160 	addiu	a3,a3,-3744
+    7e5c:	24040008 	li	a0,8
+    7e60:	0320f809 	jalr	t9
+    7e64:	2406000e 	li	a2,14
+    7e68:	2403ffff 	li	v1,-1
+    7e6c:	14430009 	bne	v0,v1,7e94 <uc_api_enable_m_cloud_info@@Base+0x218>
+    7e70:	8fbc0020 	lw	gp,32(sp)
+    7e74:	8f8283ac 	lw	v0,-31828(gp)
+    7e78:	8f9981c4 	lw	t9,-32316(gp)
+    7e7c:	8c440000 	lw	a0,0(v0)
+    7e80:	24020610 	li	v0,1552
+    7e84:	afa20010 	sw	v0,16(sp)
+    7e88:	8f828024 	lw	v0,-32732(gp)
+    7e8c:	1000008a 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    7e90:	2442f17c 	addiu	v0,v0,-3716
+    7e94:	8e020028 	lw	v0,40(s0)
+    7e98:	10400013 	beqz	v0,7ee8 <uc_api_enable_m_cloud_info@@Base+0x26c>
+    7e9c:	8f858024 	lw	a1,-32732(gp)
+    7ea0:	8e03002c 	lw	v1,44(s0)
+    7ea4:	8f878024 	lw	a3,-32732(gp)
+    7ea8:	8f998270 	lw	t9,-32144(gp)
+    7eac:	afa30014 	sw	v1,20(sp)
+    7eb0:	afa20010 	sw	v0,16(sp)
+    7eb4:	24a5f018 	addiu	a1,a1,-4072
+    7eb8:	24e7f1a8 	addiu	a3,a3,-3672
+    7ebc:	24040008 	li	a0,8
+    7ec0:	0320f809 	jalr	t9
+    7ec4:	24060014 	li	a2,20
+    7ec8:	2403ffff 	li	v1,-1
+    7ecc:	14430006 	bne	v0,v1,7ee8 <uc_api_enable_m_cloud_info@@Base+0x26c>
+    7ed0:	8fbc0020 	lw	gp,32(sp)
+    7ed4:	8f8283ac 	lw	v0,-31828(gp)
+    7ed8:	8f9981c4 	lw	t9,-32316(gp)
+    7edc:	8c440000 	lw	a0,0(v0)
+    7ee0:	10000072 	b	80ac <uc_api_enable_m_cloud_info@@Base+0x430>
+    7ee4:	24020617 	li	v0,1559
+    7ee8:	8e020030 	lw	v0,48(s0)
+    7eec:	10400013 	beqz	v0,7f3c <uc_api_enable_m_cloud_info@@Base+0x2c0>
+    7ef0:	8f858024 	lw	a1,-32732(gp)
+    7ef4:	8e030034 	lw	v1,52(s0)
+    7ef8:	8f878024 	lw	a3,-32732(gp)
+    7efc:	8f9982dc 	lw	t9,-32036(gp)
+    7f00:	afa30014 	sw	v1,20(sp)
+    7f04:	afa20010 	sw	v0,16(sp)
+    7f08:	24a5f018 	addiu	a1,a1,-4072
+    7f0c:	24e7f1d0 	addiu	a3,a3,-3632
+    7f10:	24040008 	li	a0,8
+    7f14:	0320f809 	jalr	t9
+    7f18:	24060012 	li	a2,18
+    7f1c:	2403ffff 	li	v1,-1
+    7f20:	14430006 	bne	v0,v1,7f3c <uc_api_enable_m_cloud_info@@Base+0x2c0>
+    7f24:	8fbc0020 	lw	gp,32(sp)
+    7f28:	8f8283ac 	lw	v0,-31828(gp)
+    7f2c:	8f9981c4 	lw	t9,-32316(gp)
+    7f30:	8c440000 	lw	a0,0(v0)
+    7f34:	1000005d 	b	80ac <uc_api_enable_m_cloud_info@@Base+0x430>
+    7f38:	2402061d 	li	v0,1565
+    7f3c:	8e020038 	lw	v0,56(s0)
+    7f40:	10400016 	beqz	v0,7f9c <uc_api_enable_m_cloud_info@@Base+0x320>
+    7f44:	8f858024 	lw	a1,-32732(gp)
+    7f48:	8e03003c 	lw	v1,60(s0)
+    7f4c:	8f878024 	lw	a3,-32732(gp)
+    7f50:	8f99812c 	lw	t9,-32468(gp)
+    7f54:	afa30014 	sw	v1,20(sp)
+    7f58:	afa20010 	sw	v0,16(sp)
+    7f5c:	24a5f018 	addiu	a1,a1,-4072
+    7f60:	24e7f1f8 	addiu	a3,a3,-3592
+    7f64:	24040008 	li	a0,8
+    7f68:	0320f809 	jalr	t9
+    7f6c:	24060015 	li	a2,21
+    7f70:	2403ffff 	li	v1,-1
+    7f74:	14430009 	bne	v0,v1,7f9c <uc_api_enable_m_cloud_info@@Base+0x320>
+    7f78:	8fbc0020 	lw	gp,32(sp)
+    7f7c:	8f8283ac 	lw	v0,-31828(gp)
+    7f80:	8f9981c4 	lw	t9,-32316(gp)
+    7f84:	8c440000 	lw	a0,0(v0)
+    7f88:	24020624 	li	v0,1572
+    7f8c:	afa20010 	sw	v0,16(sp)
+    7f90:	8f828024 	lw	v0,-32732(gp)
+    7f94:	10000048 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    7f98:	2442f218 	addiu	v0,v0,-3560
+    7f9c:	8e020040 	lw	v0,64(s0)
+    7fa0:	10400013 	beqz	v0,7ff0 <uc_api_enable_m_cloud_info@@Base+0x374>
+    7fa4:	8f858024 	lw	a1,-32732(gp)
+    7fa8:	8e030044 	lw	v1,68(s0)
+    7fac:	8f878024 	lw	a3,-32732(gp)
+    7fb0:	8f9981b0 	lw	t9,-32336(gp)
+    7fb4:	afa30014 	sw	v1,20(sp)
+    7fb8:	afa20010 	sw	v0,16(sp)
+    7fbc:	24a5f018 	addiu	a1,a1,-4072
+    7fc0:	24e7f244 	addiu	a3,a3,-3516
+    7fc4:	24040008 	li	a0,8
+    7fc8:	0320f809 	jalr	t9
+    7fcc:	24060017 	li	a2,23
+    7fd0:	2403ffff 	li	v1,-1
+    7fd4:	14430006 	bne	v0,v1,7ff0 <uc_api_enable_m_cloud_info@@Base+0x374>
+    7fd8:	8fbc0020 	lw	gp,32(sp)
+    7fdc:	8f8283ac 	lw	v0,-31828(gp)
+    7fe0:	8f9981c4 	lw	t9,-32316(gp)
+    7fe4:	8c440000 	lw	a0,0(v0)
+    7fe8:	10000050 	b	812c <uc_api_enable_m_cloud_info@@Base+0x4b0>
+    7fec:	2402062b 	li	v0,1579
+    7ff0:	8e020048 	lw	v0,72(s0)
+    7ff4:	10400019 	beqz	v0,805c <uc_api_enable_m_cloud_info@@Base+0x3e0>
+    7ff8:	8f858024 	lw	a1,-32732(gp)
+    7ffc:	8e03004c 	lw	v1,76(s0)
+    8000:	8f878024 	lw	a3,-32732(gp)
+    8004:	8f998348 	lw	t9,-31928(gp)
+    8008:	24040001 	li	a0,1
+    800c:	afa40010 	sw	a0,16(sp)
+    8010:	afa3001c 	sw	v1,28(sp)
+    8014:	afa20018 	sw	v0,24(sp)
+    8018:	afa00014 	sw	zero,20(sp)
+    801c:	24a5f018 	addiu	a1,a1,-4072
+    8020:	24e7f298 	addiu	a3,a3,-3432
+    8024:	24040008 	li	a0,8
+    8028:	0320f809 	jalr	t9
+    802c:	24060019 	li	a2,25
+    8030:	2403ffff 	li	v1,-1
+    8034:	14430009 	bne	v0,v1,805c <uc_api_enable_m_cloud_info@@Base+0x3e0>
+    8038:	8fbc0020 	lw	gp,32(sp)
+    803c:	8f8283ac 	lw	v0,-31828(gp)
+    8040:	8f9981c4 	lw	t9,-32316(gp)
+    8044:	8c440000 	lw	a0,0(v0)
+    8048:	24020631 	li	v0,1585
+    804c:	afa20010 	sw	v0,16(sp)
+    8050:	8f828024 	lw	v0,-32732(gp)
+    8054:	10000018 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    8058:	2442f2b4 	addiu	v0,v0,-3404
+    805c:	8e020050 	lw	v0,80(s0)
+    8060:	1040001e 	beqz	v0,80dc <uc_api_enable_m_cloud_info@@Base+0x460>
+    8064:	8f858024 	lw	a1,-32732(gp)
+    8068:	8e030054 	lw	v1,84(s0)
+    806c:	8f878024 	lw	a3,-32732(gp)
+    8070:	8f99833c 	lw	t9,-31940(gp)
+    8074:	afa30014 	sw	v1,20(sp)
+    8078:	afa20010 	sw	v0,16(sp)
+    807c:	24a5f018 	addiu	a1,a1,-4072
+    8080:	24e7f2e0 	addiu	a3,a3,-3360
+    8084:	24040008 	li	a0,8
+    8088:	0320f809 	jalr	t9
+    808c:	2406001c 	li	a2,28
+    8090:	2403ffff 	li	v1,-1
+    8094:	14430011 	bne	v0,v1,80dc <uc_api_enable_m_cloud_info@@Base+0x460>
+    8098:	8fbc0020 	lw	gp,32(sp)
+    809c:	8f8283ac 	lw	v0,-31828(gp)
+    80a0:	8f9981c4 	lw	t9,-32316(gp)
+    80a4:	8c440000 	lw	a0,0(v0)
+    80a8:	24020638 	li	v0,1592
+    80ac:	afa20010 	sw	v0,16(sp)
+    80b0:	8f828024 	lw	v0,-32732(gp)
+    80b4:	2442f098 	addiu	v0,v0,-3944
+    80b8:	8f868024 	lw	a2,-32732(gp)
+    80bc:	8f878024 	lw	a3,-32732(gp)
+    80c0:	afa20014 	sw	v0,20(sp)
+    80c4:	24c6f720 	addiu	a2,a2,-2272
+    80c8:	24e7e580 	addiu	a3,a3,-6784
+    80cc:	0320f809 	jalr	t9
+    80d0:	24050002 	li	a1,2
+    80d4:	1000001a 	b	8140 <uc_api_enable_m_cloud_info@@Base+0x4c4>
+    80d8:	2402ffff 	li	v0,-1
+    80dc:	8e020058 	lw	v0,88(s0)
+    80e0:	10400016 	beqz	v0,813c <uc_api_enable_m_cloud_info@@Base+0x4c0>
+    80e4:	8f858024 	lw	a1,-32732(gp)
+    80e8:	8e03005c 	lw	v1,92(s0)
+    80ec:	8f878024 	lw	a3,-32732(gp)
+    80f0:	8f9981bc 	lw	t9,-32324(gp)
+    80f4:	afa30014 	sw	v1,20(sp)
+    80f8:	afa20010 	sw	v0,16(sp)
+    80fc:	24a5f018 	addiu	a1,a1,-4072
+    8100:	24e7f30c 	addiu	a3,a3,-3316
+    8104:	24040008 	li	a0,8
+    8108:	0320f809 	jalr	t9
+    810c:	2406001e 	li	a2,30
+    8110:	2403ffff 	li	v1,-1
+    8114:	14430009 	bne	v0,v1,813c <uc_api_enable_m_cloud_info@@Base+0x4c0>
+    8118:	8fbc0020 	lw	gp,32(sp)
+    811c:	8f8283ac 	lw	v0,-31828(gp)
+    8120:	8f9981c4 	lw	t9,-32316(gp)
+    8124:	8c440000 	lw	a0,0(v0)
+    8128:	2402063f 	li	v0,1599
+    812c:	afa20010 	sw	v0,16(sp)
+    8130:	8f828024 	lw	v0,-32732(gp)
+    8134:	1000ffe0 	b	80b8 <uc_api_enable_m_cloud_info@@Base+0x43c>
+    8138:	2442f268 	addiu	v0,v0,-3480
+    813c:	00001021 	move	v0,zero
+    8140:	8fbf002c 	lw	ra,44(sp)
+    8144:	8fb00028 	lw	s0,40(sp)
+    8148:	03e00008 	jr	ra
+    814c:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_dev_nickname =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005aa0 <uc_api_enable_m_dev_nickname@@Base>:
+    5aa0:	3c1c0003 	lui	gp,0x3
+    5aa4:	279c4430 	addiu	gp,gp,17456
+    5aa8:	0399e021 	addu	gp,gp,t9
+    5aac:	27bdffd8 	addiu	sp,sp,-40
+    5ab0:	afbf0024 	sw	ra,36(sp)
+    5ab4:	afb00020 	sw	s0,32(sp)
+    5ab8:	afbc0018 	sw	gp,24(sp)
+    5abc:	14800009 	bnez	a0,5ae4 <uc_api_enable_m_dev_nickname@@Base+0x44>
+    5ac0:	00808021 	move	s0,a0
+    5ac4:	8f848024 	lw	a0,-32732(gp)
+    5ac8:	8f868024 	lw	a2,-32732(gp)
+    5acc:	8f998398 	lw	t9,-31848(gp)
+    5ad0:	2484e580 	addiu	a0,a0,-6784
+    5ad4:	24c6e72c 	addiu	a2,a2,-6356
+    5ad8:	0320f809 	jalr	t9
+    5adc:	240506c6 	li	a1,1734
+    5ae0:	8fbc0018 	lw	gp,24(sp)
+    5ae4:	8e020000 	lw	v0,0(s0)
+    5ae8:	5040000f 	beqzl	v0,5b28 <uc_api_enable_m_dev_nickname@@Base+0x88>
+    5aec:	8e020008 	lw	v0,8(s0)
+    5af0:	8e030004 	lw	v1,4(s0)
+    5af4:	8f858024 	lw	a1,-32732(gp)
+    5af8:	8f878024 	lw	a3,-32732(gp)
+    5afc:	8f9980c0 	lw	t9,-32576(gp)
+    5b00:	afa20010 	sw	v0,16(sp)
+    5b04:	afa30014 	sw	v1,20(sp)
+    5b08:	24a5e794 	addiu	a1,a1,-6252
+    5b0c:	24e7e79c 	addiu	a3,a3,-6244
+    5b10:	24040002 	li	a0,2
+    5b14:	0320f809 	jalr	t9
+    5b18:	24060001 	li	a2,1
+    5b1c:	14400011 	bnez	v0,5b64 <uc_api_enable_m_dev_nickname@@Base+0xc4>
+    5b20:	8fbc0018 	lw	gp,24(sp)
+    5b24:	8e020008 	lw	v0,8(s0)
+    5b28:	5040000f 	beqzl	v0,5b68 <uc_api_enable_m_dev_nickname@@Base+0xc8>
+    5b2c:	00001021 	move	v0,zero
+    5b30:	8e03000c 	lw	v1,12(s0)
+    5b34:	8f858024 	lw	a1,-32732(gp)
+    5b38:	8f878024 	lw	a3,-32732(gp)
+    5b3c:	8f9983c4 	lw	t9,-31804(gp)
+    5b40:	afa20010 	sw	v0,16(sp)
+    5b44:	afa30014 	sw	v1,20(sp)
+    5b48:	24a5e794 	addiu	a1,a1,-6252
+    5b4c:	24e7e7b4 	addiu	a3,a3,-6220
+    5b50:	24040002 	li	a0,2
+    5b54:	0320f809 	jalr	t9
+    5b58:	00003021 	move	a2,zero
+    5b5c:	50400002 	beqzl	v0,5b68 <uc_api_enable_m_dev_nickname@@Base+0xc8>
+    5b60:	00001021 	move	v0,zero
+    5b64:	2402ffff 	li	v0,-1
+    5b68:	8fbf0024 	lw	ra,36(sp)
+    5b6c:	8fb00020 	lw	s0,32(sp)
+    5b70:	03e00008 	jr	ra
+    5b74:	27bd0028 	addiu	sp,sp,40
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_energy =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005b78 <uc_api_enable_m_energy@@Base>:
+    5b78:	3c1c0003 	lui	gp,0x3
+    5b7c:	279c4358 	addiu	gp,gp,17240
+    5b80:	0399e021 	addu	gp,gp,t9
+    5b84:	27bdffd0 	addiu	sp,sp,-48
+    5b88:	afbf002c 	sw	ra,44(sp)
+    5b8c:	afb10028 	sw	s1,40(sp)
+    5b90:	afb00024 	sw	s0,36(sp)
+    5b94:	afbc0018 	sw	gp,24(sp)
+    5b98:	14800009 	bnez	a0,5bc0 <uc_api_enable_m_energy@@Base+0x48>
+    5b9c:	00808021 	move	s0,a0
+    5ba0:	8f848024 	lw	a0,-32732(gp)
+    5ba4:	8f868024 	lw	a2,-32732(gp)
+    5ba8:	8f998398 	lw	t9,-31848(gp)
+    5bac:	2484e580 	addiu	a0,a0,-6784
+    5bb0:	24c6e72c 	addiu	a2,a2,-6356
+    5bb4:	0320f809 	jalr	t9
+    5bb8:	240506a3 	li	a1,1699
+    5bbc:	8fbc0018 	lw	gp,24(sp)
+    5bc0:	8e020000 	lw	v0,0(s0)
+    5bc4:	5040001f 	beqzl	v0,5c44 <uc_api_enable_m_energy@@Base+0xcc>
+    5bc8:	8e020010 	lw	v0,16(s0)
+    5bcc:	8e030008 	lw	v1,8(s0)
+    5bd0:	5060001c 	beqzl	v1,5c44 <uc_api_enable_m_energy@@Base+0xcc>
+    5bd4:	8e020010 	lw	v0,16(s0)
+    5bd8:	8e030004 	lw	v1,4(s0)
+    5bdc:	8f918024 	lw	s1,-32732(gp)
+    5be0:	8f878024 	lw	a3,-32732(gp)
+    5be4:	8f998124 	lw	t9,-32476(gp)
+    5be8:	afa20010 	sw	v0,16(sp)
+    5bec:	afa30014 	sw	v1,20(sp)
+    5bf0:	24e7e7d8 	addiu	a3,a3,-6184
+    5bf4:	24040007 	li	a0,7
+    5bf8:	2625e7cc 	addiu	a1,s1,-6196
+    5bfc:	0320f809 	jalr	t9
+    5c00:	00003021 	move	a2,zero
+    5c04:	1440004e 	bnez	v0,5d40 <uc_api_enable_m_energy@@Base+0x1c8>
+    5c08:	8fbc0018 	lw	gp,24(sp)
+    5c0c:	8e030008 	lw	v1,8(s0)
+    5c10:	8e02000c 	lw	v0,12(s0)
+    5c14:	8f878024 	lw	a3,-32732(gp)
+    5c18:	8f998338 	lw	t9,-31944(gp)
+    5c1c:	afa30010 	sw	v1,16(sp)
+    5c20:	afa20014 	sw	v0,20(sp)
+    5c24:	2625e7cc 	addiu	a1,s1,-6196
+    5c28:	24e7e7f4 	addiu	a3,a3,-6156
+    5c2c:	24040007 	li	a0,7
+    5c30:	0320f809 	jalr	t9
+    5c34:	24060001 	li	a2,1
+    5c38:	14400041 	bnez	v0,5d40 <uc_api_enable_m_energy@@Base+0x1c8>
+    5c3c:	8fbc0018 	lw	gp,24(sp)
+    5c40:	8e020010 	lw	v0,16(s0)
+    5c44:	5040001f 	beqzl	v0,5cc4 <uc_api_enable_m_energy@@Base+0x14c>
+    5c48:	8e020020 	lw	v0,32(s0)
+    5c4c:	8e030018 	lw	v1,24(s0)
+    5c50:	5060001c 	beqzl	v1,5cc4 <uc_api_enable_m_energy@@Base+0x14c>
+    5c54:	8e020020 	lw	v0,32(s0)
+    5c58:	8e030014 	lw	v1,20(s0)
+    5c5c:	8f918024 	lw	s1,-32732(gp)
+    5c60:	8f878024 	lw	a3,-32732(gp)
+    5c64:	8f998214 	lw	t9,-32236(gp)
+    5c68:	afa20010 	sw	v0,16(sp)
+    5c6c:	afa30014 	sw	v1,20(sp)
+    5c70:	24e7e810 	addiu	a3,a3,-6128
+    5c74:	24040007 	li	a0,7
+    5c78:	2625e7cc 	addiu	a1,s1,-6196
+    5c7c:	0320f809 	jalr	t9
+    5c80:	24060002 	li	a2,2
+    5c84:	1440002e 	bnez	v0,5d40 <uc_api_enable_m_energy@@Base+0x1c8>
+    5c88:	8fbc0018 	lw	gp,24(sp)
+    5c8c:	8e030018 	lw	v1,24(s0)
+    5c90:	8e02001c 	lw	v0,28(s0)
+    5c94:	8f878024 	lw	a3,-32732(gp)
+    5c98:	8f9983a8 	lw	t9,-31832(gp)
+    5c9c:	afa30010 	sw	v1,16(sp)
+    5ca0:	afa20014 	sw	v0,20(sp)
+    5ca4:	2625e7cc 	addiu	a1,s1,-6196
+    5ca8:	24e7e82c 	addiu	a3,a3,-6100
+    5cac:	24040007 	li	a0,7
+    5cb0:	0320f809 	jalr	t9
+    5cb4:	24060003 	li	a2,3
+    5cb8:	14400021 	bnez	v0,5d40 <uc_api_enable_m_energy@@Base+0x1c8>
+    5cbc:	8fbc0018 	lw	gp,24(sp)
+    5cc0:	8e020020 	lw	v0,32(s0)
+    5cc4:	5040001f 	beqzl	v0,5d44 <uc_api_enable_m_energy@@Base+0x1cc>
+    5cc8:	00001021 	move	v0,zero
+    5ccc:	8e030028 	lw	v1,40(s0)
+    5cd0:	5060001c 	beqzl	v1,5d44 <uc_api_enable_m_energy@@Base+0x1cc>
+    5cd4:	00001021 	move	v0,zero
+    5cd8:	8e030024 	lw	v1,36(s0)
+    5cdc:	8f918024 	lw	s1,-32732(gp)
+    5ce0:	8f878024 	lw	a3,-32732(gp)
+    5ce4:	8f998360 	lw	t9,-31904(gp)
+    5ce8:	afa20010 	sw	v0,16(sp)
+    5cec:	afa30014 	sw	v1,20(sp)
+    5cf0:	24e7e848 	addiu	a3,a3,-6072
+    5cf4:	24040007 	li	a0,7
+    5cf8:	2625e7cc 	addiu	a1,s1,-6196
+    5cfc:	0320f809 	jalr	t9
+    5d00:	24060004 	li	a2,4
+    5d04:	1440000e 	bnez	v0,5d40 <uc_api_enable_m_energy@@Base+0x1c8>
+    5d08:	8fbc0018 	lw	gp,24(sp)
+    5d0c:	8e02002c 	lw	v0,44(s0)
+    5d10:	8e030028 	lw	v1,40(s0)
+    5d14:	8f878024 	lw	a3,-32732(gp)
+    5d18:	8f9982fc 	lw	t9,-32004(gp)
+    5d1c:	afa30010 	sw	v1,16(sp)
+    5d20:	afa20014 	sw	v0,20(sp)
+    5d24:	2625e7cc 	addiu	a1,s1,-6196
+    5d28:	24e7e85c 	addiu	a3,a3,-6052
+    5d2c:	24040007 	li	a0,7
+    5d30:	0320f809 	jalr	t9
+    5d34:	24060005 	li	a2,5
+    5d38:	50400002 	beqzl	v0,5d44 <uc_api_enable_m_energy@@Base+0x1cc>
+    5d3c:	00001021 	move	v0,zero
+    5d40:	2402ffff 	li	v0,-1
+    5d44:	8fbf002c 	lw	ra,44(sp)
+    5d48:	8fb10028 	lw	s1,40(sp)
+    5d4c:	8fb00024 	lw	s0,36(sp)
+    5d50:	03e00008 	jr	ra
+    5d54:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_hand_qos =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005d58 <uc_api_enable_m_hand_qos@@Base>:
+    5d58:	3c1c0003 	lui	gp,0x3
+    5d5c:	279c4178 	addiu	gp,gp,16760
+    5d60:	0399e021 	addu	gp,gp,t9
+    5d64:	27bdffd0 	addiu	sp,sp,-48
+    5d68:	afbf002c 	sw	ra,44(sp)
+    5d6c:	afb10028 	sw	s1,40(sp)
+    5d70:	afb00024 	sw	s0,36(sp)
+    5d74:	afbc0018 	sw	gp,24(sp)
+    5d78:	14800009 	bnez	a0,5da0 <uc_api_enable_m_hand_qos@@Base+0x48>
+    5d7c:	00808021 	move	s0,a0
+    5d80:	8f848024 	lw	a0,-32732(gp)
+    5d84:	8f868024 	lw	a2,-32732(gp)
+    5d88:	8f998398 	lw	t9,-31848(gp)
+    5d8c:	2484e580 	addiu	a0,a0,-6784
+    5d90:	24c6e72c 	addiu	a2,a2,-6356
+    5d94:	0320f809 	jalr	t9
+    5d98:	240505ce 	li	a1,1486
+    5d9c:	8fbc0018 	lw	gp,24(sp)
+    5da0:	8e020000 	lw	v0,0(s0)
+    5da4:	5040004e 	beqzl	v0,5ee0 <uc_api_enable_m_hand_qos@@Base+0x188>
+    5da8:	2402ffff 	li	v0,-1
+    5dac:	8e030008 	lw	v1,8(s0)
+    5db0:	5060004b 	beqzl	v1,5ee0 <uc_api_enable_m_hand_qos@@Base+0x188>
+    5db4:	2402ffff 	li	v0,-1
+    5db8:	8e030004 	lw	v1,4(s0)
+    5dbc:	8f918024 	lw	s1,-32732(gp)
+    5dc0:	8f878024 	lw	a3,-32732(gp)
+    5dc4:	8f998168 	lw	t9,-32408(gp)
+    5dc8:	afa20010 	sw	v0,16(sp)
+    5dcc:	afa30014 	sw	v1,20(sp)
+    5dd0:	24e7e87c 	addiu	a3,a3,-6020
+    5dd4:	2404000b 	li	a0,11
+    5dd8:	2625e870 	addiu	a1,s1,-6032
+    5ddc:	0320f809 	jalr	t9
+    5de0:	00003021 	move	a2,zero
+    5de4:	1440003d 	bnez	v0,5edc <uc_api_enable_m_hand_qos@@Base+0x184>
+    5de8:	8fbc0018 	lw	gp,24(sp)
+    5dec:	8e030008 	lw	v1,8(s0)
+    5df0:	8e02000c 	lw	v0,12(s0)
+    5df4:	8f878024 	lw	a3,-32732(gp)
+    5df8:	8f99810c 	lw	t9,-32500(gp)
+    5dfc:	afa30010 	sw	v1,16(sp)
+    5e00:	afa20014 	sw	v0,20(sp)
+    5e04:	24e7e890 	addiu	a3,a3,-6000
+    5e08:	2404000b 	li	a0,11
+    5e0c:	2625e870 	addiu	a1,s1,-6032
+    5e10:	0320f809 	jalr	t9
+    5e14:	24060001 	li	a2,1
+    5e18:	14400030 	bnez	v0,5edc <uc_api_enable_m_hand_qos@@Base+0x184>
+    5e1c:	8fbc0018 	lw	gp,24(sp)
+    5e20:	8e020010 	lw	v0,16(s0)
+    5e24:	5040001e 	beqzl	v0,5ea0 <uc_api_enable_m_hand_qos@@Base+0x148>
+    5e28:	8e020020 	lw	v0,32(s0)
+    5e2c:	8e030018 	lw	v1,24(s0)
+    5e30:	5060001b 	beqzl	v1,5ea0 <uc_api_enable_m_hand_qos@@Base+0x148>
+    5e34:	8e020020 	lw	v0,32(s0)
+    5e38:	8e030014 	lw	v1,20(s0)
+    5e3c:	8f878024 	lw	a3,-32732(gp)
+    5e40:	8f998354 	lw	t9,-31916(gp)
+    5e44:	afa20010 	sw	v0,16(sp)
+    5e48:	afa30014 	sw	v1,20(sp)
+    5e4c:	24e7e8a4 	addiu	a3,a3,-5980
+    5e50:	2404000b 	li	a0,11
+    5e54:	2625e870 	addiu	a1,s1,-6032
+    5e58:	0320f809 	jalr	t9
+    5e5c:	24060002 	li	a2,2
+    5e60:	1440001e 	bnez	v0,5edc <uc_api_enable_m_hand_qos@@Base+0x184>
+    5e64:	8fbc0018 	lw	gp,24(sp)
+    5e68:	8e030018 	lw	v1,24(s0)
+    5e6c:	8e02001c 	lw	v0,28(s0)
+    5e70:	8f878024 	lw	a3,-32732(gp)
+    5e74:	8f998098 	lw	t9,-32616(gp)
+    5e78:	afa30010 	sw	v1,16(sp)
+    5e7c:	afa20014 	sw	v0,20(sp)
+    5e80:	2625e870 	addiu	a1,s1,-6032
+    5e84:	24e7e8c0 	addiu	a3,a3,-5952
+    5e88:	2404000b 	li	a0,11
+    5e8c:	0320f809 	jalr	t9
+    5e90:	24060003 	li	a2,3
+    5e94:	14400011 	bnez	v0,5edc <uc_api_enable_m_hand_qos@@Base+0x184>
+    5e98:	8fbc0018 	lw	gp,24(sp)
+    5e9c:	8e020020 	lw	v0,32(s0)
+    5ea0:	5040000f 	beqzl	v0,5ee0 <uc_api_enable_m_hand_qos@@Base+0x188>
+    5ea4:	00001021 	move	v0,zero
+    5ea8:	8e030024 	lw	v1,36(s0)
+    5eac:	8f858024 	lw	a1,-32732(gp)
+    5eb0:	8f878024 	lw	a3,-32732(gp)
+    5eb4:	8f99823c 	lw	t9,-32196(gp)
+    5eb8:	afa20010 	sw	v0,16(sp)
+    5ebc:	afa30014 	sw	v1,20(sp)
+    5ec0:	24a5e870 	addiu	a1,a1,-6032
+    5ec4:	24e7e8dc 	addiu	a3,a3,-5924
+    5ec8:	2404000b 	li	a0,11
+    5ecc:	0320f809 	jalr	t9
+    5ed0:	24060004 	li	a2,4
+    5ed4:	50400002 	beqzl	v0,5ee0 <uc_api_enable_m_hand_qos@@Base+0x188>
+    5ed8:	00001021 	move	v0,zero
+    5edc:	2402ffff 	li	v0,-1
+    5ee0:	8fbf002c 	lw	ra,44(sp)
+    5ee4:	8fb10028 	lw	s1,40(sp)
+    5ee8:	8fb00024 	lw	s0,36(sp)
+    5eec:	03e00008 	jr	ra
+    5ef0:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_login =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+000068c4 <uc_api_enable_m_login@@Base>:
+    68c4:	3c1c0003 	lui	gp,0x3
+    68c8:	279c360c 	addiu	gp,gp,13836
+    68cc:	0399e021 	addu	gp,gp,t9
+    68d0:	27bdffd0 	addiu	sp,sp,-48
+    68d4:	afbf002c 	sw	ra,44(sp)
+    68d8:	afb10028 	sw	s1,40(sp)
+    68dc:	afb00024 	sw	s0,36(sp)
+    68e0:	afbc0018 	sw	gp,24(sp)
+    68e4:	14800009 	bnez	a0,690c <uc_api_enable_m_login@@Base+0x48>
+    68e8:	00808021 	move	s0,a0
+    68ec:	8f848024 	lw	a0,-32732(gp)
+    68f0:	8f868024 	lw	a2,-32732(gp)
+    68f4:	8f998398 	lw	t9,-31848(gp)
+    68f8:	2484e580 	addiu	a0,a0,-6784
+    68fc:	24c6e72c 	addiu	a2,a2,-6356
+    6900:	0320f809 	jalr	t9
+    6904:	240504dd 	li	a1,1245
+    6908:	8fbc0018 	lw	gp,24(sp)
+    690c:	8e020000 	lw	v0,0(s0)
+    6910:	1040002e 	beqz	v0,69cc <uc_api_enable_m_login@@Base+0x108>
+    6914:	2403ffff 	li	v1,-1
+    6918:	8e030008 	lw	v1,8(s0)
+    691c:	1060002b 	beqz	v1,69cc <uc_api_enable_m_login@@Base+0x108>
+    6920:	2403ffff 	li	v1,-1
+    6924:	8e030010 	lw	v1,16(s0)
+    6928:	10600027 	beqz	v1,69c8 <uc_api_enable_m_login@@Base+0x104>
+    692c:	8f918024 	lw	s1,-32732(gp)
+    6930:	8e030004 	lw	v1,4(s0)
+    6934:	8f878024 	lw	a3,-32732(gp)
+    6938:	8f998090 	lw	t9,-32624(gp)
+    693c:	afa20010 	sw	v0,16(sp)
+    6940:	afa30014 	sw	v1,20(sp)
+    6944:	24e7ec48 	addiu	a3,a3,-5048
+    6948:	24040004 	li	a0,4
+    694c:	2625ec40 	addiu	a1,s1,-5056
+    6950:	0320f809 	jalr	t9
+    6954:	00003021 	move	a2,zero
+    6958:	1440001b 	bnez	v0,69c8 <uc_api_enable_m_login@@Base+0x104>
+    695c:	8fbc0018 	lw	gp,24(sp)
+    6960:	8e030008 	lw	v1,8(s0)
+    6964:	8e02000c 	lw	v0,12(s0)
+    6968:	8f878024 	lw	a3,-32732(gp)
+    696c:	8f9982e4 	lw	t9,-32028(gp)
+    6970:	afa30010 	sw	v1,16(sp)
+    6974:	afa20014 	sw	v0,20(sp)
+    6978:	24e7ec58 	addiu	a3,a3,-5032
+    697c:	24040004 	li	a0,4
+    6980:	2625ec40 	addiu	a1,s1,-5056
+    6984:	0320f809 	jalr	t9
+    6988:	24060001 	li	a2,1
+    698c:	1440000e 	bnez	v0,69c8 <uc_api_enable_m_login@@Base+0x104>
+    6990:	8fbc0018 	lw	gp,24(sp)
+    6994:	8e030010 	lw	v1,16(s0)
+    6998:	8e020014 	lw	v0,20(s0)
+    699c:	8f878024 	lw	a3,-32732(gp)
+    69a0:	8f998248 	lw	t9,-32184(gp)
+    69a4:	afa30010 	sw	v1,16(sp)
+    69a8:	afa20014 	sw	v0,20(sp)
+    69ac:	2625ec40 	addiu	a1,s1,-5056
+    69b0:	24e7ec70 	addiu	a3,a3,-5008
+    69b4:	24040004 	li	a0,4
+    69b8:	0320f809 	jalr	t9
+    69bc:	24060002 	li	a2,2
+    69c0:	10400002 	beqz	v0,69cc <uc_api_enable_m_login@@Base+0x108>
+    69c4:	00001821 	move	v1,zero
+    69c8:	2403ffff 	li	v1,-1
+    69cc:	8fbf002c 	lw	ra,44(sp)
+    69d0:	8fb10028 	lw	s1,40(sp)
+    69d4:	8fb00024 	lw	s0,36(sp)
+    69d8:	00601021 	move	v0,v1
+    69dc:	03e00008 	jr	ra
+    69e0:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_ol_host =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005ef4 <uc_api_enable_m_ol_host@@Base>:
+    5ef4:	3c1c0003 	lui	gp,0x3
+    5ef8:	279c3fdc 	addiu	gp,gp,16348
+    5efc:	0399e021 	addu	gp,gp,t9
+    5f00:	27bdffd8 	addiu	sp,sp,-40
+    5f04:	afbf0024 	sw	ra,36(sp)
+    5f08:	afb00020 	sw	s0,32(sp)
+    5f0c:	afbc0018 	sw	gp,24(sp)
+    5f10:	14800009 	bnez	a0,5f38 <uc_api_enable_m_ol_host@@Base+0x44>
+    5f14:	00808021 	move	s0,a0
+    5f18:	8f848024 	lw	a0,-32732(gp)
+    5f1c:	8f868024 	lw	a2,-32732(gp)
+    5f20:	8f998398 	lw	t9,-31848(gp)
+    5f24:	2484e580 	addiu	a0,a0,-6784
+    5f28:	24c6e72c 	addiu	a2,a2,-6356
+    5f2c:	0320f809 	jalr	t9
+    5f30:	240505bc 	li	a1,1468
+    5f34:	8fbc0018 	lw	gp,24(sp)
+    5f38:	8e020000 	lw	v0,0(s0)
+    5f3c:	1040000d 	beqz	v0,5f74 <uc_api_enable_m_ol_host@@Base+0x80>
+    5f40:	8f858024 	lw	a1,-32732(gp)
+    5f44:	8e030004 	lw	v1,4(s0)
+    5f48:	8f878024 	lw	a3,-32732(gp)
+    5f4c:	8f998298 	lw	t9,-32104(gp)
+    5f50:	afa30014 	sw	v1,20(sp)
+    5f54:	afa20010 	sw	v0,16(sp)
+    5f58:	24a5e8f8 	addiu	a1,a1,-5896
+    5f5c:	24e7e904 	addiu	a3,a3,-5884
+    5f60:	2404000a 	li	a0,10
+    5f64:	0320f809 	jalr	t9
+    5f68:	00003021 	move	a2,zero
+    5f6c:	10400002 	beqz	v0,5f78 <uc_api_enable_m_ol_host@@Base+0x84>
+    5f70:	00001821 	move	v1,zero
+    5f74:	2403ffff 	li	v1,-1
+    5f78:	8fbf0024 	lw	ra,36(sp)
+    5f7c:	8fb00020 	lw	s0,32(sp)
+    5f80:	00601021 	move	v0,v1
+    5f84:	03e00008 	jr	ra
+    5f88:	27bd0028 	addiu	sp,sp,40
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_parent_control =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005980 <uc_api_enable_m_parent_control@@Base>:
+    5980:	3c1c0003 	lui	gp,0x3
+    5984:	279c4550 	addiu	gp,gp,17744
+    5988:	0399e021 	addu	gp,gp,t9
+    598c:	27bdffd0 	addiu	sp,sp,-48
+    5990:	afbf002c 	sw	ra,44(sp)
+    5994:	afb10028 	sw	s1,40(sp)
+    5998:	afb00024 	sw	s0,36(sp)
+    599c:	afbc0018 	sw	gp,24(sp)
+    59a0:	14800009 	bnez	a0,59c8 <uc_api_enable_m_parent_control@@Base+0x48>
+    59a4:	00808021 	move	s0,a0
+    59a8:	8f848024 	lw	a0,-32732(gp)
+    59ac:	8f868024 	lw	a2,-32732(gp)
+    59b0:	8f998398 	lw	t9,-31848(gp)
+    59b4:	2484e580 	addiu	a0,a0,-6784
+    59b8:	24c6e72c 	addiu	a2,a2,-6356
+    59bc:	0320f809 	jalr	t9
+    59c0:	240506f7 	li	a1,1783
+    59c4:	8fbc0018 	lw	gp,24(sp)
+    59c8:	8e020000 	lw	v0,0(s0)
+    59cc:	5040001f 	beqzl	v0,5a4c <uc_api_enable_m_parent_control@@Base+0xcc>
+    59d0:	8e020010 	lw	v0,16(s0)
+    59d4:	8e030008 	lw	v1,8(s0)
+    59d8:	5060001c 	beqzl	v1,5a4c <uc_api_enable_m_parent_control@@Base+0xcc>
+    59dc:	8e020010 	lw	v0,16(s0)
+    59e0:	8e030004 	lw	v1,4(s0)
+    59e4:	8f918024 	lw	s1,-32732(gp)
+    59e8:	8f878024 	lw	a3,-32732(gp)
+    59ec:	8f998328 	lw	t9,-31960(gp)
+    59f0:	afa20010 	sw	v0,16(sp)
+    59f4:	afa30014 	sw	v1,20(sp)
+    59f8:	24e7e748 	addiu	a3,a3,-6328
+    59fc:	2404000c 	li	a0,12
+    5a00:	2625e734 	addiu	a1,s1,-6348
+    5a04:	0320f809 	jalr	t9
+    5a08:	00003021 	move	a2,zero
+    5a0c:	1440001e 	bnez	v0,5a88 <uc_api_enable_m_parent_control@@Base+0x108>
+    5a10:	8fbc0018 	lw	gp,24(sp)
+    5a14:	8e030008 	lw	v1,8(s0)
+    5a18:	8e02000c 	lw	v0,12(s0)
+    5a1c:	8f878024 	lw	a3,-32732(gp)
+    5a20:	8f998350 	lw	t9,-31920(gp)
+    5a24:	afa30010 	sw	v1,16(sp)
+    5a28:	afa20014 	sw	v0,20(sp)
+    5a2c:	2625e734 	addiu	a1,s1,-6348
+    5a30:	24e7e760 	addiu	a3,a3,-6304
+    5a34:	2404000c 	li	a0,12
+    5a38:	0320f809 	jalr	t9
+    5a3c:	24060001 	li	a2,1
+    5a40:	14400011 	bnez	v0,5a88 <uc_api_enable_m_parent_control@@Base+0x108>
+    5a44:	8fbc0018 	lw	gp,24(sp)
+    5a48:	8e020010 	lw	v0,16(s0)
+    5a4c:	5040000f 	beqzl	v0,5a8c <uc_api_enable_m_parent_control@@Base+0x10c>
+    5a50:	00001021 	move	v0,zero
+    5a54:	8e030014 	lw	v1,20(s0)
+    5a58:	8f858024 	lw	a1,-32732(gp)
+    5a5c:	8f878024 	lw	a3,-32732(gp)
+    5a60:	8f998244 	lw	t9,-32188(gp)
+    5a64:	afa20010 	sw	v0,16(sp)
+    5a68:	afa30014 	sw	v1,20(sp)
+    5a6c:	24a5e734 	addiu	a1,a1,-6348
+    5a70:	24e7e778 	addiu	a3,a3,-6280
+    5a74:	2404000c 	li	a0,12
+    5a78:	0320f809 	jalr	t9
+    5a7c:	24060002 	li	a2,2
+    5a80:	50400002 	beqzl	v0,5a8c <uc_api_enable_m_parent_control@@Base+0x10c>
+    5a84:	00001021 	move	v0,zero
+    5a88:	2402ffff 	li	v0,-1
+    5a8c:	8fbf002c 	lw	ra,44(sp)
+    5a90:	8fb10028 	lw	s1,40(sp)
+    5a94:	8fb00024 	lw	s0,36(sp)
+    5a98:	03e00008 	jr	ra
+    5a9c:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_rub_net =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005f8c <uc_api_enable_m_rub_net@@Base>:
+    5f8c:	3c1c0003 	lui	gp,0x3
+    5f90:	279c3f44 	addiu	gp,gp,16196
+    5f94:	0399e021 	addu	gp,gp,t9
+    5f98:	27bdffd0 	addiu	sp,sp,-48
+    5f9c:	afbf002c 	sw	ra,44(sp)
+    5fa0:	afb10028 	sw	s1,40(sp)
+    5fa4:	afb00024 	sw	s0,36(sp)
+    5fa8:	afbc0018 	sw	gp,24(sp)
+    5fac:	14800009 	bnez	a0,5fd4 <uc_api_enable_m_rub_net@@Base+0x48>
+    5fb0:	00808021 	move	s0,a0
+    5fb4:	8f848024 	lw	a0,-32732(gp)
+    5fb8:	8f868024 	lw	a2,-32732(gp)
+    5fbc:	8f998398 	lw	t9,-31848(gp)
+    5fc0:	2484e580 	addiu	a0,a0,-6784
+    5fc4:	24c6e72c 	addiu	a2,a2,-6356
+    5fc8:	0320f809 	jalr	t9
+    5fcc:	24050558 	li	a1,1368
+    5fd0:	8fbc0018 	lw	gp,24(sp)
+    5fd4:	8e020000 	lw	v0,0(s0)
+    5fd8:	5040000f 	beqzl	v0,6018 <uc_api_enable_m_rub_net@@Base+0x8c>
+    5fdc:	8e020008 	lw	v0,8(s0)
+    5fe0:	8e030004 	lw	v1,4(s0)
+    5fe4:	8f858024 	lw	a1,-32732(gp)
+    5fe8:	8f878024 	lw	a3,-32732(gp)
+    5fec:	8f9982d8 	lw	t9,-32040(gp)
+    5ff0:	afa20010 	sw	v0,16(sp)
+    5ff4:	afa30014 	sw	v1,20(sp)
+    5ff8:	24a5e918 	addiu	a1,a1,-5864
+    5ffc:	24e7e924 	addiu	a3,a3,-5852
+    6000:	24040009 	li	a0,9
+    6004:	0320f809 	jalr	t9
+    6008:	00003021 	move	a2,zero
+    600c:	144000e1 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6010:	8fbc0018 	lw	gp,24(sp)
+    6014:	8e020008 	lw	v0,8(s0)
+    6018:	5040001f 	beqzl	v0,6098 <uc_api_enable_m_rub_net@@Base+0x10c>
+    601c:	8e020018 	lw	v0,24(s0)
+    6020:	8e030010 	lw	v1,16(s0)
+    6024:	5060001c 	beqzl	v1,6098 <uc_api_enable_m_rub_net@@Base+0x10c>
+    6028:	8e020018 	lw	v0,24(s0)
+    602c:	8e03000c 	lw	v1,12(s0)
+    6030:	8f918024 	lw	s1,-32732(gp)
+    6034:	8f878024 	lw	a3,-32732(gp)
+    6038:	8f998164 	lw	t9,-32412(gp)
+    603c:	afa20010 	sw	v0,16(sp)
+    6040:	afa30014 	sw	v1,20(sp)
+    6044:	24e7e944 	addiu	a3,a3,-5820
+    6048:	24040009 	li	a0,9
+    604c:	2625e918 	addiu	a1,s1,-5864
+    6050:	0320f809 	jalr	t9
+    6054:	24060001 	li	a2,1
+    6058:	144000ce 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    605c:	8fbc0018 	lw	gp,24(sp)
+    6060:	8e030010 	lw	v1,16(s0)
+    6064:	8e020014 	lw	v0,20(s0)
+    6068:	8f878024 	lw	a3,-32732(gp)
+    606c:	8f9982d0 	lw	t9,-32048(gp)
+    6070:	afa30010 	sw	v1,16(sp)
+    6074:	afa20014 	sw	v0,20(sp)
+    6078:	2625e918 	addiu	a1,s1,-5864
+    607c:	24e7e95c 	addiu	a3,a3,-5796
+    6080:	24040009 	li	a0,9
+    6084:	0320f809 	jalr	t9
+    6088:	24060002 	li	a2,2
+    608c:	144000c1 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6090:	8fbc0018 	lw	gp,24(sp)
+    6094:	8e020018 	lw	v0,24(s0)
+    6098:	5040001f 	beqzl	v0,6118 <uc_api_enable_m_rub_net@@Base+0x18c>
+    609c:	8e020028 	lw	v0,40(s0)
+    60a0:	8e030020 	lw	v1,32(s0)
+    60a4:	5060001c 	beqzl	v1,6118 <uc_api_enable_m_rub_net@@Base+0x18c>
+    60a8:	8e020028 	lw	v0,40(s0)
+    60ac:	8e03001c 	lw	v1,28(s0)
+    60b0:	8f918024 	lw	s1,-32732(gp)
+    60b4:	8f878024 	lw	a3,-32732(gp)
+    60b8:	8f9981d8 	lw	t9,-32296(gp)
+    60bc:	afa20010 	sw	v0,16(sp)
+    60c0:	afa30014 	sw	v1,20(sp)
+    60c4:	24e7e974 	addiu	a3,a3,-5772
+    60c8:	24040009 	li	a0,9
+    60cc:	2625e918 	addiu	a1,s1,-5864
+    60d0:	0320f809 	jalr	t9
+    60d4:	24060003 	li	a2,3
+    60d8:	144000ae 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    60dc:	8fbc0018 	lw	gp,24(sp)
+    60e0:	8e030020 	lw	v1,32(s0)
+    60e4:	8e020024 	lw	v0,36(s0)
+    60e8:	8f878024 	lw	a3,-32732(gp)
+    60ec:	8f9982c8 	lw	t9,-32056(gp)
+    60f0:	afa30010 	sw	v1,16(sp)
+    60f4:	afa20014 	sw	v0,20(sp)
+    60f8:	2625e918 	addiu	a1,s1,-5864
+    60fc:	24e7e994 	addiu	a3,a3,-5740
+    6100:	24040009 	li	a0,9
+    6104:	0320f809 	jalr	t9
+    6108:	24060004 	li	a2,4
+    610c:	144000a1 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6110:	8fbc0018 	lw	gp,24(sp)
+    6114:	8e020028 	lw	v0,40(s0)
+    6118:	5040000f 	beqzl	v0,6158 <uc_api_enable_m_rub_net@@Base+0x1cc>
+    611c:	8e020030 	lw	v0,48(s0)
+    6120:	8e03002c 	lw	v1,44(s0)
+    6124:	8f858024 	lw	a1,-32732(gp)
+    6128:	8f878024 	lw	a3,-32732(gp)
+    612c:	8f99832c 	lw	t9,-31956(gp)
+    6130:	afa20010 	sw	v0,16(sp)
+    6134:	afa30014 	sw	v1,20(sp)
+    6138:	24a5e918 	addiu	a1,a1,-5864
+    613c:	24e7e9b4 	addiu	a3,a3,-5708
+    6140:	24040009 	li	a0,9
+    6144:	0320f809 	jalr	t9
+    6148:	24060005 	li	a2,5
+    614c:	14400091 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6150:	8fbc0018 	lw	gp,24(sp)
+    6154:	8e020030 	lw	v0,48(s0)
+    6158:	5040000f 	beqzl	v0,6198 <uc_api_enable_m_rub_net@@Base+0x20c>
+    615c:	8e020058 	lw	v0,88(s0)
+    6160:	8e030034 	lw	v1,52(s0)
+    6164:	8f858024 	lw	a1,-32732(gp)
+    6168:	8f878024 	lw	a3,-32732(gp)
+    616c:	8f9980e8 	lw	t9,-32536(gp)
+    6170:	afa20010 	sw	v0,16(sp)
+    6174:	afa30014 	sw	v1,20(sp)
+    6178:	24a5e918 	addiu	a1,a1,-5864
+    617c:	24e7e9d0 	addiu	a3,a3,-5680
+    6180:	24040009 	li	a0,9
+    6184:	0320f809 	jalr	t9
+    6188:	24060006 	li	a2,6
+    618c:	14400081 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6190:	8fbc0018 	lw	gp,24(sp)
+    6194:	8e020058 	lw	v0,88(s0)
+    6198:	5040000f 	beqzl	v0,61d8 <uc_api_enable_m_rub_net@@Base+0x24c>
+    619c:	8e020048 	lw	v0,72(s0)
+    61a0:	8e03005c 	lw	v1,92(s0)
+    61a4:	8f858024 	lw	a1,-32732(gp)
+    61a8:	8f878024 	lw	a3,-32732(gp)
+    61ac:	8f9981a0 	lw	t9,-32352(gp)
+    61b0:	afa20010 	sw	v0,16(sp)
+    61b4:	afa30014 	sw	v1,20(sp)
+    61b8:	24a5e918 	addiu	a1,a1,-5864
+    61bc:	24e7e9f0 	addiu	a3,a3,-5648
+    61c0:	24040009 	li	a0,9
+    61c4:	0320f809 	jalr	t9
+    61c8:	24060009 	li	a2,9
+    61cc:	14400071 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    61d0:	8fbc0018 	lw	gp,24(sp)
+    61d4:	8e020048 	lw	v0,72(s0)
+    61d8:	5040000f 	beqzl	v0,6218 <uc_api_enable_m_rub_net@@Base+0x28c>
+    61dc:	8e020050 	lw	v0,80(s0)
+    61e0:	8e03004c 	lw	v1,76(s0)
+    61e4:	8f858024 	lw	a1,-32732(gp)
+    61e8:	8f878024 	lw	a3,-32732(gp)
+    61ec:	8f9980f8 	lw	t9,-32520(gp)
+    61f0:	afa20010 	sw	v0,16(sp)
+    61f4:	afa30014 	sw	v1,20(sp)
+    61f8:	24a5e918 	addiu	a1,a1,-5864
+    61fc:	24e7ea0c 	addiu	a3,a3,-5620
+    6200:	24040009 	li	a0,9
+    6204:	0320f809 	jalr	t9
+    6208:	2406000a 	li	a2,10
+    620c:	14400061 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6210:	8fbc0018 	lw	gp,24(sp)
+    6214:	8e020050 	lw	v0,80(s0)
+    6218:	5040000f 	beqzl	v0,6258 <uc_api_enable_m_rub_net@@Base+0x2cc>
+    621c:	8e020060 	lw	v0,96(s0)
+    6220:	8e030054 	lw	v1,84(s0)
+    6224:	8f858024 	lw	a1,-32732(gp)
+    6228:	8f878024 	lw	a3,-32732(gp)
+    622c:	8f9980b0 	lw	t9,-32592(gp)
+    6230:	afa20010 	sw	v0,16(sp)
+    6234:	afa30014 	sw	v1,20(sp)
+    6238:	24a5e918 	addiu	a1,a1,-5864
+    623c:	24e7ea28 	addiu	a3,a3,-5592
+    6240:	24040009 	li	a0,9
+    6244:	0320f809 	jalr	t9
+    6248:	2406000b 	li	a2,11
+    624c:	14400051 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6250:	8fbc0018 	lw	gp,24(sp)
+    6254:	8e020060 	lw	v0,96(s0)
+    6258:	5040000f 	beqzl	v0,6298 <uc_api_enable_m_rub_net@@Base+0x30c>
+    625c:	8e020068 	lw	v0,104(s0)
+    6260:	8e030064 	lw	v1,100(s0)
+    6264:	8f858024 	lw	a1,-32732(gp)
+    6268:	8f878024 	lw	a3,-32732(gp)
+    626c:	8f9982b0 	lw	t9,-32080(gp)
+    6270:	afa20010 	sw	v0,16(sp)
+    6274:	afa30014 	sw	v1,20(sp)
+    6278:	24a5e918 	addiu	a1,a1,-5864
+    627c:	24e7ea44 	addiu	a3,a3,-5564
+    6280:	24040009 	li	a0,9
+    6284:	0320f809 	jalr	t9
+    6288:	2406000c 	li	a2,12
+    628c:	14400041 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6290:	8fbc0018 	lw	gp,24(sp)
+    6294:	8e020068 	lw	v0,104(s0)
+    6298:	5040000f 	beqzl	v0,62d8 <uc_api_enable_m_rub_net@@Base+0x34c>
+    629c:	8e020070 	lw	v0,112(s0)
+    62a0:	8e03006c 	lw	v1,108(s0)
+    62a4:	8f858024 	lw	a1,-32732(gp)
+    62a8:	8f878024 	lw	a3,-32732(gp)
+    62ac:	8f9982f4 	lw	t9,-32012(gp)
+    62b0:	afa20010 	sw	v0,16(sp)
+    62b4:	afa30014 	sw	v1,20(sp)
+    62b8:	24a5e918 	addiu	a1,a1,-5864
+    62bc:	24e7ea64 	addiu	a3,a3,-5532
+    62c0:	24040009 	li	a0,9
+    62c4:	0320f809 	jalr	t9
+    62c8:	2406000d 	li	a2,13
+    62cc:	14400031 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    62d0:	8fbc0018 	lw	gp,24(sp)
+    62d4:	8e020070 	lw	v0,112(s0)
+    62d8:	5040000f 	beqzl	v0,6318 <uc_api_enable_m_rub_net@@Base+0x38c>
+    62dc:	8e020038 	lw	v0,56(s0)
+    62e0:	8e030074 	lw	v1,116(s0)
+    62e4:	8f858024 	lw	a1,-32732(gp)
+    62e8:	8f878024 	lw	a3,-32732(gp)
+    62ec:	8f998074 	lw	t9,-32652(gp)
+    62f0:	afa20010 	sw	v0,16(sp)
+    62f4:	afa30014 	sw	v1,20(sp)
+    62f8:	24a5e918 	addiu	a1,a1,-5864
+    62fc:	24e7ea80 	addiu	a3,a3,-5504
+    6300:	24040009 	li	a0,9
+    6304:	0320f809 	jalr	t9
+    6308:	2406000e 	li	a2,14
+    630c:	14400021 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6310:	8fbc0018 	lw	gp,24(sp)
+    6314:	8e020038 	lw	v0,56(s0)
+    6318:	5040000f 	beqzl	v0,6358 <uc_api_enable_m_rub_net@@Base+0x3cc>
+    631c:	8e020040 	lw	v0,64(s0)
+    6320:	8e03003c 	lw	v1,60(s0)
+    6324:	8f858024 	lw	a1,-32732(gp)
+    6328:	8f878024 	lw	a3,-32732(gp)
+    632c:	8f998250 	lw	t9,-32176(gp)
+    6330:	afa20010 	sw	v0,16(sp)
+    6334:	afa30014 	sw	v1,20(sp)
+    6338:	24a5e918 	addiu	a1,a1,-5864
+    633c:	24e7ea9c 	addiu	a3,a3,-5476
+    6340:	24040009 	li	a0,9
+    6344:	0320f809 	jalr	t9
+    6348:	24060007 	li	a2,7
+    634c:	14400011 	bnez	v0,6394 <uc_api_enable_m_rub_net@@Base+0x408>
+    6350:	8fbc0018 	lw	gp,24(sp)
+    6354:	8e020040 	lw	v0,64(s0)
+    6358:	5040000f 	beqzl	v0,6398 <uc_api_enable_m_rub_net@@Base+0x40c>
+    635c:	00001021 	move	v0,zero
+    6360:	8e030044 	lw	v1,68(s0)
+    6364:	8f858024 	lw	a1,-32732(gp)
+    6368:	8f878024 	lw	a3,-32732(gp)
+    636c:	8f9983bc 	lw	t9,-31812(gp)
+    6370:	afa20010 	sw	v0,16(sp)
+    6374:	afa30014 	sw	v1,20(sp)
+    6378:	24a5e918 	addiu	a1,a1,-5864
+    637c:	24e7eabc 	addiu	a3,a3,-5444
+    6380:	24040009 	li	a0,9
+    6384:	0320f809 	jalr	t9
+    6388:	24060008 	li	a2,8
+    638c:	50400002 	beqzl	v0,6398 <uc_api_enable_m_rub_net@@Base+0x40c>
+    6390:	00001021 	move	v0,zero
+    6394:	2402ffff 	li	v0,-1
+    6398:	8fbf002c 	lw	ra,44(sp)
+    639c:	8fb10028 	lw	s1,40(sp)
+    63a0:	8fb00024 	lw	s0,36(sp)
+    63a4:	03e00008 	jr	ra
+    63a8:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_safe_check =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00006508 <uc_api_enable_m_safe_check@@Base>:
+    6508:	3c1c0003 	lui	gp,0x3
+    650c:	279c39c8 	addiu	gp,gp,14792
+    6510:	0399e021 	addu	gp,gp,t9
+    6514:	27bdffd0 	addiu	sp,sp,-48
+    6518:	afbf002c 	sw	ra,44(sp)
+    651c:	afb10028 	sw	s1,40(sp)
+    6520:	afb00024 	sw	s0,36(sp)
+    6524:	afbc0018 	sw	gp,24(sp)
+    6528:	14800009 	bnez	a0,6550 <uc_api_enable_m_safe_check@@Base+0x48>
+    652c:	00808021 	move	s0,a0
+    6530:	8f848024 	lw	a0,-32732(gp)
+    6534:	8f868024 	lw	a2,-32732(gp)
+    6538:	8f998398 	lw	t9,-31848(gp)
+    653c:	2484e580 	addiu	a0,a0,-6784
+    6540:	24c6e72c 	addiu	a2,a2,-6356
+    6544:	0320f809 	jalr	t9
+    6548:	24050522 	li	a1,1314
+    654c:	8fbc0018 	lw	gp,24(sp)
+    6550:	8e020000 	lw	v0,0(s0)
+    6554:	1040003d 	beqz	v0,664c <uc_api_enable_m_safe_check@@Base+0x144>
+    6558:	2403ffff 	li	v1,-1
+    655c:	8e020008 	lw	v0,8(s0)
+    6560:	1040003b 	beqz	v0,6650 <uc_api_enable_m_safe_check@@Base+0x148>
+    6564:	8fbf002c 	lw	ra,44(sp)
+    6568:	8e020010 	lw	v0,16(s0)
+    656c:	5040001c 	beqzl	v0,65e0 <uc_api_enable_m_safe_check@@Base+0xd8>
+    6570:	8e030000 	lw	v1,0(s0)
+    6574:	8e030018 	lw	v1,24(s0)
+    6578:	10600018 	beqz	v1,65dc <uc_api_enable_m_safe_check@@Base+0xd4>
+    657c:	8f918024 	lw	s1,-32732(gp)
+    6580:	8e030014 	lw	v1,20(s0)
+    6584:	8f878024 	lw	a3,-32732(gp)
+    6588:	8f9982e0 	lw	t9,-32032(gp)
+    658c:	afa30014 	sw	v1,20(sp)
+    6590:	24e7eb44 	addiu	a3,a3,-5308
+    6594:	2404000d 	li	a0,13
+    6598:	2625eb34 	addiu	a1,s1,-5324
+    659c:	24060002 	li	a2,2
+    65a0:	0320f809 	jalr	t9
+    65a4:	afa20010 	sw	v0,16(sp)
+    65a8:	8fbc0018 	lw	gp,24(sp)
+    65ac:	8e030018 	lw	v1,24(s0)
+    65b0:	8e02001c 	lw	v0,28(s0)
+    65b4:	8f878024 	lw	a3,-32732(gp)
+    65b8:	8f998104 	lw	t9,-32508(gp)
+    65bc:	afa30010 	sw	v1,16(sp)
+    65c0:	afa20014 	sw	v0,20(sp)
+    65c4:	2625eb34 	addiu	a1,s1,-5324
+    65c8:	24e7eb54 	addiu	a3,a3,-5292
+    65cc:	2404000d 	li	a0,13
+    65d0:	0320f809 	jalr	t9
+    65d4:	24060003 	li	a2,3
+    65d8:	8fbc0018 	lw	gp,24(sp)
+    65dc:	8e030000 	lw	v1,0(s0)
+    65e0:	8e020004 	lw	v0,4(s0)
+    65e4:	8f918024 	lw	s1,-32732(gp)
+    65e8:	8f878024 	lw	a3,-32732(gp)
+    65ec:	8f998148 	lw	t9,-32440(gp)
+    65f0:	afa30010 	sw	v1,16(sp)
+    65f4:	afa20014 	sw	v0,20(sp)
+    65f8:	24e7eb64 	addiu	a3,a3,-5276
+    65fc:	2404000d 	li	a0,13
+    6600:	2625eb34 	addiu	a1,s1,-5324
+    6604:	0320f809 	jalr	t9
+    6608:	00003021 	move	a2,zero
+    660c:	1440000e 	bnez	v0,6648 <uc_api_enable_m_safe_check@@Base+0x140>
+    6610:	8fbc0018 	lw	gp,24(sp)
+    6614:	8e030008 	lw	v1,8(s0)
+    6618:	8e02000c 	lw	v0,12(s0)
+    661c:	8f878024 	lw	a3,-32732(gp)
+    6620:	8f9980e4 	lw	t9,-32540(gp)
+    6624:	afa30010 	sw	v1,16(sp)
+    6628:	afa20014 	sw	v0,20(sp)
+    662c:	2625eb34 	addiu	a1,s1,-5324
+    6630:	24e7eb78 	addiu	a3,a3,-5256
+    6634:	2404000d 	li	a0,13
+    6638:	0320f809 	jalr	t9
+    663c:	24060001 	li	a2,1
+    6640:	10400002 	beqz	v0,664c <uc_api_enable_m_safe_check@@Base+0x144>
+    6644:	00001821 	move	v1,zero
+    6648:	2403ffff 	li	v1,-1
+    664c:	8fbf002c 	lw	ra,44(sp)
+    6650:	8fb10028 	lw	s1,40(sp)
+    6654:	8fb00024 	lw	s0,36(sp)
+    6658:	00601021 	move	v0,v1
+    665c:	03e00008 	jr	ra
+    6660:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_sys =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+000069e4 <uc_api_enable_m_sys@@Base>:
+    69e4:	3c1c0003 	lui	gp,0x3
+    69e8:	279c34ec 	addiu	gp,gp,13548
+    69ec:	0399e021 	addu	gp,gp,t9
+    69f0:	27bdffd0 	addiu	sp,sp,-48
+    69f4:	afbf002c 	sw	ra,44(sp)
+    69f8:	afb10028 	sw	s1,40(sp)
+    69fc:	afb00024 	sw	s0,36(sp)
+    6a00:	afbc0018 	sw	gp,24(sp)
+    6a04:	14800009 	bnez	a0,6a2c <uc_api_enable_m_sys@@Base+0x48>
+    6a08:	00808021 	move	s0,a0
+    6a0c:	8f848024 	lw	a0,-32732(gp)
+    6a10:	8f868024 	lw	a2,-32732(gp)
+    6a14:	8f998398 	lw	t9,-31848(gp)
+    6a18:	2484e580 	addiu	a0,a0,-6784
+    6a1c:	24c6e72c 	addiu	a2,a2,-6356
+    6a20:	0320f809 	jalr	t9
+    6a24:	240504c1 	li	a1,1217
+    6a28:	8fbc0018 	lw	gp,24(sp)
+    6a2c:	8e020008 	lw	v0,8(s0)
+    6a30:	1040004e 	beqz	v0,6b6c <uc_api_enable_m_sys@@Base+0x188>
+    6a34:	2403ffff 	li	v1,-1
+    6a38:	8e020000 	lw	v0,0(s0)
+    6a3c:	1040004c 	beqz	v0,6b70 <uc_api_enable_m_sys@@Base+0x18c>
+    6a40:	8fbf002c 	lw	ra,44(sp)
+    6a44:	8e030010 	lw	v1,16(s0)
+    6a48:	10600049 	beqz	v1,6b70 <uc_api_enable_m_sys@@Base+0x18c>
+    6a4c:	2403ffff 	li	v1,-1
+    6a50:	8e030018 	lw	v1,24(s0)
+    6a54:	10600046 	beqz	v1,6b70 <uc_api_enable_m_sys@@Base+0x18c>
+    6a58:	2403ffff 	li	v1,-1
+    6a5c:	8e030020 	lw	v1,32(s0)
+    6a60:	10600041 	beqz	v1,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6a64:	8f918024 	lw	s1,-32732(gp)
+    6a68:	8e030004 	lw	v1,4(s0)
+    6a6c:	8f878024 	lw	a3,-32732(gp)
+    6a70:	8f99813c 	lw	t9,-32452(gp)
+    6a74:	afa20010 	sw	v0,16(sp)
+    6a78:	afa30014 	sw	v1,20(sp)
+    6a7c:	24e7ec90 	addiu	a3,a3,-4976
+    6a80:	24040001 	li	a0,1
+    6a84:	2625ec88 	addiu	a1,s1,-4984
+    6a88:	0320f809 	jalr	t9
+    6a8c:	00003021 	move	a2,zero
+    6a90:	14400035 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6a94:	8fbc0018 	lw	gp,24(sp)
+    6a98:	8e030008 	lw	v1,8(s0)
+    6a9c:	8e02000c 	lw	v0,12(s0)
+    6aa0:	8f878024 	lw	a3,-32732(gp)
+    6aa4:	8f9981c8 	lw	t9,-32312(gp)
+    6aa8:	afa30010 	sw	v1,16(sp)
+    6aac:	afa20014 	sw	v0,20(sp)
+    6ab0:	24e7eca8 	addiu	a3,a3,-4952
+    6ab4:	24040001 	li	a0,1
+    6ab8:	2625ec88 	addiu	a1,s1,-4984
+    6abc:	0320f809 	jalr	t9
+    6ac0:	24060001 	li	a2,1
+    6ac4:	14400028 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6ac8:	8fbc0018 	lw	gp,24(sp)
+    6acc:	8e030010 	lw	v1,16(s0)
+    6ad0:	8e020014 	lw	v0,20(s0)
+    6ad4:	8f878024 	lw	a3,-32732(gp)
+    6ad8:	8f99834c 	lw	t9,-31924(gp)
+    6adc:	afa30010 	sw	v1,16(sp)
+    6ae0:	afa20014 	sw	v0,20(sp)
+    6ae4:	24e7ecc4 	addiu	a3,a3,-4924
+    6ae8:	24040001 	li	a0,1
+    6aec:	2625ec88 	addiu	a1,s1,-4984
+    6af0:	0320f809 	jalr	t9
+    6af4:	24060002 	li	a2,2
+    6af8:	1440001b 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6afc:	8fbc0018 	lw	gp,24(sp)
+    6b00:	8e030018 	lw	v1,24(s0)
+    6b04:	8e02001c 	lw	v0,28(s0)
+    6b08:	8f878024 	lw	a3,-32732(gp)
+    6b0c:	8f9982b8 	lw	t9,-32072(gp)
+    6b10:	afa30010 	sw	v1,16(sp)
+    6b14:	afa20014 	sw	v0,20(sp)
+    6b18:	24e7ecd4 	addiu	a3,a3,-4908
+    6b1c:	24040001 	li	a0,1
+    6b20:	2625ec88 	addiu	a1,s1,-4984
+    6b24:	0320f809 	jalr	t9
+    6b28:	24060003 	li	a2,3
+    6b2c:	1440000e 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6b30:	8fbc0018 	lw	gp,24(sp)
+    6b34:	8e030020 	lw	v1,32(s0)
+    6b38:	8e020024 	lw	v0,36(s0)
+    6b3c:	8f878024 	lw	a3,-32732(gp)
+    6b40:	8f998224 	lw	t9,-32220(gp)
+    6b44:	afa30010 	sw	v1,16(sp)
+    6b48:	afa20014 	sw	v0,20(sp)
+    6b4c:	2625ec88 	addiu	a1,s1,-4984
+    6b50:	24e7ece4 	addiu	a3,a3,-4892
+    6b54:	24040001 	li	a0,1
+    6b58:	0320f809 	jalr	t9
+    6b5c:	24060004 	li	a2,4
+    6b60:	10400002 	beqz	v0,6b6c <uc_api_enable_m_sys@@Base+0x188>
+    6b64:	00001821 	move	v1,zero
+    6b68:	2403ffff 	li	v1,-1
+    6b6c:	8fbf002c 	lw	ra,44(sp)
+    6b70:	8fb10028 	lw	s1,40(sp)
+    6b74:	8fb00024 	lw	s0,36(sp)
+    6b78:	00601021 	move	v0,v1
+    6b7c:	03e00008 	jr	ra
+    6b80:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_usb =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00005914 <uc_api_enable_m_usb@@Base>:
+    5914:	3c1c0003 	lui	gp,0x3
+    5918:	279c45bc 	addiu	gp,gp,17852
+    591c:	0399e021 	addu	gp,gp,t9
+    5920:	27bdffd8 	addiu	sp,sp,-40
+    5924:	afbf0024 	sw	ra,36(sp)
+    5928:	afbc0018 	sw	gp,24(sp)
+    592c:	10800011 	beqz	a0,5974 <uc_api_enable_m_usb@@Base+0x60>
+    5930:	2402ffff 	li	v0,-1
+    5934:	8c820000 	lw	v0,0(a0)
+    5938:	1040000d 	beqz	v0,5970 <uc_api_enable_m_usb@@Base+0x5c>
+    593c:	8f858024 	lw	a1,-32732(gp)
+    5940:	8c830004 	lw	v1,4(a0)
+    5944:	8f878024 	lw	a3,-32732(gp)
+    5948:	8f9982d4 	lw	t9,-32044(gp)
+    594c:	afa20010 	sw	v0,16(sp)
+    5950:	afa30014 	sw	v1,20(sp)
+    5954:	24a5e714 	addiu	a1,a1,-6380
+    5958:	24e7e71c 	addiu	a3,a3,-6372
+    595c:	2404000e 	li	a0,14
+    5960:	0320f809 	jalr	t9
+    5964:	00003021 	move	a2,zero
+    5968:	10000003 	b	5978 <uc_api_enable_m_usb@@Base+0x64>
+    596c:	8fbf0024 	lw	ra,36(sp)
+    5970:	2402ffff 	li	v0,-1
+    5974:	8fbf0024 	lw	ra,36(sp)
+    5978:	03e00008 	jr	ra
+    597c:	27bd0028 	addiu	sp,sp,40
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_wan =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+000063ac <uc_api_enable_m_wan@@Base>:
+    63ac:	3c1c0003 	lui	gp,0x3
+    63b0:	279c3b24 	addiu	gp,gp,15140
+    63b4:	0399e021 	addu	gp,gp,t9
+    63b8:	27bdffd0 	addiu	sp,sp,-48
+    63bc:	afbf002c 	sw	ra,44(sp)
+    63c0:	afb10028 	sw	s1,40(sp)
+    63c4:	afb00024 	sw	s0,36(sp)
+    63c8:	afbc0018 	sw	gp,24(sp)
+    63cc:	14800009 	bnez	a0,63f4 <uc_api_enable_m_wan@@Base+0x48>
+    63d0:	00808021 	move	s0,a0
+    63d4:	8f848024 	lw	a0,-32732(gp)
+    63d8:	8f868024 	lw	a2,-32732(gp)
+    63dc:	8f998398 	lw	t9,-31848(gp)
+    63e0:	2484e580 	addiu	a0,a0,-6784
+    63e4:	24c6e72c 	addiu	a2,a2,-6356
+    63e8:	0320f809 	jalr	t9
+    63ec:	24050539 	li	a1,1337
+    63f0:	8fbc0018 	lw	gp,24(sp)
+    63f4:	8e020010 	lw	v0,16(s0)
+    63f8:	5040003e 	beqzl	v0,64f4 <uc_api_enable_m_wan@@Base+0x148>
+    63fc:	2402ffff 	li	v0,-1
+    6400:	8e030008 	lw	v1,8(s0)
+    6404:	5060003b 	beqzl	v1,64f4 <uc_api_enable_m_wan@@Base+0x148>
+    6408:	2402ffff 	li	v0,-1
+    640c:	8e030000 	lw	v1,0(s0)
+    6410:	50600038 	beqzl	v1,64f4 <uc_api_enable_m_wan@@Base+0x148>
+    6414:	2402ffff 	li	v0,-1
+    6418:	8e030014 	lw	v1,20(s0)
+    641c:	8f918024 	lw	s1,-32732(gp)
+    6420:	8f878024 	lw	a3,-32732(gp)
+    6424:	8f99836c 	lw	t9,-31892(gp)
+    6428:	afa20010 	sw	v0,16(sp)
+    642c:	afa30014 	sw	v1,20(sp)
+    6430:	24e7eae4 	addiu	a3,a3,-5404
+    6434:	24040006 	li	a0,6
+    6438:	2625eadc 	addiu	a1,s1,-5412
+    643c:	0320f809 	jalr	t9
+    6440:	24060001 	li	a2,1
+    6444:	1440002a 	bnez	v0,64f0 <uc_api_enable_m_wan@@Base+0x144>
+    6448:	8fbc0018 	lw	gp,24(sp)
+    644c:	8e030008 	lw	v1,8(s0)
+    6450:	8e02000c 	lw	v0,12(s0)
+    6454:	8f878024 	lw	a3,-32732(gp)
+    6458:	8f998274 	lw	t9,-32140(gp)
+    645c:	afa30010 	sw	v1,16(sp)
+    6460:	afa20014 	sw	v0,20(sp)
+    6464:	24e7eaf8 	addiu	a3,a3,-5384
+    6468:	24040006 	li	a0,6
+    646c:	2625eadc 	addiu	a1,s1,-5412
+    6470:	0320f809 	jalr	t9
+    6474:	00003021 	move	a2,zero
+    6478:	1440001d 	bnez	v0,64f0 <uc_api_enable_m_wan@@Base+0x144>
+    647c:	8fbc0018 	lw	gp,24(sp)
+    6480:	8e030000 	lw	v1,0(s0)
+    6484:	8e020004 	lw	v0,4(s0)
+    6488:	8f878024 	lw	a3,-32732(gp)
+    648c:	8f9981a4 	lw	t9,-32348(gp)
+    6490:	afa30010 	sw	v1,16(sp)
+    6494:	afa20014 	sw	v0,20(sp)
+    6498:	24e7eb0c 	addiu	a3,a3,-5364
+    649c:	24040006 	li	a0,6
+    64a0:	2625eadc 	addiu	a1,s1,-5412
+    64a4:	0320f809 	jalr	t9
+    64a8:	24060002 	li	a2,2
+    64ac:	14400010 	bnez	v0,64f0 <uc_api_enable_m_wan@@Base+0x144>
+    64b0:	8fbc0018 	lw	gp,24(sp)
+    64b4:	8e020018 	lw	v0,24(s0)
+    64b8:	5040000e 	beqzl	v0,64f4 <uc_api_enable_m_wan@@Base+0x148>
+    64bc:	00001021 	move	v0,zero
+    64c0:	8e03001c 	lw	v1,28(s0)
+    64c4:	8f878024 	lw	a3,-32732(gp)
+    64c8:	8f9982a8 	lw	t9,-32088(gp)
+    64cc:	afa20010 	sw	v0,16(sp)
+    64d0:	afa30014 	sw	v1,20(sp)
+    64d4:	2625eadc 	addiu	a1,s1,-5412
+    64d8:	24e7eb20 	addiu	a3,a3,-5344
+    64dc:	24040006 	li	a0,6
+    64e0:	0320f809 	jalr	t9
+    64e4:	24060003 	li	a2,3
+    64e8:	50400002 	beqzl	v0,64f4 <uc_api_enable_m_wan@@Base+0x148>
+    64ec:	00001021 	move	v0,zero
+    64f0:	2402ffff 	li	v0,-1
+    64f4:	8fbf002c 	lw	ra,44(sp)
+    64f8:	8fb10028 	lw	s1,40(sp)
+    64fc:	8fb00024 	lw	s0,36(sp)
+    6500:	03e00008 	jr	ra
+    6504:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== DISASM uc_api_enable_m_wifi =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00006664 <uc_api_enable_m_wifi@@Base>:
+    6664:	3c1c0003 	lui	gp,0x3
+    6668:	279c386c 	addiu	gp,gp,14444
+    666c:	0399e021 	addu	gp,gp,t9
+    6670:	27bdffd0 	addiu	sp,sp,-48
+    6674:	afbf002c 	sw	ra,44(sp)
+    6678:	afb10028 	sw	s1,40(sp)
+    667c:	afb00024 	sw	s0,36(sp)
+    6680:	afbc0018 	sw	gp,24(sp)
+    6684:	14800009 	bnez	a0,66ac <uc_api_enable_m_wifi@@Base+0x48>
+    6688:	00808021 	move	s0,a0
+    668c:	8f848024 	lw	a0,-32732(gp)
+    6690:	8f868024 	lw	a2,-32732(gp)
+    6694:	8f998398 	lw	t9,-31848(gp)
+    6698:	2484e580 	addiu	a0,a0,-6784
+    669c:	24c6e72c 	addiu	a2,a2,-6356
+    66a0:	0320f809 	jalr	t9
+    66a4:	240504f3 	li	a1,1267
+    66a8:	8fbc0018 	lw	gp,24(sp)
+    66ac:	8e020000 	lw	v0,0(s0)
+    66b0:	5040001f 	beqzl	v0,6730 <uc_api_enable_m_wifi@@Base+0xcc>
+    66b4:	8e020010 	lw	v0,16(s0)
+    66b8:	8e030008 	lw	v1,8(s0)
+    66bc:	5060001c 	beqzl	v1,6730 <uc_api_enable_m_wifi@@Base+0xcc>
+    66c0:	8e020010 	lw	v0,16(s0)
+    66c4:	8e030004 	lw	v1,4(s0)
+    66c8:	8f918024 	lw	s1,-32732(gp)
+    66cc:	8f878024 	lw	a3,-32732(gp)
+    66d0:	8f9980ec 	lw	t9,-32532(gp)
+    66d4:	afa20010 	sw	v0,16(sp)
+    66d8:	afa30014 	sw	v1,20(sp)
+    66dc:	24e7eb98 	addiu	a3,a3,-5224
+    66e0:	24040005 	li	a0,5
+    66e4:	2625eb90 	addiu	a1,s1,-5232
+    66e8:	0320f809 	jalr	t9
+    66ec:	24060001 	li	a2,1
+    66f0:	1440006e 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    66f4:	8fbc0018 	lw	gp,24(sp)
+    66f8:	8e030008 	lw	v1,8(s0)
+    66fc:	8e02000c 	lw	v0,12(s0)
+    6700:	8f878024 	lw	a3,-32732(gp)
+    6704:	8f99831c 	lw	t9,-31972(gp)
+    6708:	afa30010 	sw	v1,16(sp)
+    670c:	afa20014 	sw	v0,20(sp)
+    6710:	2625eb90 	addiu	a1,s1,-5232
+    6714:	24e7ebac 	addiu	a3,a3,-5204
+    6718:	24040005 	li	a0,5
+    671c:	0320f809 	jalr	t9
+    6720:	00003021 	move	a2,zero
+    6724:	14400061 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    6728:	8fbc0018 	lw	gp,24(sp)
+    672c:	8e020010 	lw	v0,16(s0)
+    6730:	5040001f 	beqzl	v0,67b0 <uc_api_enable_m_wifi@@Base+0x14c>
+    6734:	8e020020 	lw	v0,32(s0)
+    6738:	8e030018 	lw	v1,24(s0)
+    673c:	5060001c 	beqzl	v1,67b0 <uc_api_enable_m_wifi@@Base+0x14c>
+    6740:	8e020020 	lw	v0,32(s0)
+    6744:	8e030014 	lw	v1,20(s0)
+    6748:	8f918024 	lw	s1,-32732(gp)
+    674c:	8f878024 	lw	a3,-32732(gp)
+    6750:	8f9982a4 	lw	t9,-32092(gp)
+    6754:	afa20010 	sw	v0,16(sp)
+    6758:	afa30014 	sw	v1,20(sp)
+    675c:	24e7ebc0 	addiu	a3,a3,-5184
+    6760:	24040005 	li	a0,5
+    6764:	2625eb90 	addiu	a1,s1,-5232
+    6768:	0320f809 	jalr	t9
+    676c:	24060003 	li	a2,3
+    6770:	1440004e 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    6774:	8fbc0018 	lw	gp,24(sp)
+    6778:	8e030018 	lw	v1,24(s0)
+    677c:	8e02001c 	lw	v0,28(s0)
+    6780:	8f878024 	lw	a3,-32732(gp)
+    6784:	8f99822c 	lw	t9,-32212(gp)
+    6788:	afa30010 	sw	v1,16(sp)
+    678c:	afa20014 	sw	v0,20(sp)
+    6790:	2625eb90 	addiu	a1,s1,-5232
+    6794:	24e7ebd4 	addiu	a3,a3,-5164
+    6798:	24040005 	li	a0,5
+    679c:	0320f809 	jalr	t9
+    67a0:	24060002 	li	a2,2
+    67a4:	14400041 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    67a8:	8fbc0018 	lw	gp,24(sp)
+    67ac:	8e020020 	lw	v0,32(s0)
+    67b0:	5040001f 	beqzl	v0,6830 <uc_api_enable_m_wifi@@Base+0x1cc>
+    67b4:	8e020030 	lw	v0,48(s0)
+    67b8:	8e030028 	lw	v1,40(s0)
+    67bc:	5060001c 	beqzl	v1,6830 <uc_api_enable_m_wifi@@Base+0x1cc>
+    67c0:	8e020030 	lw	v0,48(s0)
+    67c4:	8e030024 	lw	v1,36(s0)
+    67c8:	8f918024 	lw	s1,-32732(gp)
+    67cc:	8f878024 	lw	a3,-32732(gp)
+    67d0:	8f998194 	lw	t9,-32364(gp)
+    67d4:	afa20010 	sw	v0,16(sp)
+    67d8:	afa30014 	sw	v1,20(sp)
+    67dc:	24e7ebe8 	addiu	a3,a3,-5144
+    67e0:	24040005 	li	a0,5
+    67e4:	2625eb90 	addiu	a1,s1,-5232
+    67e8:	0320f809 	jalr	t9
+    67ec:	24060005 	li	a2,5
+    67f0:	1440002e 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    67f4:	8fbc0018 	lw	gp,24(sp)
+    67f8:	8e030028 	lw	v1,40(s0)
+    67fc:	8e02002c 	lw	v0,44(s0)
+    6800:	8f878024 	lw	a3,-32732(gp)
+    6804:	8f9980dc 	lw	t9,-32548(gp)
+    6808:	afa30010 	sw	v1,16(sp)
+    680c:	afa20014 	sw	v0,20(sp)
+    6810:	2625eb90 	addiu	a1,s1,-5232
+    6814:	24e7ec00 	addiu	a3,a3,-5120
+    6818:	24040005 	li	a0,5
+    681c:	0320f809 	jalr	t9
+    6820:	24060004 	li	a2,4
+    6824:	14400021 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    6828:	8fbc0018 	lw	gp,24(sp)
+    682c:	8e020030 	lw	v0,48(s0)
+    6830:	5040001f 	beqzl	v0,68b0 <uc_api_enable_m_wifi@@Base+0x24c>
+    6834:	00001021 	move	v0,zero
+    6838:	8e030038 	lw	v1,56(s0)
+    683c:	5060001c 	beqzl	v1,68b0 <uc_api_enable_m_wifi@@Base+0x24c>
+    6840:	00001021 	move	v0,zero
+    6844:	8e030034 	lw	v1,52(s0)
+    6848:	8f918024 	lw	s1,-32732(gp)
+    684c:	8f878024 	lw	a3,-32732(gp)
+    6850:	8f998340 	lw	t9,-31936(gp)
+    6854:	afa20010 	sw	v0,16(sp)
+    6858:	afa30014 	sw	v1,20(sp)
+    685c:	24e7ec18 	addiu	a3,a3,-5096
+    6860:	24040005 	li	a0,5
+    6864:	2625eb90 	addiu	a1,s1,-5232
+    6868:	0320f809 	jalr	t9
+    686c:	24060007 	li	a2,7
+    6870:	1440000e 	bnez	v0,68ac <uc_api_enable_m_wifi@@Base+0x248>
+    6874:	8fbc0018 	lw	gp,24(sp)
+    6878:	8e02003c 	lw	v0,60(s0)
+    687c:	8e030038 	lw	v1,56(s0)
+    6880:	8f878024 	lw	a3,-32732(gp)
+    6884:	8f998300 	lw	t9,-32000(gp)
+    6888:	afa30010 	sw	v1,16(sp)
+    688c:	afa20014 	sw	v0,20(sp)
+    6890:	2625eb90 	addiu	a1,s1,-5232
+    6894:	24e7ec2c 	addiu	a3,a3,-5076
+    6898:	24040005 	li	a0,5
+    689c:	0320f809 	jalr	t9
+    68a0:	24060006 	li	a2,6
+    68a4:	50400002 	beqzl	v0,68b0 <uc_api_enable_m_wifi@@Base+0x24c>
+    68a8:	00001021 	move	v0,zero
+    68ac:	2402ffff 	li	v0,-1
+    68b0:	8fbf002c 	lw	ra,44(sp)
+    68b4:	8fb10028 	lw	s1,40(sp)
+    68b8:	8fb00024 	lw	s0,36(sp)
+    68bc:	03e00008 	jr	ra
+    68c0:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== known wire IDs from captures for comparison =====
+TCP9000 M_MESH_AUTH observed = 0x18; GET_STA=0x00 LOGIN=0x01
+TCP9000 M_MESH_ADVANCE observed = 0x17; QOS_GET=0x08 HIGH_DEVICE_GET=0x0f
+Goal: determine whether uc_api_enable module index equals TCP9000 wire module or is a separate registry index.
