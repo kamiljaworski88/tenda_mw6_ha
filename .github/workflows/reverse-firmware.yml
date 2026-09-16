@@ -13,43 +13,36 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve confcli subscription callback
+      - name: Resolve confcli runtime id source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           cli='firmware-src/RootFS-unpacked/bin/confcli'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/confcli-subscription-callback.txt'
-          mipsel-linux-gnu-objdump -drwC "$cli" > /tmp/cli.asm
-          mipsel-linux-gnu-readelf -sW "$cli" > /tmp/cli.syms
+          out='docs/reverse-generated/confcli-runtime-id.txt'
           {
-            echo '===== RUN 46 GOAL ====='
-            echo 'B2 only: resolve the callback pointer shared by the two cmd_sub calls in confcli main and identify the runtime identifier used to build confctl_cli@<id>.'
-            echo '===== MAIN SUBSCRIPTION WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x406680 --stop-address=0x406810 "$cli" || true
-            echo '===== GOT CONTENTS AROUND 0x454180 ====='
-            mipsel-linux-gnu-objdump -s --start-address=0x454160 --stop-address=0x4541b0 "$cli" || true
-            echo '===== SYMBOLS AROUND CALLBACK CANDIDATES ====='
-            grep -E 'conf_msg_hander|conf_msg_open|confctl_define_callback|cmd_sub|sprintf|snprintf|vsnprintf|get.*serial|serial|mac|uuid|hostname' /tmp/cli.syms || true
-            echo '===== STRINGS AROUND 0x32580..0x325e0 ====='
-            strings -a -t x "$cli" | awk '$1 >= "32570" && $1 <= "325f0" {print}' || true
-            echo '===== REFERENCES TO FORMAT STRING / confctl_cli ====='
-            grep -n -B30 -A50 -E '325a0|325a8|325c8' /tmp/cli.asm || true
-            echo '===== ALL REFERENCES TO conf_msg_hander ADDRESS ====='
-            grep -n -B20 -A30 -E '407210|00407210' /tmp/cli.asm || true
-            echo '===== DYNAMIC RELOCS ====='
-            mipsel-linux-gnu-objdump -R "$cli" || true
+            echo '===== RUN 47 GOAL ====='
+            echo 'B3 only: identify the source of <runtime-id> used in confctl_cli@<runtime-id>.'
+            echo '===== MAIN BUILD WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x406650 --stop-address=0x4066e8 "$cli" || true
+            echo '===== GOT 0x4544d0..0x454540 ====='
+            mipsel-linux-gnu-readelf -x .got "$cli" | grep -E '0x004544d0|0x004544e0|0x004544f0|0x00454500|0x00454510|0x00454520|0x00454530|0x00454540' || true
+            echo '===== SYMBOLS AT GOT TARGET VALUES ====='
+            mipsel-linux-gnu-readelf -sW "$cli" | grep -E '00430|00431|00432' || true
+            echo '===== RODATA AROUND VA 0x432300 ====='
+            mipsel-linux-gnu-objdump -s --start-address=0x4322f0 --stop-address=0x432350 "$cli" || true
+            echo '===== STRINGS FILE OFFSETS 0x322f0..0x32350 ====='
+            strings -a -t x "$cli" | awk '$1 >= "322f0" && $1 <= "32350" {print}' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: confcli-subscription-callback
-          path: docs/reverse-generated/confcli-subscription-callback.txt
+          name: confcli-runtime-id
+          path: docs/reverse-generated/confcli-runtime-id.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/confcli-subscription-callback.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve confcli subscription callback'; git push || true; fi
-# run46-trigger
+          git add docs/reverse-generated/confcli-runtime-id.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve confcli runtime id source'; git push || true; fi
