@@ -10,71 +10,95 @@ permissions:
   contents: read
 
 jobs:
-  disassemble:
+  reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mips-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git qemu-user python3
       - name: Fetch public MW6 HW2.1 firmware dump
         run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p reports
-      - name: Locate rate-related firmware objects
+      - name: Locate and disassemble rate implementation
         run: |
           root='firmware-src/RootFS-unpacked'
-          {
-            echo '=== filenames ==='
-            find "$root" -type f \( -iname '*cloud*' -o -iname '*online*' -o -iname '*bm_*' -o -iname '*band*' -o -iname '*rate*' \) -print
-            echo
-            echo '=== text references ==='
-            grep -RInaE 'fill_cloud_info_device_lists_rate|g_ip_info|online_ip|bm_online_ip|device_lists_rate' "$root" firmware-src/boot.log firmware-src/README*.md 2>/dev/null || true
-          } > reports/rate-locate.txt
-
-          # Search every regular ELF/library/module for embedded strings without assuming a path.
           : > reports/rate-binary-hits.txt
           while IFS= read -r -d '' f; do
             if strings -a "$f" 2>/dev/null | grep -qE 'fill_cloud_info_device_lists_rate|g_ip_info|online_ip|bm_online_ip|device_lists_rate'; then
               echo "===== $f =====" >> reports/rate-binary-hits.txt
               strings -a -t x "$f" | grep -E -C 12 'fill_cloud_info_device_lists_rate|g_ip_info|online_ip|bm_online_ip|device_lists_rate' >> reports/rate-binary-hits.txt || true
+              safe=$(echo "${f#$root/}" | tr '/' '_')
+              mipsel-linux-gnu-readelf -aW "$f" > "reports/$safe.readelf.txt" 2>&1 || true
+              mipsel-linux-gnu-objdump -drwC "$f" > "reports/$safe.objdump.txt" 2>&1 || true
+              strings -a -t x "$f" > "reports/$safe.strings.txt" || true
             fi
           done < <(find "$root" -type f -print0)
-      - name: Disassemble binaries containing rate symbols
+      - name: Capture cmdcli encrypted protocol offline
         run: |
-          root='firmware-src/RootFS-unpacked'
-          mkdir -p reports/rate-elf
-          while IFS= read -r -d '' f; do
-            if strings -a "$f" 2>/dev/null | grep -qE 'fill_cloud_info_device_lists_rate|g_ip_info|online_ip|bm_online_ip|device_lists_rate'; then
-              rel=${f#"$root/"}
-              safe=$(echo "$rel" | tr '/' '_')
-              file "$f" > "reports/rate-elf/$safe.file.txt" || true
-              mips-linux-gnu-readelf -aW "$f" > "reports/rate-elf/$safe.readelf.txt" 2>&1 || true
-              mips-linux-gnu-objdump -drwC "$f" > "reports/rate-elf/$safe.objdump.txt" 2>&1 || true
-              strings -a -t x "$f" > "reports/rate-elf/$safe.strings.txt" || true
-            fi
-          done < <(find "$root" -type f -print0)
-      - name: Extract neighborhoods around rate strings and likely proc paths
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          keys=('fill_cloud_info_device_lists_rate','g_ip_info','online_ip','bm_online_ip','/proc/','rate','speed','upload','download')
-          out=[]
-          for p in Path('reports/rate-elf').glob('*.strings.txt'):
-              lines=p.read_text(errors='replace').splitlines()
-              hits=[]
-              for i,line in enumerate(lines):
-                  if any(k.lower() in line.lower() for k in keys):
-                      hits.extend(lines[max(0,i-10):min(len(lines),i+11)])
-                      hits.append('-'*80)
-              if hits:
-                  out.append(f'===== {p.name} =====')
-                  out.extend(hits)
-          Path('reports/rate-string-neighborhoods.txt').write_text('\n'.join(out))
+          root="$PWD/firmware-src/RootFS-unpacked"
+          cat > /tmp/capture.py <<'PY'
+          import socket, pathlib
+          s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+          s.bind(('127.0.0.1',19098)); s.listen(1); s.settimeout(15)
+          try:
+              c,a=s.accept(); c.settimeout(3)
+              chunks=[]
+              try:
+                  while True:
+                      b=c.recv(65535)
+                      if not b: break
+                      chunks.append(b)
+                      # We intentionally do not reply. Goal: capture first client request only.
+                      if sum(map(len,chunks)) >= 1: break
+              except Exception: pass
+              data=b''.join(chunks)
+              pathlib.Path('reports/cmdcli_ping_wire.bin').write_bytes(data)
+              pathlib.Path('reports/cmdcli_ping_wire.hex.txt').write_text(data.hex(' ')+'\n')
+              pathlib.Path('reports/cmdcli_ping_wire.meta.txt').write_text(f'peer={a} bytes={len(data)}\n')
+          except Exception as e:
+              pathlib.Path('reports/cmdcli_ping_wire.meta.txt').write_text('capture error: '+repr(e)+'\n')
           PY
+          python3 /tmp/capture.py & cap=$!
+          sleep 1
+          set +e
+          timeout 10 qemu-mipsel -L "$root" "$root/sbin/cmdcli" -r tcp://127.0.0.1:19098 ping > reports/cmdcli_ping.stdout.txt 2> reports/cmdcli_ping.stderr.txt
+          echo $? > reports/cmdcli_ping.exit.txt
+          wait $cap || true
+          set -e
+      - name: Capture raw Redis mode as control
+        run: |
+          root="$PWD/firmware-src/RootFS-unpacked"
+          cat > /tmp/capture_raw.py <<'PY'
+          import socket, pathlib
+          s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+          s.bind(('127.0.0.1',19099)); s.listen(1); s.settimeout(15)
+          try:
+              c,a=s.accept(); c.settimeout(3); data=c.recv(65535)
+              pathlib.Path('reports/cmdcli_raw_ping_wire.bin').write_bytes(data)
+              pathlib.Path('reports/cmdcli_raw_ping_wire.hex.txt').write_text(data.hex(' ')+'\n')
+              pathlib.Path('reports/cmdcli_raw_ping_wire.meta.txt').write_text(f'peer={a} bytes={len(data)}\n')
+          except Exception as e:
+              pathlib.Path('reports/cmdcli_raw_ping_wire.meta.txt').write_text('capture error: '+repr(e)+'\n')
+          PY
+          python3 /tmp/capture_raw.py & cap=$!
+          sleep 1
+          set +e
+          timeout 10 qemu-mipsel -L "$root" "$root/sbin/cmdcli" -R tcp://127.0.0.1:19099 ping > reports/cmdcli_raw_ping.stdout.txt 2> reports/cmdcli_raw_ping.stderr.txt
+          echo $? > reports/cmdcli_raw_ping.exit.txt
+          wait $cap || true
+          set -e
+      - name: Save protocol evidence
+        run: |
+          strings -a -t x firmware-src/RootFS-unpacked/sbin/cmdsrv > reports/cmdsrv.strings.txt
+          strings -a -t x firmware-src/RootFS-unpacked/sbin/cmdcli > reports/cmdcli.strings.txt
+          mipsel-linux-gnu-objdump -drwC firmware-src/RootFS-unpacked/sbin/cmdsrv > reports/cmdsrv.objdump.txt || true
+          mipsel-linux-gnu-objdump -drwC firmware-src/RootFS-unpacked/sbin/cmdcli > reports/cmdcli.objdump.txt || true
+          mipsel-linux-gnu-objdump -drwC firmware-src/RootFS-unpacked/lib/libcmdctl.so > reports/libcmdctl.objdump.txt || true
       - uses: actions/upload-artifact@v4
         with:
-          name: mw6-rate-reverse-reports
+          name: mw6-wire-reverse-reports
           path: reports/
           retention-days: 14
