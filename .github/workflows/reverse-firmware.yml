@@ -1,65 +1,50 @@
 name: Reverse MW6 firmware
-
 on:
   workflow_dispatch:
   push:
-    paths:
-      - '.github/workflows/reverse-firmware.yml'
-
+    paths: ['.github/workflows/reverse-firmware.yml']
 permissions:
   contents: write
-
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install tools
-        run: |
+      - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Trace HostInfo rate population
+      - name: Resolve rate call graph and traffic command
         shell: bash
         run: |
           set -u
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          root='firmware-src/RootFS-unpacked'
+          root='firmware-src/RootFS-unpacked'; conf="$root/bin/confsrv"; uc="$root/lib/libucapi.so"
           mkdir -p docs/reverse-generated
-          raw=/tmp/rate-zero.raw
-          out='docs/reverse-generated/rate-zero-path.txt'
-          : > "$raw"
-          echo '===== LIVE FACT =====' >> "$raw"
-          echo 'TCP9000 GetHostList returns HostInfo f7=uprate and f8=downrate, but both stayed zero during a live speed test.' >> "$raw"
-          echo 'Goal: determine whether GetHostList intentionally omits rate fill, rate fill requires another command/state, or another API exposes live rates.' >> "$raw"
-          for f in "$root/bin/confsrv" "$root/lib/libcommon.so" "$root/lib/libucapi.so" "$root/lib/libcloud.so"; do
-            [ -f "$f" ] || continue
-            echo "===== FILE $f SYMBOLS =====" >> "$raw"
-            mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -a -iE 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info|netlink_get_statistic_info|netlink_clear_statistic_info|g_ip_info|traffic|rate|get_host_list|GetTrafficInfo' >> "$raw" || true
-            echo "===== FILE $f STRINGS =====" >> "$raw"
-            strings -a -t x "$f" 2>/dev/null | grep -a -iE -C 45 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|online_ip|statistic|GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|DEV_TRAFFIC|uprate|downrate|traffic' >> "$raw" || true
+          out='docs/reverse-generated/rate-callgraph.txt'; : > "$out"
+          echo 'LIVE: GetHostList f7/f8 remain zero under heavy traffic.' >> "$out"
+          echo '===== CONFSRV SYMBOL ADDRESSES =====' >> "$out"
+          mipsel-linux-gnu-readelf -sW "$conf" | grep -a -iE 'confctl_get_host_list|fill_host_lists_rate|fill_host_lists_info|fill_host_info_from_client_status|find_client_in_online_ip_info|netlink_get_statistic_info|g_ip_info|cloud_info_device_lists_rate|wan_traffic' >> "$out" || true
+          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
+          echo '===== GET_HOST_LIST =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$conf" >> "$out" 2>/dev/null || true
+          echo '===== RATE FUNCTIONS =====' >> "$out"
+          for s in fill_host_lists_rate fill_host_lists_info fill_host_info_from_client_status find_client_in_online_ip_info fill_cloud_info_device_lists_rate confctl_get_wan_traffic_info; do
+            echo "--- $s ---" >> "$out"
+            mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$conf" >> "$out" 2>/dev/null || true
           done
-          conf="$root/bin/confsrv"
-          if [ -f "$conf" ]; then
-            mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/confsrv.objdump 2>/dev/null || true
-            echo '===== CONFSRV CALL CONTEXT =====' >> "$raw"
-            grep -a -iE -C 100 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info|netlink_get_statistic_info|netlink_clear_statistic_info|g_ip_info' /tmp/confsrv.objdump 2>/dev/null | head -n 14000 >> "$raw" || true
-            echo '===== GET HOST LIST FULL FUNCTION =====' >> "$raw"
-            mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$conf" 2>/dev/null >> "$raw" || true
-          fi
-          uc="$root/lib/libucapi.so"
-          if [ -f "$uc" ]; then
-            mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.objdump 2>/dev/null || true
-            echo '===== UCAPI TRAFFIC/RATE CALL CONTEXT =====' >> "$raw"
-            grep -a -iE -C 90 'GetTrafficInfo|MESH_WAN_TRAFFIC|DEV_TRAFFIC|traffic|rate' /tmp/uc.objdump 2>/dev/null | head -n 12000 >> "$raw" || true
-          fi
-          python3 -c "from pathlib import Path; r=Path('/tmp/rate-zero.raw').read_bytes(); Path('$out').write_text(r.decode('utf-8','backslashreplace'),encoding='utf-8')"
-          head -c 1500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          echo '===== DIRECT CALLS TO NETLINK/RATE (relocations + context) =====' >> "$out"
+          grep -a -nE 'netlink_get_statistic_info|fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info' /tmp/conf.asm | head -n 100 >> "$out" || true
+          echo '===== UCAPI APP REGISTRY TRAFFIC =====' >> "$out"
+          strings -a -t x "$uc" | grep -a -iE -C 35 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN|TRAFFIC|GetHostList|M_MESH_HOSTS' >> "$out" || true
+          echo '===== UCAPI SYMBOLS =====' >> "$out"
+          mipsel-linux-gnu-readelf -sW "$uc" | grep -a -iE 'traffic|wan.*rate|host.*get|enable_m_' >> "$out" || true
+          mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.asm
+          grep -a -nE -C 80 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN' /tmp/uc.asm | head -n 9000 >> "$out" || true
+          python3 -c "from pathlib import Path; p=Path('$out'); p.write_text(p.read_bytes().decode('utf-8','backslashreplace'),encoding='utf-8')"
+          head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-zero-path.txt
-          if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace zero HostInfo rate population path'
-            git push
-          fi
+          git add docs/reverse-generated/rate-callgraph.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: map rate call graph and traffic command'; git push; fi
