@@ -14,68 +14,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install MIPS/QEMU tools
+      - name: Install reverse tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu gcc-mipsel-linux-gnu git qemu-user python3
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
       - name: Fetch firmware dump
         run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p reports
-      - name: Build guest-root MIPS setrlimit shim
-        run: |
-          root="$PWD/firmware-src/RootFS-unpacked"
-          cat > /tmp/nolimit.c <<'C'
-          #include <sys/resource.h>
-          int setrlimit(__rlimit_resource_t resource, const struct rlimit *rlim) { return 0; }
-          C
-          mipsel-linux-gnu-gcc -shared -fPIC -O2 /tmp/nolimit.c -o "$root/lib/libnolimit.so"
-          file "$root/lib/libnolimit.so" > reports/qemu-shim.txt
-      - name: Capture cmdcli protocol frames
-        run: |
-          root="$PWD/firmware-src/RootFS-unpacked"
-          cat > /tmp/capture.py <<'PY'
-          import socket, pathlib, sys
-          port=int(sys.argv[1]); out=sys.argv[2]
-          s=socket.socket(); s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-          s.bind(('127.0.0.1',port)); s.listen(1); s.settimeout(15)
-          try:
-              c,a=s.accept(); c.settimeout(4); data=b''
-              try:
-                  while len(data)<65535:
-                      b=c.recv(65535-len(data))
-                      if not b: break
-                      data+=b
-                      if data: break
-              except Exception: pass
-              pathlib.Path(f'reports/{out}.bin').write_bytes(data)
-              pathlib.Path(f'reports/{out}.hex.txt').write_text(data.hex(' ')+'\n')
-              pathlib.Path(f'reports/{out}.meta.txt').write_text(f'peer={a} bytes={len(data)}\n')
-          except Exception as e:
-              pathlib.Path(f'reports/{out}.meta.txt').write_text('capture error: '+repr(e)+'\n')
-          PY
-          run_capture() {
-            mode="$1"; port="$2"; out="$3"
-            python3 /tmp/capture.py "$port" "$out" & cap=$!
-            sleep 1
-            set +e
-            timeout 10 qemu-mipsel -L "$root" -E LD_PRELOAD=/lib/libnolimit.so "$root/sbin/cmdcli" "$mode" "tcp://127.0.0.1:$port" ping > "reports/$out.stdout.txt" 2> "reports/$out.stderr.txt"
-            echo $? > "reports/$out.exit.txt"
-            wait $cap || true
-            set -e
-          }
-          run_capture -r 19098 cmdcli_encrypted_ping
-          run_capture -R 19099 cmdcli_raw_ping
-      - name: Save disassembly evidence
+      - name: Disassemble command transport stack
         run: |
           root='firmware-src/RootFS-unpacked'
-          for f in "$root/sbin/cmdsrv" "$root/sbin/cmdcli" "$root/lib/libredis.so" "$root/lib/libcmdctl.so" "$root/bin/confsrv" "$root/lib/libcommon.so" "$root/bin/log_upload"; do
-            safe=$(basename "$f")
-            strings -a -t x "$f" > "reports/$safe.strings.txt"
+          for f in "$root/sbin/cmdsrv" "$root/sbin/cmdcli" "$root/sbin/cmdctl_test" "$root/lib/libredis.so" "$root/lib/libcmdctl.so" "$root/lib/libcm.so" "$root/lib/libcommon.so" "$root/bin/device_list" "$root/bin/confsrv"; do
+            [ -f "$f" ] || continue
+            safe=$(echo "${f#$root/}" | tr '/' '_')
+            file "$f" > "reports/$safe.file.txt"
+            mipsel-linux-gnu-readelf -aW "$f" > "reports/$safe.readelf.txt" 2>&1 || true
             mipsel-linux-gnu-objdump -drwC "$f" > "reports/$safe.objdump.txt" 2>&1 || true
+            mipsel-linux-gnu-objdump -s "$f" > "reports/$safe.sections.txt" 2>&1 || true
+            strings -a -t x "$f" > "reports/$safe.strings.txt" || true
+          done
+      - name: Extract transport clues
+        run: |
+          root='firmware-src/RootFS-unpacked'
+          grep -RniE 'encrypt|decrypt|cipher|crypt|base64|raw redis|without encryption|cm_io_connect|cm_io_read|cm_io_write|tcp://|redis_option|subscribe|publish|confctl_srv_key' reports > reports/transport-clues.txt || true
+          find "$root" -type f -print0 | while IFS= read -r -d '' f; do
+            if strings -a "$f" 2>/dev/null | grep -qiE 'without encryption|encrypted protocol|cm_io_connect'; then
+              echo "===== $f =====" >> reports/transport-binary-hits.txt
+              strings -a -t x "$f" | grep -iE -C 8 'without encryption|encrypted protocol|cm_io_connect' >> reports/transport-binary-hits.txt || true
+            fi
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: mw6-wire-reverse-reports
+          name: mw6-transport-reverse-reports
           path: reports/
           retention-days: 14
