@@ -1,20 +1,47 @@
 #!/usr/bin/env python3
-"""Read-only MW6 traffic probe.
+"""Read-only MW6 WAN traffic probe.
 
 Firmware boot.log confirms M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8].
-This command is expected to be WAN traffic, not yet per-client traffic; the
-purpose of this probe is to decode its live response and separate it from the
-HostInfo rate path.
+The response is status(int32 LE) + protobuf WanRate. This tool deliberately
+keeps protobuf fields labelled f1/f2/f3 until their exact semantic names/units
+are confirmed from firmware/live deltas.
 """
 import argparse
 import socket
+import time
 from mw6_probe import (
     AUTH_GET_STA, AUTH_LOGIN, AUTH_MODULE, build_request,
-    extract_successful_login_payload, recv_frame, show,
+    extract_successful_login_payload, recv_frame, show, _protobuf_fields,
 )
 
 MESH_WAN_MODULE = 0x12
 MESH_WAN_TRAFFIC = 0x08
+
+
+def decode_wan_traffic(payload):
+    if len(payload) < 4:
+        raise ValueError("GetTrafficInfo payload too short")
+    status = int.from_bytes(payload[:4], "little", signed=True)
+    outer = _protobuf_fields(payload[4:])
+    records = []
+    for field, wire, value in outer:
+        if wire == 2:
+            try:
+                inner = _protobuf_fields(value)
+                records.append({f"f{f}": v for f, w, v in inner if w == 0})
+            except ValueError:
+                records.append({f"outer_f{field}": value.hex()})
+        elif wire == 0:
+            records.append({f"outer_f{field}": value})
+    return status, records
+
+
+def request_traffic(sock, tid):
+    sock.sendall(build_request(tid, MESH_WAN_MODULE, MESH_WAN_TRAFFIC))
+    r = recv_frame(sock)
+    if r["module"] != MESH_WAN_MODULE or r["command"] != MESH_WAN_TRAFFIC:
+        raise RuntimeError(f"unexpected response {r['module']:02x}/{r['command']:02x}")
+    return r
 
 
 def main():
@@ -22,7 +49,14 @@ def main():
     ap.add_argument("--pcap", required=True)
     ap.add_argument("--host", default="192.168.5.1")
     ap.add_argument("--port", type=int, default=9000)
+    ap.add_argument("--watch", action="store_true", help="poll GetTrafficInfo repeatedly")
+    ap.add_argument("--interval", type=float, default=2.0)
+    ap.add_argument("--count", type=int, default=15, help="0 = continuous")
     args = ap.parse_args()
+    if args.interval < 1:
+        ap.error("--interval must be >= 1 second")
+    if args.count < 0:
+        ap.error("--count must be >= 0")
 
     login = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login)} B); content is intentionally hidden.")
@@ -38,12 +72,17 @@ def main():
         if r["raw"][-4:] != b"\x00\x00\x00\x00":
             raise SystemExit("LOGIN rejected")
 
-        tid += 1
-        print("\nSending firmware-confirmed GetTrafficInfo: M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8]...")
-        s.sendall(build_request(tid, MESH_WAN_MODULE, MESH_WAN_TRAFFIC))
-        r = recv_frame(s)
-        show("M_MESH_WAN / GetTrafficInfo", r)
-        print("NOTE: this endpoint is classified by firmware as WAN traffic; response decoding comes next.")
+        print("\nFirmware-confirmed GetTrafficInfo: M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8]")
+        n = 0
+        while True:
+            tid = (tid + 1) & 0xff
+            r = request_traffic(s, tid)
+            status, records = decode_wan_traffic(r["payload"])
+            print(f"{time.strftime('%H:%M:%S')} status={status} records={records} raw={r['payload'].hex(' ')}")
+            n += 1
+            if not args.watch or (args.count and n >= args.count):
+                break
+            time.sleep(args.interval)
 
 
 if __name__ == "__main__":
