@@ -13,45 +13,45 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Reconstruct cmdrpc request wire
+      - name: Trace cmdsrv RPC routing
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
+          srv='firmware-src/RootFS-unpacked/sbin/cmdsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/cmdrpc-request-wire.txt'
-          mipsel-linux-gnu-objdump -drwC "$ctl" > /tmp/ctl.asm
-          mipsel-linux-gnu-readelf -sW "$ctl" > /tmp/ctl.syms
+          out='docs/reverse-generated/cmdsrv-rpc-routing.txt'
+          mipsel-linux-gnu-objdump -drwC "$srv" > /tmp/srv.asm
+          mipsel-linux-gnu-readelf -sW "$srv" > /tmp/srv.syms
           {
-            echo '===== RUN 43 GOAL ====='
-            echo 'Reconstruct the exact single-request/single-reply cmdrpc flow used by libcmdctl T.54, including RESP command sequence and correlation channel, so it can be implemented without leaving cmdsrv in SUBSCRIBE mode.'
+            echo '===== RUN 44 GOAL ====='
+            echo 'Determine how cmdsrv routes subscriber vs request clients and whether cmdrpc@ keys/channels get a dedicated request/reply path that avoids global subscribe mode.'
             echo '===== SYMBOLS ====='
-            grep -E 'cmd_(sub|pub|get|set)|cmdsh_random_key|redis_writer|redis_reader|redisReader|cm_(io_)?(read|write|connect|close)|select|poll|sleep|time|malloc|free|sds' /tmp/ctl.syms || true
-            echo '===== FULL T.54 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$ctl" || true
-            echo '===== RANDOM KEY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x211c "$ctl" || true
-            echo '===== WRAPPERS ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x1f20 "$ctl" || true
-            echo '===== GOT / RELOCS ====='
-            mipsel-linux-gnu-objdump -R "$ctl" || true
-            echo '===== RODATA / COMMAND STRINGS ====='
-            strings -a -t x "$ctl" | grep -E -B15 -A25 'cmdrpc@|publish|subscribe|unsubscribe|psubscribe|punsubscribe|quit|set$|get$|PING|unexpected data|cmdsh' || true
-            echo '===== CALLS IN T.54 TO IMPORTED HELPERS ====='
-            sed -n '/00001868 <T.54>/,/00001e04 <cmd_pub>/p' /tmp/ctl.asm | grep -n -E -B4 -A8 'jalr|lw[[:space:]]+t9|redis|cm_|sds|Base64|malloc|free|select|poll' || true
-            echo '===== SUBSCRIBE CALLBACK / READ PATH ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x134c --stop-address=0x1868 "$ctl" || true
+            grep -iE 'subscribe|unsubscribe|publish|redis|client|pending|request|reply|cmdrpc|reader|writer|accept|connect|close|execute|share|mode' /tmp/srv.syms | head -n 1200 || true
+            echo '===== STRINGS ====='
+            strings -a -t x "$srv" | grep -iE -B20 -A30 'only .*SUBSCRIBE|subscribe mode|subscribe|unsubscribe|publish|cmdrpc@|pending|request|reply|redis|share|client' || true
+            echo '===== REFERENCES TO SUBSCRIBE-ONLY ERROR ====='
+            off=$(strings -a -t x "$srv" | awk '/only .*SUBSCRIBE/ {print $1; exit}')
+            echo "string_offset=${off:-none}"
+            if [ -n "${off:-}" ]; then
+              grep -n -E -B100 -A180 "${off}" /tmp/srv.asm | head -n 2200 || true
+            fi
+            echo '===== REDIS CLIENT EXECUTE / TRY EXECUTE ====='
+            grep -n -E -B80 -A160 'redis_client_(try_)?execute|redis_reader|redis_writer|freeReplyObject' /tmp/srv.asm | head -n 3000 || true
+            echo '===== ACCEPT / FRONTEND CLIENT LIFECYCLE ====='
+            grep -n -E -B80 -A160 'accept|cm_io|client_new|client_free|close|pending' /tmp/srv.asm | head -n 3200 || true
+            echo '===== FULL DYNAMIC RELOCS ====='
+            mipsel-linux-gnu-objdump -R "$srv" || true
           } > "$out"
-          head -c 3200000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 3500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: cmdrpc-request-wire
-          path: docs/reverse-generated/cmdrpc-request-wire.txt
+          name: cmdsrv-rpc-routing
+          path: docs/reverse-generated/cmdsrv-rpc-routing.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/cmdrpc-request-wire.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: reconstruct cmdrpc request wire'; git push || true; fi
+          git add docs/reverse-generated/cmdsrv-rpc-routing.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: trace cmdsrv rpc routing'; git push || true; fi
