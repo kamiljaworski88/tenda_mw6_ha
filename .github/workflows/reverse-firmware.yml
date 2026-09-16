@@ -1,10 +1,8 @@
 name: Reverse MW6 firmware
-
 on:
   workflow_dispatch:
   push:
-    paths:
-      - '.github/workflows/reverse-firmware.yml'
+    paths: ['.github/workflows/reverse-firmware.yml']
 permissions:
   contents: write
 jobs:
@@ -16,58 +14,55 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Fetch firmware tree
-        run: |
-          git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated
-      - name: Map HostInfo protobuf and rate fields
+      - name: Analyze HostInfo schema and rate path
         shell: bash
         run: |
           set -u
+          git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           root='firmware-src/RootFS-unpacked'
-          out='docs/reverse-generated/hostinfo-rate-map.txt'
-          : > "$out"
-          echo '===== firmware references =====' >> "$out"
-          grep -RInaE 'GetHostList|CMD_MESH_HOSTS_GET|uprate|downrate|fill_host_lists_rate|fill_host_lists_info|host_info__descriptor|host_lists__descriptor' firmware-src 2>/dev/null | head -n 2500 >> "$out" || true
-          echo '===== binaries with HostInfo/rate strings =====' >> "$out"
-          find "$root" -maxdepth 2 -type f | while read -r f; do
-            if strings -a "$f" 2>/dev/null | grep -qiE 'uprate|downrate|GetHostList|host_lists__descriptor|host_info__descriptor'; then
-              echo "===== FILE $f =====" >> "$out"
-              strings -a -t x "$f" | grep -iE -C 18 'uprate|downrate|GetHostList|host_lists|host_info|signal|assoc_sn|condtion_time|interface_name' >> "$out" || true
-              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'fill_host|host_info|host_lists|rate|online_ip|statistic' >> "$out" || true
-            fi
-          done
+          mkdir -p docs/reverse-generated
+          raw=/tmp/hostinfo.raw
+          out='docs/reverse-generated/hostinfo-schema-rate.txt'
+          : > "$raw"
           pb="$root/lib/libpb.so"
+          conf="$root/bin/confsrv"
+          echo '===== LIVE WIRE FACTS =====' >> "$raw"
+          echo 'TCP9000 module 0x14 command 0x00 returns HostLists.' >> "$raw"
+          echo 'Observed HostInfo wire fields: 1 IP, 2 MAC, 3 enum/type, 4 assoc_sn, 5 numeric, 6 numeric, 7 numeric, 8 numeric, 9 signed RSSI, 10 hostname.' >> "$raw"
           if [ -f "$pb" ]; then
-            echo '===== libpb symbols =====' >> "$out"
-            mipsel-linux-gnu-readelf -sW "$pb" 2>/dev/null | grep -iE 'host_info|host_lists' >> "$out" || true
-            echo '===== libpb descriptor strings =====' >> "$out"
-            strings -a -t x "$pb" | grep -iE -C 35 'uprate|downrate|assoc_sn|condtion_time|interface_name|host_name|signal' >> "$out" || true
+            echo '===== LIBPB HOST SYMBOLS =====' >> "$raw"
+            mipsel-linux-gnu-readelf -sW "$pb" 2>/dev/null | grep -a -iE 'host_info|host_lists' >> "$raw" || true
+            echo '===== LIBPB HOST/RATE STRINGS =====' >> "$raw"
+            strings -a -t x "$pb" 2>/dev/null | grep -a -iE -C 45 '(^|[^a-z])(ipaddr|ethaddr|assoc_sn|condtion_time|access|signal|uprate|downrate|upload_type|up_time|interface_name|host_name)([^a-z]|$)' >> "$raw" || true
             for s in host_info__init host_info__get_packed_size host_info__pack host_info__unpack host_lists__init host_lists__pack; do
-              echo "===== DISASM $s =====" >> "$out"
-              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$pb" 2>/dev/null >> "$out" || true
+              echo "===== $s =====" >> "$raw"
+              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$pb" 2>/dev/null >> "$raw" || true
             done
           fi
-          conf="$root/bin/confsrv"
           if [ -f "$conf" ]; then
-            echo '===== confsrv symbols =====' >> "$out"
-            mipsel-linux-gnu-readelf -sW "$conf" 2>/dev/null | grep -iE 'fill_host|rate|online_ip|statistic' >> "$out" || true
-            mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.objdump || true
-            echo '===== confsrv rate-related disassembly excerpts =====' >> "$out"
-            grep -iE -C 60 'fill_host_lists_rate|fill_host_lists_info|find_client_in_online_ip_info|netlink_get_statistic_info|g_ip_info|host_lists__pack' /tmp/conf.objdump 2>/dev/null | head -n 9000 >> "$out" || true
+            echo '===== CONFSRV HOST/RATE SYMBOLS =====' >> "$raw"
+            mipsel-linux-gnu-readelf -sW "$conf" 2>/dev/null | grep -a -iE 'fill_host|online_ip|statistic|rate|confctl_get_host_list' >> "$raw" || true
+            echo '===== CONFSRV RELEVANT STRINGS =====' >> "$raw"
+            strings -a -t x "$conf" 2>/dev/null | grep -a -iE -C 40 'uprate|downrate|fill_host_lists_rate|online ip|GetHostList|interface_name|assoc_sn' >> "$raw" || true
+            for s in confctl_get_host_list fill_host_lists_rate fill_host_lists_info fill_host_info_from_client_status find_client_in_online_ip_info; do
+              echo "===== $s =====" >> "$raw"
+              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$conf" 2>/dev/null >> "$raw" || true
+            done
           fi
-          echo '===== live observation =====' >> "$out"
-          printf '%s\n' 'M_MESH_HOSTS[20]/CMD_MESH_HOSTS_GET[0] returned 30 HostInfo records.' >> "$out"
-          printf '%s\n' 'Observed: f1 IP; f2 MAC; f3 0/1/2; f4 assoc_sn; f5 9074/9104; f6/f7/f8 zero; f9 negative RSSI when present; f10 hostname.' >> "$out"
-          printf '%s\n' 'Goal: map exact protobuf names/numbers and prove uprate/downrate population path.' >> "$out"
-          head -c 1800000 "$out" > /tmp/hostinfo.out
-          mv /tmp/hostinfo.out "$out"
-      - name: Commit result
+          python3 - <<'PY'
+from pathlib import Path
+raw=Path('/tmp/hostinfo.raw').read_bytes()
+text=raw.decode('utf-8','backslashreplace')
+Path('docs/reverse-generated/hostinfo-schema-rate.txt').write_text(text, encoding='utf-8')
+PY
+          head -c 1200000 "$out" > /tmp/cut
+          mv /tmp/cut "$out"
+      - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/hostinfo-rate-map.txt
+          git add docs/reverse-generated/hostinfo-schema-rate.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: refresh HostInfo protobuf and rate map'
+            git commit -m 'reverse: refresh UTF-8 HostInfo schema and rate report'
             git push
           fi
