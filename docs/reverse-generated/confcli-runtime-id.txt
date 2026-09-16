@@ -1,0 +1,276 @@
+===== RUN 47 GOAL =====
+B3 only: identify the source of <runtime-id> used in confctl_cli@<runtime-id>.
+===== MAIN BUILD WINDOW =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00406650 <main@@Base+0x19c>:
+  406650:	8f82803c 	lw	v0,-32708(gp)
+  406654:	0040c821 	move	t9,v0
+  406658:	0320f809 	jalr	t9
+  40665c:	00000000 	nop
+  406660:	8fdc0010 	lw	gp,16(s8)
+  406664:	8f82834c 	lw	v0,-31924(gp)
+  406668:	0040c821 	move	t9,v0
+  40666c:	0320f809 	jalr	t9
+  406670:	00000000 	nop
+  406674:	8fdc0010 	lw	gp,16(s8)
+  406678:	8f8283dc 	lw	v0,-31780(gp)
+  40667c:	0040c821 	move	t9,v0
+  406680:	0320f809 	jalr	t9
+  406684:	00000000 	nop
+  406688:	8fdc0010 	lw	gp,16(s8)
+  40668c:	afc2001c 	sw	v0,28(s8)
+  406690:	27c20060 	addiu	v0,s8,96
+  406694:	8f838024 	lw	v1,-32732(gp)
+  406698:	24642314 	addiu	a0,v1,8980
+  40669c:	00402821 	move	a1,v0
+  4066a0:	8f8283a4 	lw	v0,-31836(gp)
+  4066a4:	0040c821 	move	t9,v0
+  4066a8:	0320f809 	jalr	t9
+  4066ac:	00000000 	nop
+  4066b0:	8fdc0010 	lw	gp,16(s8)
+  4066b4:	8f828024 	lw	v0,-32732(gp)
+  4066b8:	244325a0 	addiu	v1,v0,9632
+  4066bc:	27c40020 	addiu	a0,s8,32
+  4066c0:	27c20060 	addiu	v0,s8,96
+  4066c4:	00602821 	move	a1,v1
+  4066c8:	8f838024 	lw	v1,-32732(gp)
+  4066cc:	246625a8 	addiu	a2,v1,9640
+  4066d0:	00403821 	move	a3,v0
+  4066d4:	8f828340 	lw	v0,-31936(gp)
+  4066d8:	0040c821 	move	t9,v0
+  4066dc:	0320f809 	jalr	t9
+  4066e0:	00000000 	nop
+  4066e4:	8fdc0010 	lw	gp,16(s8)
+===== GOT 0x4544d0..0x454540 =====
+  0x004544d0 e0174300 d0174300 c0174300 b0174300 ..C...C...C...C.
+  0x004544e0 00000000 a0174300 90174300 80174300 ......C...C...C.
+  0x004544f0 70174300 60174300 50174300 40174300 p.C.`.C.P.C.@.C.
+  0x00454500 30174300 20174300 10174300 00174300 0.C. .C...C...C.
+  0x00454510 f0164300 e0164300 d0164300 c0164300 ..C...C...C...C.
+  0x00454520 00000000 b0164300 a0164300 90164300 ......C...C...C.
+  0x00454530 80164300 70164300 60164300 50164300 ..C.p.C.`.C.P.C.
+  0x00454540 00000000 40164300 30164300 20164300 ....@.C.0.C. .C.
+===== SYMBOLS AT GOT TARGET VALUES =====
+    29: 004319d0    28 FUNC    GLOBAL DEFAULT   14 _fini
+    37: 004303f0   260 FUNC    GLOBAL HIDDEN    12 __gedf2
+    61: 004302e0    92 FUNC    GLOBAL HIDDEN    12 __floatunsidf
+   101: 00430340   168 FUNC    GLOBAL HIDDEN    12 __fixunsdfsi
+   160: 00430500  2148 FUNC    GLOBAL HIDDEN    12 __subdf3
+   176: 00430260   116 FUNC    GLOBAL HIDDEN    12 __floatsidf
+   195: 004301e0   120 FUNC    GLOBAL HIDDEN    12 __fixdfsi
+   199: 004319b0     0 FUNC    GLOBAL DEFAULT  UND strsep
+   200: 004319a0     0 FUNC    GLOBAL DEFAULT  UND qos_rule__init
+   202: 00431990     0 FUNC    GLOBAL DEFAULT  UND uc_api_lib_init
+   203: 00431980     0 FUNC    GLOBAL DEFAULT  UND port_fwd_list__get_packed_size
+   204: 00431970     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__get_packed_size
+   205: 00431960     0 FUNC    GLOBAL DEFAULT  UND strlen
+   206: 00431950     0 FUNC    GLOBAL DEFAULT  UND wan_cfg__pack
+   207: 00431940     0 FUNC    GLOBAL DEFAULT  UND memcpy
+   208: 00431930     0 FUNC    GLOBAL DEFAULT  UND doSystemCmd
+   209: 00431920     0 FUNC    GLOBAL DEFAULT  UND sprintf
+   210: 00431910     0 FUNC    GLOBAL DEFAULT  UND time_group__pack
+   211: 00431900     0 FUNC    GLOBAL DEFAULT  UND strtok
+   212: 004318f0     0 FUNC    GLOBAL DEFAULT  UND cm_init
+   213: 004318e0     0 FUNC    GLOBAL DEFAULT  UND upn_pcfg__pack
+   214: 004318d0     0 FUNC    GLOBAL DEFAULT  UND fopen
+   215: 004318c0     0 FUNC    GLOBAL DEFAULT  UND fw_multi_upgrade_info_t__free_unpacked
+   216: 004318b0     0 FUNC    GLOBAL DEFAULT  UND mf_lists__pack
+   217: 004318a0     0 FUNC    GLOBAL DEFAULT  UND puts
+   218: 00431890     0 FUNC    GLOBAL DEFAULT  UND wlan_roaming__unpack
+   219: 00431880     0 FUNC    GLOBAL DEFAULT  UND wlan_roaming__free_unpacked
+   220: 00431870     0 FUNC    GLOBAL DEFAULT  UND wlan_time_choice__init
+   221: 00431860     0 FUNC    GLOBAL DEFAULT  UND set_env
+   222: 00431850     0 FUNC    GLOBAL DEFAULT  UND check_product_is_simgle_image
+   223: 00431840     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg_all__pack
+   224: 00431830     0 FUNC    GLOBAL DEFAULT  UND prod_check_change_lanip_handle
+   225: 00431820     0 FUNC    GLOBAL DEFAULT  UND flash_upgradefw
+   226: 00431810     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__pack
+   227: 00431800     0 FUNC    GLOBAL DEFAULT  UND stat
+   228: 004317f0     0 FUNC    GLOBAL DEFAULT  UND atoi
+   229: 004317e0     0 FUNC    GLOBAL DEFAULT  UND free
+   230: 004317d0     0 FUNC    GLOBAL DEFAULT  UND mf_lists__free_unpacked
+   231: 004317c0     0 FUNC    GLOBAL DEFAULT  UND set_extdns_by_lang
+   232: 004317b0     0 FUNC    GLOBAL DEFAULT  UND CommitCfm
+   234: 004317a0     0 FUNC    GLOBAL DEFAULT  UND GetValue
+   235: 00431790     0 FUNC    GLOBAL DEFAULT  UND systool_upfile_handle_new
+   236: 00431780     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__free_unpacked
+   237: 00431770     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg_all__unpack
+   238: 00431760     0 FUNC    GLOBAL DEFAULT  UND localtime
+   239: 00431750     0 FUNC    GLOBAL DEFAULT  UND time_group__unpack
+   240: 00431740     0 FUNC    GLOBAL DEFAULT  UND node_led_status__unpack
+   241: 00431730     0 FUNC    GLOBAL DEFAULT  UND monitor_mstart
+   242: 00431720     0 FUNC    GLOBAL DEFAULT  UND qos_rule__get_packed_size
+   243: 00431710     0 FUNC    GLOBAL DEFAULT  UND vsnprintf
+   244: 00431700     0 FUNC    GLOBAL DEFAULT  UND enable_conn_innernet
+   245: 004316f0     0 FUNC    GLOBAL DEFAULT  UND __assert
+   246: 004316e0     0 FUNC    GLOBAL DEFAULT  UND family_group__free_unpacked
+   247: 004316d0     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   248: 004316c0     0 FUNC    GLOBAL DEFAULT  UND redis_option_new
+   250: 004316b0     0 FUNC    GLOBAL DEFAULT  UND qos_rule__unpack
+   251: 004316a0     0 FUNC    GLOBAL DEFAULT  UND __errno_location
+   252: 00431690     0 FUNC    GLOBAL DEFAULT  UND env_init
+   253: 00431680     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   254: 00431670     0 FUNC    GLOBAL DEFAULT  UND systool_handle_restore_zero
+   255: 00431660     0 FUNC    GLOBAL DEFAULT  UND mf_lists__unpack
+   256: 00431650     0 FUNC    GLOBAL DEFAULT  UND mxp_manage_list__free_unpacked
+   258: 00431640     0 FUNC    GLOBAL DEFAULT  UND family_group__pack
+   259: 00431630     0 FUNC    GLOBAL DEFAULT  UND get_eth_name
+   260: 00431620     0 FUNC    GLOBAL DEFAULT  UND wan_cfg__unpack
+   261: 00431610     0 FUNC    GLOBAL DEFAULT  UND cm_timeout
+   262: 00431600     0 FUNC    GLOBAL DEFAULT  UND user_group__unpack
+   265: 004315f0     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__unpack
+   266: 004315e0     0 FUNC    GLOBAL DEFAULT  UND get_env
+   267: 004315d0     0 FUNC    GLOBAL DEFAULT  UND device_mark_list__unpack
+   268: 004315c0     0 FUNC    GLOBAL DEFAULT  UND bzero
+   269: 004315b0     0 FUNC    GLOBAL DEFAULT  UND fread
+   270: 004315a0     0 FUNC    GLOBAL DEFAULT  UND strtoul
+   271: 00431590     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__free_unpacked
+   272: 00431580     0 FUNC    GLOBAL DEFAULT  UND family_rule__init
+   273: 00431570     0 FUNC    GLOBAL DEFAULT  UND mxp_manage_list__unpack
+   274: 00431560     0 FUNC    GLOBAL DEFAULT  UND upn_pcfg__get_packed_size
+   275: 00431550     0 FUNC    GLOBAL DEFAULT  UND fgets
+   276: 00431540     0 FUNC    GLOBAL DEFAULT  UND atoll
+   277: 00431530     0 FUNC    GLOBAL DEFAULT  UND UnSetValue
+   278: 00431520     0 FUNC    GLOBAL DEFAULT  UND change_IGI_by_highdevice_mode
+   279: 00431510     0 FUNC    GLOBAL DEFAULT  UND settimeofday
+   280: 00431500     0 FUNC    GLOBAL DEFAULT  UND family_group__unpack
+   281: 004314f0     0 FUNC    GLOBAL DEFAULT  UND fprintf
+   282: 004314e0     0 FUNC    GLOBAL DEFAULT  UND wlan_roaming__get_packed_size
+   283: 004314d0     0 FUNC    GLOBAL DEFAULT  UND system_get_uptime
+   284: 004314c0     0 FUNC    GLOBAL DEFAULT  UND port_fwd_list__pack
+   285: 004314b0     0 FUNC    GLOBAL DEFAULT  UND ApmibGetValue
+   286: 004314a0     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg_all__get_packed_size
+   287: 00431490     0 FUNC    GLOBAL DEFAULT  UND string_lower_mac
+   288: 00431480     0 FUNC    GLOBAL DEFAULT  UND set_mem_config
+   289: 00431470     0 FUNC    GLOBAL DEFAULT  UND port_fwd_list__unpack
+   290: 00431460     0 FUNC    GLOBAL DEFAULT  UND putchar
+   291: 00431450     0 FUNC    GLOBAL DEFAULT  UND applang__free_unpacked
+   292: 00431440     0 FUNC    GLOBAL DEFAULT  UND assign_poll_stop
+   293: 00431430     0 FUNC    GLOBAL DEFAULT  UND port_fwd_list__free_unpacked
+   294: 00431420     0 FUNC    GLOBAL DEFAULT  UND upn_pcfg__free_unpacked
+   295: 00431410     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_get_lan_ifname
+   296: 00431400     0 FUNC    GLOBAL DEFAULT  UND strncpy
+   297: 004313f0     0 FUNC    GLOBAL DEFAULT  UND monitor_start
+   298: 004313e0     0 FUNC    GLOBAL DEFAULT  UND port_fwd_cfg__init
+   299: 004313d0     0 FUNC    GLOBAL DEFAULT  UND monitor_stop
+   300: 004313c0     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_get_ifip
+   301: 004313b0     0 FUNC    GLOBAL DEFAULT  UND send_msg_to_netctrl
+   302: 004313a0     0 FUNC    GLOBAL DEFAULT  UND qos_rule__free_unpacked
+   303: 00431390     0 FUNC    GLOBAL DEFAULT  UND wan_cfg__get_packed_size
+   304: 00431380     0 FUNC    GLOBAL DEFAULT  UND printf
+   305: 00431370     0 FUNC    GLOBAL DEFAULT  UND systool_handle_restore_some_for_button
+   306: 00431360     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__get_packed_size
+   307: 00431350     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_aton
+   308: 00431340     0 FUNC    GLOBAL DEFAULT  UND family_group__get_packed_size
+   309: 00431330     0 FUNC    GLOBAL DEFAULT  UND enable_upgrade_hdl
+   310: 00431320     0 FUNC    GLOBAL DEFAULT  UND is_suit__pack
+   311: 00431310     0 FUNC    GLOBAL DEFAULT  UND mib_save_restore_log
+   313: 00431300     0 FUNC    GLOBAL DEFAULT  UND log_debug_print
+   314: 004312f0     0 FUNC    GLOBAL DEFAULT  UND set_if_changed
+   315: 004312e0     0 FUNC    GLOBAL DEFAULT  UND wlan_roaming__pack
+   316: 004312d0     0 FUNC    GLOBAL DEFAULT  UND strchr
+   317: 004312c0     0 FUNC    GLOBAL DEFAULT  UND qos_rule__pack
+   318: 004312b0     0 FUNC    GLOBAL DEFAULT  UND upn_pcfg__unpack
+   319: 004312a0     0 FUNC    GLOBAL DEFAULT  UND SetValue
+   321: 00431290     0 FUNC    GLOBAL DEFAULT  UND fscanf
+   322: 00431280     0 FUNC    GLOBAL DEFAULT  UND cm_run
+   323: 00431270     0 FUNC    GLOBAL DEFAULT  UND applang__unpack
+   324: 00431260     0 FUNC    GLOBAL DEFAULT  UND auto_maint__get_packed_size
+   325: 00431250     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_get_if_netmac
+   326: 00431240     0 FUNC    GLOBAL DEFAULT  UND strtok_r
+   327: 00431230     0 FUNC    GLOBAL DEFAULT  UND node_location__unpack
+   329: 00431220     0 FUNC    GLOBAL DEFAULT  UND user_group__free_unpacked
+   330: 00431210     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg_all__free_unpacked
+   331: 00431200     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__unpack
+   332: 004311f0     0 FUNC    GLOBAL DEFAULT  UND strstr
+   333: 004311e0     0 FUNC    GLOBAL DEFAULT  UND auto_maint__unpack
+   334: 004311d0     0 FUNC    GLOBAL DEFAULT  UND node_location__free_unpacked
+   335: 004311c0     0 FUNC    GLOBAL DEFAULT  UND router_cfg__unpack
+   336: 004311b0     0 FUNC    GLOBAL DEFAULT  UND save_env
+   337: 004311a0     0 FUNC    GLOBAL DEFAULT  UND sleep
+   338: 00431190     0 FUNC    GLOBAL DEFAULT  UND mf_lists__get_packed_size
+   339: 00431180     0 FUNC    GLOBAL DEFAULT  UND strtold
+   340: 00431170     0 FUNC    GLOBAL DEFAULT  UND strdup
+   341: 00431160     0 FUNC    GLOBAL DEFAULT  UND fclose
+   342: 00431150     0 FUNC    GLOBAL DEFAULT  UND is_suit__get_packed_size
+   343: 00431140     0 FUNC    GLOBAL DEFAULT  UND closedir
+   344: 00431130     0 FUNC    GLOBAL DEFAULT  UND get_interface_statistics
+   345: 00431120     0 FUNC    GLOBAL DEFAULT  UND user_group__get_packed_size
+   346: 00431110     0 FUNC    GLOBAL DEFAULT  UND time_group__free_unpacked
+   347: 00431100     0 FUNC    GLOBAL DEFAULT  UND time_group__get_packed_size
+   348: 004310f0     0 FUNC    GLOBAL DEFAULT  UND strcpy
+   349: 004310e0     0 FUNC    GLOBAL DEFAULT  UND auto_maint__pack
+   350: 004310d0     0 FUNC    GLOBAL DEFAULT  UND wan_cfg__free_unpacked
+   351: 004310c0     0 FUNC    GLOBAL DEFAULT  UND string_upper_mac
+   352: 004310b0     0 FUNC    GLOBAL DEFAULT  UND strncmp
+   353: 004310a0     0 FUNC    GLOBAL DEFAULT  UND rand
+   354: 00431090     0 FUNC    GLOBAL DEFAULT  UND strcat
+   355: 00431080     0 FUNC    GLOBAL DEFAULT  UND check_app
+   356: 00431070     0 FUNC    GLOBAL DEFAULT  UND prod_check_ip_conflict
+   357: 00431060     0 FUNC    GLOBAL DEFAULT  UND assign_poll_start
+   358: 00431050     0 FUNC    GLOBAL DEFAULT  UND malloc
+   359: 00431040     0 FUNC    GLOBAL DEFAULT  UND device_mark_list__free_unpacked
+   360: 00431030     0 FUNC    GLOBAL DEFAULT  UND get_mem_config
+   361: 00431020     0 FUNC    GLOBAL DEFAULT  UND unlink
+   362: 00431010     0 FUNC    GLOBAL DEFAULT  UND cm_abort
+   363: 00431000     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg__init
+   364: 00430ff0     0 FUNC    GLOBAL DEFAULT  UND memset
+   365: 00430fe0     0 FUNC    GLOBAL DEFAULT  UND time_rule__init
+   366: 00430fd0     0 FUNC    GLOBAL DEFAULT  UND system_init_core_dump
+   367: 00430fc0     0 FUNC    GLOBAL DEFAULT  UND time
+   368: 00430fb0     0 FUNC    GLOBAL DEFAULT  UND readdir
+   369: 00430fa0     0 FUNC    GLOBAL DEFAULT  UND time_info__unpack
+   370: 00430f90     0 FUNC    GLOBAL DEFAULT  UND strcmp
+   371: 00430f80     0 FUNC    GLOBAL DEFAULT  UND freopen
+   372: 00430f70     0 FUNC    GLOBAL DEFAULT  UND is_rst_some_status
+   373: 00430f60     0 FUNC    GLOBAL DEFAULT  UND check_get_new_ipaddr_by_hostid
+   374: 00430f50     0 FUNC    GLOBAL DEFAULT  UND signal
+   375: 00430f40     0 FUNC    GLOBAL DEFAULT  UND fw_multi_upgrade_info_t__unpack
+   376: 00430f30     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__pack
+   378: 00430f20     0 FUNC    GLOBAL DEFAULT  UND prod_change_root_passwd
+   379: 00430f10     0 FUNC    GLOBAL DEFAULT  UND snprintf
+   380: 00430f00     0 FUNC    GLOBAL DEFAULT  UND check_modify_item_in_rule
+   381: 00430ef0     0 FUNC    GLOBAL DEFAULT  UND mf_rule__init
+   382: 00430ee0     0 FUNC    GLOBAL DEFAULT  UND access
+   383: 00430ed0     0 FUNC    GLOBAL DEFAULT  UND apmib_init
+   384: 00430ec0     0 FUNC    GLOBAL DEFAULT  UND router_cfg__free_unpacked
+   385: 00430eb0     0 FUNC    GLOBAL DEFAULT  UND send_force_upgrade
+   386: 00430ea0     0 FUNC    GLOBAL DEFAULT  UND gettimeofday
+   387: 00430e90     0 FUNC    GLOBAL DEFAULT  UND sscanf
+   388: 00430e80     0 FUNC    GLOBAL DEFAULT  UND user_group__pack
+   389: 00430e70     0 FUNC    GLOBAL DEFAULT  UND time_info__free_unpacked
+   390: 00430e60     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   391: 00430e50     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   392: 00430e40     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+   393: 00430e30     0 FUNC    GLOBAL DEFAULT  UND __uClibc_main
+   394: 00430e20     0 FUNC    GLOBAL DEFAULT  UND register_conn_esta_notify_cb
+   395: 00430e10     0 FUNC    GLOBAL DEFAULT  UND device_info__init
+   396: 00430e00     0 FUNC    GLOBAL DEFAULT  UND node_led_status__free_unpacked
+   397: 00430df0     0 FUNC    GLOBAL DEFAULT  UND cm_poll_start
+   399: 00430de0     0 FUNC    GLOBAL DEFAULT  UND memcmp
+   401: 00430dd0     0 FUNC    GLOBAL DEFAULT  UND cm_poll_stop
+   402: 00430dc0     0 FUNC    GLOBAL DEFAULT  UND opendir
+===== RODATA AROUND VA 0x432300 =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+Contents of section .rodata:
+ 4322f0 00000000 00000000 00000000 2f766172  ............/var
+ 432300 2f6d6962 2e6d656d 00000000 726f6c65  /mib.mem....role
+ 432310 00000000 73657269 616c2e6e 756d6265  ....serial.numbe
+ 432320 72000000 25732573 00000000 6e6f6465  r...%s%s....node
+ 432330 2e6c6f63 6174696f 6e400000 7379732e  .location@..sys.
+ 432340 6d6f6465 6c000000 7379732e 6d6f6465  model...sys.mode
+===== STRINGS FILE OFFSETS 0x322f0..0x32350 =====
+  322fc /var/mib.mem
+  3230c role
+  32314 serial.number
+  32324 %s%s
+  3232c node.location@
+  3233c sys.model
+  32348 sys.model.ver
