@@ -19,12 +19,14 @@ jobs:
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Recover GetHostList command table
+      - name: Decode libcmdctl RPC helper
         run: |
-          cat > /tmp/recover.py <<'PY'
+          root='firmware-src/RootFS-unpacked'
+          lib="$root/lib/libcmdctl.so"
+          cat > /tmp/decode.py <<'PY'
           from elftools.elf.elffile import ELFFile
           import struct
-          p='firmware-src/RootFS-unpacked/bin/confsrv'
+          p='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
           with open(p,'rb') as f:
             e=ELFFile(f); secs=[]
             for s in e.iter_sections():
@@ -33,46 +35,43 @@ jobs:
               for n,b,d in secs:
                 if b<=a<b+len(d):
                   o=a-b; z=d.find(b'\0',o)
-                  if z<0:z=min(len(d),o+64)
+                  if z<0:z=min(len(d),o+128)
                   x=d[o:z]
-                  if x and all(32<=q<127 for q in x): return x.decode()
-            def u32(a):
-              for n,b,d in secs:
-                if b<=a<=b+len(d)-4:return struct.unpack_from('<I',d,a-b)[0]
-            # GetHostList string VA is file-string offset 0x67a30 mapped in .rodata; find it by content.
-            sva=None
+                  if x and all((q in (9,10,13)) or 32<=q<127 for q in x): return x.decode('ascii','replace')
+            print('# libcmdctl literal map')
+            # addresses observed in cmd_pub/cmd_set/cmd_get/T.54/cmdsh_random_key
+            for a in [0x1400,0x0f54,0x159c,0x25d8,0x25e0,0x25e4,0x2648,0x2658,0x26c4,0x26cc,0x2720]:
+              print(f'{a:#06x}: {cstr(a)!r}')
+            print('\n# all printable strings around 0x2500..0x2750')
             for n,b,d in secs:
-              i=d.find(b'GetHostList\0')
-              if i>=0:sva=b+i;break
-            print(f'GetHostList string VA={sva:#x}')
-            # Locate pointer to the string in all allocated data; print broad table neighborhood.
-            needle=struct.pack('<I',sva)
-            for n,b,d in secs:
-              pos=0
-              while True:
-                i=d.find(needle,pos)
-                if i<0:break
-                va=b+i; print(f'\nPOINTER in {n} at {va:#x}')
-                for a in range(va-128,va+160,4):
-                  v=u32(a)
-                  if v is None:continue
-                  s=cstr(v); note=f' -> {s!r}' if s else ''
-                  print(f'{a:#010x} {v:#010x}{note}')
-                pos=i+1
+              lo=max(0,0x2500-b); hi=min(len(d),0x2750-b)
+              if lo>=hi: continue
+              i=lo
+              while i<hi:
+                if 32<=d[i]<127:
+                  j=i
+                  while j<hi and 32<=d[j]<127:j+=1
+                  if j-i>=2: print(f'{b+i:#06x}: {d[i:j].decode("ascii","replace")!r}')
+                  i=j+1
+                else:i+=1
           PY
-          python3 /tmp/recover.py > docs/reverse-generated/gethostlist-command-table.txt
-          root='firmware-src/RootFS-unpacked'
+          python3 /tmp/decode.py > docs/reverse-generated/libcmdctl-rpc.txt
           {
-            echo '\n===== init and open references ====='
-            mipsel-linux-gnu-objdump -drwC "$root/bin/confsrv" | grep -n -B120 -A220 -E 'conf_msg_open|conf_msg_all_cmds_init|conf_msg_define|confctl_get_host_list' || true
-            echo '\n===== cmd_get internals ====='
-            mipsel-linux-gnu-objdump -drwC --disassemble=cmd_get "$root/lib/libcmdctl.so" || true
-            mipsel-linux-gnu-objdump -drwC "$root/lib/libcmdctl.so" | grep -n -B120 -A260 -E 'cmd_get_done|cmdsh_random_key|publish|subscribe' || true
-          } >> docs/reverse-generated/gethostlist-command-table.txt
-          head -c 950000 docs/reverse-generated/gethostlist-command-table.txt > /tmp/o && mv /tmp/o docs/reverse-generated/gethostlist-command-table.txt
+            echo '\n===== cmd_get ====='
+            mipsel-linux-gnu-objdump -drwC --disassemble=cmd_get "$lib" || true
+            echo '\n===== helper T.54 0x1868..0x1e04 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$lib" || true
+            echo '\n===== cmd_get_done ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x159c --stop-address=0x1670 "$lib" || true
+            echo '\n===== cmdsh_random_key ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x2120 "$lib" || true
+            echo '\n===== dynamic symbols ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'redis_|subscribe|cmd_|cm_|evbuffer|bufferevent|event_' || true
+          } >> docs/reverse-generated/libcmdctl-rpc.txt
+          head -c 950000 docs/reverse-generated/libcmdctl-rpc.txt > /tmp/o && mv /tmp/o docs/reverse-generated/libcmdctl-rpc.txt
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/gethostlist-command-table.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh GetHostList command table'; git push; fi
+          git add docs/reverse-generated/libcmdctl-rpc.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh libcmdctl RPC map'; git push; fi
