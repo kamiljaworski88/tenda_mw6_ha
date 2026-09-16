@@ -13,43 +13,47 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Map HostList rate fields and sampling logic
+      - name: Resolve exact HostInfo rate semantics
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
+          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/rate-field-map.txt'
+          out='docs/reverse-generated/rate-semantics.txt'
           mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
-          mipsel-linux-gnu-readelf -sW "$conf" > /tmp/syms
+          mipsel-linux-gnu-readelf -sW "$conf" > /tmp/conf.syms
+          mipsel-linux-gnu-readelf -sW "$pb" > /tmp/pb.syms
           {
-            echo '===== RATE HELPER CORE ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x434258 --stop-address=0x4349d0 "$conf" || true
-            echo '===== SAMPLE DELAY CANDIDATE 0x7a120 ====='
-            grep -n -B12 -A20 -E '7a120|0007a120' /tmp/conf.asm || true
-            echo '===== HOST RATE WRITES ====='
-            grep -n -B18 -A18 -E 'ac43(0098|009c)|ac4[0-9](0098|009c)|\+0x98|\+0x9c' /tmp/conf.asm || true
-            echo '===== STRUCT WRITES IN RATE HELPER ====='
-            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B5 -A8 'sw[[:space:]].*,(36|40|152|156)\(' || true
-            echo '===== GATE FUNCTION SYMBOL/GOT USERS ====='
-            grep -n -B12 -A16 -- '-32192(gp)' /tmp/conf.asm | grep -E -B12 -A16 'li[[:space:]]+a0,(14|15)' || true
-            echo '===== RATE HELPER INDIRECT TARGET OFFSETS ====='
-            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B4 -A6 -- '-31888\(gp\)|-31884\(gp\)|-31880\(gp\)|-31876\(gp\)|-31872\(gp\)|-31408\(gp\)|-30584\(gp\)|-30768\(gp\)' || true
-            echo '===== RATE STRINGS ====='
-            strings -a -t x "$conf" | grep -iE 'uprate|downrate|online_ip|host.*rate|rate.*host|traffic' || true
-            echo '===== RELATED DYNAMIC SYMBOLS ====='
-            grep -iE 'netlink_get_statistic_info|g_ip_info|usleep|sleep|time|div|strcmp|inet|ethaddr|feature' /tmp/syms || true
+            echo '===== RUN 35 GOAL ====='
+            echo 'Resolve exact DL/UL field mapping, units, rate write path, and HostInfo protobuf field numbers.'
+            echo '===== RATE WRITE WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x4346f0 --stop-address=0x434970 "$conf" || true
+            echo '===== ALL GOT SYMBOLS USED BY RATE WINDOW ====='
+            grep -E '(-31888|-31884|-31880|-31876|-31872|-30768|-30584|-31408|-31216|-31212)\(gp\)' /tmp/conf.asm | head -n 300 || true
+            echo '===== DYNAMIC SYMBOL TABLE RELEVANT NAMES ====='
+            grep -iE 'netlink|g_ip_info|time|sleep|usleep|div|inet|ethaddr|strcmp|host|rate|stat' /tmp/conf.syms || true
+            echo '===== HOSTINFO PROTOBUF SYMBOLS ====='
+            grep -iE 'host_info|host_lists' /tmp/pb.syms || true
+            echo '===== HOSTINFO DESCRIPTOR/STRINGS ====='
+            strings -a -t x "$pb" | grep -iE -B6 -A12 'HostInfo|HostLists|uprate|downrate|signal|assoc_sn|condtion_time|interface_name|host_name' || true
+            echo '===== PROTOBUF DESCRIPTOR WINDOW ====='
+            mipsel-linux-gnu-objdump -s -j .rodata "$pb" | grep -n -B20 -A80 -iE 'uprate|downrate' || true
+            echo '===== RATE DEBUG STRINGS IN CONFSRV ====='
+            strings -a -t x "$conf" | grep -iE -B12 -A20 'uprate|downrate|up rate|down rate|rate.*%|online_ip' || true
+            echo '===== FEATURE 14/15 GATES INSIDE GETHOSTLIST/RATE ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x434300 --stop-address=0x435300 "$conf" | grep -E -B5 -A8 'li[[:space:]]+a0,(14|15)' || true
           } > "$out"
           head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: rate-field-map
-          path: docs/reverse-generated/rate-field-map.txt
+          name: rate-semantics
+          path: docs/reverse-generated/rate-semantics.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-field-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: map HostList rate fields'; git push || true; fi
+          git add docs/reverse-generated/rate-semantics.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve HostInfo rate semantics'; git push || true; fi
