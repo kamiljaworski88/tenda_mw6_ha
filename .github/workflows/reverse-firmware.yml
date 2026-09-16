@@ -52,3 +52,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/reverse-generated/confcli-subscription-callback.txt
           if ! git diff --cached --quiet; then git commit -m 'reverse: resolve confcli subscription callback'; git push || true; fi
+# run46-trigger
