@@ -13,43 +13,43 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Isolate HostList rate algorithm and gates
+      - name: Map HostList rate fields and sampling logic
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/rate-algorithm.txt'
+          out='docs/reverse-generated/rate-field-map.txt'
           mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
           mipsel-linux-gnu-readelf -sW "$conf" > /tmp/syms
           {
-            echo '===== FACTS FROM GetHostList ====='
-            echo 'GetHostList calls 0x433e3c(list fill), 0x434258(rate/stat fill), then feature(15), optionally 0x4307b0.'
-            echo '0x434258 directly calls netlink_get_statistic_info via GOT -31216.'
-            echo '===== full 0x434258 rate helper ====='
+            echo '===== RATE HELPER CORE ====='
             mipsel-linux-gnu-objdump -drwC --start-address=0x434258 --stop-address=0x4349d0 "$conf" || true
-            echo '===== netlink_get_statistic_info symbol/reloc ====='
-            grep -iE 'netlink_get_statistic_info|g_ip_info' /tmp/syms || true
-            mipsel-linux-gnu-readelf -rW "$conf" | grep -iE 'netlink_get_statistic_info|g_ip_info' || true
-            echo '===== every feature gate GOT -32192 call with preceding li a0 ====='
-            grep -n -B8 -A8 -- '-32192(gp)' /tmp/conf.asm | head -n 2000 || true
-            echo '===== all 0x434258 helper calls with GOT offsets ====='
-            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B3 -A3 'jalr|\(gp\)' || true
-            echo '===== strings around rate helper debug file/lines ====='
-            strings -a -t x "$conf" | grep -iE -B8 -A20 'uprate|downrate|online_ip|rate.*host|host.*rate|statistic|traffic' || true
-            echo '===== candidate g_ip_info/global users near helper ====='
-            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B6 -A14 -- '-30260\(gp\)|3358|335c|40cc|0574' || true
+            echo '===== SAMPLE DELAY CANDIDATE 0x7a120 ====='
+            grep -n -B12 -A20 -E '7a120|0007a120' /tmp/conf.asm || true
+            echo '===== HOST RATE WRITES ====='
+            grep -n -B18 -A18 -E 'ac43(0098|009c)|ac4[0-9](0098|009c)|\+0x98|\+0x9c' /tmp/conf.asm || true
+            echo '===== STRUCT WRITES IN RATE HELPER ====='
+            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B5 -A8 'sw[[:space:]].*,(36|40|152|156)\(' || true
+            echo '===== GATE FUNCTION SYMBOL/GOT USERS ====='
+            grep -n -B12 -A16 -- '-32192(gp)' /tmp/conf.asm | grep -E -B12 -A16 'li[[:space:]]+a0,(14|15)' || true
+            echo '===== RATE HELPER INDIRECT TARGET OFFSETS ====='
+            sed -n '/00434258/,/004349c0/p' /tmp/conf.asm | grep -E -B4 -A6 -- '-31888\(gp\)|-31884\(gp\)|-31880\(gp\)|-31876\(gp\)|-31872\(gp\)|-31408\(gp\)|-30584\(gp\)|-30768\(gp\)' || true
+            echo '===== RATE STRINGS ====='
+            strings -a -t x "$conf" | grep -iE 'uprate|downrate|online_ip|host.*rate|rate.*host|traffic' || true
+            echo '===== RELATED DYNAMIC SYMBOLS ====='
+            grep -iE 'netlink_get_statistic_info|g_ip_info|usleep|sleep|time|div|strcmp|inet|ethaddr|feature' /tmp/syms || true
           } > "$out"
           head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: rate-algorithm
-          path: docs/reverse-generated/rate-algorithm.txt
+          name: rate-field-map
+          path: docs/reverse-generated/rate-field-map.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-algorithm.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: isolate HostList rate algorithm'; git push || true; fi
+          git add docs/reverse-generated/rate-field-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: map HostList rate fields'; git push || true; fi
