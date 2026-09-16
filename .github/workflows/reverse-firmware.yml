@@ -13,48 +13,45 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Decode ol_hosts command IDs and registration
+      - name: Reconstruct cmdrpc request wire
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
+          ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/ol-hosts-command-map.txt'
-          mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.asm
-          mipsel-linux-gnu-readelf -sW "$uc" > /tmp/uc.syms
+          out='docs/reverse-generated/cmdrpc-request-wire.txt'
+          mipsel-linux-gnu-objdump -drwC "$ctl" > /tmp/ctl.asm
+          mipsel-linux-gnu-readelf -sW "$ctl" > /tmp/ctl.syms
           {
-            echo '===== RUN 42 GOAL ====='
-            echo 'Resolve exact module ID, command ID, callback and cmd_args entry for GetHostList / M_MESH_HOSTS / CMD_MESH_HOSTS_GET.'
-            echo '===== EXACT RODATA STRINGS WITH OFFSETS ====='
-            strings -a -t x "$uc" | grep -E 'GetHostList|M_MESH_HOSTS|CMD_MESH_HOSTS_GET|SetHostMarks|GetRemarklist' || true
-            echo '===== OL HOSTS GET REG FUNCTION ONLY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1af3c --stop-address=0x1b040 "$uc" || true
-            echo '===== OL HOSTS NEIGHBOR FUNCTIONS ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1ae20 --stop-address=0x1b260 "$uc" || true
-            echo '===== ENABLE M_OL_HOST EXACT ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x05ef4 --stop-address=0x05f8c "$uc" || true
-            echo '===== CMD_ARGS SYMBOL / RAW TABLE ====='
-            grep ' cmd_args$' /tmp/uc.syms || true
-            mipsel-linux-gnu-objdump -s --start-address=0x31890 --stop-address=0x31e90 "$uc" || true
-            echo '===== RELOCATIONS NEAR CMD_ARGS ====='
-            mipsel-linux-gnu-objdump -R "$uc" | grep -iE '318|319|31a|31b|31c|31d|31e' || true
-            echo '===== ALL CALLS FROM OL_HOSTS REG ====='
-            sed -n '/0001af3c <uc_api_lib_ol_hosts_get_hdl_reg/,/0001b040/p' /tmp/uc.asm || true
-            echo '===== CMD REGISTER IMPLEMENTATION ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x0786c --stop-address=0x07c7c "$uc" || true
-            echo '===== LOOK FOR IMMEDIATE MODULE/CMD CONSTANTS ====='
-            grep -n -E -B30 -A50 'li[[:space:]]+a[0-3],(10|0xa|[0-9]+)|2404....|2405....|2406....|2407....' /tmp/uc.asm | grep -B15 -A30 -E '1af3c|1af|ol_hosts|05ef4' || true
+            echo '===== RUN 43 GOAL ====='
+            echo 'Reconstruct the exact single-request/single-reply cmdrpc flow used by libcmdctl T.54, including RESP command sequence and correlation channel, so it can be implemented without leaving cmdsrv in SUBSCRIBE mode.'
+            echo '===== SYMBOLS ====='
+            grep -E 'cmd_(sub|pub|get|set)|cmdsh_random_key|redis_writer|redis_reader|redisReader|cm_(io_)?(read|write|connect|close)|select|poll|sleep|time|malloc|free|sds' /tmp/ctl.syms || true
+            echo '===== FULL T.54 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$ctl" || true
+            echo '===== RANDOM KEY ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x211c "$ctl" || true
+            echo '===== WRAPPERS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x1f20 "$ctl" || true
+            echo '===== GOT / RELOCS ====='
+            mipsel-linux-gnu-objdump -R "$ctl" || true
+            echo '===== RODATA / COMMAND STRINGS ====='
+            strings -a -t x "$ctl" | grep -E -B15 -A25 'cmdrpc@|publish|subscribe|unsubscribe|psubscribe|punsubscribe|quit|set$|get$|PING|unexpected data|cmdsh' || true
+            echo '===== CALLS IN T.54 TO IMPORTED HELPERS ====='
+            sed -n '/00001868 <T.54>/,/00001e04 <cmd_pub>/p' /tmp/ctl.asm | grep -n -E -B4 -A8 'jalr|lw[[:space:]]+t9|redis|cm_|sds|Base64|malloc|free|select|poll' || true
+            echo '===== SUBSCRIBE CALLBACK / READ PATH ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x134c --stop-address=0x1868 "$ctl" || true
           } > "$out"
-          head -c 2500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 3200000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: ol-hosts-command-map
-          path: docs/reverse-generated/ol-hosts-command-map.txt
+          name: cmdrpc-request-wire
+          path: docs/reverse-generated/cmdrpc-request-wire.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ol-hosts-command-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: decode ol_hosts command IDs'; git push || true; fi
+          git add docs/reverse-generated/cmdrpc-request-wire.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: reconstruct cmdrpc request wire'; git push || true; fi
