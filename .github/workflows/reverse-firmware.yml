@@ -41,20 +41,25 @@ jobs:
           echo >> "$out"
           for f in reports/*.strings.txt; do
             echo "===== $f : strings =====" >> "$out"
-            grep -iE -C 6 'device_list_upload|rqst_client_hostname|rsp_client_hostname|fill_cloud_info_device_lists_rate|fill_cloud_info_device_upload_all|send_dev_device|DEV_UPLOAD_DEVIC|DEV_UPLOAD_STATU|M_CLOUD_INFO|cloud_info|online_ip|g_ip_info|host.*rate|upload.*device|device.*upload' "$f" >> "$out" || true
+            grep -iE -C 6 'GetHostList|confctl_get_host_list|fill_host_lists_info|fill_host_lists_rate|fill_host_info_from_client_status|device_list_upload|fill_cloud_info_device_lists_rate|send_dev_device|DEV_UPLOAD_DEVIC|DEV_TRAFFIC|M_CLOUD_INFO|online_ip|g_ip_info|host.*rate' "$f" >> "$out" || true
           done
           for f in reports/*.readelf.txt; do
             echo "===== $f : symbols =====" >> "$out"
-            grep -iE 'device|client|cloud|rate|online_ip|statistic|ucapi|send_dev' "$f" >> "$out" || true
+            grep -iE 'get_host_list|host_list|host_info|device|client|cloud|rate|online_ip|statistic|ucapi|send_dev' "$f" >> "$out" || true
           done
-          echo '===== confsrv focused disassembly =====' >> "$out"
-          grep -n -B60 -A220 -E '<confctl_device_list_upload|<confctl_rqst_client_hostname|fill_cloud_info_device_lists_rate|fill_cloud_info_device_upload_all|send_dev_device' reports/bin_confsrv.objdump.txt >> "$out" || true
-          echo '===== libucapi focused disassembly =====' >> "$out"
-          grep -n -B50 -A180 -iE 'send_dev_device|cloud_info|device' reports/lib_libucapi.so.objdump.txt >> "$out" || true
-          echo '===== libcloud focused disassembly =====' >> "$out"
-          grep -n -B50 -A180 -iE 'send_dev_device|cloud_info|device' reports/lib_libcloud.so.objdump.txt >> "$out" || true
-          # Keep the committed map bounded so the GitHub contents API can return it easily.
-          head -c 850000 "$out" > "$out.tmp" && mv "$out.tmp" "$out"
+          echo '===== confsrv GetHostList function =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list firmware-src/RootFS-unpacked/bin/confsrv >> "$out" 2>&1 || true
+          echo '===== confsrv fill_host_lists_info =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=fill_host_lists_info firmware-src/RootFS-unpacked/bin/confsrv >> "$out" 2>&1 || true
+          echo '===== confsrv fill_host_lists_rate =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=fill_host_lists_rate firmware-src/RootFS-unpacked/bin/confsrv >> "$out" 2>&1 || true
+          echo '===== confsrv fill_host_info_from_client_status =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=fill_host_info_from_client_status firmware-src/RootFS-unpacked/bin/confsrv >> "$out" 2>&1 || true
+          echo '===== confsrv cloud rate builder =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=fill_cloud_info_device_lists_rate firmware-src/RootFS-unpacked/bin/confsrv >> "$out" 2>&1 || true
+          echo '===== libucapi cloud-info symbols =====' >> "$out"
+          grep -n -iE -B20 -A80 'ol_hosts|host_list|dev_device|dev_traffic|m_cloud_info' reports/lib_libucapi.so.objdump.txt >> "$out" || true
+          head -c 950000 "$out" > "$out.tmp" && mv "$out.tmp" "$out"
       - name: Commit compact map
         run: |
           git config user.name 'github-actions[bot]'
