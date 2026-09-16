@@ -14,64 +14,32 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Decode libcmdctl RPC helper
+      - name: Trace confcli/confsrv IPC
         run: |
           root='firmware-src/RootFS-unpacked'
-          lib="$root/lib/libcmdctl.so"
-          cat > /tmp/decode.py <<'PY'
-          from elftools.elf.elffile import ELFFile
-          import struct
-          p='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
-          with open(p,'rb') as f:
-            e=ELFFile(f); secs=[]
-            for s in e.iter_sections():
-              if s['sh_flags'] & 2 and s['sh_size']: secs.append((s.name,s['sh_addr'],s.data()))
-            def cstr(a):
-              for n,b,d in secs:
-                if b<=a<b+len(d):
-                  o=a-b; z=d.find(b'\0',o)
-                  if z<0:z=min(len(d),o+128)
-                  x=d[o:z]
-                  if x and all((q in (9,10,13)) or 32<=q<127 for q in x): return x.decode('ascii','replace')
-            print('# libcmdctl literal map')
-            # addresses observed in cmd_pub/cmd_set/cmd_get/T.54/cmdsh_random_key
-            for a in [0x1400,0x0f54,0x159c,0x25d8,0x25e0,0x25e4,0x2648,0x2658,0x26c4,0x26cc,0x2720]:
-              print(f'{a:#06x}: {cstr(a)!r}')
-            print('\n# all printable strings around 0x2500..0x2750')
-            for n,b,d in secs:
-              lo=max(0,0x2500-b); hi=min(len(d),0x2750-b)
-              if lo>=hi: continue
-              i=lo
-              while i<hi:
-                if 32<=d[i]<127:
-                  j=i
-                  while j<hi and 32<=d[j]<127:j+=1
-                  if j-i>=2: print(f'{b+i:#06x}: {d[i:j].decode("ascii","replace")!r}')
-                  i=j+1
-                else:i+=1
-          PY
-          python3 /tmp/decode.py > docs/reverse-generated/libcmdctl-rpc.txt
-          {
-            echo '\n===== cmd_get ====='
-            mipsel-linux-gnu-objdump -drwC --disassemble=cmd_get "$lib" || true
-            echo '\n===== helper T.54 0x1868..0x1e04 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$lib" || true
-            echo '\n===== cmd_get_done ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x159c --stop-address=0x1670 "$lib" || true
-            echo '\n===== cmdsh_random_key ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x2120 "$lib" || true
-            echo '\n===== dynamic symbols ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'redis_|subscribe|cmd_|cm_|evbuffer|bufferevent|event_' || true
-          } >> docs/reverse-generated/libcmdctl-rpc.txt
-          head -c 950000 docs/reverse-generated/libcmdctl-rpc.txt > /tmp/o && mv /tmp/o docs/reverse-generated/libcmdctl-rpc.txt
+          out='docs/reverse-generated/confcli-ipc.txt'
+          : > "$out"
+          for f in "$root/bin/confcli" "$root/bin/confsrv" "$root/lib/libcmdctl.so"; do
+            [ -f "$f" ] || continue
+            echo "===== $f symbols =====" >> "$out"
+            mipsel-linux-gnu-readelf -sW "$f" | grep -E 'conf_msg|confctl|cmd_(pub|sub|init|get|set)|GetHostList|main' >> "$out" || true
+            echo "===== $f GOT / relocations =====" >> "$out"
+            mipsel-linux-gnu-readelf -aW "$f" | grep -E -C 4 'cmd_pub|cmd_sub|cmd_init|cmd_get|cmd_set' >> "$out" || true
+            echo "===== $f strings =====" >> "$out"
+            strings -a -t x "$f" | grep -E -i -C 5 'confctl_(cli|srv)_key|GetHostList|GetTrafficInfo|cmdrpc|device_list_upload' >> "$out" || true
+          done
+          echo '===== confcli disassembly refs =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC "$root/bin/confcli" | grep -n -B120 -A220 -E 'conf_msg_(open|close|send|request|handler)|cmd_pub|cmd_sub|cmd_init|GetHostList|confctl_cli_key|confctl_srv_key' >> "$out" || true
+          echo '===== confsrv init refs =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC "$root/bin/confsrv" | grep -n -B100 -A180 -E 'cmd_pub|cmd_sub|cmd_init|conf_msg_hander|confctl_srv_key|confctl_cli_key' >> "$out" || true
+          head -c 950000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/libcmdctl-rpc.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh libcmdctl RPC map'; git push; fi
+          git add docs/reverse-generated/confcli-ipc.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh confcli IPC map'; git push; fi
