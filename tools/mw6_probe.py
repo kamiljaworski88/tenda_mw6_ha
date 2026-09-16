@@ -88,10 +88,102 @@ def recv_frame(sock):
     return parse_frame(hdr + payload)
 
 
-def show(label, fr):
+def show(label, fr, dump_hex=True):
     print(f"\n=== {label} ===")
     print(f"TID=0x{fr['tid']:02x} module=0x{fr['module']:02x} cmd=0x{fr['command']:02x} payload={fr['payload_len']} B")
-    print("HEX payload:", fr["payload"].hex(" "))
+    if dump_hex:
+        print("HEX payload:", fr["payload"].hex(" "))
+
+
+def _varint(buf, pos):
+    value = 0
+    shift = 0
+    while pos < len(buf) and shift < 70:
+        b = buf[pos]; pos += 1
+        value |= (b & 0x7f) << shift
+        if not (b & 0x80): return value, pos
+        shift += 7
+    raise ValueError("invalid protobuf varint")
+
+
+def _protobuf_fields(buf):
+    pos = 0
+    out = []
+    while pos < len(buf):
+        key, pos = _varint(buf, pos)
+        field, wire = key >> 3, key & 7
+        if wire == 0:
+            value, pos = _varint(buf, pos)
+        elif wire == 2:
+            n, pos = _varint(buf, pos)
+            value = buf[pos:pos+n]; pos += n
+        elif wire == 1:
+            value = buf[pos:pos+8]; pos += 8
+        elif wire == 5:
+            value = buf[pos:pos+4]; pos += 4
+        else:
+            raise ValueError(f"unsupported protobuf wire type {wire}")
+        out.append((field, wire, value))
+    return out
+
+
+def _signed64(v):
+    return v - (1 << 64) if v >= (1 << 63) else v
+
+
+def decode_mesh_hosts(payload):
+    """Decode the observed M_MESH_HOSTS response without requiring generated .proto files.
+
+    The response starts with a 4-byte status (0 == success), followed by a protobuf
+    container whose repeated field #1 contains one protobuf record per host.
+    Field labels below are conservative: only values proven by the live response are
+    named. Remaining numeric fields are kept visible for further firmware mapping.
+    """
+    if len(payload) < 4:
+        raise ValueError("MESH_HOSTS response too short")
+    status = int.from_bytes(payload[:4], "little", signed=True)
+    records = []
+    for field, wire, value in _protobuf_fields(payload[4:]):
+        if field != 1 or wire != 2:
+            continue
+        raw = {}
+        for f, w, v in _protobuf_fields(value):
+            if w == 2:
+                try: raw[f] = v.decode("utf-8")
+                except UnicodeDecodeError: raw[f] = v.hex()
+            elif w == 0:
+                raw[f] = _signed64(v) if f == 9 else v
+            else:
+                raw[f] = v.hex()
+        records.append({
+            "ip": raw.get(1, ""),
+            "mac": raw.get(2, ""),
+            "type": raw.get(3),
+            "node_sn": raw.get(4, ""),
+            "value5": raw.get(5),
+            "value6": raw.get(6),
+            "value7": raw.get(7),
+            "value8": raw.get(8),
+            "signal": raw.get(9),
+            "name": raw.get(10, ""),
+            "raw": raw,
+        })
+    return status, records
+
+
+def show_clients(fr):
+    status, clients = decode_mesh_hosts(fr["payload"])
+    print(f"Status={status}; hosts={len(clients)}")
+    print("#   IP               MAC                T  SIGNAL  NODE_SN             NAME")
+    print("--  ---------------  -----------------  -  ------  ------------------  ------------------------------")
+    for i, c in enumerate(clients, 1):
+        sig = "" if c["signal"] is None else str(c["signal"])
+        typ = "" if c["type"] is None else str(c["type"])
+        print(f"{i:>2}  {c['ip']:<15}  {c['mac']:<17}  {typ:<1}  {sig:>6}  {c['node_sn']:<18}  {c['name']}")
+    if clients:
+        print("\nNumeric protobuf fields (for rate/status mapping):")
+        for i, c in enumerate(clients, 1):
+            print(f"{i:>2}: f3={c['type']} f5={c['value5']} f6={c['value6']} f7={c['value7']} f8={c['value8']} f9={c['signal']}")
 
 
 def main():
@@ -101,6 +193,7 @@ def main():
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
     ap.add_argument("--clients", action="store_true", help="read-only firmware-confirmed M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
+    ap.add_argument("--raw-hex", action="store_true", help="also print full MESH_HOSTS payload as hex")
     args = ap.parse_args()
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
@@ -116,7 +209,9 @@ def main():
             tid += 1
             print("\nSending read-only firmware-confirmed MESH_HOSTS_GET (module=0x14, cmd=0x00, empty payload)...")
             s.sendall(build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
-            show("M_MESH_HOSTS / MESH_HOSTS_GET", recv_frame(s))
+            r = recv_frame(s)
+            show("M_MESH_HOSTS / MESH_HOSTS_GET", r, dump_hex=args.raw_hex)
+            show_clients(r)
             return
         tid += 1
         s.sendall(build_request(tid, ADV_MODULE, QOS_GET)); show("M_MESH_ADVANCE / QOS_GET", recv_frame(s))
