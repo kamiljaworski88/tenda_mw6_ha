@@ -17,10 +17,10 @@ AUTH_LOGIN = 0x01
 ADV_MODULE = 0x17
 QOS_GET = 0x08
 HIGH_DEVICE_GET = 0x0F
-# Firmware libucapi.so: uc_api_enable_m_ol_host registers
-# M_OL_HOSTS as module 10 (0x0a), CMD_OL_HOSTS_GET as command 0.
-OL_HOSTS_MODULE = 0x0A
-OL_HOSTS_GET = 0x00
+# Firmware boot.log confirms the app-facing registry IDs:
+# M_MESH_HOSTS[20] and CMD_MESH_HOSTS_GET[0].
+MESH_HOSTS_MODULE = 0x14
+MESH_HOSTS_GET = 0x00
 
 
 def pcap_tcp_payloads(path, port=9000):
@@ -100,7 +100,7 @@ def main():
     ap.add_argument("--host", default=HOST_DEFAULT)
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
-    ap.add_argument("--ol-hosts", action="store_true", help="read-only firmware-derived M_OL_HOSTS/CMD_OL_HOSTS_GET probe")
+    ap.add_argument("--clients", action="store_true", help="read-only firmware-confirmed M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
     args = ap.parse_args()
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
@@ -112,11 +112,11 @@ def main():
         s.sendall(build_request(tid, AUTH_MODULE, AUTH_LOGIN, login_payload)); r = recv_frame(s); show("AUTH LOGIN", r)
         if r["raw"][-4:] != b"\x00\x00\x00\x00":
             print("LOGIN rejected; stopping before further commands."); sys.exit(2)
-        if args.ol_hosts:
+        if args.clients:
             tid += 1
-            print("\nSending read-only firmware-derived OL_HOSTS_GET (module=0x0a, cmd=0x00, empty payload)...")
-            s.sendall(build_request(tid, OL_HOSTS_MODULE, OL_HOSTS_GET))
-            show("M_OL_HOSTS / OL_HOSTS_GET", recv_frame(s))
+            print("\nSending read-only firmware-confirmed MESH_HOSTS_GET (module=0x14, cmd=0x00, empty payload)...")
+            s.sendall(build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
+            show("M_MESH_HOSTS / MESH_HOSTS_GET", recv_frame(s))
             return
         tid += 1
         s.sendall(build_request(tid, ADV_MODULE, QOS_GET)); show("M_MESH_ADVANCE / QOS_GET", recv_frame(s))
