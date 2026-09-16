@@ -4,6 +4,7 @@ import argparse
 import socket
 import struct
 import sys
+import time
 
 HOST_DEFAULT = "192.168.5.1"
 PORT_DEFAULT = 9000
@@ -17,8 +18,8 @@ AUTH_LOGIN = 0x01
 ADV_MODULE = 0x17
 QOS_GET = 0x08
 HIGH_DEVICE_GET = 0x0F
-# Firmware boot.log confirms the app-facing registry IDs:
-# M_MESH_HOSTS[20] and CMD_MESH_HOSTS_GET[0].
+# Firmware boot.log and live wire test confirm:
+# M_MESH_HOSTS[20] == TCP/9000 module 0x14 and CMD_MESH_HOSTS_GET[0] == 0x00.
 MESH_HOSTS_MODULE = 0x14
 MESH_HOSTS_GET = 0x00
 
@@ -96,8 +97,7 @@ def show(label, fr, dump_hex=True):
 
 
 def _varint(buf, pos):
-    value = 0
-    shift = 0
+    value = 0; shift = 0
     while pos < len(buf) and shift < 70:
         b = buf[pos]; pos += 1
         value |= (b & 0x7f) << shift
@@ -107,22 +107,15 @@ def _varint(buf, pos):
 
 
 def _protobuf_fields(buf):
-    pos = 0
-    out = []
+    pos = 0; out = []
     while pos < len(buf):
-        key, pos = _varint(buf, pos)
-        field, wire = key >> 3, key & 7
-        if wire == 0:
-            value, pos = _varint(buf, pos)
+        key, pos = _varint(buf, pos); field, wire = key >> 3, key & 7
+        if wire == 0: value, pos = _varint(buf, pos)
         elif wire == 2:
-            n, pos = _varint(buf, pos)
-            value = buf[pos:pos+n]; pos += n
-        elif wire == 1:
-            value = buf[pos:pos+8]; pos += 8
-        elif wire == 5:
-            value = buf[pos:pos+4]; pos += 4
-        else:
-            raise ValueError(f"unsupported protobuf wire type {wire}")
+            n, pos = _varint(buf, pos); value = buf[pos:pos+n]; pos += n
+        elif wire == 1: value = buf[pos:pos+8]; pos += 8
+        elif wire == 5: value = buf[pos:pos+4]; pos += 4
+        else: raise ValueError(f"unsupported protobuf wire type {wire}")
         out.append((field, wire, value))
     return out
 
@@ -132,41 +125,28 @@ def _signed64(v):
 
 
 def decode_mesh_hosts(payload):
-    """Decode the observed M_MESH_HOSTS response without requiring generated .proto files.
+    """Decode HostLists/HostInfo using field order recovered from onhosts.pb-c.c.
 
-    The response starts with a 4-byte status (0 == success), followed by a protobuf
-    container whose repeated field #1 contains one protobuf record per host.
-    Field labels below are conservative: only values proven by the live response are
-    named. Remaining numeric fields are kept visible for further firmware mapping.
+    HostInfo schema: 1 ipaddr, 2 ethaddr, 3 access, 4 assoc_sn,
+    5 condtion_time, 6 online, 7 uprate, 8 downrate, 9 signal, 10 name.
     """
-    if len(payload) < 4:
-        raise ValueError("MESH_HOSTS response too short")
+    if len(payload) < 4: raise ValueError("MESH_HOSTS response too short")
     status = int.from_bytes(payload[:4], "little", signed=True)
     records = []
     for field, wire, value in _protobuf_fields(payload[4:]):
-        if field != 1 or wire != 2:
-            continue
+        if field != 1 or wire != 2: continue
         raw = {}
         for f, w, v in _protobuf_fields(value):
             if w == 2:
                 try: raw[f] = v.decode("utf-8")
                 except UnicodeDecodeError: raw[f] = v.hex()
-            elif w == 0:
-                raw[f] = _signed64(v) if f == 9 else v
-            else:
-                raw[f] = v.hex()
+            elif w == 0: raw[f] = _signed64(v) if f == 9 else v
+            else: raw[f] = v.hex()
         records.append({
-            "ip": raw.get(1, ""),
-            "mac": raw.get(2, ""),
-            "type": raw.get(3),
-            "node_sn": raw.get(4, ""),
-            "value5": raw.get(5),
-            "value6": raw.get(6),
-            "value7": raw.get(7),
-            "value8": raw.get(8),
-            "signal": raw.get(9),
-            "name": raw.get(10, ""),
-            "raw": raw,
+            "ip": raw.get(1, ""), "mac": raw.get(2, ""), "access": raw.get(3),
+            "node_sn": raw.get(4, ""), "condition_time": raw.get(5),
+            "online": raw.get(6), "uprate": raw.get(7), "downrate": raw.get(8),
+            "signal": raw.get(9), "name": raw.get(10, ""), "raw": raw,
         })
     return status, records
 
@@ -174,16 +154,45 @@ def decode_mesh_hosts(payload):
 def show_clients(fr):
     status, clients = decode_mesh_hosts(fr["payload"])
     print(f"Status={status}; hosts={len(clients)}")
-    print("#   IP               MAC                T  SIGNAL  NODE_SN             NAME")
-    print("--  ---------------  -----------------  -  ------  ------------------  ------------------------------")
+    print("#   IP               MAC                A ON  SIGNAL   UP      DOWN    NODE_SN             NAME")
+    print("--  ---------------  -----------------  - --  ------  ------  ------  ------------------  ------------------------------")
     for i, c in enumerate(clients, 1):
         sig = "" if c["signal"] is None else str(c["signal"])
-        typ = "" if c["type"] is None else str(c["type"])
-        print(f"{i:>2}  {c['ip']:<15}  {c['mac']:<17}  {typ:<1}  {sig:>6}  {c['node_sn']:<18}  {c['name']}")
-    if clients:
-        print("\nNumeric protobuf fields (for rate/status mapping):")
-        for i, c in enumerate(clients, 1):
-            print(f"{i:>2}: f3={c['type']} f5={c['value5']} f6={c['value6']} f7={c['value7']} f8={c['value8']} f9={c['signal']}")
+        acc = "" if c["access"] is None else str(c["access"])
+        on = "" if c["online"] is None else str(c["online"])
+        up = "" if c["uprate"] is None else str(c["uprate"])
+        down = "" if c["downrate"] is None else str(c["downrate"])
+        print(f"{i:>2}  {c['ip']:<15}  {c['mac']:<17}  {acc:<1} {on:>2}  {sig:>6}  {up:>6}  {down:>6}  {c['node_sn']:<18}  {c['name']}")
+    return clients
+
+
+def request_clients(sock, tid):
+    sock.sendall(build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
+    fr = recv_frame(sock)
+    if fr["module"] != MESH_HOSTS_MODULE or fr["command"] != MESH_HOSTS_GET:
+        raise RuntimeError(f"unexpected response module/cmd {fr['module']:02x}/{fr['command']:02x}")
+    return fr
+
+
+def watch_client_rates(sock, tid, selector, interval, count):
+    print(f"\nWatching client {selector!r}; interval={interval:g}s; samples={count if count else 'continuous'}")
+    print("TIME      IP               MAC                ONLINE  UP      DOWN    SIGNAL  NAME")
+    n = 0
+    while not count or n < count:
+        tid = (tid + 1) & 0xff
+        fr = request_clients(sock, tid)
+        status, clients = decode_mesh_hosts(fr["payload"])
+        if status != 0: raise RuntimeError(f"MESH_HOSTS status={status}")
+        needle = selector.lower()
+        matches = [c for c in clients if needle in (c["name"] or "").lower() or needle == c["ip"].lower() or needle == c["mac"].lower()]
+        stamp = time.strftime("%H:%M:%S")
+        if not matches:
+            print(f"{stamp}  client not found: {selector}")
+        for c in matches:
+            print(f"{stamp}  {c['ip']:<15}  {c['mac']:<17}  {str(c['online']):>6}  {str(c['uprate']):>6}  {str(c['downrate']):>6}  {str(c['signal']):>6}  {c['name']}")
+        n += 1
+        if not count or n < count: time.sleep(interval)
+    return tid
 
 
 def main():
@@ -192,33 +201,33 @@ def main():
     ap.add_argument("--host", default=HOST_DEFAULT)
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
-    ap.add_argument("--clients", action="store_true", help="read-only firmware-confirmed M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
+    ap.add_argument("--clients", action="store_true", help="read-only M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
     ap.add_argument("--raw-hex", action="store_true", help="also print full MESH_HOSTS payload as hex")
+    ap.add_argument("--watch-client", metavar="NAME_IP_OR_MAC", help="poll one client and show firmware uprate/downrate")
+    ap.add_argument("--interval", type=float, default=3.0, help="watch polling interval in seconds (default: 3)")
+    ap.add_argument("--count", type=int, default=10, help="watch sample count; 0 = continuous (default: 10)")
     args = ap.parse_args()
+    if args.interval < 1: ap.error("--interval must be >= 1 second")
+    if args.count < 0: ap.error("--count must be >= 0")
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
     with socket.create_connection((args.host, args.port), timeout=4) as s:
-        s.settimeout(4)
-        tid = 0xA0
+        s.settimeout(4); tid = 0xA0
         s.sendall(build_request(tid, AUTH_MODULE, AUTH_GET_STA)); show("AUTH GET_STA", recv_frame(s))
         tid += 1
         s.sendall(build_request(tid, AUTH_MODULE, AUTH_LOGIN, login_payload)); r = recv_frame(s); show("AUTH LOGIN", r)
         if r["raw"][-4:] != b"\x00\x00\x00\x00":
             print("LOGIN rejected; stopping before further commands."); sys.exit(2)
+        if args.watch_client:
+            watch_client_rates(s, tid, args.watch_client, args.interval, args.count); return
         if args.clients:
             tid += 1
             print("\nSending read-only firmware-confirmed MESH_HOSTS_GET (module=0x14, cmd=0x00, empty payload)...")
-            s.sendall(build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
-            r = recv_frame(s)
-            show("M_MESH_HOSTS / MESH_HOSTS_GET", r, dump_hex=args.raw_hex)
-            show_clients(r)
-            return
+            r = request_clients(s, tid); show("M_MESH_HOSTS / MESH_HOSTS_GET", r, dump_hex=args.raw_hex); show_clients(r); return
         tid += 1
         s.sendall(build_request(tid, ADV_MODULE, QOS_GET)); show("M_MESH_ADVANCE / QOS_GET", recv_frame(s))
         if args.high_device:
-            tid += 1
-            s.sendall(build_request(tid, ADV_MODULE, HIGH_DEVICE_GET)); show("M_MESH_ADVANCE / HIGH_DEVICE_GET", recv_frame(s))
+            tid += 1; s.sendall(build_request(tid, ADV_MODULE, HIGH_DEVICE_GET)); show("M_MESH_ADVANCE / HIGH_DEVICE_GET", recv_frame(s))
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
