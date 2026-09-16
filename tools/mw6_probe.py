@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only Tenda MW6 TCP/9000 probe reconstructed from official-app traffic."""
+"""Read-only Tenda MW6 TCP/9000 probe reconstructed from official-app traffic and firmware."""
 import argparse
 import socket
 import struct
@@ -17,6 +17,10 @@ AUTH_LOGIN = 0x01
 ADV_MODULE = 0x17
 QOS_GET = 0x08
 HIGH_DEVICE_GET = 0x0F
+# Firmware libucapi.so: uc_api_enable_m_ol_host registers
+# M_OL_HOSTS as module 10 (0x0a), CMD_OL_HOSTS_GET as command 0.
+OL_HOSTS_MODULE = 0x0A
+OL_HOSTS_GET = 0x00
 
 
 def pcap_tcp_payloads(path, port=9000):
@@ -25,34 +29,26 @@ def pcap_tcp_payloads(path, port=9000):
         if len(gh) != 24:
             raise ValueError("Invalid PCAP")
         magic = gh[:4]
-        if magic == b"\xd4\xc3\xb2\xa1":
-            endian = "<"
-        elif magic == b"\xa1\xb2\xc3\xd4":
-            endian = ">"
-        else:
-            raise ValueError("Classic PCAP required (not PCAPNG)")
+        if magic == b"\xd4\xc3\xb2\xa1": endian = "<"
+        elif magic == b"\xa1\xb2\xc3\xd4": endian = ">"
+        else: raise ValueError("Classic PCAP required (not PCAPNG)")
         linktype = struct.unpack(endian + "I", gh[20:24])[0]
-        if linktype != 101:
-            raise ValueError(f"Expected DLT_RAW=101, got {linktype}")
+        if linktype != 101: raise ValueError(f"Expected DLT_RAW=101, got {linktype}")
         while True:
             ph = f.read(16)
-            if not ph or len(ph) != 16:
-                break
+            if not ph or len(ph) != 16: break
             _, _, incl_len, _ = struct.unpack(endian + "IIII", ph)
             pkt = f.read(incl_len)
-            if len(pkt) < 40 or pkt[0] >> 4 != 4 or pkt[9] != 6:
-                continue
+            if len(pkt) < 40 or pkt[0] >> 4 != 4 or pkt[9] != 6: continue
             ihl = (pkt[0] & 0x0F) * 4
             sport, dport = struct.unpack("!HH", pkt[ihl:ihl + 4])
             doff = ((pkt[ihl + 12] >> 4) & 0x0F) * 4
             payload = pkt[ihl + doff:]
-            if payload and (sport == port or dport == port):
-                yield sport, dport, payload
+            if payload and (sport == port or dport == port): yield sport, dport, payload
 
 
 def parse_frame(data):
-    if len(data) < 16 or data[:2] != MAGIC:
-        return None
+    if len(data) < 16 or data[:2] != MAGIC: return None
     n = int.from_bytes(data[6:8], "big")
     return {"kind": data[2], "tid": data[3], "payload_len": n,
             "module": data[8], "command": data[9],
@@ -63,8 +59,7 @@ def extract_successful_login_payload(pcap):
     candidates = {}
     for sport, dport, raw in pcap_tcp_payloads(pcap):
         fr = parse_frame(raw)
-        if not fr:
-            continue
+        if not fr: continue
         if dport == 9000 and fr["kind"] == REQ_KIND and fr["module"] == AUTH_MODULE and fr["command"] == AUTH_LOGIN:
             candidates[fr["tid"]] = fr["payload"]
         elif sport == 9000 and fr["kind"] == RESP_KIND and fr["module"] == AUTH_MODULE and fr["command"] == AUTH_LOGIN:
@@ -82,15 +77,13 @@ def recv_frame(sock):
     hdr = b""
     while len(hdr) < 16:
         chunk = sock.recv(16-len(hdr))
-        if not chunk:
-            raise ConnectionError("Router closed connection")
+        if not chunk: raise ConnectionError("Router closed connection")
         hdr += chunk
     n = int.from_bytes(hdr[6:8], "big")
     payload = b""
     while len(payload) < n:
         chunk = sock.recv(n-len(payload))
-        if not chunk:
-            raise ConnectionError("Connection interrupted")
+        if not chunk: raise ConnectionError("Connection interrupted")
         payload += chunk
     return parse_frame(hdr + payload)
 
@@ -107,17 +100,24 @@ def main():
     ap.add_argument("--host", default=HOST_DEFAULT)
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
+    ap.add_argument("--ol-hosts", action="store_true", help="read-only firmware-derived M_OL_HOSTS/CMD_OL_HOSTS_GET probe")
     args = ap.parse_args()
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
     with socket.create_connection((args.host, args.port), timeout=4) as s:
         s.settimeout(4)
         tid = 0xA0
-        s.sendall(build_request(tid, AUTH_MODULE, AUTH_GET_STA)); r = recv_frame(s); show("AUTH GET_STA", r)
+        s.sendall(build_request(tid, AUTH_MODULE, AUTH_GET_STA)); show("AUTH GET_STA", recv_frame(s))
         tid += 1
         s.sendall(build_request(tid, AUTH_MODULE, AUTH_LOGIN, login_payload)); r = recv_frame(s); show("AUTH LOGIN", r)
         if r["raw"][-4:] != b"\x00\x00\x00\x00":
             print("LOGIN rejected; stopping before further commands."); sys.exit(2)
+        if args.ol_hosts:
+            tid += 1
+            print("\nSending read-only firmware-derived OL_HOSTS_GET (module=0x0a, cmd=0x00, empty payload)...")
+            s.sendall(build_request(tid, OL_HOSTS_MODULE, OL_HOSTS_GET))
+            show("M_OL_HOSTS / OL_HOSTS_GET", recv_frame(s))
+            return
         tid += 1
         s.sendall(build_request(tid, ADV_MODULE, QOS_GET)); show("M_MESH_ADVANCE / QOS_GET", recv_frame(s))
         if args.high_device:
