@@ -13,45 +13,44 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve GetHostList GOT targets and rate gate
+      - name: Resolve MIPS GP targets for GetHostList
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/rate-got-map.txt'
+          out='docs/reverse-generated/rate-gp-targets.txt'
           mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
-          mipsel-linux-gnu-readelf -aW "$conf" > /tmp/conf.elf
           {
-            echo '===== ELF/GOT + dynamic symbols ====='
-            mipsel-linux-gnu-readelf -SW "$conf" | grep -E '\.got|\.dynsym' || true
-            mipsel-linux-gnu-readelf -sW "$conf" | grep -iE 'netlink_get_statistic_info|g_ip_info|host_lists|host_info|feature|debug' || true
-            echo '===== GetHostList exact call sites ====='
-            for a in 4351f8 435228 4352b4; do
-              echo "--- callsite 0x$a ---"
-              grep -n -B10 -A6 -E "^[[:space:]]*$a:" /tmp/conf.asm || true
+            echo '===== GP symbols ====='
+            mipsel-linux-gnu-readelf -sW "$conf" | grep -E '(^|[[:space:]])(_gp|__gnu_local_gp)([[:space:]]|$)' || true
+            echo '===== GOT raw ====='
+            mipsel-linux-gnu-objdump -s -j .got "$conf" || true
+            echo '===== GetHostList complete ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x434f9c --stop-address=0x4353d0 "$conf" || true
+            echo '===== PIC base users (-31956 gp) ====='
+            grep -n -B5 -A8 -- '-31956(gp)' /tmp/conf.asm | head -n 1200 || true
+            echo '===== netlink GOT users (-31216 gp) ====='
+            grep -n -B20 -A35 -- '-31216(gp)' /tmp/conf.asm || true
+            echo '===== g_ip_info references ====='
+            grep -n -B20 -A35 -E 'g_ip_info|64ec[0-9a-f]' /tmp/conf.asm || true
+            echo '===== candidate text targets if GOT base is 0x400000 ====='
+            for a in 403e3c 404258 4007b0; do
+              echo "--- $a ---"
+              start=$((16#$a - 128)); stop=$((16#$a + 900));
+              mipsel-linux-gnu-objdump -drwC --start-address=$start --stop-address=$stop "$conf" || true
             done
-            echo '===== all references to netlink/stat symbols ====='
-            grep -n -B12 -A18 -iE 'netlink_get_statistic_info|g_ip_info' /tmp/conf.asm || true
-            echo '===== readelf reloc/GOT context ====='
-            grep -iE -B12 -A12 'netlink_get_statistic_info|g_ip_info' /tmp/conf.elf || true
-            echo '===== GetHostList 0x4351d0-0x4352c0 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x4351d0 --stop-address=0x4352c0 "$conf" || true
-            echo '===== candidate local functions / rate references ====='
-            grep -nE 'addiu[[:space:]]+a0,(s8|v0)|li[[:space:]]+a0,15|netlink_get_statistic_info|g_ip_info' /tmp/conf.asm | grep -E '43[0-9a-f]{4}:' | head -n 800 || true
-            echo '===== rate/debug strings with offsets ====='
-            strings -a -t x "$conf" | grep -iE -B12 -A24 'uprate|downrate|online_ip|fill_host|GetHostList|host list.*rate|statistic' || true
           } > "$out"
           head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: rate-got-map
-          path: docs/reverse-generated/rate-got-map.txt
+          name: rate-gp-targets
+          path: docs/reverse-generated/rate-gp-targets.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-got-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: map GetHostList GOT rate path'; git push || true; fi
+          git add docs/reverse-generated/rate-gp-targets.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve MIPS GP host-rate targets'; git push || true; fi
