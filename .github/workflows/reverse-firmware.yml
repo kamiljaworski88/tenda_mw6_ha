@@ -18,39 +18,51 @@ jobs:
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Map UC API modules to TCP 9000 wire IDs
+      - name: Map HostInfo protobuf and rate fields
         run: |
           root='firmware-src/RootFS-unpacked'
-          out='docs/reverse-generated/ucapi-wire-module-map.txt'
+          out='docs/reverse-generated/hostinfo-rate-map.txt'
           : > "$out"
-          echo '===== firmware-wide UC API enable/register references =====' >> "$out"
-          grep -RInaE 'M_OL_HOSTS|CMD_OL_HOSTS_GET|uc_api_enable_m_ol_host|uc_api_enable_m_mesh_auth|uc_api_enable_m_mesh_advance|M_MESH_AUTH|M_MESH_ADVANCE' firmware-src 2>/dev/null | head -n 2000 >> "$out" || true
+          echo '===== boot/runtime references =====' >> "$out"
+          grep -RInaE 'GetHostList|CMD_MESH_HOSTS_GET|uprate|downrate|fill_host_lists_rate|fill_host_lists_info|host_info__descriptor|host_lists__descriptor' firmware-src 2>/dev/null | head -n 2500 >> "$out" || true
+          echo '===== candidate binaries / strings / symbols =====' >> "$out"
           for f in "$root"/lib/*.so "$root"/bin/* "$root"/sbin/*; do
             [ -f "$f" ] || continue
-            if strings -a "$f" 2>/dev/null | grep -qiE 'M_OL_HOSTS|M_MESH_AUTH|M_MESH_ADVANCE|uc_api_enable_m_ol_host'; then
+            if strings -a "$f" 2>/dev/null | grep -qiE 'uprate|downrate|GetHostList|host_lists|host_info'; then
               echo "===== FILE $f =====" >> "$out"
-              strings -a -t x "$f" | grep -iE -C 12 'M_OL_HOSTS|CMD_OL_HOSTS_GET|M_MESH_AUTH|M_MESH_ADVANCE|uc_api_enable_m_ol_host' >> "$out" || true
-              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'ol_host|mesh_auth|mesh_advance|uc_api_enable' >> "$out" || true
+              strings -a -t x "$f" | grep -iE -C 18 'uprate|downrate|GetHostList|host_lists|host_info|signal|assoc_sn|condtion_time|interface_name' >> "$out" || true
+              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'fill_host|host_info|host_lists|rate|online_ip|statistic' >> "$out" || true
             fi
           done
-          lib="$root/lib/libucapi.so"
-          mipsel-linux-gnu-objdump -drwC "$lib" > /tmp/u.objdump
-          mipsel-linux-gnu-readelf -sW "$lib" > /tmp/u.sym
-          echo '===== all uc_api_enable module functions =====' >> "$out"
-          grep -i 'uc_api_enable_m_' /tmp/u.sym >> "$out" || true
-          while read -r sym; do
-            [ -n "$sym" ] || continue
-            echo "===== DISASM $sym =====" >> "$out"
-            mipsel-linux-gnu-objdump -drwC --disassemble="$sym" "$lib" 2>/dev/null >> "$out" || true
-          done < <(awk '/uc_api_enable_m_/ {print $8}' /tmp/u.sym | sed 's/@@.*//' | sort -u)
-          echo '===== known wire IDs from captures for comparison =====' >> "$out"
-          echo 'TCP9000 M_MESH_AUTH observed = 0x18; GET_STA=0x00 LOGIN=0x01' >> "$out"
-          echo 'TCP9000 M_MESH_ADVANCE observed = 0x17; QOS_GET=0x08 HIGH_DEVICE_GET=0x0f' >> "$out"
-          echo 'Goal: determine whether uc_api_enable module index equals TCP9000 wire module or is a separate registry index.' >> "$out"
-          head -c 1400000 "$out" > /tmp/o && mv /tmp/o "$out"
+          pb="$root/lib/libpb.so"
+          if [ -f "$pb" ]; then
+            echo '===== libpb HostInfo symbols =====' >> "$out"
+            mipsel-linux-gnu-readelf -sW "$pb" | grep -iE 'host_info|host_lists' >> "$out" || true
+            echo '===== libpb descriptor-adjacent strings =====' >> "$out"
+            strings -a -t x "$pb" | grep -iE -C 30 'uprate|downrate|assoc_sn|condtion_time|interface_name|host_name' >> "$out" || true
+            for s in host_info__init host_info__get_packed_size host_info__pack host_info__unpack host_lists__init host_lists__pack; do
+              echo "===== DISASM $s =====" >> "$out"
+              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$pb" 2>/dev/null >> "$out" || true
+            done
+          fi
+          conf="$root/bin/confsrv"
+          if [ -f "$conf" ]; then
+            echo '===== confsrv relevant symbol table =====' >> "$out"
+            mipsel-linux-gnu-readelf -sW "$conf" | grep -iE 'fill_host|GetHost|rate|online_ip|statistic' >> "$out" || true
+            mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.objdump
+            echo '===== references/calls near host/rate symbols =====' >> "$out"
+            grep -iE -C 45 'fill_host_lists_rate|fill_host_lists_info|find_client_in_online_ip_info|netlink_get_statistic_info|g_ip_info|host_lists__pack' /tmp/conf.objdump | head -n 7000 >> "$out" || true
+          fi
+          echo '===== known live protobuf observation =====' >> "$out"
+          cat >> "$out" <<'EOF'
+M_MESH_HOSTS[20]/CMD_MESH_HOSTS_GET[0] on TCP9000 returned 30 HostInfo records.
+Observed wire fields: f1=IP string, f2=MAC string, f3=type/status (0/1/2), f4=assoc_sn string, f5~9074/9104, f6=0, f7=0, f8=0, f9=negative Wi-Fi signal when online, f10=name string.
+Goal: map exact HostInfo protobuf field names/numbers and prove which fields are uprate/downrate.
+EOF
+          head -c 1800000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ucapi-wire-module-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh UC API to TCP9000 module map'; git push; fi
+          git add docs/reverse-generated/hostinfo-rate-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh HostInfo protobuf and rate map'; git push; fi
