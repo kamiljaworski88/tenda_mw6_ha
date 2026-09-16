@@ -13,52 +13,56 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Recover native cmdrpc request path
+      - name: Resolve cmdrpc wire format
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
           srv='firmware-src/RootFS-unpacked/sbin/cmdsrv'
-          cli='firmware-src/RootFS-unpacked/sbin/cmdcli'
-          testbin='firmware-src/RootFS-unpacked/sbin/cmdctl_test'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/cmdrpc-path.txt'
+          out='docs/reverse-generated/cmdrpc-wire.txt'
           {
-            echo '===== RUN 36 GOAL ====='
-            echo 'Explain why TCP/12598 becomes globally subscribe-only and recover the native libcmdctl request/reply pattern (cmdrpc@...).'
-            echo '===== libcmdctl symbols ====='
-            mipsel-linux-gnu-readelf -sW "$ctl" | grep -E 'cmd_(init|sub|pub|get|set)|cmdsh_random_key|command_(connect|read|close)|redis|Base64' || true
-            echo '===== libcmdctl reloc/GOT ====='
-            mipsel-linux-gnu-readelf -rW "$ctl" || true
-            echo '===== full helper T.54 / command path ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1eac "$ctl" || true
-            echo '===== cmd_init ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1040 --stop-address=0x10e8 "$ctl" || true
-            echo '===== cmd_sub ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x17bc --stop-address=0x1868 "$ctl" || true
-            echo '===== cmd_pub/get/set ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x2040 "$ctl" || true
-            echo '===== libcmdctl strings ====='
-            strings -a -t x "$ctl" | grep -E -B8 -A12 'cmdrpc@|publish|subscribe|unsubscribe|command_connect|command_read|Base64|urandom' || true
-            echo '===== cmdsrv subscribe-mode enforcement ====='
-            mipsel-linux-gnu-objdump -drwC "$srv" | grep -n -B20 -A50 -E 'SUBSCRIBE|subscribe mode|UNSUBSCRIBE|QUIT|only .*SUBSCRIBE' || true
-            strings -a -t x "$srv" | grep -iE -B10 -A15 'subscribe|unsubscribe|quit|only' || true
-            echo '===== cmdcli usage / behavior ====='
-            strings -a -t x "$cli" | grep -iE -B12 -A20 'usage|subscribe|publish|raw|encrypt|server|listen|redis' || true
-            mipsel-linux-gnu-readelf -sW "$cli" | head -n 250 || true
-            echo '===== cmdctl_test callsites ====='
-            mipsel-linux-gnu-objdump -drwC "$testbin" | grep -n -B20 -A40 -E 'cmd_(get|set|pub|sub)' || true
+            echo '===== RUN 37 GOAL ====='
+            echo 'Recover exact libcmdctl request/reply wire format so external client can call GetHostList without SUBSCRIBE.'
+            echo '===== DYNAMIC SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$ctl" | grep -E 'cmd_(init|sub|pub|get|set)|cmdsh_random_key|redis_writer|redis_reader|redisReader|Base64|cm_io|connect|read|write|close|malloc|free|str|snprintf|sprintf' || true
+            echo '===== GOT/DYNAMIC RELOCS ====='
+            mipsel-linux-gnu-objdump -R "$ctl" || true
+            echo '===== command_connect ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x0f9c --stop-address=0x10e8 "$ctl" || true
+            echo '===== command_connect_done ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x10e8 --stop-address=0x122c "$ctl" || true
+            echo '===== command_close ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x122c --stop-address=0x134c "$ctl" || true
+            echo '===== command_read_done ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x134c --stop-address=0x1400 "$ctl" || true
+            echo '===== cmd_pub_done ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1400 --stop-address=0x145c "$ctl" || true
+            echo '===== redis_parse ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x145c --stop-address=0x159c "$ctl" || true
+            echo '===== cmd_get_done ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x159c --stop-address=0x1670 "$ctl" || true
+            echo '===== cmd_sub + T54 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x17bc --stop-address=0x1e04 "$ctl" || true
+            echo '===== cmd_pub/set/get wrappers ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x1f20 "$ctl" || true
+            echo '===== cmdsh_random_key ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x211c "$ctl" || true
+            echo '===== DATA/RODATA AROUND STRINGS ====='
+            strings -a -t x "$ctl" | grep -E -B10 -A18 'cmdrpc@|publish|subscribe|unsubscribe|set$|get$|command_|unexpected data|cmdctl.c|cmdsh.c' || true
+            echo '===== CMDSRV SUBSCRIBE STATE PATH ====='
+            strings -a -t x "$srv" | grep -iE -B12 -A18 'subscribe mode|SUBSCRIBE|UNSUBSCRIBE|QUIT|pending_clients|pending_requests' || true
           } > "$out"
-          head -c 1800000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 2000000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: cmdrpc-path
-          path: docs/reverse-generated/cmdrpc-path.txt
+          name: cmdrpc-wire
+          path: docs/reverse-generated/cmdrpc-wire.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/cmdrpc-path.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: recover native cmdrpc path'; git push || true; fi
+          git add docs/reverse-generated/cmdrpc-wire.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve cmdrpc wire format'; git push || true; fi
