@@ -5,105 +5,74 @@ on:
   push:
     paths:
       - '.github/workflows/reverse-firmware.yml'
-
 permissions:
   contents: write
-
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install tools
-        run: |
+      - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
-      - name: Fetch firmware
-        run: |
+      - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p reports docs/reverse-generated
-      - name: Map GetHostList descriptor and message layout
+          mkdir -p docs/reverse-generated
+      - name: Recover GetHostList command table
         run: |
-          root='firmware-src/RootFS-unpacked'
-          for f in "$root/bin/confsrv" "$root/bin/confcli" "$root/sbin/cmdctl_test" "$root/lib/libcmdctl.so"; do
-            [ -f "$f" ] || continue
-            safe=$(echo "${f#$root/}" | tr '/' '_')
-            strings -a -t x "$f" > "reports/$safe.strings.txt" || true
-            mipsel-linux-gnu-readelf -aW "$f" > "reports/$safe.readelf.txt" 2>&1 || true
-            mipsel-linux-gnu-objdump -drwC "$f" > "reports/$safe.objdump.txt" 2>&1 || true
-          done
-          cat > /tmp/map.py <<'PY'
+          cat > /tmp/recover.py <<'PY'
           from elftools.elf.elffile import ELFFile
           import struct
-          from pathlib import Path
-
-          path=Path('firmware-src/RootFS-unpacked/bin/confsrv')
-          with path.open('rb') as f:
-              elf=ELFFile(f)
-              alloc=[]
-              for sec in elf.iter_sections():
-                  if sec['sh_flags'] & 2 and sec['sh_size']:
-                      alloc.append((sec.name,sec['sh_addr'],sec.data()))
-              def read_cstr(addr):
-                  for name,base,data in alloc:
-                      if base <= addr < base+len(data):
-                          off=addr-base; end=data.find(b'\0',off)
-                          if end<0: end=min(len(data),off+96)
-                          x=data[off:end]
-                          if x and all(c in b'\t\r\n' or 32<=c<127 for c in x):
-                              return x.decode('ascii','replace')
-                  return None
-              symtab=elf.get_section_by_name('.dynsym')
-              syms={s['st_value']:s.name for s in symtab.iter_symbols() if s['st_value']} if symtab else {}
-              targets={0x467a30:'GetHostList',0x434f9c:'confctl_get_host_list'}
-              print('# GetHostList descriptor scan')
-              for target,label in targets.items():
-                  needle=struct.pack('<I',target)
-                  print(f'\n== references to {label} {target:#x} ==')
-                  for name,base,data in alloc:
-                      start=0
-                      while True:
-                          i=data.find(needle,start)
-                          if i<0: break
-                          va=base+i
-                          print(f'{name} {va:#010x}')
-                          lo=max(0,i-48); hi=min(len(data),i+80)
-                          for j in range(lo-(lo%4),hi,4):
-                              if j+4>len(data): break
-                              v=struct.unpack_from('<I',data,j)[0]
-                              s=read_cstr(v); sn=syms.get(v)
-                              note=''
-                              if s: note=f' str={s!r}'
-                              if sn: note+=f' sym={sn}'
-                              print(f'  {base+j:#010x}: {v:#010x}{note}')
-                          start=i+1
-              print('\n== likely 36-byte command envelope evidence ==')
-              print('conf_msg_hander hashes request base as command name, then passes payload=request+36 and payload_len=total_len-36.')
+          p='firmware-src/RootFS-unpacked/bin/confsrv'
+          with open(p,'rb') as f:
+            e=ELFFile(f); secs=[]
+            for s in e.iter_sections():
+              if s['sh_flags'] & 2 and s['sh_size']: secs.append((s.name,s['sh_addr'],s.data()))
+            def cstr(a):
+              for n,b,d in secs:
+                if b<=a<b+len(d):
+                  o=a-b; z=d.find(b'\0',o)
+                  if z<0:z=min(len(d),o+64)
+                  x=d[o:z]
+                  if x and all(32<=q<127 for q in x): return x.decode()
+            def u32(a):
+              for n,b,d in secs:
+                if b<=a<=b+len(d)-4:return struct.unpack_from('<I',d,a-b)[0]
+            # GetHostList string VA is file-string offset 0x67a30 mapped in .rodata; find it by content.
+            sva=None
+            for n,b,d in secs:
+              i=d.find(b'GetHostList\0')
+              if i>=0:sva=b+i;break
+            print(f'GetHostList string VA={sva:#x}')
+            # Locate pointer to the string in all allocated data; print broad table neighborhood.
+            needle=struct.pack('<I',sva)
+            for n,b,d in secs:
+              pos=0
+              while True:
+                i=d.find(needle,pos)
+                if i<0:break
+                va=b+i; print(f'\nPOINTER in {n} at {va:#x}')
+                for a in range(va-128,va+160,4):
+                  v=u32(a)
+                  if v is None:continue
+                  s=cstr(v); note=f' -> {s!r}' if s else ''
+                  print(f'{a:#010x} {v:#010x}{note}')
+                pos=i+1
           PY
-          python3 /tmp/map.py > docs/reverse-generated/gethostlist-descriptor.txt
+          python3 /tmp/recover.py > docs/reverse-generated/gethostlist-command-table.txt
+          root='firmware-src/RootFS-unpacked'
           {
-            echo '\n== conf_msg_hander =='
-            mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$root/bin/confsrv" || true
-            echo '\n== conf_msg_define =='
-            mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_define "$root/bin/confsrv" || true
-            echo '\n== GetHostList =='
-            mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$root/bin/confsrv" || true
-            echo '\n== cmd_get =='
+            echo '\n===== init and open references ====='
+            mipsel-linux-gnu-objdump -drwC "$root/bin/confsrv" | grep -n -B120 -A220 -E 'conf_msg_open|conf_msg_all_cmds_init|conf_msg_define|confctl_get_host_list' || true
+            echo '\n===== cmd_get internals ====='
             mipsel-linux-gnu-objdump -drwC --disassemble=cmd_get "$root/lib/libcmdctl.so" || true
-          } >> docs/reverse-generated/gethostlist-descriptor.txt
-          head -c 900000 docs/reverse-generated/gethostlist-descriptor.txt > /tmp/out && mv /tmp/out docs/reverse-generated/gethostlist-descriptor.txt
-      - name: Commit map
+            mipsel-linux-gnu-objdump -drwC "$root/lib/libcmdctl.so" | grep -n -B120 -A260 -E 'cmd_get_done|cmdsh_random_key|publish|subscribe' || true
+          } >> docs/reverse-generated/gethostlist-command-table.txt
+          head -c 950000 docs/reverse-generated/gethostlist-command-table.txt > /tmp/o && mv /tmp/o docs/reverse-generated/gethostlist-command-table.txt
+      - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/gethostlist-descriptor.txt
-          if ! git diff --cached --quiet; then
-            git commit -m 'reverse: refresh GetHostList descriptor map'
-            git push
-          fi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mw6-gethostlist-descriptor-reports
-          path: reports/
-          retention-days: 14
+          git add docs/reverse-generated/gethostlist-command-table.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh GetHostList command table'; git push; fi
