@@ -18,50 +18,48 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Analyze HostInfo schema and rate path
+      - name: Trace HostInfo rate population
         shell: bash
         run: |
           set -u
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           root='firmware-src/RootFS-unpacked'
           mkdir -p docs/reverse-generated
-          raw=/tmp/hostinfo.raw
-          out='docs/reverse-generated/hostinfo-schema-rate.txt'
+          raw=/tmp/rate-zero.raw
+          out='docs/reverse-generated/rate-zero-path.txt'
           : > "$raw"
-          pb="$root/lib/libpb.so"
+          echo '===== LIVE FACT =====' >> "$raw"
+          echo 'TCP9000 GetHostList returns HostInfo f7=uprate and f8=downrate, but both stayed zero during a live speed test.' >> "$raw"
+          echo 'Goal: determine whether GetHostList intentionally omits rate fill, rate fill requires another command/state, or another API exposes live rates.' >> "$raw"
+          for f in "$root/bin/confsrv" "$root/lib/libcommon.so" "$root/lib/libucapi.so" "$root/lib/libcloud.so"; do
+            [ -f "$f" ] || continue
+            echo "===== FILE $f SYMBOLS =====" >> "$raw"
+            mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -a -iE 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info|netlink_get_statistic_info|netlink_clear_statistic_info|g_ip_info|traffic|rate|get_host_list|GetTrafficInfo' >> "$raw" || true
+            echo "===== FILE $f STRINGS =====" >> "$raw"
+            strings -a -t x "$f" 2>/dev/null | grep -a -iE -C 45 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|online_ip|statistic|GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|DEV_TRAFFIC|uprate|downrate|traffic' >> "$raw" || true
+          done
           conf="$root/bin/confsrv"
-          echo '===== LIVE WIRE FACTS =====' >> "$raw"
-          echo 'TCP9000 module 0x14 command 0x00 returns HostLists.' >> "$raw"
-          echo 'Observed HostInfo: f1 IP; f2 MAC; f3 enum/type; f4 assoc_sn; f5-f8 numeric; f9 signed RSSI; f10 hostname.' >> "$raw"
-          if [ -f "$pb" ]; then
-            echo '===== LIBPB HOST SYMBOLS =====' >> "$raw"
-            mipsel-linux-gnu-readelf -sW "$pb" 2>/dev/null | grep -a -iE 'host_info|host_lists' >> "$raw" || true
-            echo '===== LIBPB HOST/RATE STRINGS =====' >> "$raw"
-            strings -a -t x "$pb" 2>/dev/null | grep -a -iE -C 45 'ipaddr|ethaddr|assoc_sn|condtion_time|access|signal|uprate|downrate|upload_type|up_time|interface_name|host_name' >> "$raw" || true
-            for s in host_info__init host_info__get_packed_size host_info__pack host_info__unpack host_lists__init host_lists__pack; do
-              echo "===== $s =====" >> "$raw"
-              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$pb" 2>/dev/null >> "$raw" || true
-            done
-          fi
           if [ -f "$conf" ]; then
-            echo '===== CONFSRV HOST/RATE SYMBOLS =====' >> "$raw"
-            mipsel-linux-gnu-readelf -sW "$conf" 2>/dev/null | grep -a -iE 'fill_host|online_ip|statistic|rate|confctl_get_host_list' >> "$raw" || true
-            echo '===== CONFSRV RELEVANT STRINGS =====' >> "$raw"
-            strings -a -t x "$conf" 2>/dev/null | grep -a -iE -C 40 'uprate|downrate|online ip|GetHostList|interface_name|assoc_sn' >> "$raw" || true
-            for s in confctl_get_host_list fill_host_lists_rate fill_host_lists_info fill_host_info_from_client_status find_client_in_online_ip_info; do
-              echo "===== $s =====" >> "$raw"
-              mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$conf" 2>/dev/null >> "$raw" || true
-            done
+            mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/confsrv.objdump 2>/dev/null || true
+            echo '===== CONFSRV CALL CONTEXT =====' >> "$raw"
+            grep -a -iE -C 100 'fill_host_lists_rate|fill_cloud_info_device_lists_rate|find_client_in_online_ip_info|netlink_get_statistic_info|netlink_clear_statistic_info|g_ip_info' /tmp/confsrv.objdump 2>/dev/null | head -n 14000 >> "$raw" || true
+            echo '===== GET HOST LIST FULL FUNCTION =====' >> "$raw"
+            mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$conf" 2>/dev/null >> "$raw" || true
           fi
-          python3 -c "from pathlib import Path; r=Path('/tmp/hostinfo.raw').read_bytes(); Path('docs/reverse-generated/hostinfo-schema-rate.txt').write_text(r.decode('utf-8','backslashreplace'),encoding='utf-8')"
-          head -c 1200000 "$out" > /tmp/cut
-          mv /tmp/cut "$out"
+          uc="$root/lib/libucapi.so"
+          if [ -f "$uc" ]; then
+            mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.objdump 2>/dev/null || true
+            echo '===== UCAPI TRAFFIC/RATE CALL CONTEXT =====' >> "$raw"
+            grep -a -iE -C 90 'GetTrafficInfo|MESH_WAN_TRAFFIC|DEV_TRAFFIC|traffic|rate' /tmp/uc.objdump 2>/dev/null | head -n 12000 >> "$raw" || true
+          fi
+          python3 -c "from pathlib import Path; r=Path('/tmp/rate-zero.raw').read_bytes(); Path('$out').write_text(r.decode('utf-8','backslashreplace'),encoding='utf-8')"
+          head -c 1500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/hostinfo-schema-rate.txt
+          git add docs/reverse-generated/rate-zero-path.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: refresh UTF-8 HostInfo schema and rate report'
+            git commit -m 'reverse: trace zero HostInfo rate population path'
             git push
           fi
