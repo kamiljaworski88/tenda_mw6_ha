@@ -26,34 +26,58 @@ Therefore Redis itself is intentionally local-only. We should not treat 12598 as
 
 ## Internal command bus
 
-`device_list` imports:
+`device_list` imports `cmd_init`, `cmd_pub`, `cmd_sub` and `redis_option_new`, and links both `libcmdctl.so` and `libredis.so`.
+
+Direct binary inspection now confirms `cmdsrv` itself imports Redis reader/writer/client routines and the generic `cm_io_*` server primitives, including:
+
+```text
+redis_client_execute
+redis_client_try_execute
+redis_client_init
+redisReaderFeed
+redisReaderGetReply
+subscribe_new
+subscribe_register
+subscribe_unregister
+cm_io_listen
+cm_io_accept
+cm_io_read
+cm_io_write
+```
+
+This is stronger than the process-list inference: `cmdsrv` really is a command-service frontend backed by Redis, not a transparent Redis TCP forwarder.
+
+The firmware's `cmdctl_test` binary links `libcmdctl.so` and imports the complete high-level API:
 
 ```text
 cmd_init
-cmd_pub
 cmd_sub
-redis_option_new
+cmd_pub
+cmd_set
+cmd_get
 ```
 
-and links both `libcmdctl.so` and `libredis.so`.
+It also imports `redis_option_new`, which confirms the command-control library is implemented on top of the Redis transport. `cmdctl_test` is therefore the best offline reference for recovering the API's argument layout and message/channel naming.
 
-Combined with the `cmdsrv -R tcp://127.0.0.1:6379` command line, the current model is:
+Current model:
 
 ```text
-processes (device_list, etc.)
+device_list / other processes
         |
      libcmdctl
-   cmd_pub/cmd_sub
+ cmd_pub/sub/get/set
         |
-     Redis 6379
-   127.0.0.1 only
+ Redis command transport
+        |
+ Redis 127.0.0.1:6379
         |
       cmdsrv
+ cm_io_* + subscribe_*
         |
-   TCP/12598 custom protocol
+ TCP/12598 custom frontend
 ```
 
-The exact `cmdsrv` framing and topic/channel names are not recovered yet. No speculative packets should be sent until its client/test binary or `libcmdctl` call convention is decoded.
+The exact 12598 framing and topic/channel names are not recovered yet. No speculative packets should be sent until the `cmdctl_test` call sites / `libcmdctl` convention are decoded.
 
 ## Stronger lead for traffic/rate source: kernel `bm_online_ip`
 
@@ -115,10 +139,15 @@ Firmware scripts also expose useful local kernel/proc data sources:
 
 `device_list`'s symbols (`wifi_get_vap_client_lists`, DHCP/netlink handlers, roaming/connection-type lists) fit this model: client identity and attachment state are assembled from Wi-Fi/DHCP/netlink data, while rate information can be supplied by the BM/NOS traffic-tracking path.
 
+## Offline tooling
+
+`tools/cmdctl_extract.py` was added to this repository. It accepts firmware binaries such as `cmdsrv`, `cmdcli`, `cmdctl_test` and `libcmdctl.so`, extracts printable strings with offsets and highlights command/Redis/pub-sub/socket-related material. It never connects to the router.
+
 ## Current research priority
 
-1. Decode the `cmdsrv` / `libcmdctl` protocol using the firmware's `cmdcli` and `cmdctl_test` binaries offline.
-2. Recover the topic/arguments used by `device_list -> cmd_pub()`.
-3. Determine whether the published client structure already contains rate values or only identity/state.
-4. Locate the exact procfs name created by `bm_online_ip` and the structure consumed by `fill_cloud_info_device_lists_rate()`.
-5. Prefer a read-only local subscription/query for Home Assistant. Do not invoke cloud upload commands or router SET operations.
+1. Recover the MIPS call sites for `cmd_pub`, `cmd_sub`, `cmd_get` and `cmd_set` from `cmdctl_test`.
+2. Decode `libcmdctl.so` and map those calls to Redis commands/channel names.
+3. Recover the topic/arguments used by `device_list -> cmd_pub()`.
+4. Determine whether the published client structure already contains rate values or only identity/state.
+5. Locate the exact procfs name created by `bm_online_ip` and the structure consumed by `fill_cloud_info_device_lists_rate()`.
+6. Prefer a read-only local subscription/query for Home Assistant. Do not invoke cloud upload commands or router SET operations.
