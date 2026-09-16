@@ -13,46 +13,48 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Isolate ol_hosts handler and command table
+      - name: Decode ol_hosts command IDs and registration
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/ol-hosts-handler.txt'
+          out='docs/reverse-generated/ol-hosts-command-map.txt'
           mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.asm
           mipsel-linux-gnu-readelf -sW "$uc" > /tmp/uc.syms
           {
-            echo '===== RUN 41 GOAL ====='
-            echo 'Recover exact uc_api_lib_ol_hosts_get_hdl_reg registration, callback target, command IDs, and request send path for GetHostList.'
-            echo '===== SYMBOLS ====='
-            grep -iE 'ol_hosts|gethost|cmd_args|cmd_register|cmd_send|cmd_resp|enable_m_ol_host|net_send|cgi_send' /tmp/uc.syms || true
-            echo '===== OL HOSTS REG FUNCTION ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1af3c --stop-address=0x1b080 "$uc" || true
-            echo '===== ENABLE M_OL_HOST ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x05ef4 --stop-address=0x06020 "$uc" || true
-            echo '===== CMD REGISTER ====='
+            echo '===== RUN 42 GOAL ====='
+            echo 'Resolve exact module ID, command ID, callback and cmd_args entry for GetHostList / M_MESH_HOSTS / CMD_MESH_HOSTS_GET.'
+            echo '===== EXACT RODATA STRINGS WITH OFFSETS ====='
+            strings -a -t x "$uc" | grep -E 'GetHostList|M_MESH_HOSTS|CMD_MESH_HOSTS_GET|SetHostMarks|GetRemarklist' || true
+            echo '===== OL HOSTS GET REG FUNCTION ONLY ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1af3c --stop-address=0x1b040 "$uc" || true
+            echo '===== OL HOSTS NEIGHBOR FUNCTIONS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1ae20 --stop-address=0x1b260 "$uc" || true
+            echo '===== ENABLE M_OL_HOST EXACT ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x05ef4 --stop-address=0x05f8c "$uc" || true
+            echo '===== CMD_ARGS SYMBOL / RAW TABLE ====='
+            grep ' cmd_args$' /tmp/uc.syms || true
+            mipsel-linux-gnu-objdump -s --start-address=0x31890 --stop-address=0x31e90 "$uc" || true
+            echo '===== RELOCATIONS NEAR CMD_ARGS ====='
+            mipsel-linux-gnu-objdump -R "$uc" | grep -iE '318|319|31a|31b|31c|31d|31e' || true
+            echo '===== ALL CALLS FROM OL_HOSTS REG ====='
+            sed -n '/0001af3c <uc_api_lib_ol_hosts_get_hdl_reg/,/0001b040/p' /tmp/uc.asm || true
+            echo '===== CMD REGISTER IMPLEMENTATION ====='
             mipsel-linux-gnu-objdump -drwC --start-address=0x0786c --stop-address=0x07c7c "$uc" || true
-            echo '===== CMD SEND / RESP ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x05740 --stop-address=0x058a8 "$uc" || true
-            mipsel-linux-gnu-objdump -drwC --start-address=0x07418 --stop-address=0x07454 "$uc" || true
-            echo '===== COMMAND TABLE DATA AROUND cmd_args 0x31890 ====='
-            mipsel-linux-gnu-objdump -s --start-address=0x31890 --stop-address=0x31f00 "$uc" || true
-            echo '===== RODATA GetHostList REGION ====='
-            mipsel-linux-gnu-objdump -s --start-address=0x1fbf0 --stop-address=0x1fd30 "$uc" || true
-            echo '===== REFERENCES TO OL HOST REG / GET STRING REGION ====='
-            grep -n -E -B60 -A100 '1af3c|1fc9c|1fca8|1fcb8|31890' /tmp/uc.asm | head -n 3000 || true
+            echo '===== LOOK FOR IMMEDIATE MODULE/CMD CONSTANTS ====='
+            grep -n -E -B30 -A50 'li[[:space:]]+a[0-3],(10|0xa|[0-9]+)|2404....|2405....|2406....|2407....' /tmp/uc.asm | grep -B15 -A30 -E '1af3c|1af|ol_hosts|05ef4' || true
           } > "$out"
-          head -c 2400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 2500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: ol-hosts-handler
-          path: docs/reverse-generated/ol-hosts-handler.txt
+          name: ol-hosts-command-map
+          path: docs/reverse-generated/ol-hosts-command-map.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ol-hosts-handler.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: isolate ol_hosts handler'; git push || true; fi
+          git add docs/reverse-generated/ol-hosts-command-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: decode ol_hosts command IDs'; git push || true; fi
