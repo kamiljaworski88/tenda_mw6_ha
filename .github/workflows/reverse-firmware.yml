@@ -1,0 +1,59 @@
+name: Reverse MW6 firmware
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/reverse-firmware.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  disassemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MIPS binutils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils-mips-linux-gnu
+      - name: Fetch public MW6 HW2.1 firmware binaries
+        run: |
+          mkdir -p firmware reports
+          base='https://raw.githubusercontent.com/latonita/tenda-reverse/bae969cb336b5d4c8b3a3ac5eac1e1f1114ef72d/RootFS-unpacked'
+          curl -fL "$base/sbin/cmdctl_test" -o firmware/cmdctl_test
+          curl -fL "$base/sbin/cmdsrv" -o firmware/cmdsrv
+          curl -fL "$base/sbin/cmdcli" -o firmware/cmdcli
+          curl -fL "$base/bin/device_list" -o firmware/device_list
+          curl -fL "$base/lib/libcmdctl.so" -o firmware/libcmdctl.so
+          chmod +x firmware/*
+          sha256sum firmware/* | tee reports/SHA256SUMS.txt
+      - name: Generate ELF reports
+        run: |
+          for f in firmware/*; do
+            n=$(basename "$f")
+            file "$f" > "reports/$n.file.txt"
+            mips-linux-gnu-readelf -aW "$f" > "reports/$n.readelf.txt" || true
+            mips-linux-gnu-objdump -drwC "$f" > "reports/$n.objdump.txt" || true
+            strings -a -t x "$f" > "reports/$n.strings.txt" || true
+          done
+      - name: Extract command API call neighborhoods
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          keys=('cmd_get','cmd_set','cmd_pub','cmd_sub','cmd_unsub','cmdsh_random_key','do_upload_client_list','do_upload_one_client')
+          for p in Path('reports').glob('*.objdump.txt'):
+              lines=p.read_text(errors='replace').splitlines()
+              out=[]
+              for i,line in enumerate(lines):
+                  if any(k in line for k in keys):
+                      out.extend(lines[max(0,i-18):min(len(lines),i+8)])
+                      out.append('\n'+'-'*80+'\n')
+              Path('reports',p.name.replace('.objdump.txt','.cmdcalls.txt')).write_text('\n'.join(out))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mw6-mips-reverse-reports
+          path: reports/
+          retention-days: 14
