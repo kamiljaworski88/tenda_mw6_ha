@@ -18,36 +18,35 @@ jobs:
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Isolate request builders
+      - name: Trace local online-hosts API
         run: |
           root='firmware-src/RootFS-unpacked'
-          cli="$root/bin/confcli"
-          srv="$root/bin/confsrv"
-          out='docs/reverse-generated/confcli-publish-calls.txt'
-          mipsel-linux-gnu-objdump -drwC "$cli" > /tmp/confcli.objdump
-          mipsel-linux-gnu-objdump -drwC "$srv" > /tmp/confsrv.objdump
+          lib="$root/lib/libucapi.so"
+          out='docs/reverse-generated/ol-hosts-api.txt'
+          mipsel-linux-gnu-objdump -drwC "$lib" > /tmp/u.objdump
+          mipsel-linux-gnu-readelf -aW "$lib" > /tmp/u.readelf
+          strings -a -t x "$lib" > /tmp/u.strings
           : > "$out"
-          echo '===== cmd_pub GOT entry in confcli =====' >> "$out"
-          mipsel-linux-gnu-readelf -aW "$cli" | grep -E -C 3 'cmd_pub' >> "$out" || true
-          echo '===== every confcli cmd_pub callsite (-31212 gp) =====' >> "$out"
-          grep -n -B80 -A120 -- '-31212(gp)' /tmp/confcli.objdump >> "$out" || true
-          echo '===== confcli conf_msg_open =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_open "$cli" >> "$out" 2>&1 || true
-          echo '===== confcli conf_msg_hander =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$cli" >> "$out" 2>&1 || true
-          echo '===== confcli conf_msg_all_cmds_init =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_all_cmds_init "$cli" >> "$out" 2>&1 || true
-          echo '===== confcli GetTrafficInfo string vicinity =====' >> "$out"
-          strings -a -t x "$cli" | grep -E -C 12 'GetTrafficInfo|SetWanCfg|GetWanDiag|confctl_cli_key|confctl_srv_key' >> "$out" || true
-          echo '===== confsrv GetHostList + dispatcher =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$srv" >> "$out" 2>&1 || true
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$srv" >> "$out" 2>&1 || true
-          echo '===== likely 36-byte request builders =====' >> "$out"
-          grep -n -B100 -A160 -E '240[23456789]0024|li[[:space:]]+[a-z0-9]+,36' /tmp/confcli.objdump >> "$out" || true
+          echo '===== online-host symbols =====' >> "$out"
+          grep -iE 'ol_hosts|host_info|host_list|traffic|uprate|downrate|m_ol' /tmp/u.readelf >> "$out" || true
+          echo '===== online-host strings =====' >> "$out"
+          grep -iE -C 12 'ol_hosts|host_info|host_list|traffic|uprate|downrate|GetHostList' /tmp/u.strings >> "$out" || true
+          echo '===== uc_api_lib_ol_hosts_get_hdl_reg =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_ol_hosts_get_hdl_reg "$lib" >> "$out" 2>&1 || true
+          echo '===== _m_ol_hosts_reg =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=_m_ol_hosts_reg "$lib" >> "$out" 2>&1 || true
+          echo '===== _ol_hosts_get_hdl_cb =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=_ol_hosts_get_hdl_cb "$lib" >> "$out" 2>&1 || true
+          echo '===== m_ol_hosts =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=m_ol_hosts "$lib" >> "$out" 2>&1 || true
+          echo '===== all references around ol_hosts names =====' >> "$out"
+          grep -n -B100 -A180 -iE 'ol_hosts|m_ol_hosts' /tmp/u.objdump >> "$out" || true
+          echo '===== registration constants / module command hints =====' >> "$out"
+          grep -n -B120 -A180 -E 'li[[:space:]]+a[0-3],(8|14|15|16|17|18|19|20|21|22|23|24)|240[4567]00(08|0e|0f|10|11|12|13|14|15|16|17|18)' /tmp/u.objdump | grep -i -B20 -A40 -E 'ol_hosts|host|^[0-9]+-' >> "$out" || true
           head -c 950000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/confcli-publish-calls.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh cmd_pub request builder map'; git push; fi
+          git add docs/reverse-generated/ol-hosts-api.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh local online-hosts API map'; git push; fi
