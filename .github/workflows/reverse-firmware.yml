@@ -12,42 +12,64 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve static host-rate functions
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3 python3-pip
+          pip3 install pyelftools --break-system-packages
+      - name: Resolve GetHostList GOT targets and rate gate
         shell: bash
         run: |
-          set -u
+          set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          root='firmware-src/RootFS-unpacked'; conf="$root/bin/confsrv"
+          conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/rate-static-functions.txt'; : > "$out"
+          out='docs/reverse-generated/rate-got-map.txt'
           mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
-          echo '===== GetHostList call window =====' >> "$out"
-          sed -n '/00434f9c <confctl_get_host_list/,/00435420/p' /tmp/conf.asm >> "$out" || true
-          echo '===== static function labels around candidate targets =====' >> "$out"
-          grep -nE '^ *[0-9a-f]+ <|434f9c|4351f8|435228|4352b4|netlink_get_statistic_info|g_ip_info' /tmp/conf.asm | grep -B4 -A8 -E '4351|4352|netlink|get_statistic|g_ip_info|<T\.' >> "$out" || true
-          echo '===== candidate target neighborhoods =====' >> "$out"
-          # Calls inside GetHostList resolve through gp-relative local/static functions.
-          # Dump broad neighborhoods around the three candidate stages seen at +0x260, +0x288 and +0x318.
-          for range in '430000 438000' '440000 448000' '450000 458000'; do
-            set -- $range
-            echo "--- address range $1-$2 ---" >> "$out"
-            mipsel-linux-gnu-objdump -drwC --start-address=0x$1 --stop-address=0x$2 "$conf" | grep -B18 -A80 -E 'netlink_get_statistic_info|g_ip_info|uprate|downrate' >> "$out" || true
-          done
-          echo '===== all GOT references to netlink_get_statistic_info/g_ip_info =====' >> "$out"
-          mipsel-linux-gnu-readelf -aW "$conf" | grep -iE -B8 -A8 'netlink_get_statistic_info|g_ip_info' >> "$out" || true
-          echo '===== strings rate context =====' >> "$out"
-          strings -a -t x "$conf" | grep -iE -B20 -A30 'uprate|downrate|online_ip|statistic|GetTrafficInfo|host.*rate' >> "$out" || true
-          python3 -c "from pathlib import Path; p=Path('$out'); p.write_text(p.read_bytes().decode('utf-8','backslashreplace'),encoding='utf-8')"
+          mipsel-linux-gnu-readelf -aW "$conf" > /tmp/conf.elf
+          python3 <<'PY' > "$out"
+from elftools.elf.elffile import ELFFile
+import struct,re,subprocess
+p='firmware-src/RootFS-unpacked/bin/confsrv'
+with open(p,'rb') as f:
+ e=ELFFile(f)
+ print('===== ELF/GOT =====')
+ for sec in e.iter_sections():
+  if sec.name in ('.got','.got.plt'):
+   print(sec.name, hex(sec['sh_addr']), hex(sec['sh_size']))
+ print('===== DYNSYM targets =====')
+ d=e.get_section_by_name('.dynsym')
+ for s in d.iter_symbols():
+  n=s.name.lower()
+  if any(x in n for x in ['netlink_get_statistic_info','g_ip_info','host_lists','host_info','feature','debug']):
+   print(hex(s['st_value']), s.name, s['st_shndx'])
+print('===== GetHostList exact call sites =====')
+asm=open('/tmp/conf.asm',errors='replace').read().splitlines()
+for i,l in enumerate(asm):
+ if re.search(r'^\s*435(1f8|228|2b4):',l):
+  print('\nCALLSITE',l)
+  for x in asm[max(0,i-10):i+6]: print(x)
+print('\n===== all references to netlink/stat symbols =====')
+for i,l in enumerate(asm):
+ if 'netlink_get_statistic_info' in l or 'g_ip_info' in l:
+  for x in asm[max(0,i-12):i+18]: print(x)
+  print('---')
+PY
+          echo '===== readelf reloc/GOT context =====' >> "$out"
+          grep -iE -B12 -A12 'netlink_get_statistic_info|g_ip_info' /tmp/conf.elf >> "$out" || true
+          echo '===== GetHostList 0x4351d0-0x4352c0 =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --start-address=0x4351d0 --stop-address=0x4352c0 "$conf" >> "$out"
+          echo '===== candidate local functions by direct target neighborhoods =====' >> "$out"
+          # Include nearby static routines around GetHostList and all callsites carrying HostLists pointer.
+          grep -nE 'addiu[[:space:]]+a0,(s8|v0)|li[[:space:]]+a0,15|netlink_get_statistic_info|g_ip_info' /tmp/conf.asm | grep -E '43[0-9a-f]{4}:' | head -n 500 >> "$out" || true
+          echo '===== rate/debug strings with offsets =====' >> "$out"
+          strings -a -t x "$conf" | grep -iE -B12 -A24 'uprate|downrate|online_ip|fill_host|GetHostList|host list.*rate|statistic' >> "$out" || true
           head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: rate-static-functions
-          path: docs/reverse-generated/rate-static-functions.txt
+          name: rate-got-map
+          path: docs/reverse-generated/rate-got-map.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-static-functions.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: map static host rate functions'; git push || true; fi
+          git add docs/reverse-generated/rate-got-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: map GetHostList GOT rate path'; git push || true; fi
