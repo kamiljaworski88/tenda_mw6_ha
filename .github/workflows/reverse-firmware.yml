@@ -18,28 +18,36 @@ jobs:
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Trace confcli/confsrv IPC
+      - name: Isolate request builders
         run: |
           root='firmware-src/RootFS-unpacked'
-          out='docs/reverse-generated/confcli-ipc.txt'
+          cli="$root/bin/confcli"
+          srv="$root/bin/confsrv"
+          out='docs/reverse-generated/confcli-publish-calls.txt'
+          mipsel-linux-gnu-objdump -drwC "$cli" > /tmp/confcli.objdump
+          mipsel-linux-gnu-objdump -drwC "$srv" > /tmp/confsrv.objdump
           : > "$out"
-          for f in "$root/bin/confcli" "$root/bin/confsrv" "$root/lib/libcmdctl.so"; do
-            [ -f "$f" ] || continue
-            echo "===== $f symbols =====" >> "$out"
-            mipsel-linux-gnu-readelf -sW "$f" | grep -E 'conf_msg|confctl|cmd_(pub|sub|init|get|set)|GetHostList|main' >> "$out" || true
-            echo "===== $f GOT / relocations =====" >> "$out"
-            mipsel-linux-gnu-readelf -aW "$f" | grep -E -C 4 'cmd_pub|cmd_sub|cmd_init|cmd_get|cmd_set' >> "$out" || true
-            echo "===== $f strings =====" >> "$out"
-            strings -a -t x "$f" | grep -E -i -C 5 'confctl_(cli|srv)_key|GetHostList|GetTrafficInfo|cmdrpc|device_list_upload' >> "$out" || true
-          done
-          echo '===== confcli disassembly refs =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC "$root/bin/confcli" | grep -n -B120 -A220 -E 'conf_msg_(open|close|send|request|handler)|cmd_pub|cmd_sub|cmd_init|GetHostList|confctl_cli_key|confctl_srv_key' >> "$out" || true
-          echo '===== confsrv init refs =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC "$root/bin/confsrv" | grep -n -B100 -A180 -E 'cmd_pub|cmd_sub|cmd_init|conf_msg_hander|confctl_srv_key|confctl_cli_key' >> "$out" || true
+          echo '===== cmd_pub GOT entry in confcli =====' >> "$out"
+          mipsel-linux-gnu-readelf -aW "$cli" | grep -E -C 3 'cmd_pub' >> "$out" || true
+          echo '===== every confcli cmd_pub callsite (-31212 gp) =====' >> "$out"
+          grep -n -B80 -A120 -- '-31212(gp)' /tmp/confcli.objdump >> "$out" || true
+          echo '===== confcli conf_msg_open =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_open "$cli" >> "$out" 2>&1 || true
+          echo '===== confcli conf_msg_hander =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$cli" >> "$out" 2>&1 || true
+          echo '===== confcli conf_msg_all_cmds_init =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_all_cmds_init "$cli" >> "$out" 2>&1 || true
+          echo '===== confcli GetTrafficInfo string vicinity =====' >> "$out"
+          strings -a -t x "$cli" | grep -E -C 12 'GetTrafficInfo|SetWanCfg|GetWanDiag|confctl_cli_key|confctl_srv_key' >> "$out" || true
+          echo '===== confsrv GetHostList + dispatcher =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$srv" >> "$out" 2>&1 || true
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$srv" >> "$out" 2>&1 || true
+          echo '===== likely 36-byte request builders =====' >> "$out"
+          grep -n -B100 -A160 -E '240[23456789]0024|li[[:space:]]+[a-z0-9]+,36' /tmp/confcli.objdump >> "$out" || true
           head -c 950000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/confcli-ipc.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh confcli IPC map'; git push; fi
+          git add docs/reverse-generated/confcli-publish-calls.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh cmd_pub request builder map'; git push; fi
