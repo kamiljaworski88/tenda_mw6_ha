@@ -1,10 +1,14 @@
 name: Reverse MW6 firmware
+
 on:
   workflow_dispatch:
   push:
-    paths: ['.github/workflows/reverse-firmware.yml']
+    paths:
+      - '.github/workflows/reverse-firmware.yml'
+
 permissions:
   contents: write
+
 jobs:
   reverse:
     runs-on: ubuntu-latest
@@ -28,12 +32,12 @@ jobs:
           conf="$root/bin/confsrv"
           echo '===== LIVE WIRE FACTS =====' >> "$raw"
           echo 'TCP9000 module 0x14 command 0x00 returns HostLists.' >> "$raw"
-          echo 'Observed HostInfo wire fields: 1 IP, 2 MAC, 3 enum/type, 4 assoc_sn, 5 numeric, 6 numeric, 7 numeric, 8 numeric, 9 signed RSSI, 10 hostname.' >> "$raw"
+          echo 'Observed HostInfo: f1 IP; f2 MAC; f3 enum/type; f4 assoc_sn; f5-f8 numeric; f9 signed RSSI; f10 hostname.' >> "$raw"
           if [ -f "$pb" ]; then
             echo '===== LIBPB HOST SYMBOLS =====' >> "$raw"
             mipsel-linux-gnu-readelf -sW "$pb" 2>/dev/null | grep -a -iE 'host_info|host_lists' >> "$raw" || true
             echo '===== LIBPB HOST/RATE STRINGS =====' >> "$raw"
-            strings -a -t x "$pb" 2>/dev/null | grep -a -iE -C 45 '(^|[^a-z])(ipaddr|ethaddr|assoc_sn|condtion_time|access|signal|uprate|downrate|upload_type|up_time|interface_name|host_name)([^a-z]|$)' >> "$raw" || true
+            strings -a -t x "$pb" 2>/dev/null | grep -a -iE -C 45 'ipaddr|ethaddr|assoc_sn|condtion_time|access|signal|uprate|downrate|upload_type|up_time|interface_name|host_name' >> "$raw" || true
             for s in host_info__init host_info__get_packed_size host_info__pack host_info__unpack host_lists__init host_lists__pack; do
               echo "===== $s =====" >> "$raw"
               mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$pb" 2>/dev/null >> "$raw" || true
@@ -43,18 +47,13 @@ jobs:
             echo '===== CONFSRV HOST/RATE SYMBOLS =====' >> "$raw"
             mipsel-linux-gnu-readelf -sW "$conf" 2>/dev/null | grep -a -iE 'fill_host|online_ip|statistic|rate|confctl_get_host_list' >> "$raw" || true
             echo '===== CONFSRV RELEVANT STRINGS =====' >> "$raw"
-            strings -a -t x "$conf" 2>/dev/null | grep -a -iE -C 40 'uprate|downrate|fill_host_lists_rate|online ip|GetHostList|interface_name|assoc_sn' >> "$raw" || true
+            strings -a -t x "$conf" 2>/dev/null | grep -a -iE -C 40 'uprate|downrate|online ip|GetHostList|interface_name|assoc_sn' >> "$raw" || true
             for s in confctl_get_host_list fill_host_lists_rate fill_host_lists_info fill_host_info_from_client_status find_client_in_online_ip_info; do
               echo "===== $s =====" >> "$raw"
               mipsel-linux-gnu-objdump -drwC --disassemble="$s" "$conf" 2>/dev/null >> "$raw" || true
             done
           fi
-          python3 - <<'PY'
-from pathlib import Path
-raw=Path('/tmp/hostinfo.raw').read_bytes()
-text=raw.decode('utf-8','backslashreplace')
-Path('docs/reverse-generated/hostinfo-schema-rate.txt').write_text(text, encoding='utf-8')
-PY
+          python3 -c "from pathlib import Path; r=Path('/tmp/hostinfo.raw').read_bytes(); Path('docs/reverse-generated/hostinfo-schema-rate.txt').write_text(r.decode('utf-8','backslashreplace'),encoding='utf-8')"
           head -c 1200000 "$out" > /tmp/cut
           mv /tmp/cut "$out"
       - name: Commit report
