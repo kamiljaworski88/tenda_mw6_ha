@@ -13,56 +13,46 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve cmdrpc wire format
+      - name: Trace GetHostList cmdrpc callsite
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
+          cli='firmware-src/RootFS-unpacked/bin/confcli'
           ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
-          srv='firmware-src/RootFS-unpacked/sbin/cmdsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/cmdrpc-wire.txt'
+          out='docs/reverse-generated/gethostlist-cmdrpc-callsite.txt'
+          mipsel-linux-gnu-objdump -drwC "$cli" > /tmp/cli.asm
+          mipsel-linux-gnu-readelf -sW "$cli" > /tmp/cli.syms
           {
-            echo '===== RUN 37 GOAL ====='
-            echo 'Recover exact libcmdctl request/reply wire format so external client can call GetHostList without SUBSCRIBE.'
-            echo '===== DYNAMIC SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$ctl" | grep -E 'cmd_(init|sub|pub|get|set)|cmdsh_random_key|redis_writer|redis_reader|redisReader|Base64|cm_io|connect|read|write|close|malloc|free|str|snprintf|sprintf' || true
-            echo '===== GOT/DYNAMIC RELOCS ====='
-            mipsel-linux-gnu-objdump -R "$ctl" || true
-            echo '===== command_connect ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x0f9c --stop-address=0x10e8 "$ctl" || true
-            echo '===== command_connect_done ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x10e8 --stop-address=0x122c "$ctl" || true
-            echo '===== command_close ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x122c --stop-address=0x134c "$ctl" || true
-            echo '===== command_read_done ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x134c --stop-address=0x1400 "$ctl" || true
-            echo '===== cmd_pub_done ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1400 --stop-address=0x145c "$ctl" || true
-            echo '===== redis_parse ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x145c --stop-address=0x159c "$ctl" || true
-            echo '===== cmd_get_done ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x159c --stop-address=0x1670 "$ctl" || true
-            echo '===== cmd_sub + T54 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x17bc --stop-address=0x1e04 "$ctl" || true
-            echo '===== cmd_pub/set/get wrappers ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x1f20 "$ctl" || true
-            echo '===== cmdsh_random_key ====='
+            echo '===== RUN 38 GOAL ====='
+            echo 'Tie GetHostList in confcli to the exact libcmdctl/cmdrpc request/reply sequence and arguments.'
+            echo '===== CONFCLI RELEVANT SYMBOLS ====='
+            grep -iE 'GetHostList|host_list|hostlist|cmd_pub|cmd_sub|cmd_get|cmdsh|conf_msg|confctl_cli_key|confctl_srv_key' /tmp/cli.syms || true
+            echo '===== STRINGS WITH OFFSETS ====='
+            strings -a -t x "$cli" | grep -iE -B8 -A12 'GetHostList|confctl_cli_key|confctl_srv_key|cmdrpc@|host list|host_list' || true
+            echo '===== ALL CMD_PUB CALLS NEAR GETHOSTLIST STRING USERS ====='
+            grep -n -B45 -A70 'cmd_pub' /tmp/cli.asm | head -n 1400 || true
+            echo '===== ALL CMD_SUB CALLS ====='
+            grep -n -B45 -A70 'cmd_sub' /tmp/cli.asm | head -n 1000 || true
+            echo '===== ALL CALLS THROUGH GOT OFFSETS FOR CMD_PUB/CMD_SUB ====='
+            grep -n -E -B35 -A55 '(-31212|-31784)\(gp\)' /tmp/cli.asm | head -n 1800 || true
+            echo '===== GET/HOSTLIST STRING REFERENCES ====='
+            grep -n -i -E -B50 -A90 'GetHostList|host.?list|confctl_cli_key|confctl_srv_key' /tmp/cli.asm | head -n 1800 || true
+            echo '===== LIBCMDCTL RANDOM KEY / RPC HELPER ====='
             mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x211c "$ctl" || true
-            echo '===== DATA/RODATA AROUND STRINGS ====='
-            strings -a -t x "$ctl" | grep -E -B10 -A18 'cmdrpc@|publish|subscribe|unsubscribe|set$|get$|command_|unexpected data|cmdctl.c|cmdsh.c' || true
-            echo '===== CMDSRV SUBSCRIBE STATE PATH ====='
-            strings -a -t x "$srv" | grep -iE -B12 -A18 'subscribe mode|SUBSCRIBE|UNSUBSCRIBE|QUIT|pending_clients|pending_requests' || true
+            echo '===== LIBCMDCTL GENERIC REQUEST BUILDER ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$ctl" || true
           } > "$out"
-          head -c 2000000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 2400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: cmdrpc-wire
-          path: docs/reverse-generated/cmdrpc-wire.txt
+          name: gethostlist-cmdrpc-callsite
+          path: docs/reverse-generated/gethostlist-cmdrpc-callsite.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/cmdrpc-wire.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve cmdrpc wire format'; git push || true; fi
+          git add docs/reverse-generated/gethostlist-cmdrpc-callsite.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: trace GetHostList cmdrpc callsite'; git push || true; fi
