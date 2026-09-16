@@ -13,53 +13,50 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Locate exact GetHostList request producer
+      - name: Trace libucapi GetHostList producer
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           root='firmware-src/RootFS-unpacked'
+          uc="$root/lib/libucapi.so"
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/gethostlist-producer.txt'
+          out='docs/reverse-generated/libucapi-gethostlist.txt'
+          mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.asm
+          mipsel-linux-gnu-readelf -sW "$uc" > /tmp/uc.syms
           {
-            echo '===== RUN 39 GOAL ====='
-            echo 'Find the exact binary/function that produces the local GetHostList request and recover the cmd_pub/cmd_sub argument flow.'
-            echo '===== FILES CONTAINING GetHostList ====='
-            grep -R -a -l 'GetHostList' "$root" 2>/dev/null || true
-            echo '===== STRINGS / SYMBOLS PER CANDIDATE ====='
-            while IFS= read -r f; do
-              [ -f "$f" ] || continue
-              echo "--- $f ---"
-              strings -a -t x "$f" | grep -iE -B12 -A18 'GetHostList|host.?list|confctl_(srv|cli)_key' || true
-              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'get.*host|host.*list|cmd_pub|cmd_sub|conf_msg|request|reply' || true
-            done < <(grep -R -a -l 'GetHostList' "$root" 2>/dev/null || true)
-            echo '===== CONFCLI COMMAND REGISTRATION / INIT WINDOW ====='
-            cli="$root/bin/confcli"
-            mipsel-linux-gnu-objdump -drwC --start-address=0x407210 --stop-address=0x408800 "$cli" || true
-            echo '===== CONFCLI DATA/RODATA AROUND COMMAND STRINGS ====='
-            mipsel-linux-gnu-objdump -s -j .rodata "$cli" 2>/dev/null | sed -n '1,260p' || true
-            mipsel-linux-gnu-objdump -s -j .data "$cli" 2>/dev/null | sed -n '1,260p' || true
-            echo '===== CONFSRV GetHostList FUNCTION ====='
-            srv="$root/bin/confsrv"
-            mipsel-linux-gnu-readelf -sW "$srv" | grep -iE 'confctl_get_host_list|host_list|cmd_pub|cmd_sub' || true
-            addr=$(mipsel-linux-gnu-readelf -sW "$srv" | awk '/confctl_get_host_list$/ {print "0x"$2; exit}')
-            if [ -n "${addr:-}" ]; then
-              start=$((addr)); stop=$((start+1800));
-              printf 'confctl_get_host_list addr=0x%x\n' "$start"
-              mipsel-linux-gnu-objdump -drwC --start-address="$start" --stop-address="$stop" "$srv" || true
-            fi
-            echo '===== ALL CONFCLI CMD_PUB/CMD_SUB CALLS WITH NEARBY ASCII OFFSETS ====='
-            mipsel-linux-gnu-objdump -drwC "$cli" | grep -n -E -B60 -A90 '(-31212|-31784)\(gp\)' | head -n 3600 || true
+            echo '===== RUN 40 GOAL ====='
+            echo 'Recover the exact libucapi GetHostList producer/request path and arguments used to reach confsrv.'
+            echo '===== ALL HOST/ONLINE-HOST SYMBOLS ====='
+            grep -iE 'host|ol_hosts|mesh_hosts|device|request|send|recv|cmd_|uc_api|reg' /tmp/uc.syms | head -n 1200 || true
+            echo '===== STRINGS AROUND GetHostList ====='
+            strings -a -t x "$uc" | grep -iE -B30 -A50 'GetHostList|M_MESH_HOSTS|CMD_MESH_HOSTS_GET|SetHostMarks|GetRemarklist|confctl|cmdrpc' || true
+            echo '===== ALL TEXT REFERENCES TO RODATA OFFSET REGION 0x1fc00 ====='
+            grep -n -E -B50 -A90 '1fc[0-9a-f]{2}|1fb[0-9a-f]{2}|1fd[0-9a-f]{2}' /tmp/uc.asm | head -n 2800 || true
+            echo '===== KNOWN OL_HOSTS SYMBOL WINDOWS ====='
+            for sym in _m_ol_hosts_reg m_ol_hosts _ol_hosts_get_hdl_cb; do
+              a=$(awk -v s="$sym" '$NF==s {print "0x"$2; exit}' /tmp/uc.syms)
+              if [ -n "${a:-}" ]; then
+                start=$((a)); stop=$((start+1800));
+                printf '\n--- %s addr=0x%x ---\n' "$sym" "$start"
+                mipsel-linux-gnu-objdump -drwC --start-address="$start" --stop-address="$stop" "$uc" || true
+              fi
+            done
+            echo '===== ALL IMPORTS / CALLS RELEVANT TO TRANSPORT ====='
+            grep -iE 'cmd_pub|cmd_sub|cmd_get|cmd_set|redis|cm_io|send|recv|socket|connect|publish|subscribe' /tmp/uc.syms || true
+            grep -n -E -B35 -A60 'cmd_pub|cmd_sub|cmd_get|cmd_set|redis|cm_io|send|recv|connect' /tmp/uc.asm | head -n 3200 || true
+            echo '===== DYNAMIC RELOCS ====='
+            mipsel-linux-gnu-objdump -R "$uc" || true
           } > "$out"
-          head -c 3000000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 3500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: gethostlist-producer
-          path: docs/reverse-generated/gethostlist-producer.txt
+          name: libucapi-gethostlist
+          path: docs/reverse-generated/libucapi-gethostlist.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/gethostlist-producer.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: locate GetHostList request producer'; git push || true; fi
+          git add docs/reverse-generated/libucapi-gethostlist.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: trace libucapi GetHostList producer'; git push || true; fi
