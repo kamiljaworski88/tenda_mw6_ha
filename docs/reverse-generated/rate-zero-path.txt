@@ -1,0 +1,4002 @@
+===== LIVE FACT =====
+TCP9000 GetHostList returns HostInfo f7=uprate and f8=downrate, but both stayed zero during a live speed test.
+Goal: determine whether GetHostList intentionally omits rate fill, rate fill requires another command/state, or another API exposes live rates.
+===== FILE firmware-src/RootFS-unpacked/bin/confsrv SYMBOLS =====
+    40: 00444598  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_traffic_info
+   164: 00444ab4   152 FUNC    GLOBAL DEFAULT   12 confctl_wan_traffic_info_init
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   338: 00465ee0     0 FUNC    GLOBAL DEFAULT  UND wan_rate__get_packed_size
+   387: 00465be0     0 FUNC    GLOBAL DEFAULT  UND netlink_get_statistic_info
+   560: 00465240     0 FUNC    GLOBAL DEFAULT  UND wan_rate__pack
+   566: 004651f0     0 FUNC    GLOBAL DEFAULT  UND wan_port_rate__init
+   591: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_rate__descriptor
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+===== FILE firmware-src/RootFS-unpacked/bin/confsrv STRINGS =====
+   4395 memcpy
+   439c check_hw_enable_status
+   43b3 access
+   43ba fopen
+   43c0 fgets
+   43c6 strsep
+   43cd fclose
+   43d4 g_confctl_debug_list
+   43e9 putchar
+   43f1 confctl_report_map
+   4404 confctl_node_msg_init
+   441a conf_msg_define
+   442a confctl_hanle_assoc_report
+   4445 confctl_request_grp_info_handle
+   4465 confctl_restore_zero_report_handle
+   4488 confctl_device_list_upload
+   44a3 confctl_device_list_status_init
+   44c3 confctl_rqst_client_hostname
+   44e0 confctl_get_host_list
+   44f6 confctl_set_host_marks
+   450d confctl_get_remark_list
+   4525 confctl_update_remark_request_handle
+   454a confctl_set_dhcps_cfg
+   4560 confctl_get_dhcps_cfg
+   4576 ucloud_get_node_msg
+   458a ucloud_add_node
+   459a ucloud_add_node_init
+   45af ucloud_del_node
+   45bf ucloud_set_led
+   45ce ucloud_set_node_location
+   45e7 confctl_report_log
+   45fa confctl_log_report_init
+   4612 get_login_method
+   4623 do_login_check
+   4632 get_sys_basic
+   4640 confctl_get_master_wlan
+   4658 confctl_set_master_wlan
+   4670 confctl_get_guest_wlan
+   4687 confctl_set_guest_wlan
+   469e confctl_get_wan_detect
+   46b5 confctl_get_wan_status
+   46cc confctl_get_wan_diag
+   46e1 confctl_set_wan_cfg
+   46f5 confctl_get_wan_cfg
+   4709 confctl_is_wan_line_up
+   4720 confctl_get_wan_traffic_info
+   473d confctl_wan_traffic_info_init
+   475b confctl_new_node_report_handle
+   477a new_node_init
+   4788 confctl_add_node_results_handle
+   47a8 add_results_timeout_check
+   47c2 ucloud_get_add_node_results
+   47de confctl_get_is_suilt
+   47f3 confctl_set_sys_timezone
+   480c confctl_set_sys_time
+   4821 confctl_set_app_language
+   483a confctl_set_fast_done
+   4850 ucloud_get_upnp
+   4860 ucloud_set_upnp
+   4870 conf_get_mf_cfg
+   4880 conf_set_mf_cfg
+   4890 conf_get_port_fwd_cfg
+   48a6 conf_set_port_fwd_cfg
+   48bc ucloud_get_sched_reboot_cfg
+   48d8 ucloud_set_sched_reboot_cfg
+   48f4 confctl_set_allconfig
+   490a confctl_upgrade_mpp_to_map
+   4925 confctl_get_cloud_mng_status
+   4942 confctl_set_cloud_mng_status
+   495f confctl_clr_cloud_account_done
+   497e confctl_confirm_cloud_account
+   499c confctl_get_mesh_id
+   49b0 conf_get_time_group_cfg
+   49c8 conf_set_time_group_cfg
+   49e0 conf_get_user_group_cfg
+   49f8 conf_set_user_group_cfg
+   4a10 conf_get_family_group_cfg
+   4a2a conf_set_family_group_cfg
+   4a44 conf_check_map_guest_info
+   4a5e ucloud_get_fastroam
+   4a72 ucloud_set_fastroam
+   4a86 support_accout_share
+   4a9b conf_set_multi_manual_upgrade
+   4ab9 conf_get_map_mem_check
+   4ad0 conf_get_map_download_info
+   4aeb conf_get_map_image_info
+   4b03 conf_get_nos_cfg
+   4b14 conf_set_nos_cfg
+   4b25 conf_get_assistant_cfg
+   4b3c conf_set_assistant_cfg
+   4b53 conf_get_assistant_info_from_map
+   4b74 ucloud_add_node_new
+--
+   5587 ifaddrs_get_ifip
+   5598 confctl_report_node_msg
+   55b0 init_mpp_node_info
+   55c3 update_assoc_tab
+   55d4 uc_api_m_cloud_info_mesh_node_u
+   55f4 upload_one_node_basic_info
+   560f allconfig_protobuf_data_build
+   562d assoc_peer_check
+   563e assoc_node_info__init
+   5654 fill_assoc_node_rule
+   5669 mxp_info__init
+   5678 mesh_node_list__descriptor
+   5693 g_new_node_tab
+   56a2 fill_assoc_node_list
+   56b7 fill_new_node_list
+   56ca mesh_node_list__get_packed_size
+   56ea mesh_node_list__pack
+   56ff mxp_manage_list__unpack
+   5717 mxp_manage_list__free_unpacked
+   5736 manual_node_info__unpack
+   574f manual_node_info__free_unpacked
+   576f get_node_opt_hash_table
+   5787 monitor_stop
+   5794 systool_handle_restore_zero
+   57b0 str_list_del_item
+   57c2 save_all_mesh_node_opt
+   57d9 node_led_status__unpack
+   57f1 node_led_status__free_unpacked
+   5810 node_location__unpack
+   5826 node_location__free_unpacked
+   5843 mesh_node_list__unpack
+   585a mesh_node_list__free_unpacked
+   5878 uc_api_m_cloud_info_send_node_status
+   589d print_group_node_info_to_map
+   58ba usleep
+   58c1 is_the_node_not_in_table
+   58da save_mesh_node_group_conf
+   58f4 save_this_node_led_conf
+   590c update_group_node_info_to_map
+   592a hal_get_mac
+   5936 ether_ntoa_r
+   5943 inet_ntoa
+   594d ntohl
+   5953 uc_api_m_cloud_info_send_dev_device
+   5977 host_info__init
+   5987 netlink_get_statistic_info
+   59a2 g_ip_info
+   59ac __floatundisf
+   59ba __divsf3
+   59c3 __lesf2
+   59cb __extendsfdf2
+   59d9 inet_addr
+   59e3 __fixunssfdi
+   59f0 devic_marks__init
+   5a02 host_lists__descriptor
+   5a19 host_lists__get_packed_size
+   5a35 host_lists__pack
+   5a46 device_mark_list__descriptor
+   5a63 device_mark_list__get_packed_size
+   5a85 device_mark_list__pack
+   5a9c uc_api_m_cloud_info_send_dev_mark_list_u
+   5ac5 get_cloud_remark_hash_table
+   5ae1 update_all_client_remark_to_local
+   5b03 strtoul
+   5b0b mac_add
+   5b13 device_assistant__descriptor
+   5b30 device_assistant__unpack
+   5b49 device_assistant__free_unpacked
+   5b69 device_assistant__get_packed_size
+   5b8b device_assistant__pack
+   5ba2 del_colon_macaddr_srv
+   5bb8 conf_send_assistant_device_to_map
+   5bda del_client_assistant_device_srv
+   5bfa assistant_device_handle_error_time
+   5c1d getWanIfName
+   5c2a deleteWifiGuestNatRule
+   5c41 addWifiGuestNatRule
+   5c55 ifaddrs_get_network_addr_seg
+   5c72 ifaddrs_ipmask_to_numeric
+   5c8c deleteWifiGuestRouteRule
+   5ca5 addWifiGuestRouteRule
+   5cbb check_get_new_ipaddr_by_hostid
+   5cda dhcp_cfg__unpack
+   5ceb prod_check_ip_conflict
+   5d02 prod_check_change_lanip_handle
+   5d21 updateWifiGuestNatRule
+   5d38 updateWifiGuestRouteRule
+   5d51 dhcp_cfg__free_unpacked
+   5d69 dhcp_cfg__descriptor
+   5d7e dhcp_cfg__get_packed_size
+   5d98 dhcp_cfg__pack
+   5da7 wan_dns_cfg__init
+   5db9 ipnet_cfg__init
+   5dc9 dynamic_cfg__init
+   5ddb static_cfg__init
+   5dec russia_adsl_cfg__init
+   5e02 russia_pptpcfg__init
+   5e17 russia_l2tp_cfg__init
+   5e2d wan_port_cfg__init
+   5e40 getWanConnType
+   5e4f contype_sys_to_app
+   5e62 wan_conn_type__descriptor
+   5e7c hal_get_port_link_status
+   5e95 get_wan_internet_result
+   5ead wan_conn_type__get_packed_size
+   5ecc wan_conn_type__pack
+   5ee0 file_get_value_from_ini
+   5ef8 get_sys_mode
+   5f05 system_wan_get_link_status
+   5f20 file_wan_ip_info_get
+   5f35 wan_port_status__init
+   5f4b wan_pppoe_diag_errcode
+   5f62 router_wan_port_diag_errcode
+   5f7f wan_diag__init
+   5f8e wan_port_rate__init
+   5fa2 get_wan_statistics
+   5fb5 wan_status__descriptor
+   5fcc wan_status__get_packed_size
+   5fe8 wan_status__pack
+   5ff9 n_wan_diag__descriptor
+   6010 n_wan_diag__get_packed_size
+   602c n_wan_diag__pack
+   603d wan_rate__descriptor
+   6052 wan_rate__get_packed_size
+   606c wan_rate__pack
+   607b wan_port_power__descriptor
+   6096 wan_port_power__get_packed_size
+   60b6 wan_port_power__pack
+   60cb wan_cfg__descriptor
+   60df print_wan_cfg
+   60ed wan_cfg__get_packed_size
+   6106 wan_cfg__pack
+   6114 wan_cfg__unpack
+   6124 sched_reboot_mode_change_handle
+   6144 set_wan_connect_type
+   6159 set_wan_dhcp
+   6166 set_wan_static
+   6175 set_wan_pppoe
+   6183 set_wan_russia_pppoe
+   6198 set_wan_russia_pptp
+   61ac set_wan_russia_l2tp
+   61c0 set_wan_dns
+   61cc set_wan_ipnetcfg
+   61dd wan_cfg__free_unpacked
+   61f4 opendir
+   61fc readdir
+   6204 closedir
+   620d dir_is_empty
+   621a confctl_log_timeout_check
+   6234 flash_upgradefw
+   6244 pthread_create
+   6253 bzero
+   6259 stat
+   625e fread
+   6264 systool_upfile_handle_new
+   627e biz_md5_encode
+   628d login_sta__descriptor
+   62a3 is_fastsetting_done
+   62b7 is_has_ucccout
+   62c6 login_sta__get_packed_size
+   62e1 login_sta__pack
+   62f1 login_msg__unpack
+   6303 get_md5_uaccout
+   6313 proto_sys_common_ack__descriptor
+   6334 proto_sys_basic_info__descriptor
+   6355 proto_product_info__descriptor
+   6374 proto_init_setup_info__descriptor
+   6396 proto_supt_mod_cmd__init
+   63af proto_sys_common_ack__get_packed_size
+   63d5 proto_sys_common_ack__pack
+   63f0 fscanf
+   63f7 fw_multi_upgrade_info_t__descriptor
+   641b fw_download_info_t__init
+   6434 fw_multi_upgrade_info_t__get_packed_size
+   645d fw_multi_upgrade_info_t__pack
+   647b fw_multi_upgrade_info_t__unpack
+   649b multi_upgrade_send_start_to_map
+   64bb check_mesh_has_old_ver_map
+   64d6 check_product_is_nova
+   64ec fw_multi_upgrade_info_t__free_unpacked
+   6513 conf_send_download_state
+   652c upgrade_global_variable_init
+   6549 conf_send_init_server_state
+   6565 conf_judge_requst_upgrade
+   657f upgrade_mpp_mulst_reboot
+   6598 multi_upgrade_send_downloadinfo_request_to_map
+   65c7 conf_send_connect_server_state
+   65e6 conf_send_downloadend_state
+   6602 conf_send_downloading_state
+   661e g_upgrade_sched_reboot_srv
+   6639 rand
+   663e __floatsidf
+   664a __muldf3
+   6653 __divdf3
+   665c __fixdfsi
+   6666 strtok
+   666d sched_reboot_time_check_srv
+   6689 get_interface_statistics
+   66a2 print_for_debug_srv
+   66b6 __udivdi3
+   66c0 upgrade_sched_reboot_timeout_check_srv
+   66e7 upgrade_sched_reboot_timeout_event_srv
+   670e conf_handle_mpp_download_info
+   672c check_mem_before
+   673d upgrade_image_to_flash
+   6754 conf_send_reboot_msg_to_map
+   6770 conf_send_write_flash_msg_to_map
+   6791 ucloud_set_upgrade_reboot_cfg_srv
+   67b3 monitor_start
+   67c1 upgrade_msg_to_map
+   67d4 init_mesh_upgrade
+   67e6 get_internet_status
+   67fa eanble_inter_chk_request
+   6813 enable_conn_innernet
+   6828 mesh_id_info__descriptor
+   6841 get_mesh_info
+   684f mesh_id_info__get_packed_size
+   686d mesh_id_info__pack
+   6880 enable_upgrade_hdl
+   6893 enable_device_id_hdl
+   68a8 md5_update
+   68b3 md5_init
+   68bc md5_final
+   68c6 guest_enable_flag
+   68d8 wlan_cfg_all__unpack
+   68ed prod_change_root_passwd
+   6905 send_upload_local_config
+   691e wlan_cfg_all__free_unpacked
+   693a wlan_cfg_all__descriptor
+   6953 wlan_cfg__init
+   6962 wlan_cfg_all__get_packed_size
+   6980 wlan_cfg_all__pack
+   6993 wlan_time_choice__init
+   69aa check_map_node_has_change
+   69c4 choose_two_node_change_channel
+   69e3 send_msg_to_map_to_change_channel_bandwidth
+   6a0f report_map_change_channel_bandwidth
+   6a33 high_device_config__init
+   6a4c high_device_config__get_packed_size
+   6a70 high_device_config__pack
+   6a89 high_device_config__unpack
+   6aa4 handle_to_highdevice
+   6ab9 high_device_config__free_unpacked
+--
+  670c0 apmng_svr
+  670e0 /var/apmng_svr
+  67124 arp_receive
+  67144 /var/arp_receive
+  671a8 /var/ate
+  671ec auto_discover
+  6720c /var/auto_discover
+  67250 device_list
+  67270 /var/device_list_socket
+  672b4 ucloud_ctl
+  67318 common_so
+  6737c ap_common_so
+  673e0 prod_common_so
+  674a4 ../confctl_extern.c
+  674b8      malloc failed      
+  674d4 [%s][%d][luminais] invalid param.
+  674f8 /var/mib.mem
+  67508 assist.dev.stime
+  6751c assist.dev.ltime
+  67530 assist.dev.mac
+  67540 echo "%s %d" > %s
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+  67654 client remark list recorded on cloud
+  6767c device list status
+  67690 all device list status uploaded by device_list
+  676c0 SetHostMarks
+  676d0 app set client remark
+  676e8 update grp map
+  676f8 update group config and node opt to MAP
+  67720 SetSysTimeZone
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  677b8 SetWanCfg
+  677c4 send_all_node_status_list
+  677e0 upload all node status to cloud
+  67800 GetWanDiag
+  6780c get wan diag status and error code
+  67830 print client list get online ip info(app)
+  6785c print client lists status(app)
+  6787c upload_status_start
+  67890 upload client and node status start cmd
+  678b8 /var/confctl_debug
+  678d5 module_id	%-32s		%-32s
+  678f0 module_name
+  678fc description
+  6790c 		%-32s
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67a8c GetNodeStatus
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+  67b90 GetTrafficInfo
+  67ba0 NewNodeReport
+  67bb0 NewNodeAddResults
+  67bc4 QuerryNodeRslt
+  67bd4 GetIsSuilt
+  67be0 SetSysTimeZone
+  67bf0 SetSysTime
+  67bfc SetLang
+  67c04 SetGuideDone
+  67c14 GetUPnPCfg
+  67c20 SetUPnPCfg
+  67c2c GetMacfilter
+  67c3c SetMacfilter
+  67c4c GetPortFwdCfg
+  67c5c SetPortFwdCfg
+  67c6c GetAutoMaintainCfg
+  67c80 SetAutoMaintainCfg
+  67c94 SetAllConfig
+  67ca4 GetUcloudImage
+  67cb4 GetCloudEn
+  67cc0 SetCloudEn
+  67ccc UnbindConfirm
+  67cdc AccoutACK
+  67ce8 GetMeshID
+  67cf4 GetTimeGrp
+  67d00 SetTimeGrp
+  67d0c GetUsrGrp
+  67d18 SetUsrGrp
+  67d24 GetFmlyGrp
+  67d30 SetFmlyGrp
+  67d3c ReportGuest
+  67d48 GetWlRoaming
+  67d58 SetWlRoaming
+  67d68 SupAccoutShare
+  67d78 MultiUpgradeStart
+  67d8c MapMemState
+  67d98 MapDownloadInfoRep
+  67dac MultiImageOk
+  67dbc GetNosCfg
+  67dc8 SetNosCfg
+  67dd4 GetDevAssistantCfg
+  67de8 SetDevAssistantCfg
+  67dfc MapAssistantInfo
+  67e10 ManualNodeAdd
+  67e20 GetHighDeviceCfg
+  67e34 SetHighDeviceCfg
+--
+  71b30 /var/apmng_svr
+  71b74 arp_receive
+  71b94 /var/arp_receive
+  71bf8 /var/ate
+  71c3c auto_discover
+  71c5c /var/auto_discover
+  71ca0 device_list
+  71cc0 /var/device_list_socket
+  71d04 ucloud_ctl
+  71d68 common_so
+  71dcc ap_common_so
+  71e30 prod_common_so
+  71ef4 wired
+  71f04 gst_2g
+  71f0c gst_5g
+  71f14 unknow
+  71f60 [%s][%d][luminais] invalid param
+  71f84 malloc failed : (%d)%m
+  71f9c [%s][%d][luminais] alloc_client_mac_str failed
+  71fcc [%s][%d][luminais] hal_get_mac failed
+  71ff4 [%s][%d][luminais] num : %d
+  72014  	<%d>	mac : %s
+  72028 	host_name : %s
+  7203c  	ip : %s
+  72048  	mac : %s
+  72054  	conn_type : %s
+  72068  	duration : %d
+  7207c  	device_node_sn : %s
+  72094  	rssi : %d
+  720a4  	online : %d
+  720b4  	last_upload_time : %d
+  720d0 [%s][%d][luminais] client hash num = %d
+  720fc [%s][%d][luminais] <%d> : 
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+  725eb [1;35mgoto offline
+  72604 malloc device_client_info failed : (%d)%m
+  72630 [%s][%d][luminais] alloc_roam_client_info failed.
+  72664 [%s][%d][luminais] not find any roam client info
+  72698 [%s][%d][luminais] malloc failed, (%d)%m
+  726c4 rsp_client_hostname
+  726d8 device_list@%s
+  726e8 [%s][%d][luminais] map_key = %s
+  7270c [%s][%d][luminais] strdup failed
+  72731 [1;32m[%s][%d] : 
+  72747 [1;35mnow - last_time < 500000
+  7276c [%s][%d][luminais] NULL == g_ip_info
+  72795 [1;32m[%s][%d] : 
+  727ab [1;35mnow : %llu, last_time : %llu, time_interval : %f
+  727e8 [%s][%d][luminais] ifaddrs_ethaddr_aton %s failed.
+  7281d [1;32m[%s][%d] : 
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+  728dc update_client_remark
+  728f4 confctl_cli_key
+  72905 [1;32m[%s][%d] : 
+  7291b [1;35msend client remark to map
+  72941 [1;32m[%s][%d] : 
+--
+  72993 [1;35mprint local remark table
+  729b9 [1;32m[%s][%d] : 
+  729cf [1;35mtimestamp : [cloud %llu], [local %llu]
+  72a05 [1;32m[%s][%d] : 
+  72a1b [1;35mis_update_to_cloud = %d
+  72a41 [1;32m[%s][%d] : 
+  72a57 [1;35mprint last remark table
+  72a7d [1;32m[%s][%d] : 
+  72a93 [1;35mprint upload remark table
+  72ab8 %s@%s
+  72ac0 confctl_cli
+  72acd [1;32m[%s][%d] : 
+  72ae3 [1;35mprint_upload_cloud_client_status
+  72b10 %02X:%02X:%02X:%02X:%02X:%02X
+  72b30       device_assistant__unpack error!      
+  72b5c %s(%d)
+  72b64 recv value is null!%s(%d)
+  72b80 [wl2g_mac_tmp = %s]%s(%d)
+  72b9c [wl5g_mac_tmp = %s]%s(%d)
+  72bb8 [wl2g_mac_gst_tmp = %s]%s(%d)
+  72bd8 [wl5g_mac_gst_tmp = %s]%s(%d)
+  72bf8 [arainc][device_assistant_info_in-mac = %s]%s(%d)
+  72c2c [wl2g_mac]%s(%d)
+  72c40 [wl5g_mac]%s(%d)
+  72c54 [error]%s(%d)
+  72c64 out malloc error%s(%d)
+  72c7c %d,%s
+  72c84 api/device_list_status.c
+  72ca0  	  malloc   failed ! 	
+  72cb8 SetDevAssistantCfgMap
+  72cd0 /var/mib.mem
+  72ce0 assist.dev.mac
+  72cf0 iwpriv wlan0 del_sta %s
+  72d08 device_assistant_info_in->ip is null%s(%d)
+  72d38 echo "%s %d" > %s
+  72d4c /proc/hybrid_steering/fixed_2g
+  72d6c assist.dev.stime
+  72d80 assist.dev.ltime
+  72d94 1800
+  72d9c [left_time_mpp = %d][left_time_map = %d][arainc]
+  72dd0 conf_get_assistant_info_from_map
+  72df4 conf_set_assistant_cfg
+  72e0c ether_atoe
+  72e18 conf_get_assistant_cfg
+  72e30 send_all_client_status_list
+  72e4c fill_cloud_info_device_lists_rate
+  72e70 fill_cloud_info_device_upload_all
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+  735ec /var/mw_socket
+  73630 network_check
+  73650 /var/network_ck_socket
+  73694 cfmc
+  736b4 /var/cfmc_socket
+  736f8 dhcpc
+  73718 /var/dhcpc
+  7375c httpd
+  7377c /var/httpd
+  737c0 apmng_svr
+  737e0 /var/apmng_svr
+  73824 arp_receive
+  73844 /var/arp_receive
+  738a8 /var/ate
+  738ec auto_discover
+  7390c /var/auto_discover
+  73950 device_list
+  73970 /var/device_list_socket
+  739b4 ucloud_ctl
+  73a18 common_so
+  73a7c ap_common_so
+  73ae0 prod_common_so
+  73ba4 wl.guest.dhcps_ip
+  73bbc wl.guest.dhcps_mask
+  73bd0 iptables -t nat -N guest_access_post%d
+--
+  73f60 lan.ip
+  73f68 lan.mask
+  73f74 [%s][%d][niuwu]  ip=%s 
+  73f90 %llu
+  73f98 sys.cfg.stamp
+  73fa8 op=%d,wl_rate=%d
+  73fbc wl.guest.dhcps_enable
+  73fd4 malloc failed. (%d)%m
+  73fec confctl_set_dhcps_cfg
+  74004 change_wifi_guest_ip
+  74088 monitor
+  740a8 /var/pm_socket
+  740ec timer
+  7410c /var/tm_socket
+  74150 cfms
+  74170 /var/cfm_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  74218 netctrl
+  74238 /var/nt_socket
+  7427c multiWAN
+  7429c /var/mw_socket
+  742e0 network_check
+  74300 /var/network_ck_socket
+  74344 cfmc
+  74364 /var/cfmc_socket
+  743a8 dhcpc
+  743c8 /var/dhcpc
+  7440c httpd
+  7442c /var/httpd
+  74470 apmng_svr
+  74490 /var/apmng_svr
+  744d4 arp_receive
+  744f4 /var/arp_receive
+  74558 /var/ate
+  7459c auto_discover
+  745bc /var/auto_discover
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+  74a48 wan%d.ppoe.ac
+  74a58 wan%d.ppoe.sev
+  74a68 [%s][%d][lilin] invalid param.
+  74a88 [%s][%d][lilin] malloc failed. (%d)%m
+  74ab0 [%s][%d][lilin] strdup failed
+  74ad0 wan%d.ppoe.mode
+  74ae4 ppoe
+  74aec wan%d.pptp.user
+  74afc wan%d.pptp.pwd
+  74b0c wan%d.pptp.serverip
+  74b20 wan%d.pptp.mode
+  74b30 wan%d.pptp.mtu
+  74b40 1452
+  74b48 pptp
+  74b50 wan%d.l2tp.user
+  74b60 wan%d.l2tp.pwd
+  74b70 wan%d.l2tp.serverip
+  74b84 wan%d.l2tp.mode
+  74b94 wan%d.l2tp.mtu
+  74ba4 1460
+  74bac l2tp
+  74bb4 /var/wan_detect_rst
+  74bcc open %s failed
+  74bdc killall -9 wan_detect
+  74bf4 /var/mib.mem
+--
+  74db8 [%s][%d][luminais] file_wan_ip_info_get failed.
+  74dec %s %d:lilin| fill default router mode dns status 
+  74e20 %s %d:lilin| router mode status 
+  74e44 /etc/ppp/wan%d_ppoe_auth_code
+  74e68 [%s][%d][luminais] unknow link_status
+  74e91 [1;32m[%s][%d] : 
+  74ea7 [1;35m<%d> ret = %d
+  74ec1 [1;32m[%s][%d] : 
+  74ed7 [1;35m<%d> up = %llu, down = %llu
+  74f01 [1;32m[%s][%d] : 
+  74f17 [1;35m<%d> up_rate = %d, down_rate = %d
+  74f45 [1;32m[%s][%d] : 
+  74f5b [1;35mwan_id = %d, link_status = %d
+  74f85 [1;32m[%s][%d] : 
+  74f9b [1;35mtotal_up = %d, total_up_last = %d
+  74fc9 [1;32m[%s][%d] : 
+  74fdf [1;35mtotal_down = %d, total_down_last = %d
+  75010 sys.model
+  75020 wans.flag
+  7502c sys.workmode
+  7503c router
+  75048 [%s][%d][luminais] n_diags = %d
+  7506c [%s][%d][luminais] <%d> : 
+  75088 	idx : %d
+  75094 	status : %d
+  750a4 	errcode : %d
+  750b4 sys.cfg.stamp
+  750c4 wan1.connecttype
+  750d8 op=%d,wan_id=%d
+  750e8 [%s][%d][luminais] wan_cfg__unpack failed.
+  75114 [%s][%d][luminais] not find the portcfg of wan %d
+  75148 [%s][%d][luminais] Set wan%d dhcp OK!
+  75170 [%s][%d][luminais] Set wan%d static OK!
+  7519c [%s][%d][luminais] Set wan%d PPPoE OK!
+  751c4 [%s][%d][luminais] Set wan%d PPTP OK!
+  751ec [%s][%d][luminais] Set wan%d L2TP OK!
+  75214 [%s][%d]wandnscfg is null!
+  75230 [%s][%d][luminais] wan %d config change
+  7525c /var/network_check_rst
+  75274 op=%d
+  7527c [%s][%d][luminais] dns is changed
+  752a0 %llu
+  752a8 confctl_set_wan_cfg
+  752bc confctl_get_wan_cfg
+  752d0 confctl_is_wan_line_up
+  752e8 confctl_get_wan_traffic_info
+  75308 confctl_get_wan_diag
+  75320 print_wan_diag
+  75330 confctl_get_wan_status
+  75348 fill_router_wan_rate
+  75360 get_router_wan_rate
+  75374 wan_traffic_info_renew
+  7538c fill_bridge_wan_rate
+  753a4 fill_router_wan_diag
+  753bc fill_bridge_wan_diag
+  753d4 fill_wan_port_diag_by_mode
+  753f0 fill_router_wan_port_diag
+  7540c fill_bridge_wan_port_diag
+  75428 fill_router_wan_status
+  75440 fill_bridge_wan_status
+  75458 fill_wan_port_status_by_mode
+  75478 fill_router_wan_port_status
+  75494 fill_wan_port_manual_dns
+  754b0 fill_bridge_wan_port_status
+  754cc fill_lan_port_status
+  754e4 file_lan_ip_info_get
+  754fc fill_wan_port_status
+  75514 fill_wan_port_status_default
+  75534 confctl_get_wan_detect
+  7554c get_wan_detect_type
+  75560 fill_bridge_wan_params
+  75578 fill_router_wan_params
+  75590 fill_wan_port_all_cfg
+  755a8 fill_wan_port_russia_l2tp_cfg
+  755c8 fill_wan_port_russia_pptp_cfg
+  755e8 fill_wan_port_russia_pppoe_cfg
+  75608 fill_wan_port_pppoe_cfg
+  75620 fill_wan_port_static_cfg
+  7563c fill_wan_port_dhcp_cfg
+  75654 fill_wan_port_static_dns_cfg
+  75674 fill_wan_port_ipnetcfg_cfg
+  75690 fill_wan_port_dns_cfg
+  756a8 print_wan_rate
+  75728 monitor
+  75748 /var/pm_socket
+  7578c timer
+  757ac /var/tm_socket
+  757f0 cfms
+  75810 /var/cfm_socket
+  75854 logserver
+  75874 /var/plog_socket
+  758b8 netctrl
+  758d8 /var/nt_socket
+  7591c multiWAN
+  7593c /var/mw_socket
+  75980 network_check
+  759a0 /var/network_ck_socket
+--
+  7e38c    in is null !
+  7e39c    unpack  failed !  
+  7e3b8 wl2g.public.dot11k
+  7e3d0 wl2g.public.dot11v
+  7e3e4 wl2g.public.dot11r
+  7e3f8 wl5g.public.dot11k
+  7e40c wl5g.public.dot11v
+  7e420 wl5g.public.dot11r
+  7e434 %llu
+  7e43c sys.cfg.stamp
+  7e44c op=%d,wl_rate=%d
+  7e4c8 monitor
+  7e4e8 /var/pm_socket
+  7e52c timer
+  7e54c /var/tm_socket
+  7e590 cfms
+  7e5b0 /var/cfm_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+  7e658 netctrl
+  7e678 /var/nt_socket
+  7e6bc multiWAN
+  7e6dc /var/mw_socket
+  7e720 network_check
+  7e740 /var/network_ck_socket
+  7e784 cfmc
+  7e7a4 /var/cfmc_socket
+  7e7e8 dhcpc
+  7e808 /var/dhcpc
+  7e84c httpd
+  7e86c /var/httpd
+  7e8b0 apmng_svr
+  7e8d0 /var/apmng_svr
+  7e914 arp_receive
+  7e934 /var/arp_receive
+  7e998 /var/ate
+  7e9dc auto_discover
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+  84720 .dynamic
+  84729 .hash
+  8472f .dynsym
+  84737 .dynstr
+  8473f .gnu.version
+  8474c .gnu.version_r
+  8475b .rel.plt
+  84764 .init
+  8476a .text
+  84770 .MIPS.stubs
+  8477c .fini
+  84782 .rodata
+  8478a .eh_frame_hdr
+  84798 .eh_frame
+  847a2 .ctors
+  847a9 .dtors
+  847b0 .jcr
+  847b5 .data
+  847bb .rld_map
+  847c4 .got.plt
+  847cd .got
+  847d2 .sdata
+  847d9 .bss
+  847de .comment
+  847e7 .pdr
+===== FILE firmware-src/RootFS-unpacked/lib/libcommon.so SYMBOLS =====
+   189: 000126d0   436 FUNC    GLOBAL DEFAULT   10 netlink_clear_statistic_info
+   197: 0006e658   408 OBJECT  GLOBAL DEFAULT   19 rate_11n_table_40M_SHORT
+   199: 0006ecc0     4 OBJECT  GLOBAL DEFAULT   22 g_ip_info
+   208: 000121d0  1280 FUNC    GLOBAL DEFAULT   10 netlink_get_statistic_info
+   293: 00039fe0   484 FUNC    GLOBAL DEFAULT   10 wifi_set_11ac_txrate
+   373: 0006e4c0   408 OBJECT  GLOBAL DEFAULT   19 rate_11n_table_40M_LONG
+   380: 0006e190   408 OBJECT  GLOBAL DEFAULT   19 rate_11n_table_20M_LONG
+   402: 0006e328   408 OBJECT  GLOBAL DEFAULT   19 rate_11n_table_20M_SHORT
+   439: 0005c864   240 OBJECT  GLOBAL DEFAULT   13 VHT_MCS_DATA_RATE
+===== FILE firmware-src/RootFS-unpacked/lib/libcommon.so STRINGS =====
+   2e2e stderr
+   2e35 fwrite
+   2e3c flash_write
+   2e48 erase_mtd
+   2e52 strerror
+   2e5b stdout
+   2e62 fflush
+   2e69 erase_mtd_by_size
+   2e7b putchar
+   2e83 nandfile_and_file_to_switch
+   2e9f stat
+   2ea4 fread
+   2eaa file_to_flash
+   2eb8 crc32
+   2ebe flash_to_file
+   2ecc uncompress
+   2ed7 write_mac_to_flash
+   2eea get_mac_from_flash
+   2efd get_r5flag_from_flash
+   2f13 check_fw_type
+   2f21 split_fireware
+   2f30 check_fw_crc
+   2f3d check_mtd_size
+   2f4c ApmibGetValue
+   2f5a get_flash_type
+   2f69 check_fw_valid
+   2f78 flash_write_mtd
+   2f88 flash_check_fw_type_and_crc
+   2fa4 flash_check_fw
+   2fb3 fseek
+   2fb9 doSystemCmd
+   2fc5 check_cmp_policy_file
+   2fdb unlink
+   2fe2 flash_upgradefw
+   2ff2 get_flash_size
+   3001 get_mtd_num
+   300d get_mtd_size
+   301a __assert
+   3023 strstr
+   302a load_l7setting_file
+   303e g_ip_info
+   3048 netlink_usr_socket_init
+   3060 netlink_to_kernel
+   3072 sendmsg
+   307a netlink_sock_deinit
+   308e netlink_get_statistic_info
+   30a9 netlink_clear_statistic_info
+   30c6 netlink_nl_alloc_handle
+   30de bzero
+   30e4 netlink_nl_free_handle
+   30fb netlink_nl_connect
+   310e netlink_nl_init_msg
+   3122 netlink_nl_set_msg_type
+   313a netlink_nl_set_msg_flg
+   3151 netlink_nl_push_msg_blk
+   3169 netlink_nl_append_data
+   3180 netlink_nl_send
+   3190 netlink_nl_recv
+   31a0 netlink_nl_recv_broadcast
+   31ba netlink_nl_try_push_and_send
+   31d7 netlink_log_system_send_info
+   31f4 netlink_log_system_get_info
+   3210 g_wan_ip_info
+   321e g_wan_ip_info2
+   322d file_get_value_from_ini
+   3245 string_str_trim
+   3255 do_file_cmd
+   3261 vfprintf
+   326a file_save_wan_ip
+   327b file_syslog_get_lists
+   3291 feof
+   3296 fscanf
+   329d file_pppoes_get_online_user
+   32b9 usleep
+   32c0 system_get_reuse_time
+   32d6 strchr
+   32dd inet_network
+   32ea file_get_route_list_num
+   3302 file_get_route_table_list
+   331c file_get_upnp_list
+   332f file_get_dhcps_clients_list
+   334b system_get_code_format
+   3362 system_convert_code_format
+   337d file_get_ipsec_sa_info
+   3394 strncat
+   339c file_get_vpn_online_user_list
+   33ba file_lan_dhcpc_get_ipinfo_and_status
+   33df file_get_portal_web_authed_user_list
+   3404 file_arp_fence_open_dev
+   341c file_arp_fence_info_get
+   3434 file_arp_fence_clear
+   3449 file_ddos_ip_fence_open_dev
+--
+   43c7 fputs
+   43cd shmget
+   43d4 shmat
+   43da shmdt
+   43e0 timer_start
+   43ec timer_stop
+   43f7 timer_check_ok_and_wait
+   440f rate_11n_table_20M_LONG
+   4427 rate_11n_table_20M_SHORT
+   4440 rate_11n_table_40M_LONG
+   4458 rate_11n_table_40M_SHORT
+   4471 VHT_MCS_DATA_RATE
+   4483 wifi_set_11ac_txrate
+   4498 wifi_get_client_lists
+   44ae wifi_get_ssid_num
+   44c0 wifi_get_nv_prefix
+   44d3 SetWlan_idx
+   44df wifi_encode_ssid_2_utf8
+   44f7 htmlSpecialCharReplace
+   450e wifi_get_ap_lists
+   4520 wifi_get_wl_site_survey_request
+   4540 wifi_get_wl_site_survey_sesult
+   455f wifi_do_scan
+   456c wifi_get_wl_sta_list
+   4581 wifi_wisp_link_check_status
+   459d wifi_get_apclient_link_status
+   45bb wifi_wds_get_link_status
+   45d4 isspace
+   45dc wifi_ifname_check
+   45ee wifi_probe
+   45f9 wifi_get_status_list
+   460e wifi_get_status_by_ifname
+   4628 wlan_idx
+   4631 wifi_get_wl_mac_list
+   4646 wifi_get_vap_client_lists
+   4660 bcm_strcat_r
+   466d wifi_list_find
+   467c strspn
+   4683 strcspn
+   468b strncasecmp
+   4697 wifi_check_link_status
+   46ae wifi_status_get_ip_info
+   46c6 wifi_verify_value
+   46d8 wifi_find_num_vlanid
+   46ed wifi_get_wl_ifnames
+   4701 wifi_get_statistic
+   4714 behavior_u2k_clear_rule
+   472c behavior_u2k_set_rule
+   4742 behavior_qos_rule_set
+   4758 behavior_portalnl_send_msg
+   4773 behavior_parse_id_string
+   478c libgcc_s.so.1
+   479a libc.so.0
+   47a4 _ftext
+   47ab _fdata
+   47b2 _edata
+   47b9 __bss_start
+   47c5 _fbss
+   47cb _end
+   47d0 GLIBC_2.0
+   4c85 M9'F
+   4cac pw9'	
+   4f56 B$! @
+   4f86 B$! @
+   5036 B$! @
+   5076 B$! @
+   515e B$! @
+   51a2 B$! @
+   531b '! @
+   53a7 '! @
+   562c $TB$!
+   5927 $!8@
+   5931 RB$!
+   59b4 DUB$!
+   5dfb '! @
+   5e59 ]B$!
+   5f15 ]B$!
+   5f5b $!8@
+   5f65 XB$!
+   5f94 @[B$!
+   5fb1 ]B$!
+   5fef $!8@
+   5ff9 XB$!
+   6028 @[B$!
+   6045 ]B$!
+   60df $!(@
+   6143 $!(@
+   61b0 D\B$!
+   61e8 D\B$!
+   62e7 '! @
+   65ef $!(@
+--
+  4ac20 malloc is fail.
+  4ac30 The tx nlmsghdr malloc failed.
+  4ac50 the rx nlmsghdr calloc failed.
+  4ac70 arg is null.
+  4ac80 create sock is failed, err is %s
+  4aca4 bind failed, err is %s
+  4acbc NULL handler or NULL message block!
+  4ace0 NLMSG_ALIGN IS FULL.
+  4acf8 NULL handle or NULL data block!
+  4ad18 NLMSG_ALIGN is full
+  4ad2c handle is null.
+  4ad3c handle->h_tx_nlh is null.
+  4ad58 no msg, do not need send.
+  4ad74 failed to send message, reason: %s.
+  4ad98 NULL handler!
+  4ada8 null rx buffer!
+  4adb8 recvmsg failed: %s.
+  4adcc The data is not valid.
+  4ade4 wrong message, we expect seq %d, but %d was received.
+  4ae1c null handle.
+  4ae2c null rx buffer.
+  4ae3c recvmsg error.
+  4ae4c recvmsg time out.
+  4ae60 recvmsg failed.
+  4ae70 tx buffer full, send it at first.
+  4ae94 tx buffer full.
+  4aea4 logcmd is null
+  4aeb4 create netlink socket is fail.
+  4aed4 nlhdr  is null
+  4aee4 Fail to send out msg:%s(%d)
+  4af00 create netlink sock is fail.
+  4af20 netlink_log_system_get_info
+  4af3c netlink_log_system_send_info
+  4af5c netlink_nl_try_push_and_send
+  4af7c netlink_nl_recv_broadcast
+  4af98 netlink_nl_recv
+  4afa8 netlink_nl_send
+  4afb8 netlink_nl_append_data
+  4afd0 netlink_nl_push_msg_blk
+  4afe8 netlink_nl_set_msg_flg
+  4b000 netlink_nl_set_msg_type
+  4b018 netlink_nl_init_msg
+  4b02c netlink_nl_connect
+  4b040 netlink_nl_free_handle
+  4b058 netlink_nl_alloc_handle
+  4b070 netlink_clear_statistic_info
+  4b090 netlink_get_statistic_info
+  4b0ac netlink_talking_with_kernel
+  4b0c8 netlink_sock_deinit
+  4b0dc netlink_to_kernel
+  4b0f0 netlink_usr_socket_init
+  4b178 monitor
+  4b198 /var/pm_socket
+  4b1dc timer
+  4b1fc /var/tm_socket
+  4b240 cfms
+  4b260 /var/cfm_socket
+  4b2a4 logserver
+  4b2c4 /var/plog_socket
+  4b308 netctrl
+  4b328 /var/nt_socket
+  4b36c multiWAN
+  4b38c /var/mw_socket
+  4b3d0 network_check
+  4b3f0 /var/network_ck_socket
+  4b434 cfmc
+  4b454 /var/cfmc_socket
+  4b498 dhcpc
+  4b4b8 /var/dhcpc
+  4b4fc httpd
+  4b51c /var/httpd
+  4b560 apmng_svr
+  4b580 /var/apmng_svr
+  4b5c4 arp_receive
+  4b5e4 /var/arp_receive
+  4b648 /var/ate
+  4b68c auto_discover
+  4b6ac /var/auto_discover
+  4b6f0 device_list
+  4b710 /var/device_list_socket
+  4b754 ucloud_ctl
+  4b7b8 common_so
+  4b81c ap_common_so
+  4b880 prod_common_so
+  4b944 function entry!
+  4b954 arg is null.
+  4b968 fopen is fail.
+  4b978 function exit!
+  4b988 get value is error.
+  4b9a8 ip=%s
+  4b9ae mask=%s
+  4b9b6 gateway=%s
+  4b9c1 dns1=%s
+  4b9c9 dns2=%s
+  4b9d4 /var/logs.txt
+  4b9e4 %[^;];%d;%[^
+  4b9f4 cfg is null.
+  4ba04 /etc/ppp/list.cfg
+  4ba18 ip_count = %d,lasttime:%llu,now:%llu.
+  4ba40 can not get statistic info.
+  4ba5c time_interval:%.2f.
+  4ba70 %[^;];%[^;];%[^;];%[^;];%*d;%*d;%[^;
+  4ba98 online ip list[%d] username:--%s--,ip:--%s--.
+  4bac8 found ip:%x,down:%.2f,up:%.2f.
+  4bae8 i = %d,remain_time=%d.
+  4bb00 invalid online user num.
+  4bb24 0.0.0.0
+  4bb30 255.255.255.255
+  4bb40 /proc/net/route
+  4bb50  %s%X%X%*s%*s%*s%d%X%*s%*s%*s 
+  4bb70 ip route ls table %s > %s
+  4bb8c staticroute
+  4bb98 /var/static_route
+  4bbac %u.%u.%u.%u
+  4bbb8 /var/upnpmap
+  4bbc8 %[^;];%[^;];%[^;];%[^;];%[^;];%[^;]
+  4bbec /etc/dhcps.leases
+  4bc00 utf-8
+  4bc08  %7s %17s %15s %*s %*s %s 
+  4bc24 setkey -D > /tmp/ipsec_sa_info.txt
+  4bc48 /tmp/ipsec_sa_info.txt
+  4bc60 %s %s *
+  4bc68 	%s %*s spi=%u*
+  4bc80 	%*s %s *
+  4bc8c hmac-sha1
+  4bc98 SHA1
+  4bca0 hmac-md5
+  4bcb8 	%*s %s %x %x %x %x %x %x %x %x 
+  4bcdc 3des-cbc
+  4bce8 3DES
+  4bcf0 des-cbc
+  4bcfc aes-cbc
+  4bd04 AES-
+  4bd18 /etc/ppp/pptp_user_list.ini
+  4bd34 /etc/ppp/l2tps_user_list.ini
+  4bd54 %*[^&]&%*[^&]&%[^&]&%*[^&]&%d&%[^&]&%d&%[^&]&%[^&]&%[^&]&%d&%*[^&]&%d&%*[^&]&%[^&]&%u&
+  4bdac /etc/lan.cfg
+  4bdc0 get status is fail.
+  4bdd4 status is error.
+  4bde8 /etc/lan.ini
+  4bdfc mask
+  4be04 gateway
+  4be0c dns1
+  4be14 dns2
+  4be1c /var/portal_authed_user_info.cfg
+--
+  5cd30 check_wlan ok! %s SIOCGIWNAME is %s.
+  5cd58 2.4g wifi_get_nv_prefix is fail.
+  5cd7c 5g wifi_get_nv_prefix is fail.
+  5cd9c ioctl is fail.
+  5cdac value is null.
+  5cdbc invalid wl rate.
+  5cdd4 get wl mainifname is fail.
+  5cdf4 ssid
+  5cdfc get ssid is fail.
+  5ce10 channel
+  5ce18 get channel is fail.
+  5ce30 use40M
+  5ce38 get use40M error.
+  5ce50 opmode
+  5ce58 get work_mode error.
+  5ce70 wl work mode is error.
+  5ce88 Failed to get [%s] main_prefix!
+  5cea8 wl2g.public.ssid_max
+  5cec0 wl5g.public.ssid_max
+  5ced8 get wifi status is fail.
+  5cef4 ssid length is large.
+  5cf0c dev(%s) is not up
+  5cf24 found target is fail.
+  5cf3c ifname is invalid.
+  5cf50 ifname is check fail.
+  5cf68 ifname wifi_probe is invalid.
+  5cf88 /proc/net/arp
+  5cf98 %*s %*s %15s %*s %*s %*s
+  5cfb8 %15s %*s %*s %17s %*s %*s
+  5cfd4 0.0.0.0
+  5cfdc ip_info is null pointer.
+  5cff8 /etc/wan0.ini
+  5d00c gateway
+  5d014 dns1
+  5d01c dns2
+  5d024 mask
+  5d02c 255.255.255.255
+  5d03c value is null use default.
+  5d060 %15[^,],%15[^,]
+  5d070 not found vlan id.
+  5d084 wl ifnames is null.
+  5d098 %s,%s
+  5d0a0 get wl ifnames is fail.
+  5d0b8 %32[^:]
+  5d0c0 %32[^:]:%llu %lu %*d %*d %*d %*d %*d %*d %llu %lu %*s
+  5d0f8 get wifi if statistic is fail.
+  5d118 /tmp/ori_net_dev
+  5d12c can not open file!
+  5d140 get sta info failed.
+  5d158 invalid list_num!
+  5d16c wifi_status_get_if_info failed!
+  5d18c fopen is failed!
+  5d1a0 rm -fr %s
+  5d1ac wifi_get_statistic
+  5d1c0 wifi_get_new_statistic
+  5d1d8 wifi_get_if_statistic
+  5d1f0 wifi_get_wl_ifnames
+  5d204 wifi_find_num_vlanid
+  5d21c wifi_verify_value
+  5d230 wifi_status_get_ip_info
+  5d248 wifi_check_link_status
+  5d260 wifi_find_ip_in_arplist
+  5d278 wifi_get_ip_mac_list
+  5d290 wifi_get_status_by_ifname
+  5d2ac wifi_list_find
+  5d2bc wifi_get_vap_client_lists
+  5d2d8 wifi_get_wl_mac_list
+  5d2f0 wifi_get_ssid_num
+  5d304 wifi_get_wl_if_info
+  5d318 wifi_get_status_list
+  5d330 wifi_get_mib
+  5d340 wifi_get_wl_hwaddr
+  5d354 wifi_get_ifnames
+  5d368 wifi_probe
+  5d374 wifi_ifname_check
+  5d388 wifi_if_readlist_proc
+  5d3a0 wifi_get_name
+  5d3b0 wifi_wds_get_link_status
+  5d3cc wifi_get_wds_info
+  5d3e0 wifi_get_apclient_link_status
+  5d400 wifi_get_nv_prefix
+  5d414 wifi_wisp_link_check_status
+  5d430 wifi_check_wlan_downup
+  5d448 wifi_get_wl_sta_list
+  5d460 wifi_do_scan
+  5d470 wifi_get_wl_site_survey_sesult
+  5d490 wifi_get_wl_site_survey_request
+  5d4b0 wifi_get_ap_lists
+  5d4c4 htmlSpecialCharReplace
+  5d4dc wifi_encode_ssid_2_utf8
+  5d4f4 wifi_get_client_lists
+  5d50c wifi_get_wl_sta_info
+  5d524 wifi_iw_get_ext
+  5d534 wifi_set_11ac_txrate
+  5d5b8 monitor
+  5d5d8 /var/pm_socket
+  5d61c timer
+  5d63c /var/tm_socket
+  5d680 cfms
+  5d6a0 /var/cfm_socket
+  5d6e4 logserver
+===== FILE firmware-src/RootFS-unpacked/lib/libucapi.so SYMBOLS =====
+     4: 0000b6a4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+    52: 00007698    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_dev_traffic
+   208: 00017c2c    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_rate_get_hdl_reg
+===== FILE firmware-src/RootFS-unpacked/lib/libucapi.so STRINGS =====
+   29cd uc_api_lib_guard_set_hdl_reg
+   29ea uc_api_lib_safe_check_hdl_reg
+   2a08 uc_api_lib_dns_optimize_hdl_reg
+   2a28 uc_api_enable_m_wifi
+   2a3d uc_api_lib_wifi_basic_get_hdl_reg
+   2a5f uc_api_lib_wifi_basic_set_hdl_reg
+   2a81 uc_api_lib_wifi_guest_get_hdl_reg
+   2aa3 uc_api_lib_wifi_guest_set_hdl_reg
+   2ac5 uc_api_lib_wifi_channel_get_hdl_reg
+   2ae9 uc_api_lib_wifi_channel_set_hdl_reg
+   2b0d uc_api_lib_wifi_power_get_hdl_reg
+   2b2f uc_api_lib_wifi_power_set_hdl_reg
+   2b51 uc_api_enable_m_login
+   2b67 uc_api_lib_login_hdl_reg
+   2b80 uc_api_lib_up_pwd_hdl_reg
+   2b9a uc_api_lib_get_pwd_sta_hdl_reg
+   2bb9 uc_api_enable_m_sys
+   2bcd uc_api_lib_sys_basic_info_hdl_reg
+   2bef uc_api_lib_sys_advance_info_hdl_reg
+   2c13 uc_api_lib_sys_reset_hdl_reg
+   2c30 uc_api_lib_sys_reboot_hdl_reg
+   2c4e uc_api_lib_sys_time_zone_hdl_reg
+   2c6f uc_api_lib_run
+   2c7e pthread_attr_init
+   2c90 pthread_attr_setdetachstate
+   2cac pthread_create
+   2cbb pthread_attr_destroy
+   2cd0 uc_lib_creat_tcp_client
+   2ce8 socket
+   2cef _uc_con_to_lib
+   2cfe sleep
+   2d04 uc_api_lib_init
+   2d14 signal
+   2d1b pthread_mutex_init
+   2d2e create_tcp_server
+   2d40 ucloud_event_accept2
+   2d55 ucloud_event_accept
+   2d69 uc_api_lib_cmd_send
+   2d7d uc_api_m_wifi_push_wifi_info
+   2d9a uc_api_m_cloud_info_send_sys_basic_info
+   2dc2 uc_api_m_cloud_info_send_dev_config_u
+   2de8 uc_api_m_cloud_info_send_dev_config_q
+   2e0e uc_api_m_cloud_info_send_dev_mark_list_u
+   2e37 uc_api_m_cloud_info_send_node_status
+   2e5c uc_api_m_cloud_info_send_dev_device
+   2e80 uc_api_m_cloud_info_send_dev_traffic
+   2ea5 uc_api_m_cloud_info_mesh_node_u
+   2ec5 uc_api_m_cloud_info_send_force_upgrade
+   2eec uc_api_m_cloud_info_send_clear_account
+   2f13 uc_api_m_rub_net_push_strange_host_info
+   2f3b uc_api_lib_connect
+   2f4e uc_api_lib_cmd_register
+   2f66 strdup
+   2f6d dyn_arr_expand
+   2f7c uc_api_enable_m_cloud_info
+   2f97 uc_api_lib_cloud_info_manage_en_get_hdl_reg
+   2fc3 uc_api_lib_cloud_info_manage_en_set_hdl_reg
+   2fef uc_api_lib_cloud_info_account_info_a_hdl_reg
+   301c uc_api_lib_cloud_info_clear_account_ack_hdl_reg
+   304c uc_api_lib_cloud_info_mesh_node_a_hdl_reg
+   3076 uc_api_lib_cloud_info_upload_status_start_hdl_reg
+   30a8 uc_api_lib_cloud_info_upload_device_start_hdl_reg
+   30da uc_api_lib_cloud_info_dev_mark_list_a_hdl_reg
+   3108 uc_api_lib_cloud_info_dev_config_time_a_hdl_reg
+   3138 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   3172 uc_api_lib_cloud_info_web_auth_config_time_a_hdl_reg
+   31a7 uc_api_enable_speed_test
+   31c0 uc_api_enable_upgrade
+   31d6 uc_api_lib_cloud_info_upgrade_dir_set
+   31fc uc_api_lib_check_memory_hdl_reg
+   321c uc_api_lib_begin_upgrade_hdl_reg
+   323d uc_api_set_basic_info
+   3253 ucloud_event_read2
+   3266 uc_list_del
+   3272 ucloud_event_read
+   3284 active_queue_cb
+   3294 init_mesh_modlules
+   32a7 uc_api_lib_destroy
+   32ba dyn_arr_destroy
+   32ca pthread_mutex_destroy
+   32e0 pthread_cancel
+   32ef pthread_join
+   32fc memset
+   3303 pthread_self
+   3310 select
+   3317 login_param
+   3323 up_pwd_param
+   3330 assign_set_cfg_fn
+   3342 assign_get_cfg_fn
+   3354 cmd_args
+   335d command_exec_set_noreply
+--
+  1f5c4 Successfully connected[%d]
+  1f5e0 Can not create lib server
+  1f5fc select() failed: %s
+  1f614 Writing exception occured(%d)...
+  1f640 uc_api_lib_init
+  1f650 ucloud_event_accept2
+  1f668 _uc_lib_accept
+  1f678 _con_fd_event
+  1f688 _net_read
+  1f694 _net_write
+  1f6a0 ucloud_event_read
+  1f6b4 _session_read_and_dispatch
+  1f6d0 _cmd_read
+  1f6dc _exec_command
+  1f6ec _cmd_pakage_build_and_send
+  1f708 _add_to_sending_queue
+  1f720 uc_api_enable_m_cloud_info
+  1f73c uc_api_lib_module_destroy
+  1f758 uc_api_lib_cmd_unregister
+  1f774 uc_api_lib_cmd_resp_notify
+  1f790 uc_api_lib_cmd_resp
+  1f7a4 _uc_api_lib_cmd_send
+  1f7bc uc_api_lib_run
+  1f7cc _uc_api_lib_run
+  1f7dc _uc_api_lib_connect
+  1f7f0 _uc_api_lib_server
+  1f804 _io_handler
+  1f810 uc_lib_creat_tcp_client
+  1f828 uc_api_lib_cmd_register
+  1f840 _new_command
+  1f850 _uc_con_to_lib
+  1f860 SetWanCfg
+  1f86c MESH_WAN
+  1f878 MESH_WAN_SET
+  1f888 GetWanCfg
+  1f894 MESH_WAN_GET
+  1f8a4 GetWanDetect
+  1f8b4 M_MESH_WAN
+  1f8c0 CMD_MESH_WAN_DETECT
+  1f8d4 GetWanStatus
+  1f8e4 CMD_MESH_WAN_STATUS
+  1f8f8 GetWanDiag
+  1f904 CMD_MESH_WAN_DIAG
+  1f918 IsWanLineUp
+  1f924 CMD_MESH_WAN_LINEUP_GET
+  1f93c GetTrafficInfo
+  1f94c CMD_MESH_WAN_TRAFFIC
+  1f964 GetWlanCfg
+  1f970 M_MESH_WLAN
+  1f97c CMD_MESH_WLAN_GET
+  1f990 SetWlanCfg
+  1f99c CMD_MESH_WLAN_SET
+  1f9b0 GetGuestCfg
+  1f9bc SetGuestCfg
+  1f9c8 GetWlRoaming
+  1f9d8 CMD_MESH_WLAN_ROAMING_GET
+  1f9f4 SetWlRoaming
+  1fa04 CMD_MESH_WLAN_ROAMING_SET
+  1fa20 GetIsSuilt
+  1fa2c M_MESH_BASIC
+  1fa3c CMD_MESH_BASIC_SUILT
+  1fa54 SetSysTimeZone
+  1fa64 CMD_MESH_BASIC_TZ_SET
+  1fa7c SetSysTime
+  1fa88 CMD_MESH_BASIC_TIME_SET
+  1faa0 SetLang
+  1faa8 CMD_MESH_BASIC_LANG_SET
+  1fac0 SetGuideDone
+  1fad0 CMD_MESH_BASIC_FAST_DONE
+  1faec GetMeshID
+  1faf8 CMD_MESH_BASIC_GET_MESH_ID
+  1fb14 DiagLogUpload
+  1fb24 CMD_MESH_BASIC_UPLOAD_LOG
+  1fb40 GetNodeStatus
+  1fb50 M_MESH_NODE
+  1fb5c CMD_MESH_NODE_BROWS
+  1fb70 GrantNodeAdd
+  1fb80 CMD_MESH_NODE_ADD
+  1fb94 GrantNodeDel
+  1fba4 CMD_MESH_NODE_DEL
+  1fbb8 SetNodeLocation
+  1fbc8 CMD_MESH_NODE_SET_LOCATION
+  1fbe4 SetLedStatus
+  1fbf4 CMD_MESH_NODE_SET_LED
+  1fc0c QuerryNodeRslt
+  1fc1c CMD_MESH_NODE_QUERY_RSLT
+  1fc38 MultiUpgradeStart
+  1fc4c CMD_MESH_NODE_MULTI_UPGRADE_START
+  1fc70 ManualNodeAdd
+  1fc80 CMD_MESH_NODE_MANUAL_ADD
+  1fc9c GetHostList
+  1fca8 M_MESH_HOSTS
+===== FILE firmware-src/RootFS-unpacked/lib/libcloud.so SYMBOLS =====
+    16: 0004ec08   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack
+    25: 0004f200   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__get_packed_size
+    84: 0004f264   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__get_packed_size
+   246: 0004ec7c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack
+   322: 0004e5b0   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack_to_buffer
+   388: 0004dd2c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__free_unpacked
+   427: 0004e624   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack_to_buffer
+   520: 00039dd4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+   610: 0004e1a8    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__unpack
+   627: 0004b5d4   172 FUNC    GLOBAL DEFAULT   10 rate_get_proto_to_cmd
+   701: 00030990   336 FUNC    GLOBAL DEFAULT   10 dev_traffic_upload_json_packer
+   779: 00050c30   228 FUNC    GLOBAL DEFAULT   10 access_user_operate_pbuf_to_cmd
+   810: 0004dcb8   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__free_unpacked
+   897: 00050af4   316 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_json
+   904: 0004d840    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__init
+   969: 0004e178    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__unpack
+   980: 00050d14   296 FUNC    GLOBAL DEFAULT   10 access_user_operate_json_to_cmd
+  1080: 00030ae0   368 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_traffic_upload
+  1244: 0004b350   644 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_proto
+  1262: 0004f7a4    28 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_pbuf
+  1341: 0008835c    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_info__descriptor
+  1364: 00088320    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_detail__descriptor
+  1429: 0004b7b0   436 FUNC    GLOBAL DEFAULT   10 rate_get_json_to_cmd
+  1442: 0004af7c   980 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_json
+  1493: 0004d878    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__init
+===== FILE firmware-src/RootFS-unpacked/lib/libcloud.so STRINGS =====
+   94de ccJSON_PrintUnformatted
+   94f6 ccJSON_Print
+   9503 strncmp
+   950f ccJSON_ParseWithOpts
+   9524 ccJSON_Parse
+   9531 json2str
+   953a strncpy
+   9542 struct2json
+   954e simple_struct2str
+   9560 json2struct
+   956c simple_str2struct
+   957e ccJSON_PrintArrayToBuffer
+   9598 ccJSON_PrintObjValueToBuffer
+   95b5 ccJSON_PrintValueToBuffer
+   95cf task_cb_example
+   95df get_global_disp_host
+   95f4 set_global_disp_host
+   9609 set_cloud_state
+   9619 get_cloud_state
+   9629 check_cloud_state
+   963b cloud_authkey_get
+   964d get_product_basic_info
+   9664 start_svr_task_proc
+   9678 set_global_disp_arg
+   968c free_global_disp_arg
+   96a1 set_query_version_stat
+   96b8 check_query_version_stat
+   96d1 set_query_multi_version_stat
+   96ee check_query_multi_version_stat
+   970d set_query_policy_version_stat
+   972b check_query_policy_version_stat
+   974b set_query_acc_info_stat
+   9763 check_query_acc_info_stat
+   977d set_update_acc_info_stat
+   9796 check_update_acc_info_stat
+   97b1 get_event_by_type
+   97c3 get_not_send_event_by_type
+   97de need_connect_svr
+   97ef event_queue_only_one
+   9804 confirm_cmd_from
+   9815 cmd_from_svr
+   9822 get_svr_session_id
+   9835 is_mesh
+   983d save_wan_stat
+   984b cmd_cloud_info_basic_check
+   9866 create_statistic_upload_timer
+   9884 upload_statistics
+   9896 start_dev_echo_timer
+   98ab send_echo_to_dev_svr
+   98c0 set_query_timer
+   98d0 check_query_timer
+   98e2 stop_query_timer
+   98f3 start_serv_timer
+   9904 try_connect_cloud
+   9916 start_upload_sys_basic_info
+   9932 cmd_mod_register_sta_get
+   994b cmd_disp_man_send
+   995d start_upload_device
+   9971 check_wan_stat
+   9980 reconn_delay_time
+   9992 sysinfo
+   999a srand
+   99a0 send_cmd_to_cloud
+   99b2 start_query_dev_config_time
+   99ce start_query_dev_marks
+   99e4 start_query_mesh_node
+   99fa check_echo_a_is_recive
+   9a11 start_upload_statistic
+   9a28 start_account_info_u
+   9a3d start_account_info_q
+   9a52 do_disp_task
+   9a5f cmd_cloud_echo_a
+   9a70 server_is_ready
+   9a80 event_queue_destory
+   9a94 downstream_list_destory
+   9aac cmd_cloud_router_config_push
+   9ac9 del_event
+   9ad3 set_realloc_sn
+   9ae2 alloc_new_event
+   9af2 do_event_svr_not_ready
+   9b09 do_event_account_info_u_failed
+   9b28 do_event_account_info_q_failed
+   9b47 do_event_speedtest_ing
+   9b5e do_event_upgradeq_ing
+   9b74 do_event_memcheck_not_enough
+   9b91 do_event_memcheck_fail
+   9ba8 do_event_policy_versionq_fail
+   9bc6 do_event_version_multiq_fail
+   9be3 do_event_data_port_failed
+   9bfd file_transfer_failed
+   9c12 do_event_data_port_ok
+   9c28 file_transfer_ready
+   9c3c do_event_cmd_fail
+   9c4e get_upgrade_fail
+   9c5f do_event_account_info_u_ok
+   9c7a cmd_disp_resp_send
+   9c8d do_event_account_info_q_ok
+   9ca8 cloud_init
+   9cb3 check_dns_resolv_timer
+   9cca m_ucloud_info_upload_register
+   9ce8 m_cloud_common_refresh
+   9cff get_current_policy_version
+   9d1a alloc_new_session
+   9d2c cloud_authkey_reset
+   9d40 vsnprintf
+   9d4a system
+   9d51 cloud_cmd_refresh
+   9d63 m_cloud_dispatcher_refresh
+   9d7e m_cloud_speedserver_refresh
+   9d9a m_cloud_devserver_refresh
+   9db4 m_cloud_upgradeserver_refresh
+   9dd2 start_cloud_auth
+   9de3 struct2tlv
+--
+   b3d8 vfprintf
+   b3e1 gettimeofday
+   b3ee localtime_r
+   b3fa socket
+   b401 connect
+   b409 create_unix_client
+   b41c create_udp_server
+   b42e bind
+   b433 check_and_create_dir
+   b448 strrchr
+   b450 opendir
+   b458 mkdir
+   b45e closedir
+   b467 create_unix_server
+   b47a unlink
+   b481 listen
+   b488 sockopt_keepalive
+   b49a setsockopt
+   b4a5 sockopt_reuseaddr
+   b4b7 uc_md5_init
+   b4c3 uc_md5_update
+   b4d1 uc_md5_final
+   b4de ecos_bytestokey
+   b4ee pkt_zlib_expand
+   b4fe uncompress
+   b509 pkt_zlib_compress
+   b51b AES_cbc_encrypt
+   b52b tlv2buff
+   b534 tlv_hexdump
+   b540 cmd_cloud_mesh_node_k
+   b556 common_business_exit
+   b56b cmd_wifi_basic_report
+   b581 cmd_cloud_account_info_u
+   b59a cmd_cloud_account_info_u_pbuf_parse
+   b5be cmd_cloud_account_info_k
+   b5d7 cmd_cloud_account_info_q
+   b5f0 cmd_cloud_account_info_q_pbuf_packer_t
+   b617 cmd_cloud_account_info_a
+   b630 cmd_cloud_mesh_node_a
+   b646 cmd_cloud_dev_upload_status_start
+   b668 cmd_cloud_dev_mark_list_a
+   b682 cmd_cloud_dev_config_time_a
+   b69e cmd_cloud_dev_config_a
+   b6b5 cmd_cloud_router_push_info_q
+   b6d2 cmd_cloud_clear_bind_account
+   b6ef cmd_cloud_info_dev_traffic_upload
+   b711 cmd_cloud_info_dev_device_upload
+   b732 cmd_cloud_info_mesh_node_q
+   b74d cmd_cloud_info_mesh_node_u
+   b768 cmd_cloud_info_dev_mark_list_u
+   b787 cmd_cloud_info_dev_config_q
+   b7a3 cmd_cloud_info_dev_config_u
+   b7bf cmd_cloud_info_node_status_upload
+   b7e1 cmd_cloud_info_upload_sys_basic_info
+   b806 tw_info
+   b80e cmd_cloud_info_account_info_q
+   b82c send_config_to_inner
+   b841 send_web_auth_config_time_to_inner
+   b864 send_config_time_to_inner
+   b87e send_mark_list_to_inner
+   b896 send_mesh_node_to_inner
+   b8ae send_start_upload_status_to_inner
+   b8d0 send_account_info_to_inner
+   b8eb node_status_upload_json_packer
+   b90a mark_list_u_json_packer
+   b922 mesh_node_u_json_packer
+   b93a dev_device_upload_json_packer
+   b958 config_time_a_parser
+   b96d dev_upload_status_start_parser
+   b98c mark_list_a_parser
+   b99f mesh_node_a_parser
+   b9b2 dev_traffic_upload_json_packer
+   b9d1 cmd_wifi_basic_set_ack_t
+   b9ea cloud_account__descriptor
+   ba04 cloud_account__get_packed_size
+   ba23 cloud_account__pack
+   ba37 cloud_account__unpack
+   ba4d cloud_account__free_unpacked
+   ba6a cloud_account__init
+   ba7e cloud_manage__init
+   ba91 cloud_info_common_ack__init
+   baad cloud_info_common_ack__free_unpacked
+   bad2 cloud_info_common_ack__descriptor
+   baf4 protobuf_c_message_free_unpacked
+   bb15 cloud_manage__free_unpacked
+   bb31 cloud_manage__descriptor
+   bb4a cloud_info_common_ack__unpack
+   bb68 protobuf_c_message_unpack
+   bb82 cloud_manage__unpack
+   bb97 cloud_info_common_ack__pack_to_buffer
+   bbbd protobuf_c_message_pack_to_buffer
+   bbdf cloud_manage__pack_to_buffer
+   bbfc cloud_account__pack_to_buffer
+   bc1a cloud_info_common_ack__pack
+   bc36 protobuf_c_message_pack
+   bc4e cloud_manage__pack
+   bc61 cloud_info_common_ack__get_packed_size
+   bc88 protobuf_c_message_get_packed_size
+   bcab cloud_manage__get_packed_size
+   bcc9 uc_break
+   bcd2 _uc_fd_zero
+   bcde _time_compare
+   bcec _uc_time_min_from_list
+   bd03 _uc_timenode_min_from_list
+   bd1e _uc_timespec_2_timeval
+   bd35 is_io_active
+   bd42 _clear_fd_set
+   bd50 _timeval_with_diff
+   bd63 _print_loop
+   bd6f _uc_timer_del
+   bd7d _uc_pending_cb
+   bd8c uc_loop_destroy
+   bd9c uc_default_loop
+   bdac _uc_add_to_pending
+   bdbf _uc_io_pending
+   bdce _uc_timer_add
+   bddc dump_timer_list
+--
+  65558 %[^=]=%s
+  65564 role
+  6556c /var/mib.mem
+  6557c listen local app connection error!
+  655a0 listen cgi connection error!
+  655c9 %s:%d: Assertion "%s" failed!
+  655ec %.0f
+  65608 u%04x
+  65610 null
+  65618 false
+  65620 true
+  656b6 $@cJSON_Ext.c
+  656c4 result len:%d, buffer len:%d
+  656e4 may overflow, %d, %d
+  656fc json name %s, doesn't exist!
+  6571c %s=%d
+  65724 %s=%s
+  6572c %s: 
+  65738 Object is a boolean with value false
+  65760 Object is a null
+  65778 Object is an array, try to fetch each value of its sub-item by yourself.
+  657c4 Object is an json object, try to fetch each value of its sub-item by yourself.
+  65814 Unsupported json type.
+  6582c Json has no member '%s'
+  6586c json2str
+  65878 dump_data
+  65884 json2struct
+  65890 ccJSON_PrintValueToBuffer
+  658ac ccJSON_PrintObjValueToBuffer
+  658cc ccJSON_PrintArrayToBuffer
+  658f0 CL_DISP_SRV
+  658fc CL_MONITOR_SRV
+  6590c CL_DEV_SRV
+  65918 CL_WEB_SRV
+  65924 CL_APP_SRV
+  65930 CL_UPGRADE_SRV
+  65940 CL_SPEEDTEST_SRV
+  65954 CL_APNS_SRV
+  65960 unknown
+  65968 cloud_entry.c
+  65978 wan stat %d
+  65988 NO sn..., going on.
+  659a0 No mac..., exist.
+  659b4 No version..., exist.
+  659cc No version's password..., exist.
+  659f0 Statistic upload timer is active
+  65a14 Try Get Wan Status
+  65a28 Failed to check wan stat!
+  65a44 Start echo to dev server..
+  65a60 Something wrong with the authing or connecting, we will retry.
+  65aa0 recive echo_a..
+  65ab4 eSTAT_NORMAL
+  65ac4 eSTAT_UNREGISTER
+  65ad8 Json parse failed..
+  65af0 ServerIPs
+  65afc Out of memory..
+  65b10 Dev server is not ready, do event task directly..
+  65b44 Speedtest server is not ready, do event task directly..
+  65b80 Upgrade server is not ready, do event task directly..
+  65bb8 Account info q failed, send err-code back..
+  65be8 Speedtest is doing, send error code back..
+  65c14 Upgradeq is doing, send error code back..
+  65c40 Memcheck fail,send error code back..
+  65c68 Query new policy version fail,send error code back..
+  65ca0 Query new version fail,send error code back..
+  65cd0 File data failed, send err-code back..
+  65cf8 File data success, send cmd back..
+  65d1c Recv a CMD_FAIL from server, send err-code back..
+  65d50 Account info u ok, send cmd back..
+  65d74 send error..
+  65d84 Account info q ok, send cmd back..
+  65da8 cloud.ip-com.com.cn
+  65dbc cloud.tenda.com.cn
+  65dd0 Start to connect server(%s)..
+  65df0 Add session(%p) node(%p) to session list(%p)
+  65e20 New server type(%d)?
+  65e38 Auth with sn(%s), soft ver(%s).
+  65e5c Auth with mac(%s), soft ver(%s).
+  65e80 Can't auth without sn and mac, this shouldn't happen.
+  65eb8 tenda%s
+  65ec0 %02x
+  65ec8 Bad server(type:%d) packet body.
+  65eec Something wrong with server(CL_DEV_SRV)...
+  65f18 DEV is closed, now close disp
+  65f38 Event queue is empty, svr timeout, close dev svr link..
+  65f74 Something wrong with server(%d)...
+  65f98 Auth server(%s) fail, del all events
+  65fc0 Connect server(%s) fail, del special events
+  65ff0 Server(%d) has already been started.
+  66018 dev is coming. so leaves disp silently.
+  66044 Out of memory.
+--
+  66268 iptables -D INPUT -s %s -p tcp --sport %u -j ACCEPT
+  6629c init timer delay connect svr %d!
+  662c0 Not server(%d), are you sure that you aren't in a wrong erea?
+  66300 It's map, clean enable, sn, mesh!
+  6632c Cloud manager is enable? %s
+  6634c route
+  66354 mesh
+  6635c Device type is? %s
+  66370 Basic set sn is "%s"
+  66388 Basic set mesh is "%s"
+  663a0 Basic set mac is "%s"
+  663b8 Basic set ver is "%s"
+  663d0 Basic set policy ver is "%s"
+  663f0 Basic set ver_pwd is "%s"
+  6640c Basic set product id "%s"
+  66428 cloud_global.router_info.enable %d
+  6644c devserver address to struct wrong.
+  66470 iptables -I INPUT -s %s -p tcp --sport %u -j ACCEPT
+  664a4 NULL != session->serv
+  664bc Router auth svr(%s) timeout!
+  664dc Recv a CMD_FAIL from %s
+  664f8 Allocate sn or mesh failed..
+  66518 Close this server connection for error.
+  66544 Try to connect the server(CL_DISP_SRV) later..
+  66574 Failed to connect to server(%s) retry, delay time %d.
+  665ac Can't connect to server(%s), the address is wrong or the network is bad.
+  665f8 Dispatcher will never stop.it may try resolved the dns.
+  66634 Connection %u.%u.%u.%u:%d, session %p,socket %d
+  66668 Start auth with server(%s).
+  66688 Connection %u.%u.%u.%u:%d (%s) failed, error:%s(%d)
+  666c0 Create dns resolve thread failed : %s(%d).
+  666ec Try resolving the dispserver host..
+  66714 Try resolving later...
+  6672c FAILED to get cloud address: %s
+  66750 SUCCESS to dns the cloud
+  6676c failure on parse dynamic configurations
+  66798 Server(%s) auth success, it is ready..
+  667c0 compress:%d,encrypt:%d,passive:%d,keep_alive_time:%d,upload_interval:%d
+  6680c Map upgrade itself!
+  66824 Mesh has no sn, should not go here!
+  6684c dumping %s:
+  66858 %02hhX
+  66868 config in tlv
+  66878 Get realloc mesh : %s.
+  66890 Get realloc sn : %s.
+  66934 create_statistic_upload_timer
+  66954 svr_auth_timer
+  66964 send_echo_to_dev_svr
+  6697c check_echo_a_is_recive
+  66994 cmd_cloud_echo_a
+  669a8 cmd_cloud_cmd_fail
+  669bc cmd_cloud_router_config_push
+  669dc server_close_abnormal
+  669f4 event_add_queue
+  66a04 alloc_new_event
+  66a14 start_event_task
+  66a28 do_event_svr_not_ready
+  66a40 do_event_data_port_failed
+  66a5c do_event_data_port_ok
+  66a74 do_event_cmd_fail
+  66a88 do_event_account_info_u_failed
+  66aa8 do_event_account_info_u_ok
+  66ac4 do_event_account_info_q_failed
+  66ae4 do_event_account_info_q_ok
+  66b00 do_event_speedtest_ing
+  66b18 do_event_upgradeq_ing
+  66b30 do_event_memcheck_not_enough
+  66b50 do_event_memcheck_fail
+  66b68 do_event_policy_versionq_fail
+  66b88 do_event_version_multiq_fail
+  66ba8 do_event_versionq_fail
+  66bc0 do_event_auth_svr_ok
+  66bd8 do_event_auth_svr_fail
+  66bf0 do_event_con_svr_fail
+  66c08 svr_ready_event_handle
+  66c20 check_wan_stat
+  66c30 save_wan_stat
+  66c40 check_dns_resolv_timer
+  66c58 cmd_cloud_info_basic_set
+  66c74 modify_cloud_manage_en_and_restart
+  66c98 do_disp_task
+  66ca8 cmd_where_server_a
+  66cec set_dev_pkt_cross
+  66d00 do_dev_task
+  66d0c cmd_cloud_info_basic_check
+  66d28 cloud_cmd_refresh
+  66d3c start_cloud_auth
+  66e20 cmd_dev_allocate_mesh_a
+  66e58 cmd_dev_allocate_sn_a
+  66e90 cmd_dev_encrypt_l
+  66ea4 cmd_dev_encrypt_a
+--
+  687c8 Create unix client,socket failed: %s
+  687f0 Create unix client,connect failed: %s
+  68818 create_udp_server socket failed!
+  6883c create_udp_server Can't bind to socket(ip=%u.%u.%u.%u, port=%d): %s
+  68884 Make dir %s failed(%d):%s.
+  688a0 Make dir %s for unix socket.
+  688c0 Check dir %s failed(%d):%s.
+  688e0 Create unix server,socket failed:%s
+  68908 Create unix server,bind failed: %s
+  6892c Create unix server,listen failed: %s
+  68954 can't set sockopt SO_KEEPALIVE to socket %d errno %s
+  6898c can't set sockopt TCP_KEEPIDLE to socket %d errno %s
+  689c4 can't set sockopt TCP_KEEPINTVL to socket %d errno %s
+  689fc can't set sockopt TCP_KEEPCNT to socket %d errno %s
+  68a40 create_unix_client
+  68a54 create_udp_server
+  68a68 create_unix_server
+  68a7c check_and_create_dir
+  68a94 sockopt_keepalive
+  68ab0 secure.c
+  68abc Expand error .
+  68acc Compress error : not enough memory.
+  68af4 Compress error : out buff is two small.
+  68b20 pkt_zlib_expand
+  68b30 pkt_zlib_compress
+  68b50 tlv.c
+  68b58 tlv_src
+  68b60 unsupport this type
+  68b78 wrong paramter tag or length
+  68ba0 tlv2struct
+  68bac tlv_hexdump
+  68bb8 struct2tlv
+  68bd0 CMD_CLOUD_ACCOUNT_INFO_U
+  68bec CMD_CLOUD_ACCOUNT_INFO_K
+  68c08 CMD_CLOUD_ACCOUNT_INFO_Q
+  68c24 CMD_CLOUD_ACCOUNT_INFO_A
+  68c40 CMD_CLOUD_MESH_NODE_A
+  68c58 CMD_CLOUD_MESH_NODE_K
+  68c70 CMD_CLOUD_DEV_UPLOAD_STATUS_START
+  68c94 CMD_CLOUD_DEV_MARK_LIST_A
+  68cb0 CMD_CLOUD_DEV_CONFIG_TIME_A
+  68ccc CMD_CLOUD_DEV_CONFIG_A
+  68ce4 CMD_CLOUD_ROUTER_PUSH_INFO_Q
+  68d04 CMD_CLOUD_ROUTER_INFO_UPLOAD_U
+  68d24 CMD_CLOUD_INFO_CLEAR_ACC
+  68d40 CMD_CLOUD_INFO_DEV_TRAFFIC_UPLOAD
+  68d64 CMD_CLOUD_INFO_DEV_DEVICE_UPLOAD
+  68d88 CMD_CLOUD_INFO_MESH_NODE_Q
+  68da4 CMD_CLOUD_INFO_MESH_NODE_U
+  68dc0 CMD_CLOUD_INFO_DEV_MARK_LIST_U
+  68de0 CMD_CLOUD_INFO_DEV_CONFIG_Q
+  68dfc CMD_CLOUD_INFO_DEV_CONFIG_U
+  68e18 CMD_CLOUD_INFO_NODE_STATUS_UPLOAD
+  68e3c CMD_CLOUD_INFO_UPLOAD_SYS_BASIC_INFO
+  68e64 {"accounts":"%s"}
+  68e78 uc_common_business.c
+  68e90 cmd_cloud_manage_enable_u parse error, out_buff_len is small.
+  68ed0 data_len %d
+  68ee0 more account config
+  68ef8 enable
+  68f00 ssid
+  68f08 wifi
+  68f10 wifi-5g
+  68f18 *out_buff %s, data_len %d
+  68f34 do upload router info task!
+  68f54 do clear account task!
+  68f6c update_need_clear!
+  68f80 i wanner clear accout!
+  68f98 test->account %s,data_len %d
+  68fb8 dev svr is not auth ok!
+  68fd4 serialNum
+  68fe0 fwversion
+  68fec ipaddr
+  68ff4 assoc_sn
+  69000 wl2g_rssi
+  6900c wl5g_rssi
+  69018 wired_en
+  69024 assoc_list
+  69030 timestamp
+  6903c location
+  6904c ethaddr_l
+  69058 ethaddr_r
+  69064 bssid_nband
+  69070 bssid_aband
+  69080 ethaddr
+  69088 access
+  69090 condtion_time
+  690a0 online
+  690a8 signal
+  690b0 uprate
+  690b8 downrate
+  690c4 device
+  690cc web_auth_timestamp
+  690e0 interval
+  690ec keep
+  690f4 mark_list
+  69100 remark
+  69108 alreadexist
+  69114 node
+  6911c [{"mac":"%s","up":%d,"down":%d}
+  6913c ,{"mac":"%s","up":%d,"down":%d}
+  69160 data %s, data_len %d
+  69178 json parse error!
+  6918c %s,%s
+  69194 no account data!
+  691a8 info->account %s
+  691bc The output buffer is too small, trying to expand it.
+  691f4 need param!
+  69204 test@yyb.com
+  69214 acc->account %s!
+  69228 accounts
+  69238 dtype
+  69240 USERS
+  69248 SHARED_USERS
+  69260 cmd_cloud_account_info_u_json_parse
+  69284 cmd_cloud_account_info_u_check
+  692a4 upload_router_info_task
+  692bc cmd_cloud_router_info_upload_u_json_packer
+  692e8 clear_bind_account_task
+  69300 cmd_cloud_clear_bind_account
+  69320 cmd_cloud_info_upload_sys_basic_info
+  69348 cmd_cloud_info_node_status_upload
+  6936c node_status_upload_json_packer
+  6938c cmd_cloud_info_dev_config_u
+  693a8 cmd_cloud_info_dev_config_q
+  693c4 config_time_a_parser
+  693dc cmd_cloud_info_dev_mark_list_u
+  693fc mark_list_u_json_packer
+  69414 mark_list_a_parser
+  69428 cmd_cloud_info_mesh_node_u
+  69444 mesh_node_u_json_packer
+  6945c mesh_node_a_parser
+  69470 dev_upload_status_start_parser
+  69490 cmd_cloud_info_mesh_node_q
+  694ac cmd_cloud_info_dev_device_upload
+  694d0 cmd_cloud_info_dev_traffic_upload
+  694f4 cmd_cloud_router_push_info_q
+  69514 cmd_cloud_router_push_info_q_json_packer
+  69540 cmd_cloud_account_info_a
+  6955c cmd_cloud_account_info_q_pbuf_packer_t
+  69584 cmd_cloud_account_info_k
+  695a0 cmd_cloud_account_info_u
+  695bc cmd_cloud_account_info_u_pbuf_parse
+  695e0 cmd_cloud_router_info_upload_u
+  69600 uc_m_cloud_manage.pb-c.c
+  6961c message->base.descriptor == &cloud_info_common_ack__descriptor
+  6965c message->base.descriptor == &cloud_manage__descriptor
+  69694 message->base.descriptor == &cloud_account__descriptor
+  696cc cloud_account
+  696dc CloudAccount
+  696ec cloud_manage
+  696fc CloudManage
+  69708 cloud_info_common_ack
+  69720 CloudInfoCommonAck
+  69734 err_code
+  69780 uc_m_cloud_info.c
+  69794 Creat json error..
+  697a8 uc_manage_enable
+  697bc in_buf_len %d
+  697cc restart cloud!
+  697e0 _cmd_cloud_info_common_ack_pbuf_pack
+  69808 cmd_cloud_info_manage_enable_get_json_packer
+  69838 cmd_cloud_info_manage_enable_set_ack
+  69860 cmd_cloud_info_manage_enable_set_json_packer
+  69890 cmd_cloud_info_manage_enable_set_pbuf_parser
+  698c0 cmd_cloud_info_manage_enable_set_json_parser
+  698f0 uc_ev.c
+  698f8 write fd=%d,read fd=%d
+  69910 io_list empty
+  69920 io_list:%d
+  69930 time_list empty
+  69944 io_list:%p 
+  69950 pending_list empty
+  69964 pending:%d event:%d
+  6997c Emputy timer list
+  69990 -----------------------
+  699a8 	 time list: %d-%d
+  699c0 _print_loop
+  699dc MbP?(null)
+  699e8 uc_m_common.c
+  699f8 %d, %s
+===== CONFSRV CALL CONTEXT =====
+===== GET HOST LIST FULL FUNCTION =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+00434f9c <confctl_get_host_list@@Base>:
+  434f9c:	3c1c0006 	lui	gp,0x6
+  434fa0:	279c21c4 	addiu	gp,gp,8644
+  434fa4:	0399e021 	addu	gp,gp,t9
+  434fa8:	27bdffb8 	addiu	sp,sp,-72
+  434fac:	afbf0044 	sw	ra,68(sp)
+  434fb0:	afbe0040 	sw	s8,64(sp)
+  434fb4:	afb0003c 	sw	s0,60(sp)
+  434fb8:	03a0f021 	move	s8,sp
+  434fbc:	afbc0010 	sw	gp,16(sp)
+  434fc0:	afc40048 	sw	a0,72(s8)
+  434fc4:	afc5004c 	sw	a1,76(s8)
+  434fc8:	afc60050 	sw	a2,80(s8)
+  434fcc:	afc70054 	sw	a3,84(s8)
+  434fd0:	8fc20054 	lw	v0,84(s8)
+  434fd4:	10400004 	beqz	v0,434fe8 <confctl_get_host_list@@Base+0x4c>
+  434fd8:	00000000 	nop
+  434fdc:	8fc20058 	lw	v0,88(s8)
+  434fe0:	1440000f 	bnez	v0,435020 <confctl_get_host_list@@Base+0x84>
+  434fe4:	00000000 	nop
+  434fe8:	8f82822c 	lw	v0,-32212(gp)
+  434fec:	2442237c 	addiu	v0,v0,9084
+  434ff0:	00402021 	move	a0,v0
+  434ff4:	8f82822c 	lw	v0,-32212(gp)
+  434ff8:	24452f98 	addiu	a1,v0,12184
+  434ffc:	24060793 	li	a2,1939
+  435000:	8f8287c8 	lw	v0,-30776(gp)
+  435004:	0040c821 	move	t9,v0
+  435008:	0320f809 	jalr	t9
+  43500c:	00000000 	nop
+  435010:	8fdc0010 	lw	gp,16(s8)
+  435014:	2402ffff 	li	v0,-1
+  435018:	100000fb 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  43501c:	00000000 	nop
+  435020:	8f8288d0 	lw	v0,-30512(gp)
+  435024:	afc20024 	sw	v0,36(s8)
+  435028:	afc00028 	sw	zero,40(s8)
+  43502c:	afc0002c 	sw	zero,44(s8)
+  435030:	afc00030 	sw	zero,48(s8)
+  435034:	afc00034 	sw	zero,52(s8)
+  435038:	afc0001c 	sw	zero,28(s8)
+  43503c:	8f82802c 	lw	v0,-32724(gp)
+  435040:	2442fdf0 	addiu	v0,v0,-528
+  435044:	8c42020c 	lw	v0,524(v0)
+  435048:	afc20030 	sw	v0,48(s8)
+  43504c:	8fc20030 	lw	v0,48(s8)
+  435050:	afc20020 	sw	v0,32(s8)
+  435054:	8fc20020 	lw	v0,32(s8)
+  435058:	00021080 	sll	v0,v0,0x2
+  43505c:	00402021 	move	a0,v0
+  435060:	8f828904 	lw	v0,-30460(gp)
+  435064:	0040c821 	move	t9,v0
+  435068:	0320f809 	jalr	t9
+  43506c:	00000000 	nop
+  435070:	8fdc0010 	lw	gp,16(s8)
+  435074:	afc20034 	sw	v0,52(s8)
+  435078:	8fc20034 	lw	v0,52(s8)
+  43507c:	14400016 	bnez	v0,4350d8 <confctl_get_host_list@@Base+0x13c>
+  435080:	00000000 	nop
+  435084:	8f82822c 	lw	v0,-32212(gp)
+  435088:	24502404 	addiu	s0,v0,9220
+  43508c:	8f828684 	lw	v0,-31100(gp)
+  435090:	0040c821 	move	t9,v0
+  435094:	0320f809 	jalr	t9
+  435098:	00000000 	nop
+  43509c:	8fdc0010 	lw	gp,16(s8)
+  4350a0:	8c420000 	lw	v0,0(v0)
+  4350a4:	02002021 	move	a0,s0
+  4350a8:	8f83822c 	lw	v1,-32212(gp)
+  4350ac:	24652f98 	addiu	a1,v1,12184
+  4350b0:	240607a3 	li	a2,1955
+  4350b4:	00403821 	move	a3,v0
+  4350b8:	8f8287c8 	lw	v0,-30776(gp)
+  4350bc:	0040c821 	move	t9,v0
+  4350c0:	0320f809 	jalr	t9
+  4350c4:	00000000 	nop
+  4350c8:	8fdc0010 	lw	gp,16(s8)
+  4350cc:	2402ffff 	li	v0,-1
+  4350d0:	100000cd 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4350d4:	00000000 	nop
+  4350d8:	8fc30034 	lw	v1,52(s8)
+  4350dc:	8fc20020 	lw	v0,32(s8)
+  4350e0:	00021080 	sll	v0,v0,0x2
+  4350e4:	00602021 	move	a0,v1
+  4350e8:	00002821 	move	a1,zero
+  4350ec:	00403021 	move	a2,v0
+  4350f0:	8f828930 	lw	v0,-30416(gp)
+  4350f4:	0040c821 	move	t9,v0
+  4350f8:	0320f809 	jalr	t9
+  4350fc:	00000000 	nop
+  435100:	8fdc0010 	lw	gp,16(s8)
+  435104:	8fc20020 	lw	v0,32(s8)
+  435108:	000210c0 	sll	v0,v0,0x3
+  43510c:	000218c0 	sll	v1,v0,0x3
+  435110:	00621023 	subu	v0,v1,v0
+  435114:	00402021 	move	a0,v0
+  435118:	8f828904 	lw	v0,-30460(gp)
+  43511c:	0040c821 	move	t9,v0
+  435120:	0320f809 	jalr	t9
+  435124:	00000000 	nop
+  435128:	8fdc0010 	lw	gp,16(s8)
+  43512c:	afc20018 	sw	v0,24(s8)
+  435130:	8fc20018 	lw	v0,24(s8)
+  435134:	1440001d 	bnez	v0,4351ac <confctl_get_host_list@@Base+0x210>
+  435138:	00000000 	nop
+  43513c:	8f82822c 	lw	v0,-32212(gp)
+  435140:	24502404 	addiu	s0,v0,9220
+  435144:	8f828684 	lw	v0,-31100(gp)
+  435148:	0040c821 	move	t9,v0
+  43514c:	0320f809 	jalr	t9
+  435150:	00000000 	nop
+  435154:	8fdc0010 	lw	gp,16(s8)
+  435158:	8c420000 	lw	v0,0(v0)
+  43515c:	02002021 	move	a0,s0
+  435160:	8f83822c 	lw	v1,-32212(gp)
+  435164:	24652f98 	addiu	a1,v1,12184
+  435168:	240607ab 	li	a2,1963
+  43516c:	00403821 	move	a3,v0
+  435170:	8f8287c8 	lw	v0,-30776(gp)
+  435174:	0040c821 	move	t9,v0
+  435178:	0320f809 	jalr	t9
+  43517c:	00000000 	nop
+  435180:	8fdc0010 	lw	gp,16(s8)
+  435184:	8fc20034 	lw	v0,52(s8)
+  435188:	00402021 	move	a0,v0
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  435190:	0040c821 	move	t9,v0
+  435194:	0320f809 	jalr	t9
+  435198:	00000000 	nop
+  43519c:	8fdc0010 	lw	gp,16(s8)
+  4351a0:	2402ffff 	li	v0,-1
+  4351a4:	10000098 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4351a8:	00000000 	nop
+  4351ac:	8fc20020 	lw	v0,32(s8)
+  4351b0:	000210c0 	sll	v0,v0,0x3
+  4351b4:	000218c0 	sll	v1,v0,0x3
+  4351b8:	00621023 	subu	v0,v1,v0
+  4351bc:	8fc40018 	lw	a0,24(s8)
+  4351c0:	00002821 	move	a1,zero
+  4351c4:	00403021 	move	a2,v0
+  4351c8:	8f828930 	lw	v0,-30416(gp)
+  4351cc:	0040c821 	move	t9,v0
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	nop
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	move	a0,v0
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	move	t9,v0
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	nop
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	nop
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	move	a0,v0
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	move	a0,v0
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	li	a2,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	move	a0,v0
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	move	t9,v0
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	nop
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+  4352c0:	27c20024 	addiu	v0,s8,36
+  4352c4:	00402021 	move	a0,v0
+  4352c8:	8f828700 	lw	v0,-30976(gp)
+  4352cc:	0040c821 	move	t9,v0
+  4352d0:	0320f809 	jalr	t9
+  4352d4:	00000000 	nop
+  4352d8:	8fdc0010 	lw	gp,16(s8)
+  4352dc:	00401821 	move	v1,v0
+  4352e0:	8fc20058 	lw	v0,88(s8)
+  4352e4:	ac430000 	sw	v1,0(v0)
+  4352e8:	8fc20058 	lw	v0,88(s8)
+  4352ec:	8c420000 	lw	v0,0(v0)
+  4352f0:	00402021 	move	a0,v0
+  4352f4:	8f828904 	lw	v0,-30460(gp)
+  4352f8:	0040c821 	move	t9,v0
+  4352fc:	0320f809 	jalr	t9
+  435300:	00000000 	nop
+  435304:	8fdc0010 	lw	gp,16(s8)
+  435308:	00401821 	move	v1,v0
+  43530c:	8fc20054 	lw	v0,84(s8)
+  435310:	ac430000 	sw	v1,0(v0)
+  435314:	8fc20054 	lw	v0,84(s8)
+  435318:	8c420000 	lw	v0,0(v0)
+  43531c:	14400017 	bnez	v0,43537c <confctl_get_host_list@@Base+0x3e0>
+  435320:	00000000 	nop
+  435324:	8f82822c 	lw	v0,-32212(gp)
+  435328:	24502404 	addiu	s0,v0,9220
+  43532c:	8f828684 	lw	v0,-31100(gp)
+  435330:	0040c821 	move	t9,v0
+  435334:	0320f809 	jalr	t9
+  435338:	00000000 	nop
+  43533c:	8fdc0010 	lw	gp,16(s8)
+  435340:	8c420000 	lw	v0,0(v0)
+  435344:	02002021 	move	a0,s0
+  435348:	8f83822c 	lw	v1,-32212(gp)
+  43534c:	24652f98 	addiu	a1,v1,12184
+  435350:	240607c2 	li	a2,1986
+  435354:	00403821 	move	a3,v0
+  435358:	8f8287c8 	lw	v0,-30776(gp)
+  43535c:	0040c821 	move	t9,v0
+  435360:	0320f809 	jalr	t9
+  435364:	00000000 	nop
+  435368:	8fdc0010 	lw	gp,16(s8)
+  43536c:	2402ffff 	li	v0,-1
+  435370:	afc2001c 	sw	v0,28(s8)
+  435374:	1000000e 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  435378:	00000000 	nop
+  43537c:	8fc20054 	lw	v0,84(s8)
+  435380:	8c420000 	lw	v0,0(v0)
+  435384:	27c30024 	addiu	v1,s8,36
+  435388:	00602021 	move	a0,v1
+  43538c:	00402821 	move	a1,v0
+  435390:	8f828740 	lw	v0,-30912(gp)
+  435394:	0040c821 	move	t9,v0
+  435398:	0320f809 	jalr	t9
+  43539c:	00000000 	nop
+  4353a0:	8fdc0010 	lw	gp,16(s8)
+  4353a4:	10000002 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  4353a8:	00000000 	nop
+  4353ac:	00000000 	nop
+  4353b0:	27c20024 	addiu	v0,s8,36
+  4353b4:	00402021 	move	a0,v0
+  4353b8:	8f82832c 	lw	v0,-31956(gp)
+  4353bc:	244239e4 	addiu	v0,v0,14820
+  4353c0:	0040c821 	move	t9,v0
+  4353c4:	0320f809 	jalr	t9
+  4353c8:	00000000 	nop
+  4353cc:	8fdc0010 	lw	gp,16(s8)
+  4353d0:	8fc20034 	lw	v0,52(s8)
+  4353d4:	00402021 	move	a0,v0
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353dc:	0040c821 	move	t9,v0
+  4353e0:	0320f809 	jalr	t9
+  4353e4:	00000000 	nop
+  4353e8:	8fdc0010 	lw	gp,16(s8)
+  4353ec:	8fc40018 	lw	a0,24(s8)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4353f4:	0040c821 	move	t9,v0
+  4353f8:	0320f809 	jalr	t9
+  4353fc:	00000000 	nop
+  435400:	8fdc0010 	lw	gp,16(s8)
+  435404:	8fc2001c 	lw	v0,28(s8)
+  435408:	03c0e821 	move	sp,s8
+  43540c:	8fbf0044 	lw	ra,68(sp)
+  435410:	8fbe0040 	lw	s8,64(sp)
+  435414:	8fb0003c 	lw	s0,60(sp)
+  435418:	27bd0048 	addiu	sp,sp,72
+  43541c:	03e00008 	jr	ra
+  435420:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== UCAPI TRAFFIC/RATE CALL CONTEXT =====
+    7554:	8fbf0024 	lw	ra,36(sp)
+    7558:	0002180a 	movz	v1,zero,v0
+    755c:	00601021 	move	v0,v1
+    7560:	03e00008 	jr	ra
+    7564:	27bd0028 	addiu	sp,sp,40
+
+00007568 <uc_api_m_cloud_info_send_dev_config_q@@Base>:
+    7568:	3c1c0003 	lui	gp,0x3
+    756c:	279c2968 	addiu	gp,gp,10600
+    7570:	0399e021 	addu	gp,gp,t9
+    7574:	27bdffd8 	addiu	sp,sp,-40
+    7578:	afbf0024 	sw	ra,36(sp)
+    757c:	afbc0018 	sw	gp,24(sp)
+    7580:	8f998238 	lw	t9,-32200(gp)
+    7584:	afa50010 	sw	a1,16(sp)
+    7588:	00803821 	move	a3,a0
+    758c:	24050008 	li	a1,8
+    7590:	2404000c 	li	a0,12
+    7594:	0320f809 	jalr	t9
+    7598:	24060018 	li	a2,24
+    759c:	2403ffff 	li	v1,-1
+    75a0:	8fbf0024 	lw	ra,36(sp)
+    75a4:	0002180a 	movz	v1,zero,v0
+    75a8:	00601021 	move	v0,v1
+    75ac:	03e00008 	jr	ra
+    75b0:	27bd0028 	addiu	sp,sp,40
+
+000075b4 <uc_api_m_cloud_info_send_dev_mark_list_u@@Base>:
+    75b4:	3c1c0003 	lui	gp,0x3
+    75b8:	279c291c 	addiu	gp,gp,10524
+    75bc:	0399e021 	addu	gp,gp,t9
+    75c0:	27bdffd8 	addiu	sp,sp,-40
+    75c4:	afbf0024 	sw	ra,36(sp)
+    75c8:	afbc0018 	sw	gp,24(sp)
+    75cc:	8f998238 	lw	t9,-32200(gp)
+    75d0:	afa50010 	sw	a1,16(sp)
+    75d4:	00803821 	move	a3,a0
+    75d8:	24050008 	li	a1,8
+    75dc:	2404000c 	li	a0,12
+    75e0:	0320f809 	jalr	t9
+    75e4:	24060016 	li	a2,22
+    75e8:	2403ffff 	li	v1,-1
+    75ec:	8fbf0024 	lw	ra,36(sp)
+    75f0:	0002180a 	movz	v1,zero,v0
+    75f4:	00601021 	move	v0,v1
+    75f8:	03e00008 	jr	ra
+    75fc:	27bd0028 	addiu	sp,sp,40
+
+00007600 <uc_api_m_cloud_info_send_node_status@@Base>:
+    7600:	3c1c0003 	lui	gp,0x3
+    7604:	279c28d0 	addiu	gp,gp,10448
+    7608:	0399e021 	addu	gp,gp,t9
+    760c:	27bdffd8 	addiu	sp,sp,-40
+    7610:	afbf0024 	sw	ra,36(sp)
+    7614:	afbc0018 	sw	gp,24(sp)
+    7618:	8f998238 	lw	t9,-32200(gp)
+    761c:	afa50010 	sw	a1,16(sp)
+    7620:	00803821 	move	a3,a0
+    7624:	24050008 	li	a1,8
+    7628:	2404000c 	li	a0,12
+    762c:	0320f809 	jalr	t9
+    7630:	2406001b 	li	a2,27
+    7634:	2403ffff 	li	v1,-1
+    7638:	8fbf0024 	lw	ra,36(sp)
+    763c:	0002180a 	movz	v1,zero,v0
+    7640:	00601021 	move	v0,v1
+    7644:	03e00008 	jr	ra
+    7648:	27bd0028 	addiu	sp,sp,40
+
+0000764c <uc_api_m_cloud_info_send_dev_device@@Base>:
+    764c:	3c1c0003 	lui	gp,0x3
+    7650:	279c2884 	addiu	gp,gp,10372
+    7654:	0399e021 	addu	gp,gp,t9
+    7658:	27bdffd8 	addiu	sp,sp,-40
+    765c:	afbf0024 	sw	ra,36(sp)
+    7660:	afbc0018 	sw	gp,24(sp)
+    7664:	8f998238 	lw	t9,-32200(gp)
+    7668:	afa50010 	sw	a1,16(sp)
+    766c:	00803821 	move	a3,a0
+    7670:	24050008 	li	a1,8
+    7674:	2404000c 	li	a0,12
+    7678:	0320f809 	jalr	t9
+    767c:	24060013 	li	a2,19
+    7680:	2403ffff 	li	v1,-1
+    7684:	8fbf0024 	lw	ra,36(sp)
+    7688:	0002180a 	movz	v1,zero,v0
+    768c:	00601021 	move	v0,v1
+    7690:	03e00008 	jr	ra
+    7694:	27bd0028 	addiu	sp,sp,40
+
+00007698 <uc_api_m_cloud_info_send_dev_traffic@@Base>:
+    7698:	3c1c0003 	lui	gp,0x3
+    769c:	279c2838 	addiu	gp,gp,10296
+    76a0:	0399e021 	addu	gp,gp,t9
+    76a4:	27bdffd8 	addiu	sp,sp,-40
+    76a8:	afbf0024 	sw	ra,36(sp)
+    76ac:	afbc0018 	sw	gp,24(sp)
+    76b0:	8f998238 	lw	t9,-32200(gp)
+    76b4:	afa50010 	sw	a1,16(sp)
+    76b8:	00803821 	move	a3,a0
+    76bc:	24050008 	li	a1,8
+    76c0:	2404000c 	li	a0,12
+    76c4:	0320f809 	jalr	t9
+    76c8:	2406000c 	li	a2,12
+    76cc:	2403ffff 	li	v1,-1
+    76d0:	8fbf0024 	lw	ra,36(sp)
+    76d4:	0002180a 	movz	v1,zero,v0
+    76d8:	00601021 	move	v0,v1
+    76dc:	03e00008 	jr	ra
+    76e0:	27bd0028 	addiu	sp,sp,40
+
+000076e4 <uc_api_m_cloud_info_mesh_node_u@@Base>:
+    76e4:	3c1c0003 	lui	gp,0x3
+    76e8:	279c27ec 	addiu	gp,gp,10220
+    76ec:	0399e021 	addu	gp,gp,t9
+    76f0:	27bdffd8 	addiu	sp,sp,-40
+    76f4:	afbf0024 	sw	ra,36(sp)
+    76f8:	afbc0018 	sw	gp,24(sp)
+    76fc:	8f998238 	lw	t9,-32200(gp)
+    7700:	afa50010 	sw	a1,16(sp)
+    7704:	00803821 	move	a3,a0
+    7708:	24050008 	li	a1,8
+    770c:	2404000c 	li	a0,12
+    7710:	0320f809 	jalr	t9
+    7714:	2406000f 	li	a2,15
+    7718:	2403ffff 	li	v1,-1
+    771c:	8fbf0024 	lw	ra,36(sp)
+    7720:	0002180a 	movz	v1,zero,v0
+    7724:	00601021 	move	v0,v1
+    7728:	03e00008 	jr	ra
+    772c:	27bd0028 	addiu	sp,sp,40
+
+00007730 <uc_api_m_cloud_info_send_force_upgrade@@Base>:
+    7730:	3c1c0003 	lui	gp,0x3
+    7734:	279c27a0 	addiu	gp,gp,10144
+    7738:	0399e021 	addu	gp,gp,t9
+    773c:	27bdffd0 	addiu	sp,sp,-48
+    7740:	afbf002c 	sw	ra,44(sp)
+    7744:	afbc0018 	sw	gp,24(sp)
+    7748:	8f998238 	lw	t9,-32200(gp)
+    774c:	27a20020 	addiu	v0,sp,32
+    7750:	afa40020 	sw	a0,32(sp)
+    7754:	afa20010 	sw	v0,16(sp)
+    7758:	2404000c 	li	a0,12
+    775c:	24050008 	li	a1,8
+    7760:	24060011 	li	a2,17
+    7764:	0320f809 	jalr	t9
+    7768:	24070004 	li	a3,4
+    776c:	2403ffff 	li	v1,-1
+    7770:	8fbf002c 	lw	ra,44(sp)
+    7774:	0002180a 	movz	v1,zero,v0
+    7778:	00601021 	move	v0,v1
+    777c:	03e00008 	jr	ra
+    7780:	27bd0030 	addiu	sp,sp,48
+
+00007784 <uc_api_m_cloud_info_send_clear_account@@Base>:
+    7784:	3c1c0003 	lui	gp,0x3
+    7788:	279c274c 	addiu	gp,gp,10060
+    778c:	0399e021 	addu	gp,gp,t9
+    7790:	27bdffd8 	addiu	sp,sp,-40
+    7794:	afbf0024 	sw	ra,36(sp)
+    7798:	afbc0018 	sw	gp,24(sp)
+    779c:	8f998238 	lw	t9,-32200(gp)
+    77a0:	afa00010 	sw	zero,16(sp)
+    77a4:	2404000c 	li	a0,12
+    77a8:	24050008 	li	a1,8
+    77ac:	24060008 	li	a2,8
+    77b0:	0320f809 	jalr	t9
+    77b4:	00003821 	move	a3,zero
+    77b8:	2403ffff 	li	v1,-1
+    77bc:	8fbf0024 	lw	ra,36(sp)
+    77c0:	0002180a 	movz	v1,zero,v0
+    77c4:	00601021 	move	v0,v1
+    77c8:	03e00008 	jr	ra
+    77cc:	27bd0028 	addiu	sp,sp,40
+
+000077d0 <uc_api_m_rub_net_push_strange_host_info@@Base>:
+    77d0:	3c1c0003 	lui	gp,0x3
+    77d4:	279c2700 	addiu	gp,gp,9984
+    77d8:	0399e021 	addu	gp,gp,t9
+    77dc:	27bdffd8 	addiu	sp,sp,-40
+--
+    b540:	8f998070 	lw	t9,-32656(gp)
+    b544:	0320f809 	jalr	t9
+    b548:	02202821 	move	a1,s1
+    b54c:	8fbc0010 	lw	gp,16(sp)
+    b550:	26b50001 	addiu	s5,s5,1
+    b554:	8e420018 	lw	v0,24(s2)
+    b558:	02a2102b 	sltu	v0,s5,v0
+    b55c:	1440ff8c 	bnez	v0,b390 <protobuf_c_message_free_unpacked@@Base+0x9c>
+    b560:	24030030 	li	v1,48
+    b564:	8f93802c 	lw	s3,-32724(gp)
+    b568:	00009021 	move	s2,zero
+    b56c:	10000008 	b	b590 <protobuf_c_message_free_unpacked@@Base+0x29c>
+    b570:	2673a6d4 	addiu	s3,s3,-22828
+    b574:	00a32821 	addu	a1,a1,v1
+    b578:	8ca5000c 	lw	a1,12(a1)
+    b57c:	0260c821 	move	t9,s3
+    b580:	0320f809 	jalr	t9
+    b584:	02202021 	move	a0,s1
+    b588:	8fbc0010 	lw	gp,16(sp)
+    b58c:	26520001 	addiu	s2,s2,1
+    b590:	8e020004 	lw	v0,4(s0)
+    b594:	00121900 	sll	v1,s2,0x4
+    b598:	0242102b 	sltu	v0,s2,v0
+    b59c:	1440fff5 	bnez	v0,b574 <protobuf_c_message_free_unpacked@@Base+0x280>
+    b5a0:	8e050008 	lw	a1,8(s0)
+    b5a4:	10a00005 	beqz	a1,b5bc <protobuf_c_message_free_unpacked@@Base+0x2c8>
+    b5a8:	8f99802c 	lw	t9,-32724(gp)
+    b5ac:	2739a6d4 	addiu	t9,t9,-22828
+    b5b0:	0320f809 	jalr	t9
+    b5b4:	02202021 	move	a0,s1
+    b5b8:	8fbc0010 	lw	gp,16(sp)
+    b5bc:	8f99802c 	lw	t9,-32724(gp)
+    b5c0:	02202021 	move	a0,s1
+    b5c4:	02002821 	move	a1,s0
+    b5c8:	8fbf003c 	lw	ra,60(sp)
+    b5cc:	8fbe0038 	lw	s8,56(sp)
+    b5d0:	8fb70034 	lw	s7,52(sp)
+    b5d4:	8fb60030 	lw	s6,48(sp)
+    b5d8:	8fb5002c 	lw	s5,44(sp)
+    b5dc:	8fb40028 	lw	s4,40(sp)
+    b5e0:	8fb30024 	lw	s3,36(sp)
+    b5e4:	8fb20020 	lw	s2,32(sp)
+    b5e8:	8fb1001c 	lw	s1,28(sp)
+    b5ec:	8fb00018 	lw	s0,24(sp)
+    b5f0:	2739a6d4 	addiu	t9,t9,-22828
+    b5f4:	03200008 	jr	t9
+    b5f8:	27bd0040 	addiu	sp,sp,64
+    b5fc:	8fbf003c 	lw	ra,60(sp)
+    b600:	8fbe0038 	lw	s8,56(sp)
+    b604:	8fb70034 	lw	s7,52(sp)
+    b608:	8fb60030 	lw	s6,48(sp)
+    b60c:	8fb5002c 	lw	s5,44(sp)
+    b610:	8fb40028 	lw	s4,40(sp)
+    b614:	8fb30024 	lw	s3,36(sp)
+    b618:	8fb20020 	lw	s2,32(sp)
+    b61c:	8fb1001c 	lw	s1,28(sp)
+    b620:	8fb00018 	lw	s0,24(sp)
+    b624:	03e00008 	jr	ra
+    b628:	27bd0040 	addiu	sp,sp,64
+    b62c:	3c1c0003 	lui	gp,0x3
+    b630:	279ce8a4 	addiu	gp,gp,-5980
+    b634:	0399e021 	addu	gp,gp,t9
+    b638:	27bdffe0 	addiu	sp,sp,-32
+    b63c:	afbf001c 	sw	ra,28(sp)
+    b640:	afbc0010 	sw	gp,16(sp)
+    b644:	2c820011 	sltiu	v0,a0,17
+    b648:	5040000c 	beqzl	v0,b67c <protobuf_c_message_free_unpacked@@Base+0x388>
+    b64c:	8f848024 	lw	a0,-32732(gp)
+    b650:	24020001 	li	v0,1
+    b654:	3c030001 	lui	v1,0x1
+    b658:	00822004 	sllv	a0,v0,a0
+    b65c:	346374c7 	ori	v1,v1,0x74c7
+    b660:	00831824 	and	v1,a0,v1
+    b664:	1460000c 	bnez	v1,b698 <protobuf_c_message_free_unpacked@@Base+0x3a4>
+    b668:	24020004 	li	v0,4
+    b66c:	30848b38 	andi	a0,a0,0x8b38
+    b670:	14800009 	bnez	a0,b698 <protobuf_c_message_free_unpacked@@Base+0x3a4>
+    b674:	24020008 	li	v0,8
+    b678:	8f848024 	lw	a0,-32732(gp)
+    b67c:	8f868024 	lw	a2,-32732(gp)
+    b680:	8f998398 	lw	t9,-31848(gp)
+    b684:	24840348 	addiu	a0,a0,840
+    b688:	24c603d0 	addiu	a2,a2,976
+    b68c:	0320f809 	jalr	t9
+    b690:	24050488 	li	a1,1160
+    b694:	00001021 	move	v0,zero
+    b698:	8fbf001c 	lw	ra,28(sp)
+    b69c:	03e00008 	jr	ra
+    b6a0:	27bd0020 	addiu	sp,sp,32
+
+0000b6a4 <protobuf_c_service_generated_init@@Base>:
+    b6a4:	3c1c0003 	lui	gp,0x3
+    b6a8:	279ce82c 	addiu	gp,gp,-6100
+    b6ac:	0399e021 	addu	gp,gp,t9
+    b6b0:	27bdffd8 	addiu	sp,sp,-40
+    b6b4:	afbf0024 	sw	ra,36(sp)
+    b6b8:	afb20020 	sw	s2,32(sp)
+    b6bc:	afb1001c 	sw	s1,28(sp)
+    b6c0:	afb00018 	sw	s0,24(sp)
+    b6c4:	afbc0010 	sw	gp,16(sp)
+    b6c8:	8ca20000 	lw	v0,0(a1)
+    b6cc:	3c031415 	lui	v1,0x1415
+    b6d0:	34639bc3 	ori	v1,v1,0x9bc3
+    b6d4:	00a08821 	move	s1,a1
+    b6d8:	00808021 	move	s0,a0
+    b6dc:	10430009 	beq	v0,v1,b704 <protobuf_c_service_generated_init@@Base+0x60>
+    b6e0:	00c09021 	move	s2,a2
+    b6e4:	8f848024 	lw	a0,-32732(gp)
+    b6e8:	8f868024 	lw	a2,-32732(gp)
+    b6ec:	8f998398 	lw	t9,-31848(gp)
+    b6f0:	24840348 	addiu	a0,a0,840
+    b6f4:	24c603d4 	addiu	a2,a2,980
+    b6f8:	0320f809 	jalr	t9
+    b6fc:	24050d26 	li	a1,3366
+    b700:	8fbc0010 	lw	gp,16(sp)
+    b704:	8f8280e0 	lw	v0,-32544(gp)
+    b708:	8e260014 	lw	a2,20(s1)
+    b70c:	ae120008 	sw	s2,8(s0)
+    b710:	ae110000 	sw	s1,0(s0)
+    b714:	ae020004 	sw	v0,4(s0)
+    b718:	2604000c 	addiu	a0,s0,12
+    b71c:	8f9981dc 	lw	t9,-32292(gp)
+    b720:	8fbf0024 	lw	ra,36(sp)
+    b724:	8fb20020 	lw	s2,32(sp)
+    b728:	8fb1001c 	lw	s1,28(sp)
+    b72c:	8fb00018 	lw	s0,24(sp)
+    b730:	00063080 	sll	a2,a2,0x2
+    b734:	00002821 	move	a1,zero
+    b738:	03200008 	jr	t9
+    b73c:	27bd0028 	addiu	sp,sp,40
+    b740:	3c1c0003 	lui	gp,0x3
+    b744:	279ce790 	addiu	gp,gp,-6256
+    b748:	0399e021 	addu	gp,gp,t9
+    b74c:	8f998078 	lw	t9,-32648(gp)
+    b750:	00a02021 	move	a0,a1
+    b754:	03200008 	jr	t9
+    b758:	00000000 	nop
+    b75c:	3c1c0003 	lui	gp,0x3
+    b760:	279ce774 	addiu	gp,gp,-6284
+    b764:	0399e021 	addu	gp,gp,t9
+    b768:	8f998314 	lw	t9,-31980(gp)
+    b76c:	00a02021 	move	a0,a1
+    b770:	03200008 	jr	t9
+    b774:	00000000 	nop
+    b778:	3c1c0003 	lui	gp,0x3
+    b77c:	279ce758 	addiu	gp,gp,-6312
+    b780:	0399e021 	addu	gp,gp,t9
+    b784:	27bdffb8 	addiu	sp,sp,-72
+    b788:	afbf0044 	sw	ra,68(sp)
+    b78c:	afbe0040 	sw	s8,64(sp)
+    b790:	afb7003c 	sw	s7,60(sp)
+    b794:	afb60038 	sw	s6,56(sp)
+    b798:	afb50034 	sw	s5,52(sp)
+    b79c:	afb40030 	sw	s4,48(sp)
+    b7a0:	afb3002c 	sw	s3,44(sp)
+    b7a4:	afb20028 	sw	s2,40(sp)
+    b7a8:	afb10024 	sw	s1,36(sp)
+    b7ac:	afb00020 	sw	s0,32(sp)
+    b7b0:	afbc0010 	sw	gp,16(sp)
+    b7b4:	8ca20000 	lw	v0,0(a1)
+    b7b8:	00a08821 	move	s1,a1
+    b7bc:	0080a821 	move	s5,a0
+    b7c0:	00c0a021 	move	s4,a2
+    b7c4:	8c50001c 	lw	s0,28(v0)
+    b7c8:	1000009b 	b	ba38 <protobuf_c_service_generated_init@@Base+0x394>
+    b7cc:	afa00018 	sw	zero,24(sp)
+    b7d0:	24040002 	li	a0,2
+    b7d4:	14640043 	bne	v1,a0,b8e4 <protobuf_c_service_generated_init@@Base+0x240>
+    b7d8:	02009021 	move	s2,s0
+    b7dc:	8e130010 	lw	s3,16(s0)
+    b7e0:	02b39021 	addu	s2,s5,s3
+    b7e4:	8e420000 	lw	v0,0(s2)
+    b7e8:	1040008f 	beqz	v0,ba28 <protobuf_c_service_generated_init@@Base+0x384>
+    b7ec:	8e160014 	lw	s6,20(s0)
+    b7f0:	02339821 	addu	s3,s1,s3
+    b7f4:	8e630000 	lw	v1,0(s3)
+    b7f8:	0236b821 	addu	s7,s1,s6
+    b7fc:	10600034 	beqz	v1,b8d0 <protobuf_c_service_generated_init@@Base+0x22c>
+    b800:	02b6b021 	addu	s6,s5,s6
+    b804:	8f99802c 	lw	t9,-32724(gp)
+    b808:	2739b62c 	addiu	t9,t9,-18900
+    b80c:	0320f809 	jalr	t9
+    b810:	8e04000c 	lw	a0,12(s0)
+    b814:	8e440000 	lw	a0,0(s2)
+    b818:	8e650000 	lw	a1,0(s3)
+    b81c:	8e990000 	lw	t9,0(s4)
+    b820:	afa2001c 	sw	v0,28(sp)
+    b824:	00a42821 	addu	a1,a1,a0
+    b828:	70452802 	mul	a1,v0,a1
+    b82c:	0320f809 	jalr	t9
+    b830:	8e840008 	lw	a0,8(s4)
+    b834:	8fbc0010 	lw	gp,16(sp)
+    b838:	0040f021 	move	s8,v0
+    b83c:	10400086 	beqz	v0,ba58 <protobuf_c_service_generated_init@@Base+0x3b4>
+    b840:	8fa3001c 	lw	v1,28(sp)
+    b844:	8e460000 	lw	a2,0(s2)
+    b848:	8f998334 	lw	t9,-31948(gp)
+    b84c:	8ec50000 	lw	a1,0(s6)
+    b850:	70663002 	mul	a2,v1,a2
+    b854:	0320f809 	jalr	t9
+    b858:	00402021 	move	a0,v0
+    b85c:	8fa3001c 	lw	v1,28(sp)
+    b860:	8e440000 	lw	a0,0(s2)
+    b864:	8e660000 	lw	a2,0(s3)
+    b868:	8fbc0010 	lw	gp,16(sp)
+    b86c:	70641002 	mul	v0,v1,a0
+    b870:	8ee50000 	lw	a1,0(s7)
+    b874:	8f998334 	lw	t9,-31948(gp)
+    b878:	70663002 	mul	a2,v1,a2
+    b87c:	0320f809 	jalr	t9
+    b880:	005e2021 	addu	a0,v0,s8
+    b884:	8fbc0010 	lw	gp,16(sp)
+    b888:	8ee50000 	lw	a1,0(s7)
+    b88c:	8f99802c 	lw	t9,-32724(gp)
+    b890:	2739a6d4 	addiu	t9,t9,-22828
+    b894:	0320f809 	jalr	t9
+    b898:	02802021 	move	a0,s4
+    b89c:	8fbc0010 	lw	gp,16(sp)
+    b8a0:	8ec50000 	lw	a1,0(s6)
+    b8a4:	8f99802c 	lw	t9,-32724(gp)
+    b8a8:	2739a6d4 	addiu	t9,t9,-22828
+    b8ac:	0320f809 	jalr	t9
+    b8b0:	02802021 	move	a0,s4
+    b8b4:	8e630000 	lw	v1,0(s3)
+    b8b8:	8e420000 	lw	v0,0(s2)
+    b8bc:	8fbc0010 	lw	gp,16(sp)
+    b8c0:	aefe0000 	sw	s8,0(s7)
+    b8c4:	00621021 	addu	v0,v1,v0
+    b8c8:	10000004 	b	b8dc <protobuf_c_service_generated_init@@Base+0x238>
+    b8cc:	ae620000 	sw	v0,0(s3)
+    b8d0:	8ec30000 	lw	v1,0(s6)
+    b8d4:	ae620000 	sw	v0,0(s3)
+    b8d8:	aee30000 	sw	v1,0(s7)
+    b8dc:	10000051 	b	ba24 <protobuf_c_service_generated_init@@Base+0x380>
+    b8e0:	ae400000 	sw	zero,0(s2)
+    b8e4:	24040001 	li	a0,1
+    b8e8:	54640050 	bnel	v1,a0,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    b8ec:	8fa20018 	lw	v0,24(sp)
+    b8f0:	8e030020 	lw	v1,32(s0)
+    b8f4:	8e160010 	lw	s6,16(s0)
+    b8f8:	30630004 	andi	v1,v1,0x4
+    b8fc:	0236b821 	addu	s7,s1,s6
+    b900:	10600010 	beqz	v1,b944 <protobuf_c_service_generated_init@@Base+0x2a0>
+    b904:	02b6b021 	addu	s6,s5,s6
+    b908:	8ee30000 	lw	v1,0(s7)
+    b90c:	54600047 	bnezl	v1,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    b910:	8fa20018 	lw	v0,24(sp)
+    b914:	8f99802c 	lw	t9,-32724(gp)
+    b918:	8c440024 	lw	a0,36(v0)
+    b91c:	8c450028 	lw	a1,40(v0)
+    b920:	2739a9d0 	addiu	t9,t9,-22064
+    b924:	0320f809 	jalr	t9
+    b928:	8ec60000 	lw	a2,0(s6)
+    b92c:	8e230000 	lw	v1,0(s1)
+    b930:	8fbc0010 	lw	gp,16(sp)
+    b934:	8c72001c 	lw	s2,28(v1)
+    b938:	24030030 	li	v1,48
+    b93c:	70432002 	mul	a0,v0,v1
+    b940:	00929021 	addu	s2,a0,s2
+    b944:	8e530014 	lw	s3,20(s2)
+    b948:	8e44000c 	lw	a0,12(s2)
+    b94c:	2405000f 	li	a1,15
+    b950:	02331821 	addu	v1,s1,s3
+    b954:	8e42001c 	lw	v0,28(s2)
+    b958:	10850015 	beq	a0,a1,b9b0 <protobuf_c_service_generated_init@@Base+0x30c>
+    b95c:	02b39821 	addu	s3,s5,s3
+    b960:	24190010 	li	t9,16
+    b964:	10990005 	beq	a0,t9,b97c <protobuf_c_service_generated_init@@Base+0x2d8>
+    b968:	2405000e 	li	a1,14
+    b96c:	54850024 	bnel	a0,a1,ba00 <protobuf_c_service_generated_init@@Base+0x35c>
+    b970:	8ec20000 	lw	v0,0(s6)
+    b974:	1000001c 	b	b9e8 <protobuf_c_service_generated_init@@Base+0x344>
+    b978:	8e660000 	lw	a2,0(s3)
+    b97c:	8e620000 	lw	v0,0(s3)
+    b980:	10400029 	beqz	v0,ba28 <protobuf_c_service_generated_init@@Base+0x384>
+    b984:	8c650000 	lw	a1,0(v1)
+    b988:	10a00040 	beqz	a1,ba8c <protobuf_c_service_generated_init@@Base+0x3e8>
+    b98c:	8f99802c 	lw	t9,-32724(gp)
+    b990:	00402021 	move	a0,v0
+    b994:	2739b778 	addiu	t9,t9,-18568
+    b998:	0320f809 	jalr	t9
+    b99c:	02803021 	move	a2,s4
+    b9a0:	14400021 	bnez	v0,ba28 <protobuf_c_service_generated_init@@Base+0x384>
+    b9a4:	8fbc0010 	lw	gp,16(sp)
+    b9a8:	1000002c 	b	ba5c <protobuf_c_service_generated_init@@Base+0x3b8>
+    b9ac:	00001021 	move	v0,zero
+    b9b0:	8e660004 	lw	a2,4(s3)
+    b9b4:	10c0001c 	beqz	a2,ba28 <protobuf_c_service_generated_init@@Base+0x384>
+    b9b8:	8c650004 	lw	a1,4(v1)
+    b9bc:	10400004 	beqz	v0,b9d0 <protobuf_c_service_generated_init@@Base+0x32c>
+    b9c0:	00000000 	nop
+    b9c4:	8c470004 	lw	a3,4(v0)
+    b9c8:	50c70018 	beql	a2,a3,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    b9cc:	8fa20018 	lw	v0,24(sp)
+    b9d0:	10a0002f 	beqz	a1,ba90 <protobuf_c_service_generated_init@@Base+0x3ec>
+    b9d4:	8f99802c 	lw	t9,-32724(gp)
+    b9d8:	50400014 	beqzl	v0,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    b9dc:	8fa20018 	lw	v0,24(sp)
+    b9e0:	10000003 	b	b9f0 <protobuf_c_service_generated_init@@Base+0x34c>
+    b9e4:	8c420004 	lw	v0,4(v0)
+    b9e8:	10c2000f 	beq	a2,v0,ba28 <protobuf_c_service_generated_init@@Base+0x384>
+    b9ec:	8c650000 	lw	a1,0(v1)
+    b9f0:	14a2000e 	bne	a1,v0,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    b9f4:	8fa20018 	lw	v0,24(sp)
+    b9f8:	10000025 	b	ba90 <protobuf_c_service_generated_init@@Base+0x3ec>
+    b9fc:	8f99802c 	lw	t9,-32724(gp)
+    ba00:	1040000a 	beqz	v0,ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    ba04:	8fa20018 	lw	v0,24(sp)
+    ba08:	8ee20000 	lw	v0,0(s7)
+    ba0c:	10400020 	beqz	v0,ba90 <protobuf_c_service_generated_init@@Base+0x3ec>
+    ba10:	8f99802c 	lw	t9,-32724(gp)
+    ba14:	10000005 	b	ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    ba18:	8fa20018 	lw	v0,24(sp)
+    ba1c:	8ec20000 	lw	v0,0(s6)
+    ba20:	aee20000 	sw	v0,0(s7)
+    ba24:	aec00000 	sw	zero,0(s6)
+    ba28:	8fa20018 	lw	v0,24(sp)
+    ba2c:	26100030 	addiu	s0,s0,48
+    ba30:	24420001 	addiu	v0,v0,1
+    ba34:	afa20018 	sw	v0,24(sp)
+    ba38:	8e220000 	lw	v0,0(s1)
+    ba3c:	8fa40018 	lw	a0,24(sp)
+    ba40:	8c430018 	lw	v1,24(v0)
+    ba44:	0083182b 	sltu	v1,a0,v1
+    ba48:	5460ff61 	bnezl	v1,b7d0 <protobuf_c_service_generated_init@@Base+0x12c>
+    ba4c:	8e030008 	lw	v1,8(s0)
+    ba50:	10000002 	b	ba5c <protobuf_c_service_generated_init@@Base+0x3b8>
+    ba54:	24020001 	li	v0,1
+    ba58:	00001021 	move	v0,zero
+    ba5c:	8fbf0044 	lw	ra,68(sp)
+    ba60:	8fbe0040 	lw	s8,64(sp)
+    ba64:	8fb7003c 	lw	s7,60(sp)
+    ba68:	8fb60038 	lw	s6,56(sp)
+    ba6c:	8fb50034 	lw	s5,52(sp)
+    ba70:	8fb40030 	lw	s4,48(sp)
+    ba74:	8fb3002c 	lw	s3,44(sp)
+    ba78:	8fb20028 	lw	s2,40(sp)
+    ba7c:	8fb10024 	lw	s1,36(sp)
+    ba80:	8fb00020 	lw	s0,32(sp)
+    ba84:	03e00008 	jr	ra
+    ba88:	27bd0048 	addiu	sp,sp,72
+    ba8c:	8f99802c 	lw	t9,-32724(gp)
+    ba90:	2739b62c 	addiu	t9,t9,-18900
+    ba94:	0320f809 	jalr	t9
+    ba98:	afa3001c 	sw	v1,28(sp)
+    ba9c:	8fbc0010 	lw	gp,16(sp)
+    baa0:	8fa3001c 	lw	v1,28(sp)
+    baa4:	02602821 	move	a1,s3
+    baa8:	8f998334 	lw	t9,-31948(gp)
+    baac:	00602021 	move	a0,v1
+    bab0:	00403021 	move	a2,v0
+    bab4:	0320f809 	jalr	t9
+    bab8:	0040f021 	move	s8,v0
+    babc:	8fbc0010 	lw	gp,16(sp)
+    bac0:	02602021 	move	a0,s3
+    bac4:	03c03021 	move	a2,s8
+    bac8:	8f9981dc 	lw	t9,-32292(gp)
+    bacc:	0320f809 	jalr	t9
+    bad0:	00002821 	move	a1,zero
+    bad4:	8e420010 	lw	v0,16(s2)
+    bad8:	1440ffd0 	bnez	v0,ba1c <protobuf_c_service_generated_init@@Base+0x378>
+    badc:	8fbc0010 	lw	gp,16(sp)
+    bae0:	1000ffd2 	b	ba2c <protobuf_c_service_generated_init@@Base+0x388>
+    bae4:	8fa20018 	lw	v0,24(sp)
+    bae8:	3c1c0003 	lui	gp,0x3
+    baec:	279ce3e8 	addiu	gp,gp,-7192
+    baf0:	0399e021 	addu	gp,gp,t9
+    baf4:	27bdffb0 	addiu	sp,sp,-80
+    baf8:	afbf004c 	sw	ra,76(sp)
+    bafc:	afb50048 	sw	s5,72(sp)
+    bb00:	afb40044 	sw	s4,68(sp)
+    bb04:	afb30040 	sw	s3,64(sp)
+    bb08:	afb2003c 	sw	s2,60(sp)
+    bb0c:	afb10038 	sw	s1,56(sp)
+    bb10:	afb00034 	sw	s0,52(sp)
+    bb14:	afbc0010 	sw	gp,16(sp)
+    bb18:	8c820008 	lw	v0,8(a0)
+    bb1c:	00c09021 	move	s2,a2
+    bb20:	00a08021 	move	s0,a1
+    bb24:	8c43000c 	lw	v1,12(v0)
+    bb28:	00e09821 	move	s3,a3
+    bb2c:	8c91000c 	lw	s1,12(a0)
+    bb30:	2c660011 	sltiu	a2,v1,17
+    bb34:	8c950010 	lw	s5,16(a0)
+    bb38:	10c000cf 	beqz	a2,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bb3c:	90850004 	lbu	a1,4(a0)
+    bb40:	8f868024 	lw	a2,-32732(gp)
+    bb44:	00031880 	sll	v1,v1,0x2
+    bb48:	24c604a0 	addiu	a2,a2,1184
+    bb4c:	00c31821 	addu	v1,a2,v1
+    bb50:	8c630000 	lw	v1,0(v1)
+    bb54:	007c1821 	addu	v1,v1,gp
+    bb58:	00600008 	jr	v1
+    bb5c:	00000000 	nop
+    bb60:	1000004d 	b	bc98 <protobuf_c_service_generated_init@@Base+0x5f4>
+    bb64:	00001021 	move	v0,zero
+    bb68:	54a000c4 	bnezl	a1,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bb6c:	00001021 	move	v0,zero
+    bb70:	8f99802c 	lw	t9,-32724(gp)
+    bb74:	02202021 	move	a0,s1
+    bb78:	2739aaa0 	addiu	t9,t9,-21856
+    bb7c:	0320f809 	jalr	t9
+    bb80:	02a02821 	move	a1,s5
+    bb84:	00021842 	srl	v1,v0,0x1
+    bb88:	00032027 	nor	a0,zero,v1
+    bb8c:	30420001 	andi	v0,v0,0x1
+    bb90:	0082180b 	movn	v1,a0,v0
+    bb94:	10000092 	b	bde0 <protobuf_c_service_generated_init@@Base+0x73c>
+    bb98:	ae030000 	sw	v1,0(s0)
+    bb9c:	24020005 	li	v0,5
+    bba0:	54a200b6 	bnel	a1,v0,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bba4:	00001021 	move	v0,zero
+    bba8:	8f998334 	lw	t9,-31948(gp)
+    bbac:	02a02821 	move	a1,s5
+    bbb0:	27a40018 	addiu	a0,sp,24
+    bbb4:	0320f809 	jalr	t9
+    bbb8:	24060004 	li	a2,4
+    bbbc:	8fa30018 	lw	v1,24(sp)
+    bbc0:	24020001 	li	v0,1
+    bbc4:	100000ad 	b	be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bbc8:	ae030000 	sw	v1,0(s0)
+    bbcc:	54a000ab 	bnezl	a1,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bbd0:	00001021 	move	v0,zero
+    bbd4:	8f99802c 	lw	t9,-32724(gp)
+    bbd8:	02202021 	move	a0,s1
+    bbdc:	2739ab18 	addiu	t9,t9,-21736
+    bbe0:	0320f809 	jalr	t9
+    bbe4:	02a02821 	move	a1,s5
+    bbe8:	ae020000 	sw	v0,0(s0)
+    bbec:	1000007c 	b	bde0 <protobuf_c_service_generated_init@@Base+0x73c>
+    bbf0:	ae030004 	sw	v1,4(s0)
+    bbf4:	14a000a1 	bnez	a1,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bbf8:	00001021 	move	v0,zero
+    bbfc:	8f99802c 	lw	t9,-32724(gp)
+    bc00:	02202021 	move	a0,s1
+    bc04:	2739ab18 	addiu	t9,t9,-21736
+    bc08:	0320f809 	jalr	t9
+    bc0c:	02a02821 	move	a1,s5
+    bc10:	00602021 	move	a0,v1
+    bc14:	30450001 	andi	a1,v0,0x1
+    bc18:	00031842 	srl	v1,v1,0x1
+    bc1c:	00021042 	srl	v0,v0,0x1
+    bc20:	10a00005 	beqz	a1,bc38 <protobuf_c_service_generated_init@@Base+0x594>
+    bc24:	000427c0 	sll	a0,a0,0x1f
+    bc28:	00821025 	or	v0,a0,v0
+    bc2c:	00021027 	nor	v0,zero,v0
+    bc30:	10000002 	b	bc3c <protobuf_c_service_generated_init@@Base+0x598>
+    bc34:	00031827 	nor	v1,zero,v1
+    bc38:	00821025 	or	v0,a0,v0
+    bc3c:	ae030004 	sw	v1,4(s0)
+    bc40:	10000067 	b	bde0 <protobuf_c_service_generated_init@@Base+0x73c>
+    bc44:	ae020000 	sw	v0,0(s0)
+    bc48:	24020001 	li	v0,1
+    bc4c:	54a2008b 	bnel	a1,v0,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bc50:	00001021 	move	v0,zero
+    bc54:	8f998334 	lw	t9,-31948(gp)
+    bc58:	02a02821 	move	a1,s5
+    bc5c:	27a40020 	addiu	a0,sp,32
+    bc60:	0320f809 	jalr	t9
+    bc64:	24060008 	li	a2,8
+    bc68:	8fa40020 	lw	a0,32(sp)
+    bc6c:	8fa50024 	lw	a1,36(sp)
+    bc70:	24020001 	li	v0,1
+    bc74:	ae040000 	sw	a0,0(s0)
+    bc78:	10000080 	b	be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bc7c:	ae050004 	sw	a1,4(s0)
+    bc80:	90630000 	lbu	v1,0(v1)
+    bc84:	3063007f 	andi	v1,v1,0x7f
+    bc88:	50600003 	beqzl	v1,bc98 <protobuf_c_service_generated_init@@Base+0x5f4>
+    bc8c:	24420001 	addiu	v0,v0,1
+    bc90:	1000ffeb 	b	bc40 <protobuf_c_service_generated_init@@Base+0x59c>
+    bc94:	24020001 	li	v0,1
+    bc98:	0051182b 	sltu	v1,v0,s1
+    bc9c:	1460fff8 	bnez	v1,bc80 <protobuf_c_service_generated_init@@Base+0x5dc>
+    bca0:	02a21821 	addu	v1,s5,v0
+    bca4:	1000ffe6 	b	bc40 <protobuf_c_service_generated_init@@Base+0x59c>
+    bca8:	00001021 	move	v0,zero
+    bcac:	54a00073 	bnezl	a1,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bcb0:	00001021 	move	v0,zero
+    bcb4:	8f99802c 	lw	t9,-32724(gp)
+    bcb8:	02202021 	move	a0,s1
+    bcbc:	2739aaa0 	addiu	t9,t9,-21856
+    bcc0:	0320f809 	jalr	t9
+    bcc4:	02a02821 	move	a1,s5
+    bcc8:	10000045 	b	bde0 <protobuf_c_service_generated_init@@Base+0x73c>
+    bccc:	ae020000 	sw	v0,0(s0)
+    bcd0:	24030002 	li	v1,2
+    bcd4:	14a30068 	bne	a1,v1,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bcd8:	90940005 	lbu	s4,5(a0)
+    bcdc:	50e0000b 	beqzl	a3,bd0c <protobuf_c_service_generated_init@@Base+0x668>
+    bce0:	8e440008 	lw	a0,8(s2)
+    bce4:	8e050000 	lw	a1,0(s0)
+    bce8:	50a00008 	beqzl	a1,bd0c <protobuf_c_service_generated_init@@Base+0x668>
+    bcec:	8e440008 	lw	a0,8(s2)
+    bcf0:	8c42001c 	lw	v0,28(v0)
+    bcf4:	10a20004 	beq	a1,v0,bd08 <protobuf_c_service_generated_init@@Base+0x664>
+    bcf8:	8f99802c 	lw	t9,-32724(gp)
+    bcfc:	2739a6d4 	addiu	t9,t9,-22828
+    bd00:	0320f809 	jalr	t9
+    bd04:	02402021 	move	a0,s2
+    bd08:	8e440008 	lw	a0,8(s2)
+    bd0c:	8e590000 	lw	t9,0(s2)
+    bd10:	02348823 	subu	s1,s1,s4
+    bd14:	0320f809 	jalr	t9
+    bd18:	26250001 	addiu	a1,s1,1
+    bd1c:	8fbc0010 	lw	gp,16(sp)
+    bd20:	10400055 	beqz	v0,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bd24:	ae020000 	sw	v0,0(s0)
+    bd28:	8f998334 	lw	t9,-31948(gp)
+    bd2c:	02203021 	move	a2,s1
+    bd30:	02b42821 	addu	a1,s5,s4
+    bd34:	0320f809 	jalr	t9
+    bd38:	00402021 	move	a0,v0
+    bd3c:	8e030000 	lw	v1,0(s0)
+    bd40:	24020001 	li	v0,1
+    bd44:	00718821 	addu	s1,v1,s1
+    bd48:	1000004c 	b	be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bd4c:	a2200000 	sb	zero,0(s1)
+    bd50:	24030002 	li	v1,2
+    bd54:	14a30048 	bne	a1,v1,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bd58:	90940005 	lbu	s4,5(a0)
+    bd5c:	10e0000c 	beqz	a3,bd90 <protobuf_c_service_generated_init@@Base+0x6ec>
+    bd60:	8c42001c 	lw	v0,28(v0)
+    bd64:	8e050004 	lw	a1,4(s0)
+    bd68:	10a00009 	beqz	a1,bd90 <protobuf_c_service_generated_init@@Base+0x6ec>
+    bd6c:	00000000 	nop
+    bd70:	10400004 	beqz	v0,bd84 <protobuf_c_service_generated_init@@Base+0x6e0>
+    bd74:	8f99802c 	lw	t9,-32724(gp)
+    bd78:	8c420004 	lw	v0,4(v0)
+    bd7c:	10a20004 	beq	a1,v0,bd90 <protobuf_c_service_generated_init@@Base+0x6ec>
+    bd80:	00000000 	nop
+    bd84:	2739a6d4 	addiu	t9,t9,-22828
+    bd88:	0320f809 	jalr	t9
+    bd8c:	02402021 	move	a0,s2
+    bd90:	12340010 	beq	s1,s4,bdd4 <protobuf_c_service_generated_init@@Base+0x730>
+    bd94:	02343023 	subu	a2,s1,s4
+    bd98:	8e440008 	lw	a0,8(s2)
+    bd9c:	8e590000 	lw	t9,0(s2)
+    bda0:	00c02821 	move	a1,a2
+    bda4:	0320f809 	jalr	t9
+    bda8:	afa60028 	sw	a2,40(sp)
+    bdac:	8fbc0010 	lw	gp,16(sp)
+    bdb0:	ae020004 	sw	v0,4(s0)
+    bdb4:	10400030 	beqz	v0,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bdb8:	8fa60028 	lw	a2,40(sp)
+    bdbc:	8f998334 	lw	t9,-31948(gp)
+    bdc0:	00402021 	move	a0,v0
+    bdc4:	0320f809 	jalr	t9
+    bdc8:	02b42821 	addu	a1,s5,s4
+    bdcc:	10000003 	b	bddc <protobuf_c_service_generated_init@@Base+0x738>
+    bdd0:	02348823 	subu	s1,s1,s4
+    bdd4:	ae000004 	sw	zero,4(s0)
+    bdd8:	02348823 	subu	s1,s1,s4
+    bddc:	ae110000 	sw	s1,0(s0)
+    bde0:	10000026 	b	be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    bde4:	24020001 	li	v0,1
+    bde8:	24030002 	li	v1,2
+    bdec:	14a30022 	bne	a1,v1,be78 <protobuf_c_service_generated_init@@Base+0x7d4>
+    bdf0:	90860005 	lbu	a2,5(a0)
+    bdf4:	8f99817c 	lw	t9,-32388(gp)
+    bdf8:	8c440018 	lw	a0,24(v0)
+    bdfc:	02a63821 	addu	a3,s5,a2
+    be00:	02402821 	move	a1,s2
+    be04:	02263023 	subu	a2,s1,a2
+    be08:	0320f809 	jalr	t9
+    be0c:	8c51001c 	lw	s1,28(v0)
+    be10:	8fbc0010 	lw	gp,16(sp)
+    be14:	12600014 	beqz	s3,be68 <protobuf_c_service_generated_init@@Base+0x7c4>
+    be18:	0040a021 	move	s4,v0
+    be1c:	8e040000 	lw	a0,0(s0)
+    be20:	10800012 	beqz	a0,be6c <protobuf_c_service_generated_init@@Base+0x7c8>
+    be24:	24020001 	li	v0,1
+    be28:	10910010 	beq	a0,s1,be6c <protobuf_c_service_generated_init@@Base+0x7c8>
+    be2c:	00000000 	nop
+    be30:	12800006 	beqz	s4,be4c <protobuf_c_service_generated_init@@Base+0x7a8>
+    be34:	8f99802c 	lw	t9,-32724(gp)
+    be38:	02802821 	move	a1,s4
+    be3c:	2739b778 	addiu	t9,t9,-18568
+    be40:	0320f809 	jalr	t9
+    be44:	02403021 	move	a2,s2
+    be48:	8fbc0010 	lw	gp,16(sp)
+    be4c:	8f998070 	lw	t9,-32656(gp)
+    be50:	8e040000 	lw	a0,0(s0)
+    be54:	afa20028 	sw	v0,40(sp)
+    be58:	0320f809 	jalr	t9
+    be5c:	02402821 	move	a1,s2
+    be60:	10000002 	b	be6c <protobuf_c_service_generated_init@@Base+0x7c8>
+    be64:	8fa20028 	lw	v0,40(sp)
+    be68:	24020001 	li	v0,1
+    be6c:	ae140000 	sw	s4,0(s0)
+    be70:	16800002 	bnez	s4,be7c <protobuf_c_service_generated_init@@Base+0x7d8>
+    be74:	0002102b 	sltu	v0,zero,v0
+    be78:	00001021 	move	v0,zero
+    be7c:	8fbf004c 	lw	ra,76(sp)
+    be80:	8fb50048 	lw	s5,72(sp)
+    be84:	8fb40044 	lw	s4,68(sp)
+    be88:	8fb30040 	lw	s3,64(sp)
+    be8c:	8fb2003c 	lw	s2,60(sp)
+    be90:	8fb10038 	lw	s1,56(sp)
+    be94:	8fb00034 	lw	s0,52(sp)
+    be98:	03e00008 	jr	ra
+    be9c:	27bd0050 	addiu	sp,sp,80
+
+0000bea0 <protobuf_c_message_unpack@@Base>:
+    bea0:	3c1c0003 	lui	gp,0x3
+    bea4:	279ce030 	addiu	gp,gp,-8144
+    bea8:	0399e021 	addu	gp,gp,t9
+    beac:	27bdfdd8 	addiu	sp,sp,-552
+    beb0:	afbf0224 	sw	ra,548(sp)
+    beb4:	afbe0220 	sw	s8,544(sp)
+    beb8:	afb7021c 	sw	s7,540(sp)
+    bebc:	afb60218 	sw	s6,536(sp)
+    bec0:	afb50214 	sw	s5,532(sp)
+    bec4:	afb40210 	sw	s4,528(sp)
+    bec8:	afb3020c 	sw	s3,524(sp)
+    becc:	afb20208 	sw	s2,520(sp)
+    bed0:	afb10204 	sw	s1,516(sp)
+    bed4:	afb00200 	sw	s0,512(sp)
+    bed8:	afbc0010 	sw	gp,16(sp)
+    bedc:	8c820000 	lw	v0,0(a0)
+    bee0:	3c0328aa 	lui	v1,0x28aa
+    bee4:	3463eef9 	ori	v1,v1,0xeef9
+    bee8:	0080a821 	move	s5,a0
+    beec:	00a08821 	move	s1,a1
+    bef0:	00c0f021 	move	s8,a2
+    bef4:	00e0a021 	move	s4,a3
+    bef8:	10430009 	beq	v0,v1,bf20 <protobuf_c_message_unpack@@Base+0x80>
+    befc:	8c97001c 	lw	s7,28(a0)
+    bf00:	8f848024 	lw	a0,-32732(gp)
+    bf04:	8f868024 	lw	a2,-32732(gp)
+    bf08:	8f998398 	lw	t9,-31848(gp)
+    bf0c:	24840348 	addiu	a0,a0,840
+    bf10:	24c60410 	addiu	a2,a2,1040
+    bf14:	0320f809 	jalr	t9
+    bf18:	24050b4f 	li	a1,2895
+    bf1c:	8fbc0010 	lw	gp,16(sp)
+    bf20:	56200004 	bnezl	s1,bf34 <protobuf_c_message_unpack@@Base+0x94>
+    bf24:	8e390000 	lw	t9,0(s1)
+    bf28:	8f918018 	lw	s1,-32744(gp)
+    bf2c:	26311e90 	addiu	s1,s1,7824
+    bf30:	8e390000 	lw	t9,0(s1)
+    bf34:	8e240008 	lw	a0,8(s1)
+    bf38:	0320f809 	jalr	t9
+    bf3c:	8ea50014 	lw	a1,20(s5)
+    bf40:	8fbc0010 	lw	gp,16(sp)
+    bf44:	1040041c 	beqz	v0,cfb8 <protobuf_c_message_unpack@@Base+0x1118>
+    bf48:	00408021 	move	s0,v0
+    bf4c:	8ea60018 	lw	a2,24(s5)
+    bf50:	24c60007 	addiu	a2,a2,7
+    bf54:	000630c2 	srl	a2,a2,0x3
+    bf58:	2cc20011 	sltiu	v0,a2,17
+    bf5c:	5440000f 	bnezl	v0,bf9c <protobuf_c_message_unpack@@Base+0xfc>
+    bf60:	afa001d0 	sw	zero,464(sp)
+    bf64:	8e390000 	lw	t9,0(s1)
+    bf68:	8e240008 	lw	a0,8(s1)
+    bf6c:	24020001 	li	v0,1
+    bf70:	00c02821 	move	a1,a2
+    bf74:	afa601f0 	sw	a2,496(sp)
+    bf78:	0320f809 	jalr	t9
+    bf7c:	afa201d0 	sw	v0,464(sp)
+    bf80:	8fbc0010 	lw	gp,16(sp)
+    bf84:	00409821 	move	s3,v0
+    bf88:	14400005 	bnez	v0,bfa0 <protobuf_c_message_unpack@@Base+0x100>
+    bf8c:	8fa601f0 	lw	a2,496(sp)
+    bf90:	02002821 	move	a1,s0
+    bf94:	10000404 	b	cfa8 <protobuf_c_message_unpack@@Base+0x1108>
+    bf98:	02202021 	move	a0,s1
+    bf9c:	27b30018 	addiu	s3,sp,24
+    bfa0:	8f9981dc 	lw	t9,-32292(gp)
+    bfa4:	02602021 	move	a0,s3
+    bfa8:	0320f809 	jalr	t9
+    bfac:	00002821 	move	a1,zero
+    bfb0:	8ea2002c 	lw	v0,44(s5)
+    bfb4:	10400015 	beqz	v0,c00c <protobuf_c_message_unpack@@Base+0x16c>
+    bfb8:	8fbc0010 	lw	gp,16(sp)
+    bfbc:	8f998170 	lw	t9,-32400(gp)
+    bfc0:	02a02021 	move	a0,s5
+    bfc4:	0320f809 	jalr	t9
+    bfc8:	02002821 	move	a1,s0
+    bfcc:	8fbc0010 	lw	gp,16(sp)
+    bfd0:	27a20084 	addiu	v0,sp,132
+--
+   17ae0:	1000000a 	b	17b0c <uc_api_lib_wifi_basic_get_hdl_reg@@Base+0x77c>
+   17ae4:	24637eec 	addiu	v1,v1,32492
+   17ae8:	8f83802c 	lw	v1,-32724(gp)
+   17aec:	8f998348 	lw	t9,-31928(gp)
+   17af0:	afb20010 	sw	s2,16(sp)
+   17af4:	10000005 	b	17b0c <uc_api_lib_wifi_basic_get_hdl_reg@@Base+0x77c>
+   17af8:	24637e10 	addiu	v1,v1,32272
+   17afc:	afa30010 	sw	v1,16(sp)
+   17b00:	8f83802c 	lw	v1,-32724(gp)
+   17b04:	8f998348 	lw	t9,-31928(gp)
+   17b08:	24637d40 	addiu	v1,v1,32064
+   17b0c:	afa30018 	sw	v1,24(sp)
+   17b10:	afa2001c 	sw	v0,28(sp)
+   17b14:	afa00014 	sw	zero,20(sp)
+   17b18:	0320f809 	jalr	t9
+   17b1c:	02002021 	move	a0,s0
+   17b20:	10000007 	b	17b40 <uc_api_lib_wifi_basic_get_hdl_reg@@Base+0x7b0>
+   17b24:	8fbf0044 	lw	ra,68(sp)
+   17b28:	8f83802c 	lw	v1,-32724(gp)
+   17b2c:	8f998348 	lw	t9,-31928(gp)
+   17b30:	1000fff6 	b	17b0c <uc_api_lib_wifi_basic_get_hdl_reg@@Base+0x77c>
+   17b34:	24637c70 	addiu	v1,v1,31856
+   17b38:	00001021 	move	v0,zero
+   17b3c:	8fbf0044 	lw	ra,68(sp)
+   17b40:	8fb20040 	lw	s2,64(sp)
+   17b44:	8fb1003c 	lw	s1,60(sp)
+   17b48:	8fb00038 	lw	s0,56(sp)
+   17b4c:	03e00008 	jr	ra
+   17b50:	27bd0048 	addiu	sp,sp,72
+
+00017b54 <uc_api_lib_wan_detect_type_hdl_reg@@Base>:
+   17b54:	3c1c0002 	lui	gp,0x2
+   17b58:	279c237c 	addiu	gp,gp,9084
+   17b5c:	0399e021 	addu	gp,gp,t9
+   17b60:	27bdffd0 	addiu	sp,sp,-48
+   17b64:	afbf002c 	sw	ra,44(sp)
+   17b68:	afbc0020 	sw	gp,32(sp)
+   17b6c:	24020003 	li	v0,3
+   17b70:	afa20010 	sw	v0,16(sp)
+   17b74:	8fa20040 	lw	v0,64(sp)
+   17b78:	8f99802c 	lw	t9,-32724(gp)
+   17b7c:	afa20014 	sw	v0,20(sp)
+   17b80:	8fa20044 	lw	v0,68(sp)
+   17b84:	27397a30 	addiu	t9,t9,31280
+   17b88:	0320f809 	jalr	t9
+   17b8c:	afa20018 	sw	v0,24(sp)
+   17b90:	8fbf002c 	lw	ra,44(sp)
+   17b94:	03e00008 	jr	ra
+   17b98:	27bd0030 	addiu	sp,sp,48
+
+00017b9c <uc_api_lib_wan_basic_get_hdl_reg@@Base>:
+   17b9c:	3c1c0002 	lui	gp,0x2
+   17ba0:	279c2334 	addiu	gp,gp,9012
+   17ba4:	0399e021 	addu	gp,gp,t9
+   17ba8:	27bdffd0 	addiu	sp,sp,-48
+   17bac:	afbf002c 	sw	ra,44(sp)
+   17bb0:	afbc0020 	sw	gp,32(sp)
+   17bb4:	24020002 	li	v0,2
+   17bb8:	afa20010 	sw	v0,16(sp)
+   17bbc:	8fa20040 	lw	v0,64(sp)
+   17bc0:	8f99802c 	lw	t9,-32724(gp)
+   17bc4:	afa20014 	sw	v0,20(sp)
+   17bc8:	8fa20044 	lw	v0,68(sp)
+   17bcc:	27397a30 	addiu	t9,t9,31280
+   17bd0:	0320f809 	jalr	t9
+   17bd4:	afa20018 	sw	v0,24(sp)
+   17bd8:	8fbf002c 	lw	ra,44(sp)
+   17bdc:	03e00008 	jr	ra
+   17be0:	27bd0030 	addiu	sp,sp,48
+
+00017be4 <uc_api_lib_wan_basic_set_hdl_reg@@Base>:
+   17be4:	3c1c0002 	lui	gp,0x2
+   17be8:	279c22ec 	addiu	gp,gp,8940
+   17bec:	0399e021 	addu	gp,gp,t9
+   17bf0:	27bdffd0 	addiu	sp,sp,-48
+   17bf4:	afbf002c 	sw	ra,44(sp)
+   17bf8:	afbc0020 	sw	gp,32(sp)
+   17bfc:	24020001 	li	v0,1
+   17c00:	afa20010 	sw	v0,16(sp)
+   17c04:	8fa20040 	lw	v0,64(sp)
+   17c08:	8f99802c 	lw	t9,-32724(gp)
+   17c0c:	afa20014 	sw	v0,20(sp)
+   17c10:	8fa20044 	lw	v0,68(sp)
+   17c14:	27397a30 	addiu	t9,t9,31280
+   17c18:	0320f809 	jalr	t9
+   17c1c:	afa20018 	sw	v0,24(sp)
+   17c20:	8fbf002c 	lw	ra,44(sp)
+   17c24:	03e00008 	jr	ra
+   17c28:	27bd0030 	addiu	sp,sp,48
+
+00017c2c <uc_api_lib_wan_rate_get_hdl_reg@@Base>:
+   17c2c:	3c1c0002 	lui	gp,0x2
+   17c30:	279c22a4 	addiu	gp,gp,8868
+   17c34:	0399e021 	addu	gp,gp,t9
+   17c38:	27bdffd0 	addiu	sp,sp,-48
+   17c3c:	afbf002c 	sw	ra,44(sp)
+   17c40:	afbc0020 	sw	gp,32(sp)
+   17c44:	8fa20040 	lw	v0,64(sp)
+   17c48:	8f99802c 	lw	t9,-32724(gp)
+   17c4c:	afa00010 	sw	zero,16(sp)
+   17c50:	afa20014 	sw	v0,20(sp)
+   17c54:	8fa20044 	lw	v0,68(sp)
+   17c58:	27397a30 	addiu	t9,t9,31280
+   17c5c:	0320f809 	jalr	t9
+   17c60:	afa20018 	sw	v0,24(sp)
+   17c64:	8fbf002c 	lw	ra,44(sp)
+   17c68:	03e00008 	jr	ra
+   17c6c:	27bd0030 	addiu	sp,sp,48
+   17c70:	3c1c0002 	lui	gp,0x2
+   17c74:	279c2260 	addiu	gp,gp,8800
+   17c78:	0399e021 	addu	gp,gp,t9
+   17c7c:	27bdf2c0 	addiu	sp,sp,-3392
+   17c80:	afbf0d3c 	sw	ra,3388(sp)
+   17c84:	afb20d38 	sw	s2,3384(sp)
+   17c88:	afb10d34 	sw	s1,3380(sp)
+   17c8c:	afb00d30 	sw	s0,3376(sp)
+   17c90:	afbc0010 	sw	gp,16(sp)
+   17c94:	00e08021 	move	s0,a3
+   17c98:	10e00004 	beqz	a3,17cac <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x80>
+   17c9c:	00808821 	move	s1,a0
+   17ca0:	8ce20000 	lw	v0,0(a3)
+   17ca4:	1440000a 	bnez	v0,17cd0 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0xa4>
+   17ca8:	8f9981dc 	lw	t9,-32292(gp)
+   17cac:	8f848024 	lw	a0,-32732(gp)
+   17cb0:	8f868024 	lw	a2,-32732(gp)
+   17cb4:	8f998398 	lw	t9,-31848(gp)
+   17cb8:	248411c0 	addiu	a0,a0,4544
+   17cbc:	24c611d0 	addiu	a2,a2,4560
+   17cc0:	0320f809 	jalr	t9
+   17cc4:	2405009c 	li	a1,156
+   17cc8:	8fbc0010 	lw	gp,16(sp)
+   17ccc:	8f9981dc 	lw	t9,-32292(gp)
+   17cd0:	27a40018 	addiu	a0,sp,24
+   17cd4:	00002821 	move	a1,zero
+   17cd8:	24060d14 	li	a2,3348
+   17cdc:	0320f809 	jalr	t9
+   17ce0:	8e120000 	lw	s2,0(s0)
+   17ce4:	8e060004 	lw	a2,4(s0)
+   17ce8:	02202021 	move	a0,s1
+   17cec:	0240c821 	move	t9,s2
+   17cf0:	0320f809 	jalr	t9
+   17cf4:	27a50d14 	addiu	a1,sp,3348
+   17cf8:	14400004 	bnez	v0,17d0c <uc_api_lib_wan_rate_get_hdl_reg@@Base+0xe0>
+   17cfc:	8fbc0010 	lw	gp,16(sp)
+   17d00:	8fa30018 	lw	v1,24(sp)
+   17d04:	34630004 	ori	v1,v1,0x4
+   17d08:	afa30018 	sw	v1,24(sp)
+   17d0c:	8f998138 	lw	t9,-32456(gp)
+   17d10:	02202021 	move	a0,s1
+   17d14:	afa2001c 	sw	v0,28(sp)
+   17d18:	00002821 	move	a1,zero
+   17d1c:	24060d14 	li	a2,3348
+   17d20:	0320f809 	jalr	t9
+   17d24:	27a70018 	addiu	a3,sp,24
+   17d28:	8fbf0d3c 	lw	ra,3388(sp)
+   17d2c:	8fb20d38 	lw	s2,3384(sp)
+   17d30:	8fb10d34 	lw	s1,3380(sp)
+   17d34:	8fb00d30 	lw	s0,3376(sp)
+   17d38:	03e00008 	jr	ra
+   17d3c:	27bd0d40 	addiu	sp,sp,3392
+   17d40:	3c1c0002 	lui	gp,0x2
+   17d44:	279c2190 	addiu	gp,gp,8592
+   17d48:	0399e021 	addu	gp,gp,t9
+   17d4c:	27bdf2c0 	addiu	sp,sp,-3392
+   17d50:	afbf0d3c 	sw	ra,3388(sp)
+   17d54:	afb20d38 	sw	s2,3384(sp)
+   17d58:	afb10d34 	sw	s1,3380(sp)
+   17d5c:	afb00d30 	sw	s0,3376(sp)
+   17d60:	afbc0010 	sw	gp,16(sp)
+   17d64:	00e08021 	move	s0,a3
+   17d68:	10e00004 	beqz	a3,17d7c <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x150>
+   17d6c:	00808821 	move	s1,a0
+   17d70:	8ce20000 	lw	v0,0(a3)
+   17d74:	1440000a 	bnez	v0,17da0 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x174>
+   17d78:	8f9981dc 	lw	t9,-32292(gp)
+   17d7c:	8f848024 	lw	a0,-32732(gp)
+   17d80:	8f868024 	lw	a2,-32732(gp)
+   17d84:	8f998398 	lw	t9,-31848(gp)
+   17d88:	248411c0 	addiu	a0,a0,4544
+   17d8c:	24c611d0 	addiu	a2,a2,4560
+   17d90:	0320f809 	jalr	t9
+   17d94:	24050075 	li	a1,117
+   17d98:	8fbc0010 	lw	gp,16(sp)
+   17d9c:	8f9981dc 	lw	t9,-32292(gp)
+   17da0:	27a40018 	addiu	a0,sp,24
+   17da4:	00002821 	move	a1,zero
+   17da8:	24060d14 	li	a2,3348
+   17dac:	0320f809 	jalr	t9
+   17db0:	8e120000 	lw	s2,0(s0)
+   17db4:	8e060004 	lw	a2,4(s0)
+   17db8:	02202021 	move	a0,s1
+   17dbc:	0240c821 	move	t9,s2
+   17dc0:	0320f809 	jalr	t9
+   17dc4:	27a50020 	addiu	a1,sp,32
+   17dc8:	14400004 	bnez	v0,17ddc <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x1b0>
+   17dcc:	8fbc0010 	lw	gp,16(sp)
+   17dd0:	8fa30018 	lw	v1,24(sp)
+   17dd4:	34630001 	ori	v1,v1,0x1
+   17dd8:	afa30018 	sw	v1,24(sp)
+   17ddc:	8f998138 	lw	t9,-32456(gp)
+   17de0:	02202021 	move	a0,s1
+   17de4:	afa2001c 	sw	v0,28(sp)
+   17de8:	00002821 	move	a1,zero
+   17dec:	24060d14 	li	a2,3348
+   17df0:	0320f809 	jalr	t9
+   17df4:	27a70018 	addiu	a3,sp,24
+   17df8:	8fbf0d3c 	lw	ra,3388(sp)
+   17dfc:	8fb20d38 	lw	s2,3384(sp)
+   17e00:	8fb10d34 	lw	s1,3380(sp)
+   17e04:	8fb00d30 	lw	s0,3376(sp)
+   17e08:	03e00008 	jr	ra
+   17e0c:	27bd0d40 	addiu	sp,sp,3392
+   17e10:	3c1c0002 	lui	gp,0x2
+   17e14:	279c20c0 	addiu	gp,gp,8384
+   17e18:	0399e021 	addu	gp,gp,t9
+   17e1c:	27bdf2b0 	addiu	sp,sp,-3408
+   17e20:	afbf0d4c 	sw	ra,3404(sp)
+   17e24:	afb30d48 	sw	s3,3400(sp)
+   17e28:	afb20d44 	sw	s2,3396(sp)
+   17e2c:	afb10d40 	sw	s1,3392(sp)
+   17e30:	afb00d3c 	sw	s0,3388(sp)
+   17e34:	afbc0010 	sw	gp,16(sp)
+   17e38:	00e08021 	move	s0,a3
+   17e3c:	00808821 	move	s1,a0
+   17e40:	10e00004 	beqz	a3,17e54 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x228>
+   17e44:	00c09821 	move	s3,a2
+   17e48:	8ce20000 	lw	v0,0(a3)
+   17e4c:	1440000a 	bnez	v0,17e78 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x24c>
+   17e50:	8f9981dc 	lw	t9,-32292(gp)
+   17e54:	8f848024 	lw	a0,-32732(gp)
+   17e58:	8f868024 	lw	a2,-32732(gp)
+   17e5c:	8f998398 	lw	t9,-31848(gp)
+   17e60:	248411c0 	addiu	a0,a0,4544
+   17e64:	24c611d0 	addiu	a2,a2,4560
+   17e68:	0320f809 	jalr	t9
+   17e6c:	24050046 	li	a1,70
+   17e70:	8fbc0010 	lw	gp,16(sp)
+   17e74:	8f9981dc 	lw	t9,-32292(gp)
+   17e78:	27a70018 	addiu	a3,sp,24
+   17e7c:	00e02021 	move	a0,a3
+   17e80:	afa70d30 	sw	a3,3376(sp)
+   17e84:	00002821 	move	a1,zero
+   17e88:	24060d14 	li	a2,3348
+   17e8c:	0320f809 	jalr	t9
+   17e90:	8e120000 	lw	s2,0(s0)
+   17e94:	8e060004 	lw	a2,4(s0)
+   17e98:	02602821 	move	a1,s3
+   17e9c:	0240c821 	move	t9,s2
+   17ea0:	0320f809 	jalr	t9
+   17ea4:	02202021 	move	a0,s1
+   17ea8:	2403000a 	li	v1,10
+   17eac:	8fbc0010 	lw	gp,16(sp)
+   17eb0:	10430007 	beq	v0,v1,17ed0 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x2a4>
+   17eb4:	8fa70d30 	lw	a3,3376(sp)
+   17eb8:	8f998138 	lw	t9,-32456(gp)
+   17ebc:	afa2001c 	sw	v0,28(sp)
+   17ec0:	02202021 	move	a0,s1
+   17ec4:	00002821 	move	a1,zero
+   17ec8:	0320f809 	jalr	t9
+   17ecc:	24060d14 	li	a2,3348
+   17ed0:	8fbf0d4c 	lw	ra,3404(sp)
+   17ed4:	8fb30d48 	lw	s3,3400(sp)
+   17ed8:	8fb20d44 	lw	s2,3396(sp)
+   17edc:	8fb10d40 	lw	s1,3392(sp)
+   17ee0:	8fb00d3c 	lw	s0,3388(sp)
+   17ee4:	03e00008 	jr	ra
+   17ee8:	27bd0d50 	addiu	sp,sp,3408
+   17eec:	3c1c0002 	lui	gp,0x2
+   17ef0:	279c1fe4 	addiu	gp,gp,8164
+   17ef4:	0399e021 	addu	gp,gp,t9
+   17ef8:	27bdf2b8 	addiu	sp,sp,-3400
+   17efc:	afbf0d44 	sw	ra,3396(sp)
+   17f00:	afb40d40 	sw	s4,3392(sp)
+   17f04:	afb30d3c 	sw	s3,3388(sp)
+   17f08:	afb20d38 	sw	s2,3384(sp)
+   17f0c:	afb10d34 	sw	s1,3380(sp)
+   17f10:	afb00d30 	sw	s0,3376(sp)
+   17f14:	afbc0010 	sw	gp,16(sp)
+   17f18:	00e08021 	move	s0,a3
+   17f1c:	00808821 	move	s1,a0
+   17f20:	10e00004 	beqz	a3,17f34 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x308>
+   17f24:	00c0a021 	move	s4,a2
+   17f28:	8ce20000 	lw	v0,0(a3)
+   17f2c:	1440000a 	bnez	v0,17f58 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x32c>
+   17f30:	8f9981dc 	lw	t9,-32292(gp)
+   17f34:	8f848024 	lw	a0,-32732(gp)
+   17f38:	8f868024 	lw	a2,-32732(gp)
+   17f3c:	8f998398 	lw	t9,-31848(gp)
+   17f40:	248411c0 	addiu	a0,a0,4544
+   17f44:	24c611d0 	addiu	a2,a2,4560
+   17f48:	0320f809 	jalr	t9
+   17f4c:	2405001a 	li	a1,26
+   17f50:	8fbc0010 	lw	gp,16(sp)
+   17f54:	8f9981dc 	lw	t9,-32292(gp)
+   17f58:	27a40018 	addiu	a0,sp,24
+   17f5c:	00002821 	move	a1,zero
+   17f60:	24060d14 	li	a2,3348
+   17f64:	0320f809 	jalr	t9
+   17f68:	8e130000 	lw	s3,0(s0)
+   17f6c:	8fbc0010 	lw	gp,16(sp)
+   17f70:	27b20ca8 	addiu	s2,sp,3240
+   17f74:	02802821 	move	a1,s4
+   17f78:	8f998334 	lw	t9,-31948(gp)
+   17f7c:	02402021 	move	a0,s2
+   17f80:	0320f809 	jalr	t9
+   17f84:	2406006c 	li	a2,108
+   17f88:	8e060004 	lw	a2,4(s0)
+   17f8c:	02402821 	move	a1,s2
+   17f90:	0260c821 	move	t9,s3
+   17f94:	0320f809 	jalr	t9
+   17f98:	02202021 	move	a0,s1
+   17f9c:	14400004 	bnez	v0,17fb0 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x384>
+   17fa0:	8fbc0010 	lw	gp,16(sp)
+   17fa4:	8fa30018 	lw	v1,24(sp)
+   17fa8:	34630002 	ori	v1,v1,0x2
+   17fac:	afa30018 	sw	v1,24(sp)
+   17fb0:	8f998138 	lw	t9,-32456(gp)
+   17fb4:	02202021 	move	a0,s1
+   17fb8:	afa2001c 	sw	v0,28(sp)
+   17fbc:	00002821 	move	a1,zero
+   17fc0:	24060d14 	li	a2,3348
+   17fc4:	0320f809 	jalr	t9
+   17fc8:	27a70018 	addiu	a3,sp,24
+   17fcc:	8fbf0d44 	lw	ra,3396(sp)
+   17fd0:	8fb40d40 	lw	s4,3392(sp)
+   17fd4:	8fb30d3c 	lw	s3,3388(sp)
+   17fd8:	8fb20d38 	lw	s2,3384(sp)
+   17fdc:	8fb10d34 	lw	s1,3380(sp)
+   17fe0:	8fb00d30 	lw	s0,3376(sp)
+   17fe4:	03e00008 	jr	ra
+   17fe8:	27bd0d48 	addiu	sp,sp,3400
+   17fec:	00000000 	nop
+   17ff0:	3c1c0002 	lui	gp,0x2
+   17ff4:	279c1ee0 	addiu	gp,gp,7904
+   17ff8:	0399e021 	addu	gp,gp,t9
+   17ffc:	27bdffb8 	addiu	sp,sp,-72
+   18000:	afbf0044 	sw	ra,68(sp)
+   18004:	afb20040 	sw	s2,64(sp)
+   18008:	afb1003c 	sw	s1,60(sp)
+   1800c:	afb00038 	sw	s0,56(sp)
+   18010:	afbc0020 	sw	gp,32(sp)
+   18014:	8fb1005c 	lw	s1,92(sp)
+   18018:	00808021 	move	s0,a0
+   1801c:	12200083 	beqz	s1,1822c <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x600>
+   18020:	8fb20058 	lw	s2,88(sp)
+   18024:	8f998314 	lw	t9,-31980(gp)
+   18028:	afa50028 	sw	a1,40(sp)
+   1802c:	afa6002c 	sw	a2,44(sp)
+   18030:	afa70030 	sw	a3,48(sp)
+   18034:	0320f809 	jalr	t9
+   18038:	24040008 	li	a0,8
+   1803c:	8fbc0020 	lw	gp,32(sp)
+   18040:	8fa50028 	lw	a1,40(sp)
+   18044:	8fa6002c 	lw	a2,44(sp)
+   18048:	1040000e 	beqz	v0,18084 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x458>
+   1804c:	8fa70030 	lw	a3,48(sp)
+   18050:	ac510000 	sw	s1,0(v0)
+   18054:	8fa40060 	lw	a0,96(sp)
+   18058:	2e43000f 	sltiu	v1,s2,15
+   1805c:	10600062 	beqz	v1,181e8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x5bc>
+   18060:	ac440004 	sw	a0,4(v0)
+   18064:	8f838024 	lw	v1,-32732(gp)
+   18068:	00129080 	sll	s2,s2,0x2
+   1806c:	24631220 	addiu	v1,v1,4640
+   18070:	00729021 	addu	s2,v1,s2
+   18074:	8e430000 	lw	v1,0(s2)
+   18078:	007c1821 	addu	v1,v1,gp
+   1807c:	00600008 	jr	v1
+   18080:	8f998348 	lw	t9,-31928(gp)
+   18084:	8f8283ac 	lw	v0,-31828(gp)
+   18088:	8f9981c4 	lw	t9,-32316(gp)
+   1808c:	8c440000 	lw	a0,0(v0)
+   18090:	24020247 	li	v0,583
+   18094:	afa20010 	sw	v0,16(sp)
+   18098:	8f828024 	lw	v0,-32732(gp)
+   1809c:	1000006a 	b	18248 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x61c>
+   180a0:	2442e624 	addiu	v0,v0,-6620
+   180a4:	24030001 	li	v1,1
+   180a8:	afa30010 	sw	v1,16(sp)
+   180ac:	8f838024 	lw	v1,-32732(gp)
+   180b0:	10000005 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   180b4:	24638c74 	addiu	v1,v1,-29580
+   180b8:	24030001 	li	v1,1
+   180bc:	afa30010 	sw	v1,16(sp)
+   180c0:	8f838024 	lw	v1,-32732(gp)
+   180c4:	24639008 	addiu	v1,v1,-28664
+   180c8:	afa30018 	sw	v1,24(sp)
+   180cc:	afa2001c 	sw	v0,28(sp)
+   180d0:	afa00014 	sw	zero,20(sp)
+   180d4:	0320f809 	jalr	t9
+   180d8:	02002021 	move	a0,s0
+   180dc:	10000063 	b	1826c <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x640>
+   180e0:	8fbf0044 	lw	ra,68(sp)
+   180e4:	24030001 	li	v1,1
+   180e8:	afa30010 	sw	v1,16(sp)
+   180ec:	8f838024 	lw	v1,-32732(gp)
+   180f0:	1000fff5 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   180f4:	24638bc8 	addiu	v1,v1,-29752
+   180f8:	24030001 	li	v1,1
+   180fc:	afa30010 	sw	v1,16(sp)
+   18100:	8f838024 	lw	v1,-32732(gp)
+   18104:	1000fff0 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18108:	24638ef8 	addiu	v1,v1,-28936
+   1810c:	24030001 	li	v1,1
+   18110:	afa30010 	sw	v1,16(sp)
+   18114:	8f838024 	lw	v1,-32732(gp)
+   18118:	1000ffeb 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   1811c:	24638b2c 	addiu	v1,v1,-29908
+   18120:	24030001 	li	v1,1
+   18124:	afa30010 	sw	v1,16(sp)
+   18128:	8f838024 	lw	v1,-32732(gp)
+   1812c:	1000ffe6 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18130:	24639150 	addiu	v1,v1,-28336
+   18134:	24030001 	li	v1,1
+   18138:	afa30010 	sw	v1,16(sp)
+   1813c:	8f838024 	lw	v1,-32732(gp)
+   18140:	1000ffe1 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18144:	24638a94 	addiu	v1,v1,-30060
+   18148:	24030001 	li	v1,1
+   1814c:	afa30010 	sw	v1,16(sp)
+   18150:	8f838024 	lw	v1,-32732(gp)
+   18154:	1000ffdc 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18158:	24638e10 	addiu	v1,v1,-29168
+   1815c:	24030001 	li	v1,1
+   18160:	afa30010 	sw	v1,16(sp)
+   18164:	8f838024 	lw	v1,-32732(gp)
+   18168:	1000ffd7 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   1816c:	246389ec 	addiu	v1,v1,-30228
+   18170:	24030001 	li	v1,1
+   18174:	afa30010 	sw	v1,16(sp)
+   18178:	8f838024 	lw	v1,-32732(gp)
+   1817c:	1000ffd2 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18180:	24638944 	addiu	v1,v1,-30396
+   18184:	24030001 	li	v1,1
+   18188:	afa30010 	sw	v1,16(sp)
+   1818c:	8f838024 	lw	v1,-32732(gp)
+   18190:	1000ffcd 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   18194:	2463889c 	addiu	v1,v1,-30564
+   18198:	24030001 	li	v1,1
+   1819c:	afa30010 	sw	v1,16(sp)
+   181a0:	8f838024 	lw	v1,-32732(gp)
+   181a4:	1000ffc8 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   181a8:	24638d20 	addiu	v1,v1,-29408
+   181ac:	24030001 	li	v1,1
+   181b0:	afa30010 	sw	v1,16(sp)
+   181b4:	8f838024 	lw	v1,-32732(gp)
+   181b8:	1000ffc3 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   181bc:	24638804 	addiu	v1,v1,-30716
+   181c0:	24030001 	li	v1,1
+   181c4:	afa30010 	sw	v1,16(sp)
+   181c8:	8f838024 	lw	v1,-32732(gp)
+   181cc:	1000ffbe 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   181d0:	2463875c 	addiu	v1,v1,-30884
+   181d4:	24030001 	li	v1,1
+   181d8:	afa30010 	sw	v1,16(sp)
+   181dc:	8f838024 	lw	v1,-32732(gp)
+   181e0:	1000ffb9 	b	180c8 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x49c>
+   181e4:	246386b4 	addiu	v1,v1,-31052
+   181e8:	8f8283ac 	lw	v0,-31828(gp)
+   181ec:	8f868024 	lw	a2,-32732(gp)
+   181f0:	8f878024 	lw	a3,-32732(gp)
+   181f4:	8c440000 	lw	a0,0(v0)
+   181f8:	24020243 	li	v0,579
+   181fc:	afa20010 	sw	v0,16(sp)
+   18200:	8f828024 	lw	v0,-32732(gp)
+   18204:	8f9981c4 	lw	t9,-32316(gp)
+   18208:	afb20018 	sw	s2,24(sp)
+   1820c:	24421054 	addiu	v0,v0,4180
+   18210:	afa20014 	sw	v0,20(sp)
+   18214:	24c6125c 	addiu	a2,a2,4700
+   18218:	24e711e4 	addiu	a3,a3,4580
+   1821c:	0320f809 	jalr	t9
+   18220:	24050002 	li	a1,2
+   18224:	10000010 	b	18268 <uc_api_lib_wan_rate_get_hdl_reg@@Base+0x63c>
+   18228:	00001021 	move	v0,zero
+   1822c:	8f8283ac 	lw	v0,-31828(gp)
+   18230:	8f9981c4 	lw	t9,-32316(gp)
+   18234:	8c440000 	lw	a0,0(v0)
+   18238:	2402024b 	li	v0,587
+   1823c:	afa20010 	sw	v0,16(sp)
+   18240:	8f828024 	lw	v0,-32732(gp)
+   18244:	24421070 	addiu	v0,v0,4208
+   18248:	8f868024 	lw	a2,-32732(gp)
+   1824c:	8f878024 	lw	a3,-32732(gp)
+   18250:	afa20014 	sw	v0,20(sp)
+   18254:	24c6125c 	addiu	a2,a2,4700
+   18258:	24e711e4 	addiu	a3,a3,4580
+   1825c:	0320f809 	jalr	t9
+   18260:	24050003 	li	a1,3
+   18264:	2402ffff 	li	v0,-1
+   18268:	8fbf0044 	lw	ra,68(sp)
+   1826c:	8fb20040 	lw	s2,64(sp)
+   18270:	8fb1003c 	lw	s1,60(sp)
+   18274:	8fb00038 	lw	s0,56(sp)
+   18278:	03e00008 	jr	ra
+   1827c:	27bd0048 	addiu	sp,sp,72
+
+00018280 <uc_api_lib_blacklist_del_hdl_reg@@Base>:
+   18280:	3c1c0002 	lui	gp,0x2
+   18284:	279c1c50 	addiu	gp,gp,7248
+   18288:	0399e021 	addu	gp,gp,t9
+   1828c:	27bdffd0 	addiu	sp,sp,-48
+   18290:	afbf002c 	sw	ra,44(sp)
+   18294:	afbc0020 	sw	gp,32(sp)
+   18298:	2402000e 	li	v0,14
+   1829c:	afa20010 	sw	v0,16(sp)
+   182a0:	8fa20040 	lw	v0,64(sp)
+   182a4:	8f99802c 	lw	t9,-32724(gp)
+   182a8:	afa20014 	sw	v0,20(sp)
+   182ac:	8fa20044 	lw	v0,68(sp)
+   182b0:	27397ff0 	addiu	t9,t9,32752
+   182b4:	0320f809 	jalr	t9
+   182b8:	afa20018 	sw	v0,24(sp)
+   182bc:	8fbf002c 	lw	ra,44(sp)
+   182c0:	03e00008 	jr	ra
+   182c4:	27bd0030 	addiu	sp,sp,48
+
+000182c8 <uc_api_lib_blacklist_add_hdl_reg@@Base>:
+   182c8:	3c1c0002 	lui	gp,0x2
+   182cc:	279c1c08 	addiu	gp,gp,7176
+   182d0:	0399e021 	addu	gp,gp,t9
+   182d4:	27bdffd0 	addiu	sp,sp,-48
+   182d8:	afbf002c 	sw	ra,44(sp)
+   182dc:	afbc0020 	sw	gp,32(sp)
+   182e0:	2402000d 	li	v0,13
+   182e4:	afa20010 	sw	v0,16(sp)
+   182e8:	8fa20040 	lw	v0,64(sp)
+   182ec:	8f99802c 	lw	t9,-32724(gp)
+   182f0:	afa20014 	sw	v0,20(sp)
+   182f4:	8fa20044 	lw	v0,68(sp)
+   182f8:	27397ff0 	addiu	t9,t9,32752
+   182fc:	0320f809 	jalr	t9
+   18300:	afa20018 	sw	v0,24(sp)
+   18304:	8fbf002c 	lw	ra,44(sp)
+   18308:	03e00008 	jr	ra
+   1830c:	27bd0030 	addiu	sp,sp,48
+
+00018310 <uc_api_lib_whitelist_flush_hdl_reg@@Base>:
+   18310:	3c1c0002 	lui	gp,0x2
+   18314:	279c1bc0 	addiu	gp,gp,7104
+   18318:	0399e021 	addu	gp,gp,t9
+   1831c:	27bdffd0 	addiu	sp,sp,-48
+   18320:	afbf002c 	sw	ra,44(sp)
+   18324:	afbc0020 	sw	gp,32(sp)
+   18328:	2402000c 	li	v0,12
+   1832c:	afa20010 	sw	v0,16(sp)
+   18330:	8fa20040 	lw	v0,64(sp)
+   18334:	8f99802c 	lw	t9,-32724(gp)
+   18338:	afa20014 	sw	v0,20(sp)
+   1833c:	8fa20044 	lw	v0,68(sp)
+   18340:	27397ff0 	addiu	t9,t9,32752
+   18344:	0320f809 	jalr	t9
+   18348:	afa20018 	sw	v0,24(sp)
+   1834c:	8fbf002c 	lw	ra,44(sp)
+   18350:	03e00008 	jr	ra
+   18354:	27bd0030 	addiu	sp,sp,48
+
+00018358 <uc_api_lib_whitelist_del_hdl_reg@@Base>:
+   18358:	3c1c0002 	lui	gp,0x2
+   1835c:	279c1b78 	addiu	gp,gp,7032
+   18360:	0399e021 	addu	gp,gp,t9
+   18364:	27bdffd0 	addiu	sp,sp,-48
+   18368:	afbf002c 	sw	ra,44(sp)
+   1836c:	afbc0020 	sw	gp,32(sp)
