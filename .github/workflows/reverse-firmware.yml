@@ -13,46 +13,53 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Trace GetHostList cmdrpc callsite
+      - name: Locate exact GetHostList request producer
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          cli='firmware-src/RootFS-unpacked/bin/confcli'
-          ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
+          root='firmware-src/RootFS-unpacked'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/gethostlist-cmdrpc-callsite.txt'
-          mipsel-linux-gnu-objdump -drwC "$cli" > /tmp/cli.asm
-          mipsel-linux-gnu-readelf -sW "$cli" > /tmp/cli.syms
+          out='docs/reverse-generated/gethostlist-producer.txt'
           {
-            echo '===== RUN 38 GOAL ====='
-            echo 'Tie GetHostList in confcli to the exact libcmdctl/cmdrpc request/reply sequence and arguments.'
-            echo '===== CONFCLI RELEVANT SYMBOLS ====='
-            grep -iE 'GetHostList|host_list|hostlist|cmd_pub|cmd_sub|cmd_get|cmdsh|conf_msg|confctl_cli_key|confctl_srv_key' /tmp/cli.syms || true
-            echo '===== STRINGS WITH OFFSETS ====='
-            strings -a -t x "$cli" | grep -iE -B8 -A12 'GetHostList|confctl_cli_key|confctl_srv_key|cmdrpc@|host list|host_list' || true
-            echo '===== ALL CMD_PUB CALLS NEAR GETHOSTLIST STRING USERS ====='
-            grep -n -B45 -A70 'cmd_pub' /tmp/cli.asm | head -n 1400 || true
-            echo '===== ALL CMD_SUB CALLS ====='
-            grep -n -B45 -A70 'cmd_sub' /tmp/cli.asm | head -n 1000 || true
-            echo '===== ALL CALLS THROUGH GOT OFFSETS FOR CMD_PUB/CMD_SUB ====='
-            grep -n -E -B35 -A55 '(-31212|-31784)\(gp\)' /tmp/cli.asm | head -n 1800 || true
-            echo '===== GET/HOSTLIST STRING REFERENCES ====='
-            grep -n -i -E -B50 -A90 'GetHostList|host.?list|confctl_cli_key|confctl_srv_key' /tmp/cli.asm | head -n 1800 || true
-            echo '===== LIBCMDCTL RANDOM KEY / RPC HELPER ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1f20 --stop-address=0x211c "$ctl" || true
-            echo '===== LIBCMDCTL GENERIC REQUEST BUILDER ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1e04 "$ctl" || true
+            echo '===== RUN 39 GOAL ====='
+            echo 'Find the exact binary/function that produces the local GetHostList request and recover the cmd_pub/cmd_sub argument flow.'
+            echo '===== FILES CONTAINING GetHostList ====='
+            grep -R -a -l 'GetHostList' "$root" 2>/dev/null || true
+            echo '===== STRINGS / SYMBOLS PER CANDIDATE ====='
+            while IFS= read -r f; do
+              [ -f "$f" ] || continue
+              echo "--- $f ---"
+              strings -a -t x "$f" | grep -iE -B12 -A18 'GetHostList|host.?list|confctl_(srv|cli)_key' || true
+              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'get.*host|host.*list|cmd_pub|cmd_sub|conf_msg|request|reply' || true
+            done < <(grep -R -a -l 'GetHostList' "$root" 2>/dev/null || true)
+            echo '===== CONFCLI COMMAND REGISTRATION / INIT WINDOW ====='
+            cli="$root/bin/confcli"
+            mipsel-linux-gnu-objdump -drwC --start-address=0x407210 --stop-address=0x408800 "$cli" || true
+            echo '===== CONFCLI DATA/RODATA AROUND COMMAND STRINGS ====='
+            mipsel-linux-gnu-objdump -s -j .rodata "$cli" 2>/dev/null | sed -n '1,260p' || true
+            mipsel-linux-gnu-objdump -s -j .data "$cli" 2>/dev/null | sed -n '1,260p' || true
+            echo '===== CONFSRV GetHostList FUNCTION ====='
+            srv="$root/bin/confsrv"
+            mipsel-linux-gnu-readelf -sW "$srv" | grep -iE 'confctl_get_host_list|host_list|cmd_pub|cmd_sub' || true
+            addr=$(mipsel-linux-gnu-readelf -sW "$srv" | awk '/confctl_get_host_list$/ {print "0x"$2; exit}')
+            if [ -n "${addr:-}" ]; then
+              start=$((addr)); stop=$((start+1800));
+              printf 'confctl_get_host_list addr=0x%x\n' "$start"
+              mipsel-linux-gnu-objdump -drwC --start-address="$start" --stop-address="$stop" "$srv" || true
+            fi
+            echo '===== ALL CONFCLI CMD_PUB/CMD_SUB CALLS WITH NEARBY ASCII OFFSETS ====='
+            mipsel-linux-gnu-objdump -drwC "$cli" | grep -n -E -B60 -A90 '(-31212|-31784)\(gp\)' | head -n 3600 || true
           } > "$out"
-          head -c 2400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 3000000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: gethostlist-cmdrpc-callsite
-          path: docs/reverse-generated/gethostlist-cmdrpc-callsite.txt
+          name: gethostlist-producer
+          path: docs/reverse-generated/gethostlist-producer.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/gethostlist-cmdrpc-callsite.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: trace GetHostList cmdrpc callsite'; git push || true; fi
+          git add docs/reverse-generated/gethostlist-producer.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: locate GetHostList request producer'; git push || true; fi
