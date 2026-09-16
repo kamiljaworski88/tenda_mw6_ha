@@ -5,146 +5,131 @@ Source binary examined: `latonita/tenda-reverse/RootFS-unpacked/bin/device_list`
 ## Binary metadata
 
 - ELF executable, MIPS/Linux
-- size in the public firmware tree: 72,264 bytes
+- size: 72,264 bytes
 - dynamically linked
+- full MIPS disassembly produced by the repository GitHub Actions workflow on 2026-09-16
 
-The binary's dynamic strings/symbol table gives substantially stronger evidence about the client inventory pipeline than the boot log alone.
+## Relevant linked APIs
 
-## Relevant linked libraries / APIs
+`device_list` imports `cmd_init`, `cmd_pub`, `cmd_sub`, Redis/CM infrastructure and the DHCP/Wi-Fi/netlink helpers described below. This confirms an event-driven client inventory process using Tenda's internal command bus.
 
-Observed strings include:
+## Decoded `cmd_pub()` call sites
 
-```text
-libapmib.so
-librtlWifiSrc.so
-libcommonprod.so
-libcm.so
-libredis.so
-libcmdctl.so
+The MIPS disassembly removes an important uncertainty. `cmd_pub` is called with the standard three-argument shape:
+
+```c
+cmd_pub(key, buffer, length)
 ```
 
-Relevant imported/runtime symbols include:
+The client-upload path resolves the first argument to the firmware string:
 
 ```text
-cmd_pub
-cmd_sub
-cmd_init
-cm_init
-cm_run
-cm_poll_start
-cm_poll_stop
-redis_option_new
-init_unix_socket_server
-netlink_usr_socket_init
-netlink_sock_deinit
-ugw_accept_client
-ugw_proc_recv_msg
+confctl_srv_key
 ```
 
-This strongly suggests `device_list` is event driven and exchanges data through internal command/pub-sub infrastructure; `libredis.so` is linked, but this does not imply that the externally exposed TCP/12598 service speaks raw Redis RESP.
+Both `do_upload_client_list()` and `do_upload_one_client()` publish to this key.
 
-## Client-list symbols
+### `do_upload_client_list()`
 
-The binary exposes highly relevant symbol names:
+The function receives a client-array pointer and count. Its size arithmetic contains:
 
 ```text
-g_device_list_debug_en
-g_mac_hdr
+count * 124 + 68
+```
+
+and it copies exactly `124` bytes for each client record into the outgoing message. Immediately before `cmd_pub()` it prepares the message length and calls:
+
+```text
+cmd_pub("confctl_srv_key", message, message_length)
+```
+
+This is now directly recovered from the call site rather than inferred from strings.
+
+### `do_upload_one_client()`
+
+The single-client function allocates `192` bytes, copies one client structure of exactly `124` bytes, sets the outgoing message length to `156`, and publishes it through the same `confctl_srv_key`.
+
+Several 32-bit fields in the copied record are converted with `htonl`, proving the message is a binary network-order structure rather than JSON/protobuf at this boundary.
+
+Observed client-record offsets touched near publication include `+92`, `+96`, and `+100`. Importantly, `+100` is transformed using the current time and `+96` is subsequently set to `1` in the source record. This means those fields must not yet be labelled as upload/download rate without stronger evidence.
+
+## Subscription side
+
+`device_list` also calls `cmd_sub()` during initialization. The subscriber name is formatted from the visible firmware string:
+
+```text
+device_list@%s
+```
+
+The callback is `device_list_cmd_sub`. This gives us both sides of the internal bus: a named subscriber/callback and a concrete publication key.
+
+## Client-list symbols / sources
+
+Relevant symbols include:
+
+```text
 find_in_client_mac_list
-alloc_client_mac
-g_client_hs_list
-find_in_client_hs_list
 alloc_device_client_info
-g_client_hs_list_num
-add_to_client_hs_list
+g_client_hs_list
 do_upload_one_client
-convert_conn_type_from_ifname
-del_from_client_hs_list
-free_client_hs_list
-free_lan_ifname_list
-print_lan_ifnames_list
-check_in_wifi_client_lists
-g_node_sn
-init_conn_type_list_hdr
-do_client_timeout_check
 do_upload_client_list
-lan_ifnames_change_handle
-del_client_belong_ifname
 dhcp_nl_event_handle
-init_lan_ifnames
-init_client_hs_list
-init_device_node_sn
 wifi_get_vap_client_lists
-ifaddrs_ethaddr_ntoa
-find_in_conn_type_list
-update_new_mac_list
-print_wifi_client_lists
-update_to_roam_list
 get_all_wireless_client
-del_roam_not_in_wifi_client_lists
-print_all_wifi_client_lists
-get_each_conn_type_list_hdr
-print_one_conn_type_list
+update_to_roam_list
+init_device_node_sn
+convert_conn_type_from_ifname
 ```
 
-## Current model of the firmware pipeline
+Firmware scripts additionally expose `/proc/wlan*/sta_info`, mesh association/routing procfs files, DHCP leases and conntrack. This matches the binary's client identity/node pipeline.
 
-The symbols support the following working model:
+## Critical conclusion about rates
+
+The 124-byte `device_list` record is now real and its transport is understood, but the disassembly does **not** justify treating fields `+92/+96/+100` as download/upload rates. The code around `+100` behaves like time/age state, and `+96` behaves like a flag.
+
+That pushes the project's rate target back to the separate cloud-info/BM path, for which the firmware logs contain:
 
 ```text
-DHCP/netlink events -----------+
-                               |
-Wi-Fi VAP client lists --------+--> client MAC / host-state lists
-                               |        |
-LAN interface changes ---------+        +--> connection type / roaming state
-                                        |
-                                        +--> do_upload_one_client()
-                                        +--> do_upload_client_list()
-                                                   |
-                                             cmd_pub / libredis
-                                                   |
-                                             cloud-info / ucloud
+fill_cloud_info_device_lists_rate
+NULL == g_ip_info
 ```
 
-This model is evidence-based but the exact internal channel name and serialized payload format still need to be recovered.
+and the kernel initializes an `online_ip` hash table/proc file through the BM subsystem.
+
+Current best model:
+
+```text
+DHCP/Wi-Fi/netlink -> device_list -> 124-byte identity/state record
+                              |
+                       confctl_srv_key
+                              |
+                        cloud-info
+                              +---- BM online_ip / g_ip_info
+                                         |
+                                  per-client rates
+```
+
+This explains why the official app can receive richer device data than the base `device_list` record alone.
 
 ## Cloud-info correlation
 
-A repository-wide search of the same firmware boot log confirms two separately registered commands in module `M_CLOUD_INFO[8]`:
+The same firmware registers:
 
 ```text
+M_CLOUD_INFO[8]
 CMD_CLOUD_INFO_DEV_UPLOAD_DEVIC[18]
 CMD_CLOUD_INFO_DEV_UPLOAD_STATU[20]
 ```
 
-The boot log also emits:
+These remain upload-side/cloud semantics and are **not** candidates for speculative live GET requests.
 
-```text
-[fill_cloud_info_device_lists_rate][2600][luminais] NULL == g_ip_info
-```
+## Next target for the Home Assistant goal
 
-This is an important correlation: the cloud-info implementation contains an explicit `device_lists_rate` path and a global `g_ip_info`, while `device_list` independently maintains client/MAC/connection-state lists and has upload functions. It strengthens the hypothesis that per-client rate information is assembled for cloud-info rather than being part of the already-tested `M_MESH_ADVANCE/QOS_GET` response.
-
-What is *not* proven yet: command 18 or 20 is not known to be a safe client GET. Their names and registration indicate upload/status semantics and they must not be sent speculatively to the live router.
-
-## Library triage
-
-Firmware-tree inspection identifies the cloud-side libraries/processes around this path, including `libcloud.so`, `libucapi.so`, `libcmdctl.so`, `libredis.so`, and the `ucloud` process. Dynamic-symbol inspection of `device_list` already proves its dependency on `cmd_pub`/`cmd_sub` and Redis-related infrastructure.
-
-The next reverse-engineering target is therefore the internal message boundary rather than random TCP/9000 command IDs:
-
-1. recover the arguments/call site of `do_upload_client_list()` and `do_upload_one_client()`;
-2. identify the `cmd_pub()` module/command or topic used by those functions;
-3. map the serialized client structure, especially IP/MAC, online state, connection type/node and upload/download rate;
-4. correlate that structure with a passive official-app TCP/9000 capture;
-5. only after a read-only request is positively identified, implement it in the Home Assistant client.
-
-## Why this matters for Home Assistant
-
-The most promising non-cloud route is no longer to guess TCP/9000 command IDs. We should identify the internal message published by `do_upload_client_list()` / `do_upload_one_client()` and determine whether an authenticated read-only TCP/9000 operation used by the official app exposes the same structure.
-
-A second path is passive capture: trigger the official app's device-list screen while capturing TCP/9000. That can reveal the exact module/command and payload without probing unknown commands.
+1. Locate the code/library containing `fill_cloud_info_device_lists_rate()` and recover the `g_ip_info` structure.
+2. Recover the exact procfs interface created by `bm_online_ip` and determine whether it exposes per-IP byte/rate counters locally.
+3. Prefer that local read-only source for HA; use `device_list`/DHCP/Wi-Fi data for client identity and mesh-node mapping.
+4. Only after download/upload values are positively mapped, implement `custom_components/tenda_mw6`.
 
 ## Safety
 
-Do not invoke unknown `M_CLOUD_INFO` commands against a production mesh merely because their names contain `DEV_UPLOAD`. Upload/status commands may have side effects or may be router-to-cloud notifications rather than client GET operations.
+No unknown `M_CLOUD_INFO` upload command or router SET operation is sent during this research. The target is a read-only local data path suitable for Home Assistant.
