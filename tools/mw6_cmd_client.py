@@ -7,10 +7,11 @@ Protocol recovered from MW6 libredis.so:
   u32le uncompressed_len
   LZ4 block(RESP bytes + magic f7 c6 89 be)
 
-Only PING and SUBSCRIBE are exposed. No SET/PUBLISH support.
+Exposes only read-only operations: PING, GET and SUBSCRIBE.
+No SET/PUBLISH support is exposed.
 """
 from __future__ import annotations
-import argparse, socket, struct, time
+import argparse, socket, struct
 from pathlib import Path
 
 MAGIC = bytes.fromhex("f7 c6 89 be")
@@ -18,6 +19,7 @@ MASK32 = 0xffffffff
 P1,P2,P3,P4,P5 = 0x9E3779B1,0x85EBCA77,0xC2B2AE3D,0x27D4EB2F,0x165667B1
 
 def rol(x,n): return ((x << n) | (x >> (32-n))) & MASK32
+
 def xxh32(data: bytes, seed=0):
     n=len(data); p=0
     def rnd(a,b): return (rol((a + b*P2)&MASK32,13)*P1)&MASK32
@@ -97,8 +99,7 @@ def recv_frame(s):
 def show(data: bytes, index: int, capture_dir: Path | None):
     print(f'\n--- message {index}: {len(data)} B ---')
     try:
-        text=data.decode('utf-8')
-        print(text.rstrip())
+        print(data.decode('utf-8').rstrip())
     except UnicodeDecodeError:
         print('BINARY HEX:', data.hex(' '))
     if capture_dir:
@@ -108,18 +109,21 @@ def show(data: bytes, index: int, capture_dir: Path | None):
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--host',default='192.168.5.1'); ap.add_argument('--port',type=int,default=12598)
-    sub=ap.add_subparsers(dest='cmd',required=True); sub.add_parser('ping')
+    sub=ap.add_subparsers(dest='cmd',required=True)
+    sub.add_parser('ping')
+    gp=sub.add_parser('get', help='read one Redis key through cmdsrv'); gp.add_argument('key')
     sp=sub.add_parser('subscribe'); sp.add_argument('channel'); sp.add_argument('--count',type=int,default=0,help='0 = listen until Ctrl+C'); sp.add_argument('--timeout',type=float,default=0,help='0 = no read timeout'); sp.add_argument('--capture-dir',default='mw6_capture')
-    a=ap.parse_args(); command=('PING',) if a.cmd=='ping' else ('SUBSCRIBE',a.channel)
+    a=ap.parse_args()
+    if a.cmd=='ping': command=('PING',); limit=1; timeout=10; capture=None
+    elif a.cmd=='get': command=('GET',a.key); limit=1; timeout=10; capture=None
+    else: command=('SUBSCRIBE',a.channel); limit=a.count; timeout=a.timeout or None; capture=Path(a.capture_dir)
     with socket.create_connection((a.host,a.port),3) as s:
-        s.settimeout(10 if a.cmd=='ping' else (a.timeout or None)); s.sendall(frame(resp(*command)))
-        limit=1 if a.cmd=='ping' else a.count; i=0
+        s.settimeout(timeout); s.sendall(frame(resp(*command))); i=0
         try:
             while limit==0 or i<limit:
-                data=recv_frame(s); i+=1
-                show(data,i,None if a.cmd=='ping' else Path(a.capture_dir))
+                data=recv_frame(s); i+=1; show(data,i,capture)
         except KeyboardInterrupt:
             print(f'\nStopped. Received {i} message(s).')
         except TimeoutError:
-            print(f'\nNo new message for {a.timeout:g}s. Received {i} message(s).')
+            print(f'\nNo new message. Received {i} message(s).')
 if __name__=='__main__': main()
