@@ -13,47 +13,52 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve exact HostInfo rate semantics
+      - name: Recover native cmdrpc request path
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
+          ctl='firmware-src/RootFS-unpacked/lib/libcmdctl.so'
+          srv='firmware-src/RootFS-unpacked/sbin/cmdsrv'
+          cli='firmware-src/RootFS-unpacked/sbin/cmdcli'
+          testbin='firmware-src/RootFS-unpacked/sbin/cmdctl_test'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/rate-semantics.txt'
-          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/conf.asm
-          mipsel-linux-gnu-readelf -sW "$conf" > /tmp/conf.syms
-          mipsel-linux-gnu-readelf -sW "$pb" > /tmp/pb.syms
+          out='docs/reverse-generated/cmdrpc-path.txt'
           {
-            echo '===== RUN 35 GOAL ====='
-            echo 'Resolve exact DL/UL field mapping, units, rate write path, and HostInfo protobuf field numbers.'
-            echo '===== RATE WRITE WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x4346f0 --stop-address=0x434970 "$conf" || true
-            echo '===== ALL GOT SYMBOLS USED BY RATE WINDOW ====='
-            grep -E '(-31888|-31884|-31880|-31876|-31872|-30768|-30584|-31408|-31216|-31212)\(gp\)' /tmp/conf.asm | head -n 300 || true
-            echo '===== DYNAMIC SYMBOL TABLE RELEVANT NAMES ====='
-            grep -iE 'netlink|g_ip_info|time|sleep|usleep|div|inet|ethaddr|strcmp|host|rate|stat' /tmp/conf.syms || true
-            echo '===== HOSTINFO PROTOBUF SYMBOLS ====='
-            grep -iE 'host_info|host_lists' /tmp/pb.syms || true
-            echo '===== HOSTINFO DESCRIPTOR/STRINGS ====='
-            strings -a -t x "$pb" | grep -iE -B6 -A12 'HostInfo|HostLists|uprate|downrate|signal|assoc_sn|condtion_time|interface_name|host_name' || true
-            echo '===== PROTOBUF DESCRIPTOR WINDOW ====='
-            mipsel-linux-gnu-objdump -s -j .rodata "$pb" | grep -n -B20 -A80 -iE 'uprate|downrate' || true
-            echo '===== RATE DEBUG STRINGS IN CONFSRV ====='
-            strings -a -t x "$conf" | grep -iE -B12 -A20 'uprate|downrate|up rate|down rate|rate.*%|online_ip' || true
-            echo '===== FEATURE 14/15 GATES INSIDE GETHOSTLIST/RATE ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x434300 --stop-address=0x435300 "$conf" | grep -E -B5 -A8 'li[[:space:]]+a0,(14|15)' || true
+            echo '===== RUN 36 GOAL ====='
+            echo 'Explain why TCP/12598 becomes globally subscribe-only and recover the native libcmdctl request/reply pattern (cmdrpc@...).'
+            echo '===== libcmdctl symbols ====='
+            mipsel-linux-gnu-readelf -sW "$ctl" | grep -E 'cmd_(init|sub|pub|get|set)|cmdsh_random_key|command_(connect|read|close)|redis|Base64' || true
+            echo '===== libcmdctl reloc/GOT ====='
+            mipsel-linux-gnu-readelf -rW "$ctl" || true
+            echo '===== full helper T.54 / command path ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1868 --stop-address=0x1eac "$ctl" || true
+            echo '===== cmd_init ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1040 --stop-address=0x10e8 "$ctl" || true
+            echo '===== cmd_sub ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x17bc --stop-address=0x1868 "$ctl" || true
+            echo '===== cmd_pub/get/set ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1e04 --stop-address=0x2040 "$ctl" || true
+            echo '===== libcmdctl strings ====='
+            strings -a -t x "$ctl" | grep -E -B8 -A12 'cmdrpc@|publish|subscribe|unsubscribe|command_connect|command_read|Base64|urandom' || true
+            echo '===== cmdsrv subscribe-mode enforcement ====='
+            mipsel-linux-gnu-objdump -drwC "$srv" | grep -n -B20 -A50 -E 'SUBSCRIBE|subscribe mode|UNSUBSCRIBE|QUIT|only .*SUBSCRIBE' || true
+            strings -a -t x "$srv" | grep -iE -B10 -A15 'subscribe|unsubscribe|quit|only' || true
+            echo '===== cmdcli usage / behavior ====='
+            strings -a -t x "$cli" | grep -iE -B12 -A20 'usage|subscribe|publish|raw|encrypt|server|listen|redis' || true
+            mipsel-linux-gnu-readelf -sW "$cli" | head -n 250 || true
+            echo '===== cmdctl_test callsites ====='
+            mipsel-linux-gnu-objdump -drwC "$testbin" | grep -n -B20 -A40 -E 'cmd_(get|set|pub|sub)' || true
           } > "$out"
-          head -c 1400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 1800000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: rate-semantics
-          path: docs/reverse-generated/rate-semantics.txt
+          name: cmdrpc-path
+          path: docs/reverse-generated/cmdrpc-path.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/rate-semantics.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve HostInfo rate semantics'; git push || true; fi
+          git add docs/reverse-generated/cmdrpc-path.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: recover native cmdrpc path'; git push || true; fi
