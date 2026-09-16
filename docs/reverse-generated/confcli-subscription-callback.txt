@@ -1,0 +1,287 @@
+===== RUN 46 GOAL =====
+B2 only: resolve the callback pointer shared by the two cmd_sub calls in confcli main and identify the runtime identifier used to build confctl_cli@<id>.
+===== MAIN SUBSCRIPTION WINDOW =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00406680 <main@@Base+0x1cc>:
+  406680:	0320f809 	jalr	t9
+  406684:	00000000 	nop
+  406688:	8fdc0010 	lw	gp,16(s8)
+  40668c:	afc2001c 	sw	v0,28(s8)
+  406690:	27c20060 	addiu	v0,s8,96
+  406694:	8f838024 	lw	v1,-32732(gp)
+  406698:	24642314 	addiu	a0,v1,8980
+  40669c:	00402821 	move	a1,v0
+  4066a0:	8f8283a4 	lw	v0,-31836(gp)
+  4066a4:	0040c821 	move	t9,v0
+  4066a8:	0320f809 	jalr	t9
+  4066ac:	00000000 	nop
+  4066b0:	8fdc0010 	lw	gp,16(s8)
+  4066b4:	8f828024 	lw	v0,-32732(gp)
+  4066b8:	244325a0 	addiu	v1,v0,9632
+  4066bc:	27c40020 	addiu	a0,s8,32
+  4066c0:	27c20060 	addiu	v0,s8,96
+  4066c4:	00602821 	move	a1,v1
+  4066c8:	8f838024 	lw	v1,-32732(gp)
+  4066cc:	246625a8 	addiu	a2,v1,9640
+  4066d0:	00403821 	move	a3,v0
+  4066d4:	8f828340 	lw	v0,-31936(gp)
+  4066d8:	0040c821 	move	t9,v0
+  4066dc:	0320f809 	jalr	t9
+  4066e0:	00000000 	nop
+  4066e4:	8fdc0010 	lw	gp,16(s8)
+  4066e8:	8fc4001c 	lw	a0,28(s8)
+  4066ec:	8f8283f0 	lw	v0,-31760(gp)
+  4066f0:	0040c821 	move	t9,v0
+  4066f4:	0320f809 	jalr	t9
+  4066f8:	00000000 	nop
+  4066fc:	8fdc0010 	lw	gp,16(s8)
+  406700:	8f828040 	lw	v0,-32704(gp)
+  406704:	00402021 	move	a0,v0
+  406708:	8f828590 	lw	v0,-31344(gp)
+  40670c:	0040c821 	move	t9,v0
+  406710:	0320f809 	jalr	t9
+  406714:	00000000 	nop
+  406718:	8fdc0010 	lw	gp,16(s8)
+  40671c:	8f848044 	lw	a0,-32700(gp)
+  406720:	8f82848c 	lw	v0,-31604(gp)
+  406724:	0040c821 	move	t9,v0
+  406728:	0320f809 	jalr	t9
+  40672c:	00000000 	nop
+  406730:	8fdc0010 	lw	gp,16(s8)
+  406734:	8f828048 	lw	v0,-32696(gp)
+  406738:	0040c821 	move	t9,v0
+  40673c:	0320f809 	jalr	t9
+  406740:	00000000 	nop
+  406744:	8fdc0010 	lw	gp,16(s8)
+  406748:	8f828324 	lw	v0,-31964(gp)
+  40674c:	0040c821 	move	t9,v0
+  406750:	0320f809 	jalr	t9
+  406754:	00000000 	nop
+  406758:	8fdc0010 	lw	gp,16(s8)
+  40675c:	afc20018 	sw	v0,24(s8)
+  406760:	8fc20018 	lw	v0,24(s8)
+  406764:	0441000a 	bgez	v0,406790 <main@@Base+0x2dc>
+  406768:	00000000 	nop
+  40676c:	8f828024 	lw	v0,-32732(gp)
+  406770:	244425b4 	addiu	a0,v0,9652
+  406774:	8f828360 	lw	v0,-31904(gp)
+  406778:	0040c821 	move	t9,v0
+  40677c:	0320f809 	jalr	t9
+  406780:	00000000 	nop
+  406784:	8fdc0010 	lw	gp,16(s8)
+  406788:	10000084 	b	40699c <main@@Base+0x4e8>
+  40678c:	00000000 	nop
+  406790:	8f82804c 	lw	v0,-32692(gp)
+  406794:	0040c821 	move	t9,v0
+  406798:	0320f809 	jalr	t9
+  40679c:	00000000 	nop
+  4067a0:	8fdc0010 	lw	gp,16(s8)
+  4067a4:	8f828050 	lw	v0,-32688(gp)
+  4067a8:	27c30020 	addiu	v1,s8,32
+  4067ac:	00602021 	move	a0,v1
+  4067b0:	00402821 	move	a1,v0
+  4067b4:	00003021 	move	a2,zero
+  4067b8:	8f8283d8 	lw	v0,-31784(gp)
+  4067bc:	0040c821 	move	t9,v0
+  4067c0:	0320f809 	jalr	t9
+  4067c4:	00000000 	nop
+  4067c8:	8fdc0010 	lw	gp,16(s8)
+  4067cc:	8f828050 	lw	v0,-32688(gp)
+  4067d0:	8f838024 	lw	v1,-32732(gp)
+  4067d4:	246425c8 	addiu	a0,v1,9672
+  4067d8:	00402821 	move	a1,v0
+  4067dc:	00003021 	move	a2,zero
+  4067e0:	8f8283d8 	lw	v0,-31784(gp)
+  4067e4:	0040c821 	move	t9,v0
+  4067e8:	0320f809 	jalr	t9
+  4067ec:	00000000 	nop
+  4067f0:	8fdc0010 	lw	gp,16(s8)
+  4067f4:	8f828374 	lw	v0,-31884(gp)
+  4067f8:	0040c821 	move	t9,v0
+  4067fc:	0320f809 	jalr	t9
+  406800:	00000000 	nop
+  406804:	8fdc0010 	lw	gp,16(s8)
+  406808:	0441000e 	bgez	v0,406844 <main@@Base+0x390>
+  40680c:	00000000 	nop
+===== GOT CONTENTS AROUND 0x454180 =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+Contents of section .got:
+ 454160 d0194300 00004300 00004000 304a4000  ..C...C...@.0J@.
+ 454170 005d4000 6c844000 28764000 90864000  .]@.l.@.(v@...@.
+ 454180 28634000 54644000 48754000 4cbe4200  (c@.Td@.Hu@.L.B.
+ 454190 10724000 bc004200 787a4000 00004500  .r@...B.xz@...E.
+ 4541a0 0c6c4000 9c6d4000 986e4000 c0694000  .l@..m@..n@..i@.
+===== SYMBOLS AROUND CALLBACK CANDIDATES =====
+    28: 00407210   328 FUNC    GLOBAL DEFAULT   12 conf_msg_hander
+    41: 0040f250   464 FUNC    GLOBAL DEFAULT   12 check_mac
+    47: 004166d0   700 FUNC    GLOBAL DEFAULT   12 clear_mac_filter_config
+   100: 00404a30   432 FUNC    GLOBAL DEFAULT   12 _td_snprintf
+   102: 00407628   104 FUNC    GLOBAL DEFAULT   12 conf_msg_open
+   167: 00408690  1736 FUNC    GLOBAL DEFAULT   12 confctl_define_callback
+   181: 0041698c  3332 FUNC    GLOBAL DEFAULT   12 update_mac_filter_rule
+   209: 00431920     0 FUNC    GLOBAL DEFAULT  UND sprintf
+   243: 00431710     0 FUNC    GLOBAL DEFAULT  UND vsnprintf
+   247: 004316d0     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   287: 00431490     0 FUNC    GLOBAL DEFAULT  UND string_lower_mac
+   325: 00431250     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_get_if_netmac
+   351: 004310c0     0 FUNC    GLOBAL DEFAULT  UND string_upper_mac
+   379: 00430f10     0 FUNC    GLOBAL DEFAULT  UND snprintf
+===== STRINGS AROUND 0x32580..0x325e0 =====
+  32588 Initialize env failed !
+  325a0 %s@%s
+  325a8 confctl_cli
+  325b4 uc_api_init failed
+  325c8 confctl_cli_key
+  325d8 confctl_force_upgrade_cli
+===== REFERENCES TO FORMAT STRING / confctl_cli =====
+1950-  406640:	0040c821 	move	t9,v0
+1951-  406644:	0320f809 	jalr	t9
+1952-  406648:	00000000 	nop
+1953-  40664c:	8fdc0010 	lw	gp,16(s8)
+1954-  406650:	8f82803c 	lw	v0,-32708(gp)
+1955-  406654:	0040c821 	move	t9,v0
+1956-  406658:	0320f809 	jalr	t9
+1957-  40665c:	00000000 	nop
+1958-  406660:	8fdc0010 	lw	gp,16(s8)
+1959-  406664:	8f82834c 	lw	v0,-31924(gp)
+1960-  406668:	0040c821 	move	t9,v0
+1961-  40666c:	0320f809 	jalr	t9
+1962-  406670:	00000000 	nop
+1963-  406674:	8fdc0010 	lw	gp,16(s8)
+1964-  406678:	8f8283dc 	lw	v0,-31780(gp)
+1965-  40667c:	0040c821 	move	t9,v0
+1966-  406680:	0320f809 	jalr	t9
+1967-  406684:	00000000 	nop
+1968-  406688:	8fdc0010 	lw	gp,16(s8)
+1969-  40668c:	afc2001c 	sw	v0,28(s8)
+1970-  406690:	27c20060 	addiu	v0,s8,96
+1971-  406694:	8f838024 	lw	v1,-32732(gp)
+1972-  406698:	24642314 	addiu	a0,v1,8980
+1973-  40669c:	00402821 	move	a1,v0
+1974-  4066a0:	8f8283a4 	lw	v0,-31836(gp)
+1975-  4066a4:	0040c821 	move	t9,v0
+1976-  4066a8:	0320f809 	jalr	t9
+1977-  4066ac:	00000000 	nop
+1978-  4066b0:	8fdc0010 	lw	gp,16(s8)
+1979-  4066b4:	8f828024 	lw	v0,-32732(gp)
+1980:  4066b8:	244325a0 	addiu	v1,v0,9632
+1981-  4066bc:	27c40020 	addiu	a0,s8,32
+1982-  4066c0:	27c20060 	addiu	v0,s8,96
+1983-  4066c4:	00602821 	move	a1,v1
+1984-  4066c8:	8f838024 	lw	v1,-32732(gp)
+1985-  4066cc:	246625a8 	addiu	a2,v1,9640
+1986-  4066d0:	00403821 	move	a3,v0
+1987-  4066d4:	8f828340 	lw	v0,-31936(gp)
+1988-  4066d8:	0040c821 	move	t9,v0
+1989-  4066dc:	0320f809 	jalr	t9
+1990-  4066e0:	00000000 	nop
+1991-  4066e4:	8fdc0010 	lw	gp,16(s8)
+1992-  4066e8:	8fc4001c 	lw	a0,28(s8)
+1993-  4066ec:	8f8283f0 	lw	v0,-31760(gp)
+1994-  4066f0:	0040c821 	move	t9,v0
+1995-  4066f4:	0320f809 	jalr	t9
+1996-  4066f8:	00000000 	nop
+1997-  4066fc:	8fdc0010 	lw	gp,16(s8)
+1998-  406700:	8f828040 	lw	v0,-32704(gp)
+1999-  406704:	00402021 	move	a0,v0
+2000-  406708:	8f828590 	lw	v0,-31344(gp)
+2001-  40670c:	0040c821 	move	t9,v0
+2002-  406710:	0320f809 	jalr	t9
+2003-  406714:	00000000 	nop
+2004-  406718:	8fdc0010 	lw	gp,16(s8)
+2005-  40671c:	8f848044 	lw	a0,-32700(gp)
+2006-  406720:	8f82848c 	lw	v0,-31604(gp)
+2007-  406724:	0040c821 	move	t9,v0
+2008-  406728:	0320f809 	jalr	t9
+2009-  40672c:	00000000 	nop
+2010-  406730:	8fdc0010 	lw	gp,16(s8)
+2011-  406734:	8f828048 	lw	v0,-32696(gp)
+2012-  406738:	0040c821 	move	t9,v0
+2013-  40673c:	0320f809 	jalr	t9
+2014-  406740:	00000000 	nop
+2015-  406744:	8fdc0010 	lw	gp,16(s8)
+2016-  406748:	8f828324 	lw	v0,-31964(gp)
+2017-  40674c:	0040c821 	move	t9,v0
+2018-  406750:	0320f809 	jalr	t9
+2019-  406754:	00000000 	nop
+2020-  406758:	8fdc0010 	lw	gp,16(s8)
+2021-  40675c:	afc20018 	sw	v0,24(s8)
+2022-  406760:	8fc20018 	lw	v0,24(s8)
+2023-  406764:	0441000a 	bgez	v0,406790 <main@@Base+0x2dc>
+2024-  406768:	00000000 	nop
+2025-  40676c:	8f828024 	lw	v0,-32732(gp)
+2026-  406770:	244425b4 	addiu	a0,v0,9652
+2027-  406774:	8f828360 	lw	v0,-31904(gp)
+2028-  406778:	0040c821 	move	t9,v0
+2029-  40677c:	0320f809 	jalr	t9
+2030-  406780:	00000000 	nop
+===== ALL REFERENCES TO conf_msg_hander ADDRESS =====
+2703-  4071c4:	24630001 	addiu	v1,v1,1
+2704-  4071c8:	afc3000c 	sw	v1,12(s8)
+2705-  4071cc:	1440000a 	bnez	v0,4071f8 <hash_pjw@@Base+0x1b0>
+2706-  4071d0:	00000000 	nop
+2707-  4071d4:	8fc20010 	lw	v0,16(s8)
+2708-  4071d8:	80420000 	lb	v0,0(v0)
+2709-  4071dc:	2c420001 	sltiu	v0,v0,1
+2710-  4071e0:	304200ff 	andi	v0,v0,0xff
+2711-  4071e4:	8fc30010 	lw	v1,16(s8)
+2712-  4071e8:	24630001 	addiu	v1,v1,1
+2713-  4071ec:	afc30010 	sw	v1,16(s8)
+2714-  4071f0:	1040ffe8 	beqz	v0,407194 <hash_pjw@@Base+0x14c>
+2715-  4071f4:	00000000 	nop
+2716-  4071f8:	8fc20008 	lw	v0,8(s8)
+2717-  4071fc:	03c0e821 	move	sp,s8
+2718-  407200:	8fbe001c 	lw	s8,28(sp)
+2719-  407204:	27bd0020 	addiu	sp,sp,32
+2720-  407208:	03e00008 	jr	ra
+2721-  40720c:	00000000 	nop
+2722-
+2723:00407210 <conf_msg_hander@@Base>:
+2724:  407210:	3c1c0005 	lui	gp,0x5
+2725-  407214:	279c4f30 	addiu	gp,gp,20272
+2726-  407218:	0399e021 	addu	gp,gp,t9
+2727-  40721c:	27bdffa0 	addiu	sp,sp,-96
+2728-  407220:	afbf005c 	sw	ra,92(sp)
+2729-  407224:	afbe0058 	sw	s8,88(sp)
+2730-  407228:	03a0f021 	move	s8,sp
+2731-  40722c:	afbc0018 	sw	gp,24(sp)
+2732-  407230:	afc40060 	sw	a0,96(s8)
+2733-  407234:	afc50064 	sw	a1,100(s8)
+2734-  407238:	afc60068 	sw	a2,104(s8)
+2735-  40723c:	afc7006c 	sw	a3,108(s8)
+2736-  407240:	afc0002c 	sw	zero,44(s8)
+2737-  407244:	afc00028 	sw	zero,40(s8)
+2738-  407248:	afc00024 	sw	zero,36(s8)
+2739-  40724c:	afc00050 	sw	zero,80(s8)
+2740-  407250:	afc00020 	sw	zero,32(s8)
+2741-  407254:	8fc20064 	lw	v0,100(s8)
+2742-  407258:	14400004 	bnez	v0,40726c <conf_msg_hander@@Base+0x5c>
+2743-  40725c:	00000000 	nop
+2744-  407260:	2402ffff 	li	v0,-1
+2745-  407264:	10000036 	b	407340 <conf_msg_hander@@Base+0x130>
+2746-  407268:	00000000 	nop
+2747-  40726c:	8fc20064 	lw	v0,100(s8)
+2748-  407270:	afc2002c 	sw	v0,44(s8)
+2749-  407274:	8fc2002c 	lw	v0,44(s8)
+2750-  407278:	afc20040 	sw	v0,64(s8)
+2751-  40727c:	27c20034 	addiu	v0,s8,52
+2752-  407280:	8f83805c 	lw	v1,-32676(gp)
+2753-  407284:	246447b8 	addiu	a0,v1,18360
+2754-  407288:	00402821 	move	a1,v0
+===== DYNAMIC RELOCS =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+DYNAMIC RELOCATION RECORDS
+OFFSET   TYPE              VALUE
+0045413c R_MIPS_JUMP_SLOT  __register_frame_info@GLIBC_2.0
+00454140 R_MIPS_JUMP_SLOT  __deregister_frame_info@GLIBC_2.0
+
+
