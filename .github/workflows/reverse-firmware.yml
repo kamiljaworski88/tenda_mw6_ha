@@ -22,51 +22,52 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p reports docs/reverse-generated
-      - name: Reverse local client query path
+      - name: Isolate GetHostList request envelope
         run: |
           root='firmware-src/RootFS-unpacked'
-          for f in "$root/bin/confsrv" "$root/bin/confcli" "$root/sbin/cmdctl_test" "$root/sbin/cmdcli" "$root/lib/libcmdctl.so" "$root/lib/libpb.so"; do
+          for f in "$root/bin/confsrv" "$root/bin/confcli" "$root/sbin/cmdctl_test" "$root/lib/libcmdctl.so" "$root/lib/libpb.so"; do
             [ -f "$f" ] || continue
             safe=$(echo "${f#$root/}" | tr '/' '_')
             strings -a -t x "$f" > "reports/$safe.strings.txt" || true
             mipsel-linux-gnu-readelf -aW "$f" > "reports/$safe.readelf.txt" 2>&1 || true
             mipsel-linux-gnu-objdump -drwC "$f" > "reports/$safe.objdump.txt" 2>&1 || true
+            mipsel-linux-gnu-objdump -s "$f" > "reports/$safe.sections.txt" 2>&1 || true
           done
-          out='docs/reverse-generated/client-api-map.txt'
+          out='docs/reverse-generated/gethostlist-envelope.txt'
           : > "$out"
-          echo '# Auto-generated MW6 local GetHostList query map' >> "$out"
-          echo >> "$out"
-          echo '===== confcli strings/symbols =====' >> "$out"
-          grep -iE -C 12 'GetHostList|confctl|confsrv|socket|host.?list|usage|cmd_get|confctl_cli_key|confctl_srv_key' reports/bin_confcli.strings.txt >> "$out" || true
-          grep -iE 'cmd_get|cmd_init|socket|connect|host|conf' reports/bin_confcli.readelf.txt >> "$out" || true
-          echo '===== confcli call sites =====' >> "$out"
-          grep -n -B80 -A180 -iE 'GetHostList|cmd_get|confctl_cli_key|confctl_srv_key|confsrv_socket' reports/bin_confcli.objdump.txt >> "$out" || true
-          echo '===== cmdctl_test GET reference =====' >> "$out"
-          grep -iE -C 15 'cmd_get|cmd_set|cmd_pub|cmd_sub|Usage|GET|SET' reports/sbin_cmdctl_test.strings.txt >> "$out" || true
-          grep -n -B100 -A220 -E 'cmd_get|cmd_set|cmd_pub|cmd_sub' reports/sbin_cmdctl_test.objdump.txt >> "$out" || true
+          echo '# MW6 GetHostList registration / request envelope' >> "$out"
+          echo '===== exact string offsets =====' >> "$out"
+          grep -n -iE 'GetHostList|GetTrafficInfo|confctl_srv_key|confctl_cli_key|confctl_get_host_list' reports/bin_confsrv.strings.txt >> "$out" || true
+          echo '===== exported symbol addresses =====' >> "$out"
+          grep -iE 'conf_msg_(define|cmd_init|all_cmds_init|hander)|confctl_get_host_list|cmd_get|cmd_init|cmd_sub' reports/bin_confsrv.readelf.txt reports/bin_confcli.readelf.txt reports/sbin_cmdctl_test.readelf.txt reports/lib_libcmdctl.so.readelf.txt >> "$out" || true
+          echo '===== confsrv conf_msg_define =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_define "$root/bin/confsrv" >> "$out" 2>&1 || true
+          echo '===== confsrv conf_msg_cmd_init =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_cmd_init "$root/bin/confsrv" >> "$out" 2>&1 || true
+          echo '===== confsrv conf_msg_all_cmds_init =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_all_cmds_init "$root/bin/confsrv" >> "$out" 2>&1 || true
+          echo '===== confsrv handler =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$root/bin/confsrv" >> "$out" 2>&1 || true
+          echo '===== GetHostList handler =====' >> "$out"
+          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$root/bin/confsrv" >> "$out" 2>&1 || true
+          echo '===== cmdctl_test full text =====' >> "$out"
+          cat reports/sbin_cmdctl_test.objdump.txt >> "$out"
           echo '===== libcmdctl cmd_get =====' >> "$out"
           mipsel-linux-gnu-objdump -drwC --disassemble=cmd_get "$root/lib/libcmdctl.so" >> "$out" 2>&1 || true
-          echo '===== confsrv dispatcher =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_hander "$root/bin/confsrv" >> "$out" 2>&1 || true
-          echo '===== confsrv command init =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=conf_msg_cmd_init "$root/bin/confsrv" >> "$out" 2>&1 || true
-          echo '===== GetHostList =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=confctl_get_host_list "$root/bin/confsrv" >> "$out" 2>&1 || true
-          echo '===== protobuf host definitions =====' >> "$out"
-          grep -iE -C 12 'host_lists|host_info|ipaddr|ethaddr|assoc_sn|uprate|downrate|signal|access' reports/lib_libpb.so.strings.txt >> "$out" || true
-          grep -iE 'host_lists|host_info' reports/lib_libpb.so.readelf.txt >> "$out" || true
+          echo '===== confcli command table vicinity =====' >> "$out"
+          grep -n -B80 -A160 -iE 'GetTrafficInfo|GetHostList|conf_msg_define|conf_msg_all_cmds_init|confctl_cli_key|confctl_srv_key' reports/bin_confcli.objdump.txt >> "$out" || true
           head -c 950000 "$out" > "$out.tmp" && mv "$out.tmp" "$out"
       - name: Commit map
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/client-api-map.txt
+          git add docs/reverse-generated/gethostlist-envelope.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: refresh local GetHostList query map'
+            git commit -m 'reverse: refresh GetHostList request envelope'
             git push
           fi
       - uses: actions/upload-artifact@v4
         with:
-          name: mw6-local-gethostlist-reports
+          name: mw6-gethostlist-envelope-reports
           path: reports/
           retention-days: 14
