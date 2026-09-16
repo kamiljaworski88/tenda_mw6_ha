@@ -103,10 +103,41 @@ LAN interface changes ---------+        +--> connection type / roaming state
                                                    |
                                              cmd_pub / libredis
                                                    |
-                                             ucloud/cloud-info
+                                             cloud-info / ucloud
 ```
 
-This model is evidence-based but the exact channel names and serialized payload format still need to be recovered.
+This model is evidence-based but the exact internal channel name and serialized payload format still need to be recovered.
+
+## Cloud-info correlation
+
+A repository-wide search of the same firmware boot log confirms two separately registered commands in module `M_CLOUD_INFO[8]`:
+
+```text
+CMD_CLOUD_INFO_DEV_UPLOAD_DEVIC[18]
+CMD_CLOUD_INFO_DEV_UPLOAD_STATU[20]
+```
+
+The boot log also emits:
+
+```text
+[fill_cloud_info_device_lists_rate][2600][luminais] NULL == g_ip_info
+```
+
+This is an important correlation: the cloud-info implementation contains an explicit `device_lists_rate` path and a global `g_ip_info`, while `device_list` independently maintains client/MAC/connection-state lists and has upload functions. It strengthens the hypothesis that per-client rate information is assembled for cloud-info rather than being part of the already-tested `M_MESH_ADVANCE/QOS_GET` response.
+
+What is *not* proven yet: command 18 or 20 is not known to be a safe client GET. Their names and registration indicate upload/status semantics and they must not be sent speculatively to the live router.
+
+## Library triage
+
+Firmware-tree inspection identifies the cloud-side libraries/processes around this path, including `libcloud.so`, `libucapi.so`, `libcmdctl.so`, `libredis.so`, and the `ucloud` process. Dynamic-symbol inspection of `device_list` already proves its dependency on `cmd_pub`/`cmd_sub` and Redis-related infrastructure.
+
+The next reverse-engineering target is therefore the internal message boundary rather than random TCP/9000 command IDs:
+
+1. recover the arguments/call site of `do_upload_client_list()` and `do_upload_one_client()`;
+2. identify the `cmd_pub()` module/command or topic used by those functions;
+3. map the serialized client structure, especially IP/MAC, online state, connection type/node and upload/download rate;
+4. correlate that structure with a passive official-app TCP/9000 capture;
+5. only after a read-only request is positively identified, implement it in the Home Assistant client.
 
 ## Why this matters for Home Assistant
 
