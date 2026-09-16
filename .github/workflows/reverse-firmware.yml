@@ -13,50 +13,46 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Trace libucapi GetHostList producer
+      - name: Isolate ol_hosts handler and command table
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          root='firmware-src/RootFS-unpacked'
-          uc="$root/lib/libucapi.so"
+          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/libucapi-gethostlist.txt'
+          out='docs/reverse-generated/ol-hosts-handler.txt'
           mipsel-linux-gnu-objdump -drwC "$uc" > /tmp/uc.asm
           mipsel-linux-gnu-readelf -sW "$uc" > /tmp/uc.syms
           {
-            echo '===== RUN 40 GOAL ====='
-            echo 'Recover the exact libucapi GetHostList producer/request path and arguments used to reach confsrv.'
-            echo '===== ALL HOST/ONLINE-HOST SYMBOLS ====='
-            grep -iE 'host|ol_hosts|mesh_hosts|device|request|send|recv|cmd_|uc_api|reg' /tmp/uc.syms | head -n 1200 || true
-            echo '===== STRINGS AROUND GetHostList ====='
-            strings -a -t x "$uc" | grep -iE -B30 -A50 'GetHostList|M_MESH_HOSTS|CMD_MESH_HOSTS_GET|SetHostMarks|GetRemarklist|confctl|cmdrpc' || true
-            echo '===== ALL TEXT REFERENCES TO RODATA OFFSET REGION 0x1fc00 ====='
-            grep -n -E -B50 -A90 '1fc[0-9a-f]{2}|1fb[0-9a-f]{2}|1fd[0-9a-f]{2}' /tmp/uc.asm | head -n 2800 || true
-            echo '===== KNOWN OL_HOSTS SYMBOL WINDOWS ====='
-            for sym in _m_ol_hosts_reg m_ol_hosts _ol_hosts_get_hdl_cb; do
-              a=$(awk -v s="$sym" '$NF==s {print "0x"$2; exit}' /tmp/uc.syms)
-              if [ -n "${a:-}" ]; then
-                start=$((a)); stop=$((start+1800));
-                printf '\n--- %s addr=0x%x ---\n' "$sym" "$start"
-                mipsel-linux-gnu-objdump -drwC --start-address="$start" --stop-address="$stop" "$uc" || true
-              fi
-            done
-            echo '===== ALL IMPORTS / CALLS RELEVANT TO TRANSPORT ====='
-            grep -iE 'cmd_pub|cmd_sub|cmd_get|cmd_set|redis|cm_io|send|recv|socket|connect|publish|subscribe' /tmp/uc.syms || true
-            grep -n -E -B35 -A60 'cmd_pub|cmd_sub|cmd_get|cmd_set|redis|cm_io|send|recv|connect' /tmp/uc.asm | head -n 3200 || true
-            echo '===== DYNAMIC RELOCS ====='
-            mipsel-linux-gnu-objdump -R "$uc" || true
+            echo '===== RUN 41 GOAL ====='
+            echo 'Recover exact uc_api_lib_ol_hosts_get_hdl_reg registration, callback target, command IDs, and request send path for GetHostList.'
+            echo '===== SYMBOLS ====='
+            grep -iE 'ol_hosts|gethost|cmd_args|cmd_register|cmd_send|cmd_resp|enable_m_ol_host|net_send|cgi_send' /tmp/uc.syms || true
+            echo '===== OL HOSTS REG FUNCTION ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1af3c --stop-address=0x1b080 "$uc" || true
+            echo '===== ENABLE M_OL_HOST ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x05ef4 --stop-address=0x06020 "$uc" || true
+            echo '===== CMD REGISTER ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x0786c --stop-address=0x07c7c "$uc" || true
+            echo '===== CMD SEND / RESP ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x05740 --stop-address=0x058a8 "$uc" || true
+            mipsel-linux-gnu-objdump -drwC --start-address=0x07418 --stop-address=0x07454 "$uc" || true
+            echo '===== COMMAND TABLE DATA AROUND cmd_args 0x31890 ====='
+            mipsel-linux-gnu-objdump -s --start-address=0x31890 --stop-address=0x31f00 "$uc" || true
+            echo '===== RODATA GetHostList REGION ====='
+            mipsel-linux-gnu-objdump -s --start-address=0x1fbf0 --stop-address=0x1fd30 "$uc" || true
+            echo '===== REFERENCES TO OL HOST REG / GET STRING REGION ====='
+            grep -n -E -B60 -A100 '1af3c|1fc9c|1fca8|1fcb8|31890' /tmp/uc.asm | head -n 3000 || true
           } > "$out"
-          head -c 3500000 "$out" > /tmp/cut && mv /tmp/cut "$out"
+          head -c 2400000 "$out" > /tmp/cut && mv /tmp/cut "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: libucapi-gethostlist
-          path: docs/reverse-generated/libucapi-gethostlist.txt
+          name: ol-hosts-handler
+          path: docs/reverse-generated/ol-hosts-handler.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/libucapi-gethostlist.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: trace libucapi GetHostList producer'; git push || true; fi
+          git add docs/reverse-generated/ol-hosts-handler.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: isolate ol_hosts handler'; git push || true; fi
