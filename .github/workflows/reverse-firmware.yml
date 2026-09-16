@@ -18,37 +18,39 @@ jobs:
       - run: |
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-      - name: Resolve OL_HOSTS module and command IDs
+      - name: Map UC API modules to TCP 9000 wire IDs
         run: |
           root='firmware-src/RootFS-unpacked'
-          lib="$root/lib/libucapi.so"
-          out='docs/reverse-generated/ol-hosts-wire-map.txt'
-          mipsel-linux-gnu-objdump -drwC "$lib" > /tmp/u.objdump
-          mipsel-linux-gnu-readelf -aW "$lib" > /tmp/u.readelf
-          strings -a -t x "$lib" > /tmp/u.strings
+          out='docs/reverse-generated/ucapi-wire-module-map.txt'
           : > "$out"
-          echo '===== symbols =====' >> "$out"
-          grep -iE 'uc_api_enable_m_ol_host|uc_api_lib_ol_hosts_get_hdl_reg|uc_api_lib_cmd_register|uc_api_lib_cmd_send' /tmp/u.readelf >> "$out" || true
-          echo '===== uc_api_enable_m_ol_host =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_enable_m_ol_host "$lib" >> "$out" 2>&1 || true
-          echo '===== ol_hosts get registration wrapper =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_ol_hosts_get_hdl_reg "$lib" >> "$out" 2>&1 || true
-          echo '===== command registration implementation =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_cmd_register "$lib" >> "$out" 2>&1 || true
-          echo '===== command send implementation =====' >> "$out"
-          mipsel-linux-gnu-objdump -drwC --disassemble=uc_api_lib_cmd_send "$lib" >> "$out" 2>&1 || true
-          echo '===== exact OL_HOST strings with file offsets =====' >> "$out"
-          grep -iE 'M_OL_HOSTS|CMD_OL_HOSTS_GET|_m_ol_hosts_reg|_ol_hosts_get_hdl_cb|uc_lib_m_ol_host' /tmp/u.strings >> "$out" || true
-          echo '===== code window around uc_api_enable_m_ol_host =====' >> "$out"
-          grep -n -B20 -A220 '<uc_api_enable_m_ol_host' /tmp/u.objdump >> "$out" || true
-          echo '===== references to registration wrapper =====' >> "$out"
-          grep -n -B80 -A120 'uc_api_lib_ol_hosts_get_hdl_reg' /tmp/u.objdump >> "$out" || true
-          echo '===== numeric registration calls near M_OL_HOSTS =====' >> "$out"
-          grep -n -B60 -A100 -E '2404000c|2404000d|2404000e|2404000f|24040010|24040011|24040012|24040013|24040014|24040015|24040016|24040017|24040018' /tmp/u.objdump >> "$out" || true
-          head -c 950000 "$out" > /tmp/o && mv /tmp/o "$out"
+          echo '===== firmware-wide UC API enable/register references =====' >> "$out"
+          grep -RInaE 'M_OL_HOSTS|CMD_OL_HOSTS_GET|uc_api_enable_m_ol_host|uc_api_enable_m_mesh_auth|uc_api_enable_m_mesh_advance|M_MESH_AUTH|M_MESH_ADVANCE' firmware-src 2>/dev/null | head -n 2000 >> "$out" || true
+          for f in "$root"/lib/*.so "$root"/bin/* "$root"/sbin/*; do
+            [ -f "$f" ] || continue
+            if strings -a "$f" 2>/dev/null | grep -qiE 'M_OL_HOSTS|M_MESH_AUTH|M_MESH_ADVANCE|uc_api_enable_m_ol_host'; then
+              echo "===== FILE $f =====" >> "$out"
+              strings -a -t x "$f" | grep -iE -C 12 'M_OL_HOSTS|CMD_OL_HOSTS_GET|M_MESH_AUTH|M_MESH_ADVANCE|uc_api_enable_m_ol_host' >> "$out" || true
+              mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -iE 'ol_host|mesh_auth|mesh_advance|uc_api_enable' >> "$out" || true
+            fi
+          done
+          lib="$root/lib/libucapi.so"
+          mipsel-linux-gnu-objdump -drwC "$lib" > /tmp/u.objdump
+          mipsel-linux-gnu-readelf -sW "$lib" > /tmp/u.sym
+          echo '===== all uc_api_enable module functions =====' >> "$out"
+          grep -i 'uc_api_enable_m_' /tmp/u.sym >> "$out" || true
+          while read -r sym; do
+            [ -n "$sym" ] || continue
+            echo "===== DISASM $sym =====" >> "$out"
+            mipsel-linux-gnu-objdump -drwC --disassemble="$sym" "$lib" 2>/dev/null >> "$out" || true
+          done < <(awk '/uc_api_enable_m_/ {print $8}' /tmp/u.sym | sed 's/@@.*//' | sort -u)
+          echo '===== known wire IDs from captures for comparison =====' >> "$out"
+          echo 'TCP9000 M_MESH_AUTH observed = 0x18; GET_STA=0x00 LOGIN=0x01' >> "$out"
+          echo 'TCP9000 M_MESH_ADVANCE observed = 0x17; QOS_GET=0x08 HIGH_DEVICE_GET=0x0f' >> "$out"
+          echo 'Goal: determine whether uc_api_enable module index equals TCP9000 wire module or is a separate registry index.' >> "$out"
+          head -c 1400000 "$out" > /tmp/o && mv /tmp/o "$out"
       - name: Commit result
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ol-hosts-wire-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh OL_HOSTS wire map'; git push; fi
+          git add docs/reverse-generated/ucapi-wire-module-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: refresh UC API to TCP9000 module map'; git push; fi
