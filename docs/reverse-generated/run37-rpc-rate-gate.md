@@ -4,17 +4,22 @@
 
 `GetHostList` does **not** use the random `cmdrpc@...` reply channel mechanism from `libcmdctl`'s synchronous `cmd_get` helper.
 
-The `confcli`/`confsrv` path uses the fixed command bus:
+The request is published to:
 
-- request channel: `confctl_srv_key`
-- reply/event channel: `confctl_cli_key`
-- envelope: 32-byte NUL-padded command name + little-endian uint32 payload length + payload
+- `confctl_srv_key`
 
-For the read-only client the correct sequence is therefore:
+Native `confcli` actually subscribes to two channels:
+
+- fixed `confctl_cli_key`
+- per-instance `confctl_cli@<serial.number>`
+
+Later reverse-engineering resolved the dynamic suffix source as the `serial.number` configuration value. This does not invalidate the fixed-channel GetHostList client: the GetHostList request envelope is only the 32-byte command name, uint32 payload length and payload, and for this request the payload is empty. It carries no caller-specific reply key. The fixed `confctl_cli_key` remains the relevant shared reply/event bus for this request path; the per-instance subscription is also used by native confcli for directed events/messages.
+
+The read-only Python sequence remains:
 
 1. `SUBSCRIBE confctl_cli_key`
 2. `PUBLISH confctl_srv_key <GetHostList envelope>`
-3. wait for a `GetHostList` envelope on `confctl_cli_key`
+3. wait for a `GetHostList` envelope
 
 Subscribing before publishing avoids losing a fast response.
 
@@ -33,19 +38,32 @@ The active decoder is `tools/mw6_hostinfo.py`:
 9. `signal`
 10. `name`
 
-`tools/mw6_cmd_client.py clients` now imports this decoder instead of maintaining a second unresolved protobuf decoder.
+## Corrected rate processing gate
 
-## Rate processing gate
+The rate helper checks runtime `HostInfo+0x20`. The exact 32-bit protobuf-c layout proves this is the `online` field, not `condtion_time`.
 
-The rate helper checks runtime HostInfo offset `+0x20` before processing a client. A zero value skips the rate path for that client.
+Equivalent firmware logic:
 
-The current reverse mapping associates this slot with the condition-time/runtime eligibility path represented by `condtion_time` in HostInfo. The live diagnostic therefore reports whether that value is non-zero, but does not claim that this alone proves rate calculation will succeed.
+```c
+if (!host->online)
+    continue;
+```
 
-If `condtion_time` is non-zero and `uprate/downrate` still remain zero under known traffic, the next target is the lookup/matching step against `g_ip_info` / `/proc/net/online_ip` (IP/MAC identity and interface-specific conditions).
+For an online host, firmware parses IP and MAC and performs a strict match against `g_ip_info`: MAC must equal the six bytes at record `+0x04` **and** IPv4 must equal the value at record `+0x00`. The record stride is `0xE8` bytes. A missing/stale pair skips rate calculation.
+
+## Rate semantics
+
+Subsequent reverse-engineering also resolves:
+
+- `uprate` = upload rate
+- `downrate` = download rate
+- source counters are byte counters (`up_bytes` / `down_bytes`)
+- elapsed microseconds are divided by `1,000,000`
+- final byte/second result is divided by `1024`
+
+Therefore `uprate` and `downrate` are integer **KiB/s** values (the original UI may label them KB/s).
 
 ## Safe live diagnostic
-
-Use:
 
 ```powershell
 python .\tools\mw6_cmd_client.py --host 192.168.5.1 clients --pretty --diagnose-rates --raw-out gethostlist.bin
