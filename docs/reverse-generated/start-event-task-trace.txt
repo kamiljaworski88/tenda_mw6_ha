@@ -1,0 +1,215 @@
+===== RUN 80 GOAL =====
+Disassemble start_event_task (0x20df8..0x21030) and identify how queued events are consumed / dispatched.
+===== START_EVENT_TASK =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00020df8 <start_event_task@@Base>:
+   20df8:	3c1c0007 	lui	gp,0x7
+   20dfc:	279c2578 	addiu	gp,gp,9592
+   20e00:	0399e021 	addu	gp,gp,t9
+   20e04:	27bdffd0 	addiu	sp,sp,-48
+   20e08:	afbf002c 	sw	ra,44(sp)
+   20e0c:	afb10028 	sw	s1,40(sp)
+   20e10:	afb00024 	sw	s0,36(sp)
+   20e14:	afbc0018 	sw	gp,24(sp)
+   20e18:	8f91899c 	lw	s1,-30308(gp)
+   20e1c:	8f998538 	lw	t9,-31432(gp)
+   20e20:	0320f809 	jalr	t9
+   20e24:	26240008 	addiu	a0,s1,8
+   20e28:	1440005b 	bnez	v0,20f98 <start_event_task@@Base+0x1a0>
+   20e2c:	8fbc0018 	lw	gp,24(sp)
+   20e30:	8f9980c0 	lw	t9,-32576(gp)
+   20e34:	0320f809 	jalr	t9
+   20e38:	24040009 	li	a0,9
+   20e3c:	14400008 	bnez	v0,20e60 <start_event_task@@Base+0x68>
+   20e40:	8fbc0018 	lw	gp,24(sp)
+   20e44:	8f998c1c 	lw	t9,-29668(gp)
+   20e48:	24040009 	li	a0,9
+   20e4c:	24050011 	li	a1,17
+   20e50:	00003021 	move	a2,zero
+   20e54:	0320f809 	jalr	t9
+   20e58:	00003821 	move	a3,zero
+   20e5c:	8fbc0018 	lw	gp,24(sp)
+   20e60:	8f9980c0 	lw	t9,-32576(gp)
+   20e64:	0320f809 	jalr	t9
+   20e68:	24040008 	li	a0,8
+   20e6c:	14400008 	bnez	v0,20e90 <start_event_task@@Base+0x98>
+   20e70:	8fbc0018 	lw	gp,24(sp)
+   20e74:	8f998c1c 	lw	t9,-29668(gp)
+   20e78:	24040008 	li	a0,8
+   20e7c:	24050011 	li	a1,17
+   20e80:	00003021 	move	a2,zero
+   20e84:	0320f809 	jalr	t9
+   20e88:	00003821 	move	a3,zero
+   20e8c:	8fbc0018 	lw	gp,24(sp)
+   20e90:	8f9980c0 	lw	t9,-32576(gp)
+   20e94:	0320f809 	jalr	t9
+   20e98:	24040003 	li	a0,3
+   20e9c:	14400008 	bnez	v0,20ec0 <start_event_task@@Base+0xc8>
+   20ea0:	8fbc0018 	lw	gp,24(sp)
+   20ea4:	8f998c1c 	lw	t9,-29668(gp)
+   20ea8:	24040003 	li	a0,3
+   20eac:	24050011 	li	a1,17
+   20eb0:	00003021 	move	a2,zero
+   20eb4:	0320f809 	jalr	t9
+   20eb8:	00003821 	move	a3,zero
+   20ebc:	8fbc0018 	lw	gp,24(sp)
+   20ec0:	8f9982bc 	lw	t9,-32068(gp)
+   20ec4:	0320f809 	jalr	t9
+   20ec8:	00000000 	nop
+   20ecc:	10400023 	beqz	v0,20f5c <start_event_task@@Base+0x164>
+   20ed0:	8fbc0018 	lw	gp,24(sp)
+   20ed4:	8f828570 	lw	v0,-31376(gp)
+   20ed8:	8f868030 	lw	a2,-32720(gp)
+   20edc:	8f878030 	lw	a3,-32720(gp)
+   20ee0:	8c440000 	lw	a0,0(v0)
+   20ee4:	24020a6d 	li	v0,2669
+   20ee8:	afa20010 	sw	v0,16(sp)
+   20eec:	8f828030 	lw	v0,-32720(gp)
+   20ef0:	8f998274 	lw	t9,-32140(gp)
+   20ef4:	24c66a14 	addiu	a2,a2,27156
+   20ef8:	2442607c 	addiu	v0,v0,24700
+   20efc:	24e75968 	addiu	a3,a3,22888
+   20f00:	00002821 	move	a1,zero
+   20f04:	0320f809 	jalr	t9
+   20f08:	afa20014 	sw	v0,20(sp)
+   20f0c:	8fbc0018 	lw	gp,24(sp)
+   20f10:	00002021 	move	a0,zero
+   20f14:	8f998350 	lw	t9,-31920(gp)
+   20f18:	8f858518 	lw	a1,-31464(gp)
+   20f1c:	0320f809 	jalr	t9
+   20f20:	00003021 	move	a2,zero
+   20f24:	8fbc0018 	lw	gp,24(sp)
+   20f28:	8f828018 	lw	v0,-32744(gp)
+   20f2c:	8042c3b8 	lb	v0,-15432(v0)
+   20f30:	50400007 	beqzl	v0,20f50 <start_event_task@@Base+0x158>
+   20f34:	8f998c1c 	lw	t9,-29668(gp)
+   20f38:	8f9980d8 	lw	t9,-32552(gp)
+   20f3c:	8fbf002c 	lw	ra,44(sp)
+   20f40:	8fb10028 	lw	s1,40(sp)
+   20f44:	8fb00024 	lw	s0,36(sp)
+   20f48:	03200008 	jr	t9
+   20f4c:	27bd0030 	addiu	sp,sp,48
+   20f50:	24040002 	li	a0,2
+   20f54:	10000009 	b	20f7c <start_event_task@@Base+0x184>
+   20f58:	24050002 	li	a1,2
+   20f5c:	8f9980c0 	lw	t9,-32576(gp)
+   20f60:	0320f809 	jalr	t9
+   20f64:	24040003 	li	a0,3
+   20f68:	1040002c 	beqz	v0,2101c <start_event_task@@Base+0x224>
+   20f6c:	8fbc0018 	lw	gp,24(sp)
+   20f70:	8f998c1c 	lw	t9,-29668(gp)
+   20f74:	24040003 	li	a0,3
+   20f78:	24050003 	li	a1,3
+   20f7c:	8fbf002c 	lw	ra,44(sp)
+   20f80:	8fb10028 	lw	s1,40(sp)
+   20f84:	8fb00024 	lw	s0,36(sp)
+   20f88:	00003021 	move	a2,zero
+   20f8c:	00003821 	move	a3,zero
+   20f90:	03200008 	jr	t9
+   20f94:	27bd0030 	addiu	sp,sp,48
+   20f98:	8f9981ec 	lw	t9,-32276(gp)
+   20f9c:	0320f809 	jalr	t9
+   20fa0:	00000000 	nop
+   20fa4:	1440001d 	bnez	v0,2101c <start_event_task@@Base+0x224>
+   20fa8:	8fbc0018 	lw	gp,24(sp)
+   20fac:	8f828018 	lw	v0,-32744(gp)
+   20fb0:	8c42c340 	lw	v0,-15552(v0)
+   20fb4:	30420008 	andi	v0,v0,0x8
+   20fb8:	10400019 	beqz	v0,21020 <start_event_task@@Base+0x228>
+   20fbc:	8fbf002c 	lw	ra,44(sp)
+   20fc0:	8f908018 	lw	s0,-32744(gp)
+   20fc4:	8f998bb0 	lw	t9,-29776(gp)
+   20fc8:	0320f809 	jalr	t9
+   20fcc:	2604c6f0 	addiu	a0,s0,-14608
+   20fd0:	14400012 	bnez	v0,2101c <start_event_task@@Base+0x224>
+   20fd4:	8fbc0018 	lw	gp,24(sp)
+   20fd8:	8f828030 	lw	v0,-32720(gp)
+   20fdc:	8f998754 	lw	t9,-30892(gp)
+   20fe0:	8f858140 	lw	a1,-32448(gp)
+   20fe4:	8c467110 	lw	a2,28944(v0)
+   20fe8:	8c477114 	lw	a3,28948(v0)
+   20fec:	2604c6f0 	addiu	a0,s0,-14608
+   20ff0:	0320f809 	jalr	t9
+   20ff4:	afa00010 	sw	zero,16(sp)
+   20ff8:	8fbc0018 	lw	gp,24(sp)
+   20ffc:	8e24001c 	lw	a0,28(s1)
+   21000:	2605c6f0 	addiu	a1,s0,-14608
+   21004:	8f998204 	lw	t9,-32252(gp)
+   21008:	8fbf002c 	lw	ra,44(sp)
+   2100c:	8fb10028 	lw	s1,40(sp)
+   21010:	8fb00024 	lw	s0,36(sp)
+   21014:	03200008 	jr	t9
+   21018:	27bd0030 	addiu	sp,sp,48
+   2101c:	8fbf002c 	lw	ra,44(sp)
+   21020:	8fb10028 	lw	s1,40(sp)
+   21024:	8fb00024 	lw	s0,36(sp)
+   21028:	03e00008 	jr	ra
+   2102c:	27bd0030 	addiu	sp,sp,48
+===== RELEVANT SYMBOLS =====
+   177: 0001d4f0     8 FUNC    GLOBAL DEFAULT   10 task_cb_example
+   339: 0001e764   184 FUNC    GLOBAL DEFAULT   10 event_queue_destory
+   583: 0001d814    52 FUNC    GLOBAL DEFAULT   10 event_queue_only_one
+   620: 0001ed74   104 FUNC    GLOBAL DEFAULT   10 send_event_failure_message
+   622: 0001e6cc   152 FUNC    GLOBAL DEFAULT   10 server_is_ready
+   628: 00020d7c   124 FUNC    GLOBAL DEFAULT   10 connect_dispatcher
+   667: 000214d8  1236 FUNC    GLOBAL DEFAULT   10 svr_ready_event_handle
+   673: 00018c10   252 FUNC    GLOBAL DEFAULT   10 do_outer_read
+   674: 0003fb9c   220 FUNC    GLOBAL DEFAULT   10 do_event_version_multiq_ok
+   709: 00064df0     0 FUNC    GLOBAL DEFAULT  UND pthread_detach
+   753: 0002ae68   188 FUNC    GLOBAL DEFAULT   10 _net_recv
+   771: 00020980   272 FUNC    GLOBAL DEFAULT   10 do_event_con_svr_fail
+   826: 0001ef90   140 FUNC    GLOBAL DEFAULT   10 do_event_upgradeq_ing
+   840: 0002db80   232 FUNC    GLOBAL DEFAULT   10 upload_router_info_task
+   855: 0001ef04   140 FUNC    GLOBAL DEFAULT   10 do_event_speedtest_ing
+   878: 0001f01c   140 FUNC    GLOBAL DEFAULT   10 do_event_memcheck_not_enough
+   900: 0001e520   136 FUNC    GLOBAL DEFAULT   10 do_disp_task
+   911: 0003fc78   356 FUNC    GLOBAL DEFAULT   10 do_event_versionq_ok
+   934: 00018028   672 FUNC    GLOBAL DEFAULT   10 outer_recv
+   938: 0001f4c0   292 FUNC    GLOBAL DEFAULT   10 do_event_account_info_u_ok
+   956: 0001f134   148 FUNC    GLOBAL DEFAULT   10 do_event_policy_versionq_fail
+   966: 0001f25c   144 FUNC    GLOBAL DEFAULT   10 do_event_data_port_failed
+   967: 00020df8   568 FUNC    GLOBAL DEFAULT   10 start_event_task
+   970: 0001f0a8   140 FUNC    GLOBAL DEFAULT   10 do_event_memcheck_fail
+   983: 00021238   320 FUNC    GLOBAL DEFAULT   10 do_event_versionq_fail
+  1005: 00017750   772 FUNC    GLOBAL DEFAULT   10 outer_head_recv
+  1022: 0001f2ec   144 FUNC    GLOBAL DEFAULT   10 do_event_data_port_ok
+  1042: 0001eddc   148 FUNC    GLOBAL DEFAULT   10 do_event_account_info_u_failed
+  1044: 0005f5f8   408 FUNC    GLOBAL DEFAULT   10 do_udp_data_read
+  1051: 0005eac0    28 FUNC    GLOBAL DEFAULT   10 file_transfer_ready
+  1053: 00020870   272 FUNC    GLOBAL DEFAULT   10 do_event_auth_svr_fail
+  1065: 0002dc68   204 FUNC    GLOBAL DEFAULT   10 clear_bind_account_task
+  1072: 0005f790   744 FUNC    GLOBAL DEFAULT   10 do_udp_cmd_read
+  1084: 00033be0   268 FUNC    GLOBAL DEFAULT   10 _send_event_failure_message
+  1087: 00020720   336 FUNC    GLOBAL DEFAULT   10 event_stat_clear
+  1098: 0001f37c   324 FUNC    GLOBAL DEFAULT   10 do_event_cmd_fail
+  1104: 000176d4   124 FUNC    GLOBAL DEFAULT   10 do_inner_read
+  1106: 0001d5e0    40 FUNC    GLOBAL DEFAULT   10 start_svr_task_proc
+  1129: 0001ea00    92 FUNC    GLOBAL DEFAULT   10 del_event
+  1188: 0002a7b0   476 FUNC    GLOBAL DEFAULT   10 cmd_disp_dispatch
+  1193: 00021030   368 FUNC    GLOBAL DEFAULT   10 event_add_queue
+  1222: 0001732c   480 FUNC    GLOBAL DEFAULT   10 inner_head_recv
+  1224: 0003faa8   244 FUNC    GLOBAL DEFAULT   10 do_event_policy_versionq_ok
+  1232: 00022978    24 FUNC    GLOBAL DEFAULT   10 delay_connect_dispatcher
+  1234: 0001d764    64 FUNC    GLOBAL DEFAULT   10 get_event_by_type
+  1237: 00064ba0     0 FUNC    GLOBAL DEFAULT  UND pthread_create
+  1239: 0001ec18   348 FUNC    GLOBAL DEFAULT   10 do_event_svr_not_ready
+  1248: 0001d7a4    80 FUNC    GLOBAL DEFAULT   10 get_not_send_event_by_type
+  1271: 00064b50     0 FUNC    GLOBAL DEFAULT  UND recv
+  1275: 00064b30     0 FUNC    GLOBAL DEFAULT  UND pthread_exit
+  1291: 0001eaf0   296 FUNC    GLOBAL DEFAULT   10 alloc_new_event
+  1311: 0003f1f0    40 FUNC    GLOBAL DEFAULT   10 ol_upgrade_event_is_doing
+  1321: 00064ae0     0 FUNC    GLOBAL DEFAULT  UND recvfrom
+  1349: 00021a64   352 FUNC    GLOBAL DEFAULT   10 do_event_task
+  1359: 000219ac   184 FUNC    GLOBAL DEFAULT   10 do_event_auth_svr_ok
+  1362: 0001ee70   148 FUNC    GLOBAL DEFAULT   10 do_event_account_info_q_failed
+  1370: 0001750c   456 FUNC    GLOBAL DEFAULT   10 inner_recv
+  1379: 00045858    32 FUNC    GLOBAL DEFAULT   10 band_test_event_is_doing
+  1400: 0001f5e4   220 FUNC    GLOBAL DEFAULT   10 do_event_account_info_q_ok
+  1401: 000247a8   248 FUNC    GLOBAL DEFAULT   10 m_cloud_dispatcher_refresh
+  1417: 00064a50     0 FUNC    GLOBAL DEFAULT  UND pthread_self
+  1434: 0001f1c8   148 FUNC    GLOBAL DEFAULT   10 do_event_version_multiq_fail
