@@ -18,57 +18,80 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils file python3-pip
+          python3 -m pip install --break-system-packages vmlinux-to-elf || true
 
-      - name: Locate protocol 31 kernel handler
+      - name: Extract kernel and locate statistics handler
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated
-          root='firmware-src/RootFS-unpacked/lib/modules'
-          out='docs/reverse-generated/run121-netlink31-handler.txt'
+          mkdir -p docs/reverse-generated /tmp/mw6kernel
+          img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
+          out='docs/reverse-generated/run122-kernel-statistics.txt'
+          raw='/tmp/mw6kernel/kernel.raw'
+          elf='/tmp/mw6kernel/kernel.elf'
+
+          # README/binwalk: LZMA stream starts at flash 0x32818; KernelFS starts at 0x30000.
+          dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
+          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
+
           {
-            echo '===== RUN 121: locate kernel owner of AF_NETLINK protocol 31 ====='
+            echo '===== RUN 122: built-in kernel statistics handler ====='
+            echo 'KernelFS LZMA relative offset: 0x2818'
             echo
-            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
-              if mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -q '__netlink_kernel_create'; then
-                echo "===== MODULE $f ====="
-                mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -Ei 'netlink|online|stat|traffic|host|client|ip_info|hash|byte' || true
-                echo '-- create contexts --'
-                mipsel-linux-gnu-objdump -drwC "$f" 2>/dev/null | grep -n -B20 -A28 '__netlink_kernel_create' || true
-                echo '-- immediate protocol candidates --'
-                mipsel-linux-gnu-objdump -drwC "$f" 2>/dev/null | grep -n -E 'li[[:space:]]+a1,(31|0x1f)|2405001f' || true
-                echo
-              fi
-            done
-            echo '===== ALL MODULES WITH LITERAL protocol 31 NEAR netlink create ====='
-            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
-              d=$(mipsel-linux-gnu-objdump -drwC "$f" 2>/dev/null || true)
-              if printf '%s\n' "$d" | grep -q '__netlink_kernel_create' && printf '%s\n' "$d" | grep -Eq 'li[[:space:]]+a1,(31|0x1f)|2405001f'; then
-                echo "--- $f ---"
-                printf '%s\n' "$d" | grep -n -B40 -A100 -E '__netlink_kernel_create|2405001f|li[[:space:]]+a1,(31|0x1f)' || true
-                echo '-- symbols --'
-                mipsel-linux-gnu-nm -a "$f" 2>/dev/null | sort || true
-                echo '-- strings --'
-                strings -a -t x "$f" | grep -Ei 'netlink|online|stat|traffic|host|client|ip_info|hash|byte|upload|download|nat' || true
-                echo
-              fi
-            done
+            echo '===== FILE TYPES / SIZES ====='
+            file "$img" /tmp/mw6kernel/kernel.lzma "$raw" || true
+            wc -c "$img" /tmp/mw6kernel/kernel.lzma "$raw" || true
+            echo
+            echo '===== RAW KERNEL RELEVANT STRINGS ====='
+            strings -a -t x "$raw" | grep -Ei 'online_ip_hash|online_ip|netlink|statistic|traffic|up_bytes|down_bytes|clear_online|client.*stat|hw_nat|sw_nat|fastpath' | head -n 1000 || true
+            echo
+            echo '===== RAW STRING OFFSETS ====='
+            grep -aob 'online_ip_hash' "$raw" || true
+            grep -aob 'online_ip_hash_size' "$raw" || true
+            grep -aob 'clear_online_ip_flag' "$raw" || true
+            grep -aob 'netlink' "$raw" | head -n 100 || true
+            echo
+            echo '===== VMLINUX-TO-ELF ====='
+            if command -v vmlinux-to-elf >/dev/null 2>&1; then
+              vmlinux-to-elf "$raw" "$elf" 2>&1 || true
+            elif command -v vmlinux_to_elf >/dev/null 2>&1; then
+              vmlinux_to_elf "$raw" "$elf" 2>&1 || true
+            else
+              echo 'vmlinux-to-elf command unavailable'
+            fi
+            if [ -s "$elf" ]; then
+              file "$elf" || true
+              echo '-- symbols --'
+              mipsel-linux-gnu-nm -n "$elf" 2>/dev/null | grep -Ei 'online_ip_hash|online_ip|netlink|statistic|traffic|clear_online|ip_info' | head -n 1000 || true
+              echo '-- target symbol neighborhoods --'
+              for sym in online_ip_hash online_ip_hash_size clear_online_ip_flag; do
+                addr=$(mipsel-linux-gnu-nm -n "$elf" 2>/dev/null | awk -v s="$sym" '$3==s {print $1; exit}')
+                if [ -n "$addr" ]; then
+                  start=$((16#$addr > 512 ? 16#$addr - 512 : 0))
+                  stop=$((16#$addr + 1024))
+                  echo "### $sym @ 0x$addr"
+                  mipsel-linux-gnu-objdump -drwC --start-address="$start" --stop-address="$stop" "$elf" 2>/dev/null || true
+                fi
+              done
+            else
+              echo 'No reconstructed ELF; raw kernel still retained only inside runner.'
+            fi
           } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run121-netlink31-handler
-          path: docs/reverse-generated/run121-netlink31-handler.txt
+          name: run122-kernel-statistics
+          path: docs/reverse-generated/run122-kernel-statistics.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run121-netlink31-handler.txt
+          git add docs/reverse-generated/run122-kernel-statistics.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: locate netlink protocol 31 handler'
+            git commit -m 'reverse: extract built-in kernel statistics handler'
             git push
           fi
