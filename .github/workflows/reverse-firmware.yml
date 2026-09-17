@@ -13,30 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace BasicInfo protobuf schema
+      - name: Trace BasicInfo field names
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-basic-info-schema.txt'
+          out='docs/reverse-generated/sys-basic-info-fields.txt'
           {
-            echo '===== RUN 57 GOAL ====='
-            echo 'Find BasicInfo protobuf/message descriptor and field names used by M_SYS cmd0 response.'
-            echo '===== BASICINFO / DESCRIPTOR SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'basic.?info|descriptor|protobuf|serial' || true
-            echo '===== BASICINFO / SERIAL STRINGS ====='
-            strings -a -t x "$lib" | grep -Ei 'BasicInfo|basic_info|serial(_num|\.number|number)?|sys\.model|soft\.ver|descriptor' || true
+            echo '===== RUN 58 GOAL ====='
+            echo 'Find concrete BasicInfo response field names, especially serial-related fields, without generic protobuf noise.'
+            echo '===== RELEVANT STRINGS ====='
+            strings -a -t x "$lib" | grep -Ei 'basic.?info|serial|serial_num|sn$|model|soft\.ver|firmware|macaddr|mac_addr|wan.?mac|lan.?mac' || true
+            echo '===== RODATA AROUND CONFIG/FIELD CLUSTER 0x423f0..0x42980 ====='
+            mipsel-linux-gnu-objdump -s --start-address=0x423f0 --stop-address=0x42980 "$lib" || true
+            echo '===== SYMBOLS CONTAINING BASIC / SYS / SERIAL ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'basic|sys.*info|serial' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-basic-info-schema
-          path: docs/reverse-generated/sys-basic-info-schema.txt
+          name: sys-basic-info-fields
+          path: docs/reverse-generated/sys-basic-info-fields.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-basic-info-schema.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add BasicInfo schema trace'; git push || true; fi
+          git add docs/reverse-generated/sys-basic-info-fields.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add BasicInfo field trace'; git push || true; fi
