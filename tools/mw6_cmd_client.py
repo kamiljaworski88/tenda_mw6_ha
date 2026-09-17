@@ -1,36 +1,32 @@
 #!/usr/bin/env python3
-"""Read-only Tenda MW6 cmdsrv client.
+"""Read-only Tenda MW6 cmdsrv client for TCP/12598.
 
-Recovered local transport on TCP/12598:
+Recovered wire transport:
   u32le frame_len (= 8 + compressed_len)
   u32le XXH32(compressed, seed=0)
   u32le uncompressed_len
   LZ4 block(RESP bytes + magic f7 c6 89 be)
 
-Public CLI intentionally exposes only read-only operations:
-  ping, get, subscribe, clients
+This utility intentionally exposes only Redis-side read/observe operations:
+  ping, get, subscribe
 
-`clients` is a dedicated fixed GetHostList RPC. It does NOT expose a generic
-PUBLISH/SET primitive to the user.
+Client discovery is NOT implemented here. Static analysis of confsrv shows that
+its GetHostList handler returns an out-buffer to the in-process dispatcher and
+that the dispatcher frees that buffer; a fixed confctl_cli_key subscription is
+therefore not a valid GetHostList response path. Use mw6_probe.py / TCP 9000 for
+client discovery instead.
 """
 from __future__ import annotations
 
 import argparse
-import json
 import socket
 import struct
 from pathlib import Path
 from typing import Any
 
-from mw6_hostinfo import decode_host_lists
-
 MAGIC = bytes.fromhex("f7 c6 89 be")
 MASK32 = 0xFFFFFFFF
 P1, P2, P3, P4, P5 = 0x9E3779B1, 0x85EBCA77, 0xC2B2AE3D, 0x27D4EB2F, 0x165667B1
-
-CONFCTL_SERVER_CHANNEL = b"confctl_srv_key"
-CONFCTL_CLIENT_CHANNEL = b"confctl_cli_key"
-GET_HOST_LIST = b"GetHostList"
 
 
 def rol(x: int, n: int) -> int:
@@ -50,17 +46,17 @@ def xxh32(data: bytes, seed: int = 0) -> int:
         v3 = seed & MASK32
         v4 = (seed - P1) & MASK32
         while p <= n - 16:
-            v1 = rnd(v1, int.from_bytes(data[p : p + 4], "little"))
-            v2 = rnd(v2, int.from_bytes(data[p + 4 : p + 8], "little"))
-            v3 = rnd(v3, int.from_bytes(data[p + 8 : p + 12], "little"))
-            v4 = rnd(v4, int.from_bytes(data[p + 12 : p + 16], "little"))
+            v1 = rnd(v1, int.from_bytes(data[p:p + 4], "little"))
+            v2 = rnd(v2, int.from_bytes(data[p + 4:p + 8], "little"))
+            v3 = rnd(v3, int.from_bytes(data[p + 8:p + 12], "little"))
+            v4 = rnd(v4, int.from_bytes(data[p + 12:p + 16], "little"))
             p += 16
         h = (rol(v1, 1) + rol(v2, 7) + rol(v3, 12) + rol(v4, 18)) & MASK32
     else:
         h = (seed + P5) & MASK32
     h = (h + n) & MASK32
     while p <= n - 4:
-        h = (h + int.from_bytes(data[p : p + 4], "little") * P3) & MASK32
+        h = (h + int.from_bytes(data[p:p + 4], "little") * P3) & MASK32
         h = (rol(h, 17) * P4) & MASK32
         p += 4
     while p < n:
@@ -103,7 +99,7 @@ def lz4_decompress(src: bytes, expected: int) -> bytes:
                 lit += x
                 if x != 255:
                     break
-        out += src[i : i + lit]
+        out += src[i:i + lit]
         i += lit
         if i >= len(src):
             break
@@ -111,16 +107,16 @@ def lz4_decompress(src: bytes, expected: int) -> bytes:
         i += 2
         if not off or off > len(out):
             raise ValueError("invalid LZ4 offset")
-        m = token & 15
-        if m == 15:
+        match = token & 15
+        if match == 15:
             while True:
                 x = src[i]
                 i += 1
-                m += x
+                match += x
                 if x != 255:
                     break
-        m += 4
-        for _ in range(m):
+        match += 4
+        for _ in range(match):
             out.append(out[-off])
     if len(out) != expected:
         raise ValueError(f"LZ4 size {len(out)} != {expected}")
@@ -130,21 +126,21 @@ def lz4_decompress(src: bytes, expected: int) -> bytes:
 def resp_bytes(*args: bytes | str) -> bytes:
     chunks = [f"*{len(args)}\r\n".encode()]
     for arg in args:
-        x = arg.encode() if isinstance(arg, str) else arg
-        chunks += [f"${len(x)}\r\n".encode(), x, b"\r\n"]
+        value = arg.encode() if isinstance(arg, str) else arg
+        chunks += [f"${len(value)}\r\n".encode(), value, b"\r\n"]
     return b"".join(chunks)
 
 
 def frame(payload: bytes) -> bytes:
     plain = payload + MAGIC
-    comp = lz4_literals(plain)
-    return struct.pack("<III", len(comp) + 8, xxh32(comp), len(plain)) + comp
+    compressed = lz4_literals(plain)
+    return struct.pack("<III", len(compressed) + 8, xxh32(compressed), len(plain)) + compressed
 
 
-def recv_exact(sock: socket.socket, n: int) -> bytes:
+def recv_exact(sock: socket.socket, size: int) -> bytes:
     data = bytearray()
-    while len(data) < n:
-        chunk = sock.recv(n - len(data))
+    while len(data) < size:
+        chunk = sock.recv(size - len(data))
         if not chunk:
             raise EOFError("connection closed")
         data += chunk
@@ -152,15 +148,15 @@ def recv_exact(sock: socket.socket, n: int) -> bytes:
 
 
 def recv_frame(sock: socket.socket) -> bytes:
-    flen = struct.unpack("<I", recv_exact(sock, 4))[0]
-    if flen < 8 or flen > 1024 * 1024:
-        raise ValueError(f"invalid frame length {flen}")
-    body = recv_exact(sock, flen)
-    checksum, usize = struct.unpack("<II", body[:8])
-    comp = body[8:]
-    if xxh32(comp) != checksum:
+    frame_len = struct.unpack("<I", recv_exact(sock, 4))[0]
+    if frame_len < 8 or frame_len > 1024 * 1024:
+        raise ValueError(f"invalid frame length {frame_len}")
+    body = recv_exact(sock, frame_len)
+    checksum, uncompressed_size = struct.unpack("<II", body[:8])
+    compressed = body[8:]
+    if xxh32(compressed) != checksum:
         raise ValueError("XXH32 mismatch")
-    plain = lz4_decompress(comp, usize)
+    plain = lz4_decompress(compressed, uncompressed_size)
     if not plain.endswith(MAGIC):
         raise ValueError("MW6 magic mismatch")
     return plain[:-4]
@@ -169,7 +165,7 @@ def recv_frame(sock: socket.socket) -> bytes:
 def _resp_value(data: bytes, pos: int = 0) -> tuple[Any, int]:
     if pos >= len(data):
         raise ValueError("truncated RESP")
-    kind = data[pos : pos + 1]
+    kind = data[pos:pos + 1]
     pos += 1
 
     def line() -> bytes:
@@ -192,7 +188,7 @@ def _resp_value(data: bytes, pos: int = 0) -> tuple[Any, int]:
         if n < 0:
             return None, pos
         end = pos + n
-        if end + 2 > len(data) or data[end : end + 2] != b"\r\n":
+        if end + 2 > len(data) or data[end:end + 2] != b"\r\n":
             raise ValueError("truncated RESP bulk string")
         return data[pos:end], end + 2
     if kind == b"*":
@@ -208,63 +204,12 @@ def _resp_value(data: bytes, pos: int = 0) -> tuple[Any, int]:
 
 
 def parse_resp(data: bytes) -> Any:
-    value, pos = _resp_value(data, 0)
+    value, pos = _resp_value(data)
     if pos != len(data):
         raise ValueError(f"extra RESP bytes: {len(data) - pos}")
     if isinstance(value, RuntimeError):
         raise value
     return value
-
-
-def conf_envelope(command: bytes, payload: bytes = b"") -> bytes:
-    """Build the 36-byte confcli/confsrv envelope."""
-    if len(command) > 31:
-        raise ValueError("conf command name too long")
-    return command + b"\x00" * (32 - len(command)) + struct.pack("<I", len(payload)) + payload
-
-
-def parse_conf_envelope(data: bytes) -> tuple[str, bytes]:
-    if len(data) < 36:
-        raise ValueError(f"conf response too short: {len(data)} B")
-    command = data[:32].split(b"\x00", 1)[0].decode("ascii", "replace")
-    n = struct.unpack_from("<I", data, 32)[0]
-    if n > len(data) - 36:
-        raise ValueError(f"conf payload length {n} exceeds available {len(data) - 36}")
-    return command, data[36 : 36 + n]
-
-
-def rate_diagnostics(clients: list[dict[str, Any]]) -> dict[str, Any]:
-    """Summarize conditions relevant to firmware fill_host_lists_rate().
-
-    On 32-bit protobuf-c, HostInfo+0x20 is the `online` scalar. Firmware checks
-    this slot before parsing IP/MAC and attempting the g_ip_info/online_ip match.
-    `condtion_time` is HostInfo+0x1c and is not the observed rate gate.
-    """
-    rows = []
-    for client in clients:
-        online = client.get("online")
-        up = client.get("uprate")
-        down = client.get("downrate")
-        rows.append(
-            {
-                "ip": client.get("ipaddr"),
-                "mac": client.get("ethaddr"),
-                "name": client.get("name"),
-                "assoc_sn": client.get("assoc_sn"),
-                "online": online,
-                "condtion_time": client.get("condtion_time"),
-                "rate_gate_nonzero": bool(online),
-                "uprate": up,
-                "downrate": down,
-                "both_rates_zero": (up or 0) == 0 and (down or 0) == 0,
-            }
-        )
-    return {
-        "clients": rows,
-        "rate_gate_zero_count": sum(1 for row in rows if not row["rate_gate_nonzero"]),
-        "all_rates_zero": bool(rows) and all(row["both_rates_zero"] for row in rows),
-        "note": "If online/rate_gate_nonzero is true but both rates stay zero under traffic, the next suspect is the IP+MAC match against g_ip_info/online_ip.",
-    }
 
 
 def show(data: bytes, index: int, capture_dir: Path | None) -> None:
@@ -280,108 +225,51 @@ def show(data: bytes, index: int, capture_dir: Path | None) -> None:
         print("saved:", path)
 
 
-def get_clients(host: str, port: int, timeout: float) -> tuple[list[dict[str, Any]], bytes]:
-    request = conf_envelope(GET_HOST_LIST)
-
-    # GetHostList is carried over the fixed confcli/confsrv pub/sub bus.
-    # cmdrpc@ random channels belong to libcmdctl cmd_get and are not used here.
-    with socket.create_connection((host, port), 3) as sub_sock:
-        sub_sock.settimeout(timeout)
-        sub_sock.sendall(frame(resp_bytes(b"SUBSCRIBE", CONFCTL_CLIENT_CHANNEL)))
-        ack = parse_resp(recv_frame(sub_sock))
-        if not (isinstance(ack, list) and len(ack) >= 3 and ack[0] == b"subscribe"):
-            raise RuntimeError(f"unexpected subscribe ACK: {ack!r}")
-
-        with socket.create_connection((host, port), 3) as pub_sock:
-            pub_sock.settimeout(timeout)
-            pub_sock.sendall(frame(resp_bytes(b"PUBLISH", CONFCTL_SERVER_CHANNEL, request)))
-            published = parse_resp(recv_frame(pub_sock))
-            if not isinstance(published, int):
-                raise RuntimeError(f"unexpected PUBLISH result: {published!r}")
-            if published < 1:
-                raise RuntimeError("confsrv did not receive GetHostList request")
-
-        while True:
-            msg = parse_resp(recv_frame(sub_sock))
-            if not (isinstance(msg, list) and len(msg) >= 3 and msg[0] == b"message"):
-                continue
-            body = msg[2]
-            if not isinstance(body, bytes):
-                continue
-            command, payload = parse_conf_envelope(body)
-            if command != "GetHostList":
-                continue
-            return decode_host_lists(payload), payload
-
-
 def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--host", default="192.168.5.1")
-    ap.add_argument("--port", type=int, default=12598)
-    sub = ap.add_subparsers(dest="cmd", required=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", default="192.168.5.1")
+    parser.add_argument("--port", type=int, default=12598)
+    sub = parser.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("ping")
+    get_parser = sub.add_parser("get", help="read one Redis key through cmdsrv")
+    get_parser.add_argument("key")
+    sub_parser = sub.add_parser("subscribe", help="observe one Redis pub/sub channel")
+    sub_parser.add_argument("channel")
+    sub_parser.add_argument("--count", type=int, default=0, help="0 = listen until Ctrl+C")
+    sub_parser.add_argument("--timeout", type=float, default=0, help="0 = no read timeout")
+    sub_parser.add_argument("--capture-dir", default="mw6_capture")
 
-    gp = sub.add_parser("get", help="read one Redis key through cmdsrv")
-    gp.add_argument("key")
-
-    sp = sub.add_parser("subscribe")
-    sp.add_argument("channel")
-    sp.add_argument("--count", type=int, default=0, help="0 = listen until Ctrl+C")
-    sp.add_argument("--timeout", type=float, default=0, help="0 = no read timeout")
-    sp.add_argument("--capture-dir", default="mw6_capture")
-
-    cp = sub.add_parser("clients", help="read local MW6 GetHostList (read-only)")
-    cp.add_argument("--timeout", type=float, default=8.0)
-    cp.add_argument("--raw-out", help="optionally save raw packed HostLists protobuf")
-    cp.add_argument("--pretty", action="store_true", help="pretty JSON output")
-    cp.add_argument(
-        "--diagnose-rates",
-        action="store_true",
-        help="include read-only rate-gate diagnostics derived from GetHostList",
-    )
-
-    a = ap.parse_args()
-
-    if a.cmd == "clients":
-        clients, raw = get_clients(a.host, a.port, a.timeout)
-        if a.raw_out:
-            Path(a.raw_out).write_bytes(raw)
-        output: Any = clients
-        if a.diagnose_rates:
-            output = {"clients": clients, "rate_diagnostics": rate_diagnostics(clients)}
-        print(json.dumps(output, ensure_ascii=False, indent=2 if a.pretty else None))
-        return
-
-    if a.cmd == "ping":
+    args = parser.parse_args()
+    if args.cmd == "ping":
         command = ("PING",)
         limit = 1
         timeout = 10
         capture = None
-    elif a.cmd == "get":
-        command = ("GET", a.key)
+    elif args.cmd == "get":
+        command = ("GET", args.key)
         limit = 1
         timeout = 10
         capture = None
     else:
-        command = ("SUBSCRIBE", a.channel)
-        limit = a.count
-        timeout = a.timeout or None
-        capture = Path(a.capture_dir)
+        command = ("SUBSCRIBE", args.channel)
+        limit = args.count
+        timeout = args.timeout or None
+        capture = Path(args.capture_dir)
 
-    with socket.create_connection((a.host, a.port), 3) as sock:
+    with socket.create_connection((args.host, args.port), 3) as sock:
         sock.settimeout(timeout)
         sock.sendall(frame(resp_bytes(*command)))
-        i = 0
+        count = 0
         try:
-            while limit == 0 or i < limit:
+            while limit == 0 or count < limit:
                 data = recv_frame(sock)
-                i += 1
-                show(data, i, capture)
+                count += 1
+                show(data, count, capture)
         except KeyboardInterrupt:
-            print(f"\nStopped. Received {i} message(s).")
+            print(f"\nStopped. Received {count} message(s).")
         except TimeoutError:
-            print(f"\nNo new message. Received {i} message(s).")
+            print(f"\nNo new message. Received {count} message(s).")
 
 
 if __name__ == "__main__":
