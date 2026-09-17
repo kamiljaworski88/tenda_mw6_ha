@@ -18,113 +18,65 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Decode netlink statistic call graph
+      - name: Trace kernel netlink statistics handler
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          python3 - <<'PY'
-          from pathlib import Path
-          from elftools.elf.elffile import ELFFile
-          import struct, subprocess
-
-          p = Path('firmware-src/RootFS-unpacked/lib/libcommon.so')
-          out = Path('docs/reverse-generated/run118-netlink-callgraph.txt')
-          gp_offsets = [-32724,-32620,-32596,-32592,-32472,-32408,-32280,-31816,-31780,-31752,-31676,-32716]
-
-          with p.open('rb') as f:
-              elf = ELFFile(f)
-              got = elf.get_section_by_name('.got')
-              got_base = int(got['sh_addr'])
-              gp = got_base + 0x7ff0
-              got_data = got.data()
-              syms=[]
-              for sn in ('.dynsym','.symtab'):
-                  sec=elf.get_section_by_name(sn)
-                  if sec:
-                      for s in sec.iter_symbols():
-                          syms.append((int(s['st_value']), int(s['st_size']), s.name, s['st_info']['type'], s['st_shndx']))
-              def word_at(addr):
-                  off=addr-got_base
-                  if 0 <= off <= len(got_data)-4:
-                      return struct.unpack_from('<I',got_data,off)[0]
-              def names_at(v):
-                  return sorted({n for val,_sz,n,_t,_sh in syms if val==v and n})
-              def containing(v):
-                  rows=[]
-                  for val,sz,n,t,sh in syms:
-                      if n and val and ((sz and val <= v < val+sz) or (not sz and val==v)):
-                          rows.append((val,sz,n,t,sh))
-                  return rows
-              ro = elf.get_section_by_name('.rodata')
-              ro_addr=int(ro['sh_addr']); ro_data=ro.data()
-              def cstr(addr):
-                  off=addr-ro_addr
-                  if not (0 <= off < len(ro_data)):
-                      return None
-                  end=ro_data.find(b'\0',off)
-                  if end<0: end=min(len(ro_data),off+256)
-                  b=ro_data[off:end]
-                  try: return b.decode('utf-8','replace')
-                  except: return repr(b)
-
-          def cmd(args):
-              return subprocess.check_output(args,text=True,errors='replace')
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 118: netlink_get_statistic_info exact call graph =====\n')
-              o.write(f'libcommon .got=0x{got_base:x} gp=0x{gp:x}\n\n')
-              o.write('===== GOT SLOT MAP =====\n')
-              vals={}
-              for off in gp_offsets:
-                  addr=gp+off; w=word_at(addr); vals[off]=w
-                  o.write(f'gp{off:+d}: slot=0x{addr:x} word={None if w is None else hex(w)} names={names_at(w) if w is not None else []}\n')
-                  if w is not None:
-                      near=containing(w)
-                      if near: o.write('  containing=' + repr(near) + '\n')
-
-              o.write('\n===== COMPUTED LOCAL HELPER =====\n')
-              base=vals.get(-32716)
-              if base is not None:
-                  target=base+0x1e38
-                  o.write(f'gp-32716 word=0x{base:x}; +0x1e38 => 0x{target:x}\n')
-                  o.write('symbol=' + repr(containing(target) or names_at(target)) + '\n')
-                  o.write(cmd(['mipsel-linux-gnu-objdump','-drwC',f'--start-address=0x{max(0,target-64):x}',f'--stop-address=0x{target+768:x}',str(p)]))
-
-              o.write('\n===== RODATA BASE + OFFSETS USED BY FUNCTION =====\n')
-              rb=vals.get(-32724)
-              o.write(f'gp-32724 word={None if rb is None else hex(rb)}\n')
-              if rb is not None:
-                  for delta in (-21804,-21604,-21580,-21564,-21524,-20336):
-                      a=rb+delta
-                      o.write(f'base{delta:+d} = 0x{a:x} cstr={cstr(a)!r}\n')
-
-              o.write('\n===== TARGET FUNCTION =====\n')
-              o.write(cmd(['mipsel-linux-gnu-objdump','-drwC','--start-address=0x121d0','--stop-address=0x126d0',str(p)]))
-
-              o.write('\n===== DYNAMIC SYMBOLS RELEVANT TO SOCKET/NETLINK/MEMORY =====\n')
-              for val,sz,n,t,sh in sorted(set(syms)):
-                  low=n.lower()
-                  if any(k in low for k in ('socket','netlink','malloc','calloc','realloc','free','memset','memcpy','close','getpid','atoi','getvalue','recv','send','bind')):
-                      o.write(f'0x{val:x} size={sz} {t} sh={sh} {n}\n')
-          PY
+          out='docs/reverse-generated/run119-kernel-stat-handler.txt'
+          root='firmware-src/RootFS-unpacked/lib/modules'
+          {
+            echo '===== RUN 119: kernel-side statistics/netlink handler ====='
+            echo
+            echo '===== COMMON_NETLINK MODULE SYMBOLS ====='
+            mipsel-linux-gnu-nm -a "$root/common_netlink.ko" || true
+            echo
+            echo '===== COMMON_NETLINK DISASSEMBLY + RELOCATIONS ====='
+            mipsel-linux-gnu-objdump -drwC "$root/common_netlink.ko" || true
+            echo
+            echo '===== MODULES IMPORTING/EXPORTING COMMON NETLINK API ====='
+            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
+              hits=$(mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -Ei 'common_netlink|netlink_msg_to_user|send_to_user' || true)
+              if [ -n "$hits" ]; then
+                echo "--- $f ---"
+                echo "$hits"
+              fi
+            done
+            echo
+            echo '===== MODULE STRINGS RELATED TO CLIENT STATISTICS ====='
+            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
+              hits=$(strings -a "$f" | grep -Ei 'online|client|host|statistic|traffic|up_bytes|down_bytes|ip_info|netlink|fastpath|hw_nat|sw_nat' | head -n 120 || true)
+              if [ -n "$hits" ]; then
+                echo "--- $f ---"
+                echo "$hits"
+              fi
+            done
+            echo
+            echo '===== MODULE SYMBOLS RELATED TO STATISTICS/CLIENT TRACKING ====='
+            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
+              hits=$(mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -Ei 'statistic|traffic|online|client|ip_info|host|nat.*stat|stat.*nat' | head -n 160 || true)
+              if [ -n "$hits" ]; then
+                echo "--- $f ---"
+                echo "$hits"
+              fi
+            done
+          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run118-netlink-callgraph
-          path: docs/reverse-generated/run118-netlink-callgraph.txt
+          name: run119-kernel-stat-handler
+          path: docs/reverse-generated/run119-kernel-stat-handler.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run118-netlink-callgraph.txt
+          git add docs/reverse-generated/run119-kernel-stat-handler.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: decode netlink statistic call graph'
+            git commit -m 'reverse: trace kernel netlink statistics handler'
             git push
           fi
