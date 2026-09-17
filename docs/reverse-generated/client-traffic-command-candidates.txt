@@ -1,0 +1,581 @@
+===== RUN 63 GOAL =====
+Find a local API command that can expose live per-client upload/download rates; M_MESH_HOSTS GET returns valid hosts but rate fields stay zero on this MW6 firmware.
+===== LIBUCAPI COMMAND STRINGS =====
+   26c3 uc_api_lib_ol_hosts_get_hdl_reg
+   2952 uc_api_lib_wan_rate_get_hdl_reg
+  1e87c CMD_HAND_QOS_GET
+  1e890 CMD_HAND_QOS_SET
+  1e8a4 CMD_HAND_QOS_GET_GENABLE
+  1e8c0 CMD_HAND_QOS_SET_GENABLE
+  1e8dc CMD_HAND_QOS_MAX_UPLIMIT
+  1e904 CMD_OL_HOSTS_GET
+  1e924 CMD_RUB_NET_ACCESS_USER_OPERATE
+  1eb0c CMD_WAN_RATE_GET
+  1f1d0 CMD_CLOUD_INFO_DEV_UPLOAD_DEVICE_START
+  1f334 CMD_CLOUD_INFO_UP_SPEED_SET
+  1f93c GetTrafficInfo
+  1f94c CMD_MESH_WAN_TRAFFIC
+  1fc9c GetHostList
+  1fcb8 CMD_MESH_HOSTS_GET
+  1fcdc CMD_MESH_HOSTS_MARK
+  1fd00 CMD_MESH_HOSTS_GET_REMARK
+  1ffcc CMD_MESH_ADV_QOS_GET
+  1fff0 CMD_MESH_ADV_QOS_SET
+  2009c GetHighDeviceCfg
+  200b0 CMD_MESH_ADV_HIGH_DEVICE_GET
+  200e4 CMD_MESH_ADV_HIGH_DEVICE_SET
+  214a0 _ol_hosts_get_hdl_cb
+===== LIBUCAPI RELEVANT SYMBOLS =====
+     4: 0000b6a4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+     5: 00005d58   412 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_hand_qos
+    22: 00005ef4   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_ol_host
+    52: 00007698    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_dev_traffic
+    66: 000077d0   124 FUNC    GLOBAL DEFAULT   10 uc_api_m_rub_net_push_strange_host_info
+    88: 00008150   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_speed_test
+    94: 00015e98   208 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_speedtest_enable
+   141: 0001a790    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_set_genable_hdl_reg
+   170: 0001a820    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_set_hdl_reg
+   193: 0001a868    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_hdl_reg
+   208: 00017c2c    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_rate_get_hdl_reg
+   246: 0001a748    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_uplimit_hdl_reg
+   269: 0001af3c   260 FUNC    GLOBAL DEFAULT   10 uc_api_lib_ol_hosts_get_hdl_reg
+   316: 0001a7d8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_genable_hdl_reg
+===== FILES CONTAINING UPRATE / DOWNRATE =====
+--- firmware-src/RootFS-unpacked/webroot_ro/default.cfg ---
+   16a9 wan_check=0
+   16b6 wan_isonln=0
+   16c4 wan1.port=3
+   16d1 wan1.accessen=1
+   16e2 wan1.connecttype=0
+   16f6 wan1.dhcp.dns.auto=1
+   170c wan1.dhcp.dns.hand1=
+   1722 wan1.dhcp.dns.hand2=
+   1738 wan1.dmzen=0
+   1746 wan1.dmzip=192.168.5.100
+   1760 wan1.dns1=
+   176c wan1.dns2=
+   1778 wan1.downrate=128000
+   178e wan1.dynamicMTU=1500
+   17a4 wan1.gateway=
+   17b3 wan1.ip=
+   17bd wan1.isp=0
+   17c9 wan1.l2tp.dns.auto=1
+   17df wan1.l2tp.dns.hand1=
+   17f5 wan1.l2tp.dns.hand2=
+   180b wan1.l2tp.double.access=0
+   1826 wan1.l2tp.mode=1
+   1838 wan1.l2tp.mtu=1460
+   184c wan1.l2tp.pw=
+   185b wan1.l2tp.serverip=
+   1870 wan1.l2tp.user=
+   1881 wan1.mac.clone.en=0
+   1896 wan1.mac.clone.type=0
+   18ad wan1.macaddr=
+   18bc wan1.mask=
+   18c8 wan1.mtutype=1
+   18d8 wan1.net.type=0
+   18e9 wan1.param=0
+--
+   1a3e wan1.pptp.dns.auto=1
+   1a54 wan1.pptp.dns.hand1=
+   1a6a wan1.pptp.dns.hand2=
+   1a80 wan1.pptp.double.access=0
+   1a9b wan1.pptp.mode=1
+   1aad wan1.pptp.mppe=
+   1abe wan1.pptp.mtu=1452
+   1ad2 wan1.pptp.pw=
+   1ae1 wan1.pptp.serverip=
+   1af6 wan1.pptp.user=
+   1b07 wan1.scale=
+   1b14 wan1.staticMTU=1500
+   1b29 wan1.uprate=128000
+   1b3d wan2.accessen=0
+   1b4e wan2.connecttype=0
+   1b62 wan2.dmzen=0
+   1b70 wan2.dmzip=
+   1b7d wan2.dns1=
+   1b89 wan2.dns2=
+   1b95 wan2.downrate=1536
+   1ba9 wan2.dynamicMTU=1500
+   1bbf wan2.gateway=
+   1bce wan2.ip=
+   1bd8 wan2.isp=0
+   1be4 wan2.l2tp.double.access=0
+   1bff wan2.l2tp.mode=1
+   1c11 wan2.l2tp.mtu=1492 
+   1c26 wan2.l2tp.pw=
+   1c35 wan2.l2tp.serverip=
+   1c4a wan2.l2tp.user=
+   1c5b wan2.macaddr=
+   1c6a wan2.mask=
+   1c76 wan2.mtutype=1
+   1c86 wan2.net.type=0
+   1c97 wan2.param=0
+   1ca5 wan2.ppoe.ac=
+   1cb4 wan2.ppoe.auth_code=
+   1cca wan2.ppoe.conmode=
+   1cde wan2.ppoe.double.access=0
+   1cf9 wan2.ppoe.mode=1
+--
+   1d1f wan2.ppoe.pwd=
+   1d2f wan2.ppoe.sev=
+   1d3f wan2.ppoe.userid=
+   1d52 wan2.pptp.double.access=0
+   1d6d wan2.pptp.mode=1
+   1d7f wan2.pptp.mppe=
+   1d90 wan2.pptp.mtu=1492
+   1da4 wan2.pptp.pw=
+   1db3 wan2.pptp.serverip=
+   1dc8 wan2.pptp.user=
+   1dd9 wan2.scale=
+   1de6 wan2.staticMTU=1500
+   1dfb wan2.uprate=102
+   1e0c wans.auto.scale=1:1
+   1e21 wans.flag=1
+   1e2e wans.ispmode=0
+   1e3e wans.loadbalancetype=0
+   1e56 wans.location=-1 0 -1 1 -1 
+   1e73 wans.manual.enable=0
+   1e89 wans.manual.scale=1:1
+   1ea0 wans.policy.list1=
+   1eb4 wans.policy.listnum=0
+   1ecb wans.policymode=0
+   1ede wans.wanweben=0
+   1eef wans.wanwebip=0.0.0.0
+   1f06 wans.wanwebport=8080
+   1f1c wans.wanwebsslen=0
+   1f30 wl.bcm11ac=0
+   1f3e wl.check.time=5
+   1f4f wl.cn_ssid_encode=utf-8
+   1f68 wl.guest.dhcps_dns1=192.168.11.1
+   1f8a wl.guest.dhcps_dns2=
+   1fa0 wl.guest.dhcps_enable=0
+--- firmware-src/RootFS-unpacked/lib/libpb.so ---
+  27dcc assoc_node_info__get_packed_size
+  27df0 message->base.descriptor == &host_info__descriptor
+  27e24 onhosts.pb-c.c
+  27e34 message->base.descriptor == &host_lists__descriptor
+  27e68 message->base.descriptor == &devic_marks__descriptor
+  27ea0 message->base.descriptor == &device_mark_list__descriptor
+  27edc ipaddr
+  27ee4 ethaddr
+  27eec access
+  27ef4 assoc_sn
+  27f00 condtion_time
+  27f10 online
+  27f18 uprate
+  27f20 downrate
+  27f2c signal
+  27f34 name
+  27f74 hostInfo
+  27f80 HostInfo
+  27f90 hosts
+  27fac hostLists
+  27fb8 HostLists
+  27fc4 remark
+  27fe4 DevicMarks
+  27ff0 marks
+  27ff8 timestamp
+  2801c DeviceMarkList
+  2802c device_mark_list__free_unpacked
+  2804c device_mark_list__pack_to_buffer
+  28070 device_mark_list__pack
+  28088 device_mark_list__get_packed_size
+  280ac devic_marks__free_unpacked
+  280c8 devic_marks__pack_to_buffer
+  280e4 devic_marks__pack
+  280f8 devic_marks__get_packed_size
+--
+  2a574 message->base.descriptor == &russia_pptpcfg__descriptor
+  2a5ac message->base.descriptor == &russia_l2tp_cfg__descriptor
+  2a5e8 status
+  2a604 WanPortPower
+  2a618 conntype
+  2a624 RsaCntType
+  2a648 WanConnType
+  2a658 errcode
+  2a67c WanDiag
+  2a684 diags
+  2a6a0 nWanDiag
+  2a6ac NWanDiag
+  2a6b8 uprate
+  2a6c0 downrate
+  2a6cc total_up
+  2a6d8 total_down
+  2a708 WanPortRate
+  2a72c WanRate
+  2a734 mode
+  2a73c ipaddr
+  2a744 mask
+  2a74c gateway
+  2a754 dns1
+  2a75c dns2
+  2a790 WanPortStatus
+  2a7b4 WanStatus
+  2a7c0 uname
+  2a7c8 passwd
+  2a7d8 service_name
+  2a7e8 server_name
+  2a820 AdslCfg
+  2a850 StaticCfg
+  2a870 DynamicCfg
+  2a87c adsl
+--- firmware-src/RootFS-unpacked/lib/libcloud.so ---
+  69024 assoc_list
+  69030 timestamp
+  6903c location
+  6904c ethaddr_l
+  69058 ethaddr_r
+  69064 bssid_nband
+  69070 bssid_aband
+  69080 ethaddr
+  69088 access
+  69090 condtion_time
+  690a0 online
+  690a8 signal
+  690b0 uprate
+  690b8 downrate
+  690c4 device
+  690cc web_auth_timestamp
+  690e0 interval
+  690ec keep
+  690f4 mark_list
+  69100 remark
+  69108 alreadexist
+  69114 node
+  6911c [{"mac":"%s","up":%d,"down":%d}
+  6913c ,{"mac":"%s","up":%d,"down":%d}
+  69160 data %s, data_len %d
+  69178 json parse error!
+  6918c %s,%s
+  69194 no account data!
+  691a8 info->account %s
+  691bc The output buffer is too small, trying to expand it.
+  691f4 need param!
+  69204 test@yyb.com
+  69214 acc->account %s!
+  69228 accounts
+--- firmware-src/RootFS-unpacked/bin/confsrv ---
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+--
+  744f4 /var/arp_receive
+  74558 /var/ate
+  7459c auto_discover
+  745bc /var/auto_discover
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+--
+  7e914 arp_receive
+  7e934 /var/arp_receive
+  7e998 /var/ate
+  7e9dc auto_discover
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+--- firmware-src/RootFS-unpacked/bin/multiWAN ---
+  2b19c %s/%s%d
+  2b1a4 rm -fr %s
+  2b1b0 chmod +x %s
+  2b1bc get wan ip info from file is fail.
+  2b1e0 wanid:%d ops  devname:%s  ip:%s  mask:%s gw:%s
+  2b210 wan up, wanid:%d ops  devname:%s  ip:%s  mask:%s gw:%s
+  2b248 op=%d,wan_id=%d
+  2b258 wan%d up
+  2b264 wan%d down
+  2b270 wans.policymode
+  2b284 wan%d.isp
+  2b290 wan%d.scale
+  2b2a0 wan%d.uprate
+  2b2b4 wan%d.downrate
+  2b2c4 wrong wan number
+  2b2d8 [%s][%d][luminais] invalid param
+  2b2fc /proc/net/route
+  2b310 [%s][%d][luminais] open /proc/net/route failed
+  2b340 %*[^
+  2b348 %63s%lx%lx%X%d%d%d%lx%d%d%d
+  2b368 route del default gw 0.0.0.0 dev %s
+  2b38c ip%s     mask:%s     gw:%s
+  2b3a8 gateway
+  2b3b0 WAN has no gateway
+  2b3c4 WAN has No GateWay.
+  2b3d8 route add default gw %s dev %s
+  2b3f8 [%s][%d][luminais] add_default_route_success
+  2b428 [%s][%d][luminais] sleep
+  2b444 advance_type=%d
+  2b454 echo 1 >/proc/sys/net/ipv4/route/flush
+  2b47c ip route del default dev %s
+  2b498 wan%d.net.type
+  2b4a8 ip route replace table main scope global proto static default 
+  2b4e8 ip route replace table ctc scope global proto static default 
+--- firmware-src/RootFS-unpacked/bin/network_check ---
+   7644 arp_receive
+   7664 /var/arp_receive
+   76c8 /var/ate
+   770c auto_discover
+   772c /var/auto_discover
+   7770 device_list
+   7790 /var/device_list_socket
+   77d4 ucloud_ctl
+   7838 common_so
+   789c ap_common_so
+   7900 prod_common_so
+   79c4 msg is null.
+   79d4 wan%d.uprate
+   79e8 wan%d.downrate
+   79fc /var/network_check_rst
+   7a18 open %s fail!
+   7a34 igmp.enable
+   7a40 wan1.connecttype
+   7a54 eth1
+   7a5c igmpproxy
+   7a68 op=%d
+   7a70 vlan2
+   7a78 vlan3
+   7a80 vlan4
+   7a88 vlan5
+   7a90 function entry!
+   7aa0 wans.flag
+   7aac network check recv error msg.
+   7acc sys.workmode
+   7adc router
+   7ae4 ppp1
+   7aec ip route del default dev eth1
+   7b0c sh /bin/dns_remove_repetition.sh
+   7b34 /var/mib.mem
+--- firmware-src/RootFS-unpacked/bin/confcli ---
+  43a04 arp_receive
+  43a24 /var/arp_receive
+  43a88 /var/ate
+  43acc auto_discover
+  43aec /var/auto_discover
+  43b30 device_list
+  43b50 /var/device_list_socket
+  43b94 ucloud_ctl
+  43bf8 common_so
+  43c5c ap_common_so
+  43cc0 prod_common_so
+  43d84 qos.en.app
+  43d90 wan1.uprate
+  43d9c wan1.downrate
+  43dac qos.timestamp
+  43dbc [%s::%d] malloc fail.
+  43dd4 [%s][%d][luminais] qos_rule__unpack failed.
+  43e04 %llu
+  43e0c sys.cfg.stamp
+  43e24 128000
+  43e2c op=0
+  43e34 log.time.enable
+  43e44 Debug->%s: %s(%d)--
+  43e5c ../confctl_nos_api.c
+  43e74 conf_set_nos_cfg_cli
+  43e8c conf_set_nos_cfg_cli
+  43ea4 conf_set_nos_cfg
+  43eb8 conf_set_nos_cfg
+  43ecc conf_get_nos_cfg
+  4478c GCC: (GNU) 3.3.2
+  4479d GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  46ab9 .shstrtab
+  46ac3 .interp
+  46acb .reginfo
+--- firmware-src/RootFS-unpacked/bin/netctrl ---
+  6d0d0 device_list
+  6d0f0 /var/device_list_socket
+  6d134 ucloud_ctl
+  6d198 common_so
+  6d1fc ap_common_so
+  6d260 prod_common_so
+  6d324 function entry!
+  6d334 apply BM_U2K_COMMON_INFO fail
+  6d354 function exit!
+  6d364 info is fail
+  6d374 lan.ip
+  6d37c wans.flag
+  6d388 wan%d.uprate
+  6d398 wan%d.downrate
+  6d3ac api/src/behavior_manager/base_info_api.c
+  6d3d8 base_info_init
+  6d3e8 base_info_handle_change
+  6d400 base_info_handle_change
+  6d418 base_info_load_cfg
+  6d42c base_info_common_info
+  6d4c8 monitor
+  6d4e8 /var/pm_socket
+  6d52c timer
+  6d54c /var/tm_socket
+  6d590 cfms
+  6d5b0 /var/cfm_socket
+  6d5f4 logserver
+  6d614 /var/plog_socket
+  6d658 netctrl
+  6d678 /var/nt_socket
+  6d6bc multiWAN
+  6d6dc /var/mw_socket
+  6d720 network_check
+  6d740 /var/network_ck_socket
+--
+  701f4 UserIncluded
+  70204 %s %d: cJSON_CreateObject failed
+  70228 MaxBacklogPackets
+  7023c %s %d: cJSON_CreateArray failed
+  70260 Rules
+  70268 %s %d: create cjson data failed
+  7028c bandwidth.mode.listnum
+  702a4 qos.en
+  702ac bandwidth.mode.list%d
+  702c4 %*[^;];%hhu;%*[^;];%*[^;];%*[^;];%*[^;];%*[^;];%*[^;];%*[^;];%d
+  70304 list null
+  70310 wans.flag
+  7031c wan%d.uprate
+  7032c wan%d.downrate
+  7033c %dKBytes
+  70348 %*[^;];%hhu;%[^;];%[^;];%[^;];%[^;];%hhu;%*[^;];%*[^;];%d;
+  70384 UI-%s
+  7038c %sKBytes
+  70398 qos.auto.en
+  703a4 pppoeserver.info
+  703b8 %s %d: the rule count greater than the max count, rule number is %d
+  70400 malloc
+  70408 %s %d: the malloc failed
+  70424 tc_rule_handle
+  70434 tc_get_wan_global_config
+  70450 tc_handle
+  7045c tc_get_cjson_format_data
+  704f8 monitor
+  70518 /var/pm_socket
+  7055c timer
+  7057c /var/tm_socket
+  705c0 cfms
+  705e0 /var/cfm_socket
+  70624 logserver
+===== FILES / STRINGS FOR LIVE STATISTICS =====
+--- firmware-src/RootFS-unpacked/lib/libcommon.so ---
+netlink_get_statistic_info
+netlink_get_statistic_info
+--- firmware-src/RootFS-unpacked/lib/modules/bm.ko ---
+clear_online_ip_flag
+online_ip_hash
+online_ip_hash_size
+--- firmware-src/RootFS-unpacked/lib/modules/port_filter.ko ---
+clear_online_ip_flag
+online_ip_hash
+online_ip_hash_size
+--- firmware-src/RootFS-unpacked/lib/modules/3.10.90/modules.builtin ---
+kernel/net/netfilter/bm_online_ip.ko
+--- firmware-src/RootFS-unpacked/lib/modules/mac_filter.ko ---
+clear_online_ip_flag
+--- firmware-src/RootFS-unpacked/lib/modules/portal.ko ---
+online_ip_hash
+online_ip_hash_size
+--- firmware-src/RootFS-unpacked/lib/modules/ip_filter.ko ---
+clear_online_ip_flag
+--- firmware-src/RootFS-unpacked/lib/modules/nos.ko ---
+tbq_online_ip_track_alloc
+--- firmware-src/RootFS-unpacked/bin/confsrv ---
+netlink_get_statistic_info
+find_client_in_online_ip_info
+print_online_ip_info
+--- firmware-src/RootFS-unpacked/bin/log_upload ---
+cat /proc/net/online_ip
+--- firmware-src/RootFS-unpacked/bin/netctrl ---
+netlink_get_statistic_info
+online_ip
