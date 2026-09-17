@@ -11,8 +11,8 @@ HostInfo protobuf fields:
   4 assoc_sn
   5 condtion_time   (spelling preserved from firmware)
   6 online
-  7 uprate
-  8 downrate
+  7 uprate          (integer KiB/s)
+  8 downrate        (integer KiB/s)
   9 signal
  10 name
 
@@ -126,8 +126,14 @@ def decode_host_info(data: bytes) -> dict[str, Any]:
     host["mac"] = host.get("ethaddr")
     host["node_serial"] = host.get("assoc_sn")
     host["is_online"] = bool(host.get("online", 0))
+
+    # Firmware computes these as byte-counter delta / elapsed seconds / 1024.
+    # Keep the raw aliases for compatibility and expose the resolved unit too.
     host["upload_rate_raw"] = host.get("uprate")
     host["download_rate_raw"] = host.get("downrate")
+    host["upload_rate_kib_s"] = host.get("uprate")
+    host["download_rate_kib_s"] = host.get("downrate")
+
     if unknown:
         host["unknown_fields"] = unknown
     return host
