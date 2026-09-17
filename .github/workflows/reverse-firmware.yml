@@ -1,19 +1,26 @@
 name: Reverse MW6 firmware
+
 on:
   workflow_dispatch:
   push:
-    paths: ['.github/workflows/reverse-firmware.yml']
+    paths:
+      - .github/workflows/reverse-firmware.yml
+
 permissions:
   contents: write
+
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
+
+      - name: Install reverse-engineering tools
+        run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
+
       - name: Trace callers of dev traffic upload
         shell: bash
         run: |
@@ -24,31 +31,42 @@ jobs:
           out='docs/reverse-generated/dev-traffic-upload-callers.txt'
           dis='/tmp/libcloud.dis'
           meta='/tmp/got-meta.txt'
+
           mipsel-linux-gnu-objdump -drwC "$lib" > "$dis"
+
           python3 - "$lib" "$meta" <<'PY'
-from elftools.elf.elffile import ELFFile
-import struct, sys
-lib, meta = sys.argv[1], sys.argv[2]
-target = 0x30ae0
-gp = 0x93370
-with open(lib, 'rb') as f:
-    elf = ELFFile(f)
-    sec = elf.get_section_by_name('.got')
-    data = sec.data()
-    base = sec['sh_addr']
-needle = struct.pack('<I', target)
-rows=[]
-for i in range(0, len(data)-3, 4):
-    if data[i:i+4] == needle:
-        addr = base + i
-        rows.append((addr, addr-gp))
-with open(meta, 'w') as m:
-    for addr, off in rows:
-        m.write(f'GOT=0x{addr:x} OFFSET={off}\n')
-print('\n'.join(f'GOT=0x{a:x} OFFSET={o}' for a,o in rows) or 'NO_GOT_ENTRY')
-PY
+          from elftools.elf.elffile import ELFFile
+          import struct
+          import sys
+
+          lib, meta = sys.argv[1], sys.argv[2]
+          target = 0x30AE0
+          gp = 0x93370
+
+          with open(lib, 'rb') as fh:
+              elf = ELFFile(fh)
+              sec = elf.get_section_by_name('.got')
+              if sec is None:
+                  raise SystemExit('NO .got SECTION')
+              data = sec.data()
+              base = sec['sh_addr']
+
+          needle = struct.pack('<I', target)
+          rows = []
+          for i in range(0, len(data) - 3, 4):
+              if data[i:i + 4] == needle:
+                  addr = base + i
+                  rows.append((addr, addr - gp))
+
+          with open(meta, 'w', encoding='utf-8') as out:
+              for addr, off in rows:
+                  out.write(f'GOT=0x{addr:x} OFFSET={off}\n')
+
+          print('\n'.join(f'GOT=0x{addr:x} OFFSET={off}' for addr, off in rows) or 'NO_GOT_ENTRY')
+          PY
+
           {
-            echo '===== RUN 85 GOAL ====='
+            echo '===== RUN 113 GOAL ====='
             echo 'Find callers of cmd_cloud_info_dev_traffic_upload @ 0x30ae0 and identify how its input arguments are produced.'
             echo '===== GOT ENTRY / GP OFFSET ====='
             cat "$meta" || true
@@ -56,30 +74,41 @@ PY
             mipsel-linux-gnu-readelf -rW "$lib" | grep -F 'cmd_cloud_info_dev_traffic_upload' || true
             echo '===== CALLSITES USING THE TARGET GOT OFFSET ====='
             python3 - "$dis" "$meta" <<'PY'
-import re, sys
-lines=open(sys.argv[1], errors='replace').read().splitlines()
-offs=[]
-for line in open(sys.argv[2]):
-    m=re.search(r'OFFSET=(-?\d+)', line)
-    if m: offs.append(int(m.group(1)))
-for off in offs:
-    pat=re.compile(r'\blw\s+t9,'+re.escape(str(off))+r'\(gp\)')
-    for i,line in enumerate(lines):
-        if pat.search(line):
-            print(f'--- offset {off}, disasm line {i+1} ---')
-            for x in lines[max(0,i-10):min(len(lines),i+18)]: print(x)
-PY
+          import re
+          import sys
+
+          dis_path, meta_path = sys.argv[1], sys.argv[2]
+          lines = open(dis_path, errors='replace').read().splitlines()
+          offsets = []
+          for line in open(meta_path, errors='replace'):
+              match = re.search(r'OFFSET=(-?\d+)', line)
+              if match:
+                  offsets.append(int(match.group(1)))
+
+          for off in offsets:
+              pattern = re.compile(r'\blw\s+t9,' + re.escape(str(off)) + r'\(gp\)')
+              for index, line in enumerate(lines):
+                  if pattern.search(line):
+                      print(f'--- offset {off}, disasm line {index + 1} ---')
+                      for item in lines[max(0, index - 14):min(len(lines), index + 26)]:
+                          print(item)
+          PY
             echo '===== DIRECT TEXT REFERENCES TO 0x30ae0 ====='
-            grep -n -B8 -A14 -Ei '30ae0|cmd_cloud_info_dev_traffic_upload' "$dis" || true
+            grep -n -B10 -A18 -Ei '30ae0|cmd_cloud_info_dev_traffic_upload' "$dis" || true
           } > "$out"
+
       - uses: actions/upload-artifact@v4
         with:
           name: dev-traffic-upload-callers
           path: docs/reverse-generated/dev-traffic-upload-callers.txt
           retention-days: 7
+
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/reverse-generated/dev-traffic-upload-callers.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic upload callers report'; git push || true; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'reverse: add dev traffic upload callers report'
+            git push || true
+          fi
