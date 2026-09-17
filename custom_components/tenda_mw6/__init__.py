@@ -4,11 +4,34 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from .api import TendaMW6Api
+from .api import TendaMW6Api, extract_login_account
 from .coordinator import TendaMW6Coordinator
 
 DOMAIN = "tenda_mw6"
 PLATFORMS: tuple[Platform, ...] = (Platform.SENSOR,)
+CONF_LOGIN_ACCOUNT = "login_account"
+LEGACY_LOGIN_PAYLOAD = "login_payload_hex"
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate v1 entries from a raw LoginMsg payload to the account value."""
+    if entry.version >= 2:
+        return True
+
+    if entry.version == 1:
+        data = dict(entry.data)
+        legacy_hex = data.pop(LEGACY_LOGIN_PAYLOAD, None)
+        if legacy_hex is None:
+            return False
+        try:
+            account = extract_login_account(bytes.fromhex(str(legacy_hex).replace(" ", "")))
+        except (ValueError, UnicodeError):
+            return False
+        data[CONF_LOGIN_ACCOUNT] = account
+        hass.config_entries.async_update_entry(entry, data=data, version=2)
+        return True
+
+    return False
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -16,7 +39,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api = TendaMW6Api(
         host=entry.data["host"],
         port=int(entry.data.get("port", 9000)),
-        login_payload=bytes.fromhex(entry.data["login_payload_hex"]),
+        login_account=str(entry.data[CONF_LOGIN_ACCOUNT]),
     )
     coordinator = TendaMW6Coordinator(hass, api)
     await coordinator.async_config_entry_first_refresh()
