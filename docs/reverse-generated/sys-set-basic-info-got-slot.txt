@@ -1,0 +1,9 @@
+===== RUN 55 GOAL =====
+Find the exact .got virtual address whose 32-bit little-endian value is uc_api_set_basic_info (0x00008348).
+===== .got SECTION =====
+  [19] .got              PROGBITS        00031ee0 021ee0 0003e4 04 WAp  0   0 16
+===== EXACT SLOT SCAN =====
+got_vma=0x00031ee0
+NO_EXACT_GOT_SLOT_FOR_0x00008348
+===== SYMBOL CHECK =====
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
