@@ -21,94 +21,179 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
 
-      - name: Trace callers of dev traffic upload
+      - name: Trace dev traffic handler and data dependencies
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-upload-callers.txt'
+          out='docs/reverse-generated/dev-traffic-handler-map.txt'
           dis='/tmp/libcloud.dis'
-          meta='/tmp/got-meta.txt'
 
           mipsel-linux-gnu-objdump -drwC "$lib" > "$dis"
 
-          python3 - "$lib" "$meta" <<'PY'
+          python3 - "$lib" "$dis" "$out" <<'PY'
           from elftools.elf.elffile import ELFFile
+          import re
           import struct
           import sys
 
-          lib, meta = sys.argv[1], sys.argv[2]
+          lib_path, dis_path, out_path = sys.argv[1:]
           target = 0x30AE0
           gp = 0x93370
 
-          with open(lib, 'rb') as fh:
+          lines = open(dis_path, errors='replace').read().splitlines()
+
+          with open(lib_path, 'rb') as fh:
               elf = ELFFile(fh)
-              sec = elf.get_section_by_name('.got')
-              if sec is None:
+              got = elf.get_section_by_name('.got')
+              if got is None:
                   raise SystemExit('NO .got SECTION')
-              data = sec.data()
-              base = sec['sh_addr']
+              got_base = got['sh_addr']
+              got_data = got.data()
 
-          needle = struct.pack('<I', target)
-          rows = []
-          for i in range(0, len(data) - 3, 4):
-              if data[i:i + 4] == needle:
-                  addr = base + i
-                  rows.append((addr, addr - gp))
+              symbols = {}
+              for sec_name in ('.dynsym', '.symtab'):
+                  sec = elf.get_section_by_name(sec_name)
+                  if sec is None:
+                      continue
+                  for sym in sec.iter_symbols():
+                      if sym.name and sym['st_value']:
+                          symbols.setdefault(int(sym['st_value']), set()).add(sym.name)
 
-          with open(meta, 'w', encoding='utf-8') as out:
-              for addr, off in rows:
+              target_ptrs = []
+              needle = struct.pack('<I', target)
+              for section in elf.iter_sections():
+                  flags = int(section['sh_flags'])
+                  if not (flags & 0x2):  # SHF_ALLOC
+                      continue
+                  try:
+                      data = section.data()
+                  except Exception:
+                      continue
+                  base = int(section['sh_addr'])
+                  start = 0
+                  while True:
+                      idx = data.find(needle, start)
+                      if idx < 0:
+                          break
+                      target_ptrs.append((section.name, base + idx))
+                      start = idx + 1
+
+          target_got = []
+          for i in range(0, len(got_data) - 3, 4):
+              value = struct.unpack_from('<I', got_data, i)[0]
+              if value == target:
+                  addr = got_base + i
+                  target_got.append((addr, addr - gp))
+
+          def symbol_for_value(value):
+              names = sorted(symbols.get(value, ()))
+              return ','.join(names) if names else ''
+
+          def current_function(index):
+              for j in range(index, -1, -1):
+                  match = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', lines[j])
+                  if match:
+                      return int(match.group(1), 16), match.group(2)
+              return None, '<unknown>'
+
+          # Locate target function boundaries.
+          start_idx = next(
+              i for i, line in enumerate(lines)
+              if re.match(r'^00030ae0 <cmd_cloud_info_dev_traffic_upload', line)
+          )
+          end_idx = len(lines)
+          for i in range(start_idx + 1, len(lines)):
+              if re.match(r'^[0-9a-fA-F]+ <[^>]+>:', lines[i]):
+                  end_idx = i
+                  break
+
+          used_got = []
+          got_ref_re = re.compile(r'\b(?:lw|addiu)\s+\w+,(-?\d+)\(gp\)')
+          for i in range(start_idx, end_idx):
+              match = got_ref_re.search(lines[i])
+              if not match:
+                  continue
+              off = int(match.group(1))
+              addr = gp + off
+              if got_base <= addr <= got_base + len(got_data) - 4:
+                  value = struct.unpack_from('<I', got_data, addr - got_base)[0]
+                  used_got.append((i, off, addr, value, symbol_for_value(value)))
+
+          xrefs = []
+          for got_addr, off in target_got:
+              pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(off)) + r'\(gp\)')
+              for i, line in enumerate(lines):
+                  if pat.search(line):
+                      fn_addr, fn_name = current_function(i)
+                      xrefs.append((i, got_addr, off, fn_addr, fn_name))
+
+          with open(out_path, 'w', encoding='utf-8') as out:
+              out.write('===== RUN 114 GOAL =====\n')
+              out.write('Map cmd_cloud_info_dev_traffic_upload @ 0x30ae0, all code/data references, and GOT-backed dependencies used inside the handler.\n')
+              out.write('\n===== TARGET SYMBOL =====\n')
+              out.write('cmd_cloud_info_dev_traffic_upload = 0x30ae0\n')
+              out.write(f'gp = 0x{gp:x}; .got = 0x{got_base:x}\n')
+
+              out.write('\n===== GOT ENTRIES POINTING TO TARGET =====\n')
+              for addr, off in target_got:
                   out.write(f'GOT=0x{addr:x} OFFSET={off}\n')
+              if not target_got:
+                  out.write('NONE\n')
 
-          print('\n'.join(f'GOT=0x{addr:x} OFFSET={off}' for addr, off in rows) or 'NO_GOT_ENTRY')
+              out.write('\n===== ALLOCATED-SECTION POINTERS TO TARGET =====\n')
+              for sec, addr in target_ptrs:
+                  out.write(f'{sec} @ 0x{addr:x}\n')
+              if not target_ptrs:
+                  out.write('NONE\n')
+
+              out.write('\n===== CODE XREFS THROUGH TARGET GOT OFFSET (ANY DEST REGISTER) =====\n')
+              for i, got_addr, off, fn_addr, fn_name in xrefs:
+                  out.write(f'--- {fn_name} @ {fn_addr and hex(fn_addr)} uses GOT 0x{got_addr:x} offset {off}, disasm line {i+1} ---\n')
+                  for row in lines[max(0, i-12):min(len(lines), i+20)]:
+                      out.write(row + '\n')
+              if not xrefs:
+                  out.write('NONE\n')
+
+              out.write('\n===== TARGET FUNCTION GOT DEPENDENCIES =====\n')
+              seen = set()
+              for i, off, addr, value, name in used_got:
+                  key = (off, value, name)
+                  if key in seen:
+                      continue
+                  seen.add(key)
+                  out.write(f'offset={off:7d} got=0x{addr:x} value=0x{value:x} symbol={name or "?"}\n')
+
+              out.write('\n===== FULL TARGET FUNCTION DISASSEMBLY =====\n')
+              for row in lines[start_idx:end_idx]:
+                  out.write(row + '\n')
           PY
 
           {
-            echo '===== RUN 113 GOAL ====='
-            echo 'Find callers of cmd_cloud_info_dev_traffic_upload @ 0x30ae0 and identify how its input arguments are produced.'
-            echo '===== GOT ENTRY / GP OFFSET ====='
-            cat "$meta" || true
-            echo '===== DIRECT RELOCATIONS / SYMBOL REFERENCES ====='
-            mipsel-linux-gnu-readelf -rW "$lib" | grep -F 'cmd_cloud_info_dev_traffic_upload' || true
-            echo '===== CALLSITES USING THE TARGET GOT OFFSET ====='
-            python3 - "$dis" "$meta" <<'PY'
-          import re
-          import sys
-
-          dis_path, meta_path = sys.argv[1], sys.argv[2]
-          lines = open(dis_path, errors='replace').read().splitlines()
-          offsets = []
-          for line in open(meta_path, errors='replace'):
-              match = re.search(r'OFFSET=(-?\d+)', line)
-              if match:
-                  offsets.append(int(match.group(1)))
-
-          for off in offsets:
-              pattern = re.compile(r'\blw\s+t9,' + re.escape(str(off)) + r'\(gp\)')
-              for index, line in enumerate(lines):
-                  if pattern.search(line):
-                      print(f'--- offset {off}, disasm line {index + 1} ---')
-                      for item in lines[max(0, index - 14):min(len(lines), index + 26)]:
-                          print(item)
-          PY
-            echo '===== DIRECT TEXT REFERENCES TO 0x30ae0 ====='
-            grep -n -B10 -A18 -Ei '30ae0|cmd_cloud_info_dev_traffic_upload' "$dis" || true
-          } > "$out"
+            echo
+            echo '===== DYNAMIC SYMBOL / RELOCATION CONTEXT ====='
+            mipsel-linux-gnu-readelf -Ws "$lib" | grep -Ei 'traffic|device|upload|cloud_info' || true
+            echo
+            mipsel-linux-gnu-readelf -rW "$lib" | grep -Ei 'traffic|device|upload|cloud_info' || true
+            echo
+            echo '===== RELEVANT STRINGS ====='
+            strings -tx "$lib" | grep -Ei 'traffic|upload.*dev|dev.*upload|uprate|downrate|total_up|total_down' || true
+          } >> "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-upload-callers
-          path: docs/reverse-generated/dev-traffic-upload-callers.txt
+          name: dev-traffic-handler-map
+          path: docs/reverse-generated/dev-traffic-handler-map.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-upload-callers.txt
+          git add docs/reverse-generated/dev-traffic-handler-map.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: add dev traffic upload callers report'
+            git commit -m 'reverse: map dev traffic handler dependencies'
             git push || true
           fi
