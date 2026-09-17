@@ -13,32 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Map ucapi traffic send GOT target
+      - name: Dump ucapi GOT around traffic sender
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/ucapi-traffic-send-got.txt'
+          out='docs/reverse-generated/ucapi-traffic-send-got-bytes.txt'
           {
-            echo '===== RUN 69 GOAL ====='
-            echo 'Resolve GOT address 0x32108 used by uc_api_m_cloud_info_send_dev_traffic (lw t9,-32200(gp)).'
-            echo '===== DYNAMIC RELOCATIONS ====='
-            mipsel-linux-gnu-readelf -rW "$uc" | grep -Ei '32108|uc_api|send|dispatch|cmd' || true
-            echo '===== DYNAMIC SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$uc" | grep -Ei 'send|dispatch|module|cmd|uc_api' | head -n 260 || true
-            echo '===== GOT / RELOCATION VIEW ====='
-            mipsel-linux-gnu-objdump -R "$uc" | grep -Ei '32108|send|dispatch|cmd|api' || true
+            echo '===== RUN 70 GOAL ====='
+            echo 'Dump raw GOT words around virtual address 0x32108 used by uc_api_m_cloud_info_send_dev_traffic.'
+            echo '===== SECTION MAP ====='
+            mipsel-linux-gnu-readelf -SW "$uc" | grep -E '\.got|\.data|\.text' || true
+            echo '===== RAW GOT AROUND 0x32108 ====='
+            mipsel-linux-gnu-objdump -s -j .got "$uc" | awk '$1 ~ /^[0-9a-fA-F]+$/ {a=strtonum("0x"$1); if (a >= strtonum("0x320e0") && a <= strtonum("0x32130")) print}' || true
+            echo '===== READELF HEX CROSS-CHECK ====='
+            mipsel-linux-gnu-readelf -x .got "$uc" | grep -Ei '0x000320e|0x000320f|0x0003210|0x0003211|0x0003212|0x0003213' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: ucapi-traffic-send-got
-          path: docs/reverse-generated/ucapi-traffic-send-got.txt
+          name: ucapi-traffic-send-got-bytes
+          path: docs/reverse-generated/ucapi-traffic-send-got-bytes.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ucapi-traffic-send-got.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add ucapi traffic send GOT map'; git push || true; fi
+          git add docs/reverse-generated/ucapi-traffic-send-got-bytes.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add ucapi traffic sender GOT bytes'; git push || true; fi
