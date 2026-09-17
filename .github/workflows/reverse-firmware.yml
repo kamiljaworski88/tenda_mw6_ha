@@ -21,13 +21,13 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
 
-      - name: Locate every caller of dev traffic send API
+      - name: Resolve netlink statistics provider
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-send-callers.txt'
+          out='docs/reverse-generated/run117-netlink-provider.txt'
 
           python3 - "$out" <<'PY'
           from pathlib import Path
@@ -39,7 +39,7 @@ jobs:
 
           root = Path('firmware-src/RootFS-unpacked')
           out_path = Path(sys.argv[1])
-          target_name = 'uc_api_m_cloud_info_send_dev_traffic'
+          targets = {'netlink_get_statistic_info', 'g_ip_info'}
 
           def is_elf(path):
               try:
@@ -48,84 +48,148 @@ jobs:
               except OSError:
                   return False
 
-          def disassemble(path):
-              return subprocess.check_output(
-                  ['mipsel-linux-gnu-objdump', '-drwC', str(path)],
-                  text=True,
-                  errors='replace',
-              ).splitlines()
+          def run(args):
+              return subprocess.check_output(args, text=True, errors='replace')
 
-          def current_function(lines, idx):
-              for j in range(idx, -1, -1):
-                  m = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', lines[j])
-                  if m:
-                      return int(m.group(1), 16), m.group(2)
-              return None, '<unknown>'
+          def symbol_rows(path):
+              rows = []
+              try:
+                  with path.open('rb') as fh:
+                      elf = ELFFile(fh)
+                      for sec_name in ('.dynsym', '.symtab'):
+                          sec = elf.get_section_by_name(sec_name)
+                          if sec is None:
+                              continue
+                          for sym in sec.iter_symbols():
+                              if sym.name in targets:
+                                  rows.append({
+                                      'name': sym.name,
+                                      'value': int(sym['st_value']),
+                                      'size': int(sym['st_size']),
+                                      'shndx': sym['st_shndx'],
+                                      'bind': sym['st_info']['bind'],
+                                      'type': sym['st_info']['type'],
+                                      'section': sec_name,
+                                  })
+              except Exception:
+                  pass
+              return rows
 
           hits = []
           for path in root.rglob('*'):
               if not path.is_file() or not is_elf(path):
                   continue
-              try:
-                  with path.open('rb') as fh:
-                      elf = ELFFile(fh)
-                      dynsym = elf.get_section_by_name('.dynsym')
-                      if dynsym is None:
+              rows = symbol_rows(path)
+              if rows:
+                  hits.append((path, rows))
+
+          def all_symbols(path):
+              out = []
+              with path.open('rb') as fh:
+                  elf = ELFFile(fh)
+                  for sec_name in ('.dynsym', '.symtab'):
+                      sec = elf.get_section_by_name(sec_name)
+                      if sec is None:
                           continue
-                      for sym in dynsym.iter_symbols():
-                          if sym.name == target_name:
-                              hits.append((path, int(sym['st_value']), sym['st_shndx']))
-              except Exception:
-                  continue
+                      for sym in sec.iter_symbols():
+                          v = int(sym['st_value'])
+                          if v:
+                              out.append((v, int(sym['st_size']), sym.name, sym['st_info']['type'], sym['st_shndx']))
+              return sorted(set(out))
+
+          def stop_for(path, start, size):
+              if size:
+                  return start + size
+              vals = [v for v, _s, _n, typ, _idx in all_symbols(path) if v > start and typ == 'STT_FUNC']
+              return min(vals) if vals else start + 0x1000
+
+          def disasm(path, start, stop):
+              return run([
+                  'mipsel-linux-gnu-objdump', '-drwC',
+                  f'--start-address=0x{start:x}', f'--stop-address=0x{stop:x}',
+                  str(path)
+              ])
+
+          def interesting_strings(path):
+              text = run(['strings', '-a', '-t', 'x', str(path)])
+              pat = re.compile(r'(online_ip|/proc/|up_bytes|down_bytes|last_up|last_down|statistic|netlink|ip_info|hw_nat|fastpath|napt|traffic)', re.I)
+              return '\n'.join(line for line in text.splitlines() if pat.search(line))
+
+          def got_xrefs(path, target_value):
+              if not target_value:
+                  return 'target has no concrete value\n'
+              with path.open('rb') as fh:
+                  elf = ELFFile(fh)
+                  got = elf.get_section_by_name('.got')
+                  if got is None:
+                      return 'NO .got\n'
+                  got_base = int(got['sh_addr'])
+                  gp = got_base + 0x7ff0
+                  data = got.data()
+              slots = []
+              for off in range(0, len(data) - 3, 4):
+                  if struct.unpack_from('<I', data, off)[0] == target_value:
+                      addr = got_base + off
+                      slots.append((addr, addr - gp))
+              lines = run(['mipsel-linux-gnu-objdump', '-drwC', str(path)]).splitlines()
+              result = [f'.got=0x{got_base:x} inferred_gp=0x{gp:x}']
+              for addr, gp_off in slots:
+                  result.append(f'GOT slot 0x{addr:x}, gp_off={gp_off}')
+                  pat = re.compile(r'\b(?:lw|sw|addiu)\s+[^,]+,' + re.escape(str(gp_off)) + r'\(gp\)')
+                  for i, line in enumerate(lines):
+                      if pat.search(line):
+                          result.append(f'  XREF line {i+1}: {line}')
+                          for row in lines[max(0, i-8):min(len(lines), i+14)]:
+                              result.append('    ' + row)
+              if not slots:
+                  result.append('NO GOT WORD MATCHING TARGET VALUE')
+              return '\n'.join(result) + '\n'
 
           with out_path.open('w', encoding='utf-8') as out:
-              out.write('===== RUN 116 GOAL =====\n')
-              out.write('Locate every ELF importing/defining uc_api_m_cloud_info_send_dev_traffic and recover caller functions.\n')
-              out.write(f'ELF symbol hits: {len(hits)}\n')
+              out.write('===== RUN 117 GOAL =====\n')
+              out.write('Resolve the ELF that defines netlink_get_statistic_info and g_ip_info, then recover the runtime population path used by GetHostList rates.\n\n')
 
-              for path, value, shndx in hits:
-                  out.write(f'\n===== {path} =====\n')
-                  out.write(f'{target_name} value=0x{value:x} shndx={shndx}\n')
-                  lines = disassemble(path)
+              for path, rows in hits:
+                  out.write(f'===== SYMBOL HITS: {path} =====\n')
+                  for row in rows:
+                      defined = row['shndx'] != 'SHN_UNDEF'
+                      out.write(
+                          f"{row['name']} section={row['section']} defined={defined} "
+                          f"value=0x{row['value']:x} size={row['size']} shndx={row['shndx']} "
+                          f"type={row['type']} bind={row['bind']}\n"
+                      )
+                  out.write('\n')
 
-                  with path.open('rb') as fh:
-                      elf = ELFFile(fh)
-                      got = elf.get_section_by_name('.got')
-                      if got is None:
-                          out.write('NO .got\n')
-                          continue
-                      got_base = int(got['sh_addr'])
-                      gp = got_base + 0x7ff0
-                      data = got.data()
+              providers = []
+              for path, rows in hits:
+                  defs = [r for r in rows if r['shndx'] != 'SHN_UNDEF']
+                  if defs:
+                      providers.append((path, defs))
 
-                  got_entries = []
-                  if value:
-                      for off in range(0, len(data) - 3, 4):
-                          word = struct.unpack_from('<I', data, off)[0]
-                          if word == value:
-                              addr = got_base + off
-                              got_entries.append((addr, addr - gp))
+              out.write(f'===== PROVIDERS ({len(providers)}) =====\n')
+              for path, defs in providers:
+                  out.write(f'{path}\n')
+                  for r in defs:
+                      out.write(f"  {r['name']} @ 0x{r['value']:x} size={r['size']} type={r['type']}\n")
+              out.write('\n')
 
-                  out.write(f'.got=0x{got_base:x} inferred_gp=0x{gp:x}\n')
-                  if not got_entries:
-                      out.write('NO GOT WORD MATCHING SYMBOL VALUE\n')
+              for path, defs in providers:
+                  out.write(f'===== PROVIDER STRINGS: {path} =====\n')
+                  out.write(interesting_strings(path) + '\n\n')
 
-                  for addr, gp_off in got_entries:
-                      out.write(f'GOT=0x{addr:x} gp_off={gp_off}\n')
-                      pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(gp_off)) + r'\(gp\)')
-                      found = []
-                      for i, line in enumerate(lines):
-                          if pat.search(line):
-                              found.append(i)
-                      if not found:
-                          out.write('  NO CODE XREF\n')
-                      for i in found:
-                          fn_addr, fn_name = current_function(lines, i)
-                          out.write(f'  XREF {fn_name} @ {fn_addr and hex(fn_addr)} line={i+1}\n')
-                          for row in lines[max(0, i-18):min(len(lines), i+30)]:
-                              out.write('    ' + row + '\n')
+                  for r in defs:
+                      out.write(f"===== TARGET {r['name']} IN {path} =====\n")
+                      if r['type'] == 'STT_FUNC':
+                          start = r['value']
+                          stop = stop_for(path, start, r['size'])
+                          out.write(f'DISASM 0x{start:x}..0x{stop:x}\n')
+                          out.write(disasm(path, start, stop))
+                      out.write('\n===== GOT/XREFS =====\n')
+                      out.write(got_xrefs(path, r['value']))
+                      out.write('\n')
 
-              out.write('\n===== STRING-ONLY REFERENCES ACROSS ROOTFS =====\n')
+              out.write('===== ALL ROOTFS STRING HITS FOR /proc/net/online_ip =====\n')
+              needle = b'/proc/net/online_ip'
               for path in root.rglob('*'):
                   if not path.is_file():
                       continue
@@ -133,22 +197,22 @@ jobs:
                       data = path.read_bytes()
                   except OSError:
                       continue
-                  if target_name.encode() in data and not any(path == h[0] for h in hits):
+                  if needle in data:
                       out.write(str(path) + '\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-send-callers
-          path: docs/reverse-generated/dev-traffic-send-callers.txt
+          name: run117-netlink-provider
+          path: docs/reverse-generated/run117-netlink-provider.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-send-callers.txt
+          git add docs/reverse-generated/run117-netlink-provider.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: locate dev traffic send callers'
-            git push || true
+            git commit -m 'reverse: resolve netlink statistics provider'
+            git push
           fi
