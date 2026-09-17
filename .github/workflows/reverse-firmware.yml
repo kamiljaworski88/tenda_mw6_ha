@@ -13,34 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace SYS BasicInfo serial source
+      - name: Trace GetBasicInfo serial source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
-          cli='firmware-src/RootFS-unpacked/bin/confcli'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-basic-serial.txt'
+          out='docs/reverse-generated/sys-basic-serial-xref.txt'
           {
-            echo '===== RUN 50 GOAL ====='
-            echo 'Trace M_SYS cmd0 / GetBasicInfo and determine whether serial.number feeds its response.'
-            echo '===== BASIC INFO REG WRAPPER ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x167e4 --stop-address=0x16840 "$lib" || true
-            echo '===== BASIC INFO / SERIAL STRINGS ====='
-            strings -a -t x "$lib" | grep -Ei 'GetBasicInfo|BasicInfo|serial.number|serial|sys.model|up.soft.ver' || true
-            strings -a -t x "$cli" | grep -Ei 'GetBasicInfo|BasicInfo|serial.number|serial|sys.model|up.soft.ver' || true
-            echo '===== CONFCLI SYS-RELATED SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$cli" | grep -Ei 'basic|sys.*info|serial|uc_api_enable_m_sys' || true
+            echo '===== RUN 51 GOAL ====='
+            echo 'Trace GetBasicInfo cmd0 producer and serial.number source.'
+            echo '===== FUNCTION AFTER BASIC-INFO REG WRAPPER ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1682c --stop-address=0x16b80 "$lib" || true
+            echo '===== SYMBOLS 0x16800..0x16c00 ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | awk '$2 ~ /^00016[89ab]/ {print}' || true
+            echo '===== DYNAMIC SYMBOLS: GetValue / BASIC INFO ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'GetValue|BasicInfo|basic_info' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-basic-serial
-          path: docs/reverse-generated/sys-basic-serial.txt
+          name: sys-basic-serial-xref
+          path: docs/reverse-generated/sys-basic-serial-xref.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-basic-serial.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: trace SYS basic info serial source'; git push || true; fi
+          git add docs/reverse-generated/sys-basic-serial-xref.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add GetBasicInfo serial xref'; git push || true; fi
