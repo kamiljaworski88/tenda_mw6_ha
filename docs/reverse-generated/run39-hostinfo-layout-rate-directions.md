@@ -1,4 +1,4 @@
-# Run 39 — resolved HostInfo memory layout and rate directions
+# Run 39 — resolved HostInfo memory layout, host matcher and rate directions
 
 ## Major correction
 
@@ -34,15 +34,7 @@ This matches all independently observed accesses in `confsrv`:
 
 ## Rate gate
 
-Observed code:
-
-```text
-HostInfo* host = hosts[i];
-if (*(uint32_t *)((uint8_t *)host + 0x20) == 0)
-    continue;
-```
-
-With the resolved layout this is:
+Observed code is equivalent to:
 
 ```c
 if (!host->online)
@@ -51,25 +43,39 @@ if (!host->online)
 
 It is not a `condtion_time` gate.
 
-## IP/MAC lookup inputs
+## Exact g_ip_info / online_ip matcher
 
-For each online client, firmware:
+For each online client firmware parses:
 
-1. parses `host->ipaddr` from `HostInfo+0x0c`,
-2. clears a 6-byte local MAC buffer,
-3. parses `host->ethaddr` from `HostInfo+0x10`,
-4. calls the static `online_ip` matcher with:
+- `host->ipaddr` from `HostInfo+0x0c` into a 32-bit IPv4 value,
+- `host->ethaddr` from `HostInfo+0x10` into a 6-byte MAC buffer.
+
+The static helper at `0x4340cc` receives:
 
 ```text
 a0 = parsed IPv4
 a1 = parsed 6-byte MAC
-a2 = g_ip_info
+a2 = g_ip_info base
 a3 = record count
 ```
 
-A NULL matcher result skips the rate calculation for that host.
+The record stride calculation in the helper is exactly `0xE8` (232 bytes). For every record it first compares the six MAC bytes at `record+0x04`; only when that comparison succeeds does it compare the IPv4 value at `record+0x00`.
 
-The exact internal matcher policy (strict IP+MAC versus fallback matching) remains the main unresolved static detail.
+Equivalent logic:
+
+```c
+for (i = 0; i < count; i++) {
+    rec = (uint8_t *)g_ip_info + i * 0xE8;
+    if (memcmp(input_mac, rec + 0x04, 6) != 0)
+        continue;
+    if (*(uint32_t *)(rec + 0x00) != input_ip)
+        continue;
+    return rec;
+}
+return NULL;
+```
+
+Therefore matching is strict **MAC AND IP**. There is no IP-only or MAC-only fallback in this helper. A stale/inconsistent IP/MAC pair in `g_ip_info` causes an online HostInfo to skip rate calculation and retain zero rates.
 
 ## Direction mapping resolved
 
@@ -77,27 +83,27 @@ The rate helper computes two independent 64-bit counter deltas from the matched 
 
 ### Record group at +0x28 / +0x30
 
-Current counter begins at record `+0x28`, previous/sample counter begins at `+0x30`. The normalized result is stored to stack `+64`, then written to:
+Current counter begins at record `+0x28`, previous/sample counter begins at `+0x30`. The normalized result is written to `HostInfo + 0x28`, which is `downrate`.
 
-```text
-HostInfo + 0x28
-```
-
-`HostInfo + 0x28` is `downrate`.
-
-Therefore the `online_ip` counter group based at `+0x28` is the DOWNLOAD direction.
+Therefore the counter group based at `+0x28` is DOWNLOAD.
 
 ### Record group at +0x18 / +0x20
 
-Current counter begins at record `+0x18`, previous/sample counter begins at `+0x20`. The normalized result is stored to stack `+72`, then written to:
+Current counter begins at record `+0x18`, previous/sample counter begins at `+0x20`. The normalized result is written to `HostInfo + 0x24`, which is `uprate`.
 
-```text
-HostInfo + 0x24
-```
+Therefore the counter group based at `+0x18` is UPLOAD.
 
-`HostInfo + 0x24` is `uprate`.
+## Arithmetic helpers resolved
 
-Therefore the `online_ip` counter group based at `+0x18` is the UPLOAD direction.
+The rate path uses the expected soft-float helpers:
+
+- `__floatundisf` to convert a 64-bit unsigned delta to float,
+- `__divsf3` for normalization/division,
+- `__fixunssfdi` to convert the normalized float back to an unsigned integer.
+
+The elapsed-time path also uses `__divsf3` and falls back to a positive constant when the computed interval is not positive. The final upload/download calculation performs an additional division by the same firmware constant at the data slot corresponding to `base+0x3360`.
+
+The exact numeric value of that final scale constant is the only remaining item needed before assigning a display unit such as B/s, kB/s or KiB/s with full confidence.
 
 ## Resolved pipeline
 
@@ -111,20 +117,15 @@ GetHostList
        online != 0 ?
        parse IP
        parse MAC
-       find matching g_ip_info / online_ip record
+       strict match: MAC == rec+0x04 AND IP == rec+0x00
        upload delta  : record +0x18 versus +0x20
        download delta: record +0x28 versus +0x30
-       normalize by elapsed time
+       normalize by elapsed time and firmware scale constant
        HostInfo.uprate   = result at +0x24
        HostInfo.downrate = result at +0x28
   -> protobuf pack
 ```
 
-## Remaining unknowns
+## Remaining unknown
 
-Only two material pieces remain for current-rate support:
-
-1. exact matching rule inside the static `online_ip` matcher (IP AND MAC, or fallback semantics),
-2. exact exposed unit/scaling of `uprate` and `downrate` after the normalization helper.
-
-Neither affects the now-resolved field/direction mapping.
+For current-rate support only one material item remains: the exact exposed unit/scaling of `uprate` and `downrate` after the final `__divsf3` normalization.
