@@ -13,7 +13,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace legacy online-hosts API
+      - name: Map mesh WAN traffic API
         shell: bash
         run: |
           set -euo pipefail
@@ -21,29 +21,27 @@ jobs:
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           pb='firmware-src/RootFS-unpacked/lib/libpb.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/ol-hosts-api-map.txt'
+          out='docs/reverse-generated/mesh-wan-traffic-api.txt'
           {
-            echo '===== RUN 64 GOAL ====='
-            echo 'Map the legacy online-hosts API (M_OL_HOST/CMD_OL_HOSTS_GET): module id, command id, handler, and response schema clues. This is a candidate for live per-client rates because M_MESH_HOSTS returns zero uprate/downrate.'
-            echo '===== RELEVANT SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'uc_api_enable_m_ol_host|ol_hosts_get|ol_host|online.*host' || true
-            echo '===== uc_api_enable_m_ol_host DISASSEMBLY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x5ef4 --stop-address=0x5fa0 "$lib" || true
-            echo '===== ol_hosts_get HANDLER DISASSEMBLY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1af3c --stop-address=0x1b080 "$lib" || true
-            echo '===== COMMAND STRINGS ====='
-            strings -a -t x "$lib" | awk '$1 >= "1e8c0" && $1 <= "1e950" {print}' || true
-            echo '===== LIBPB ONLINE-HOST / RATE SCHEMA CLUES ====='
-            strings -a -t x "$pb" | grep -Ei 'ol.?host|online.?host|host.*list|uprate|downrate|up_rate|down_rate|traffic' | head -n 220 || true
+            echo '===== RUN 65 GOAL ====='
+            echo 'Map GetTrafficInfo / CMD_MESH_WAN_TRAFFIC to exact module id, command id, registration function, handler and response schema. Determine whether it can expose client traffic or only aggregate WAN traffic.'
+            echo '===== SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'traffic|wan.*rate|mesh.*wan|GetTrafficInfo|uc_api_enable_m_mesh' || true
+            echo '===== COMMAND / MODULE STRINGS ====='
+            strings -a -t x "$lib" | grep -Ei 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN|WAN_TRAFFIC|traffic' | head -n 240 || true
+            echo '===== DISASSEMBLY AROUND STRING-RELATED SYMBOLS ====='
+            mipsel-linux-gnu-objdump -drwC "$lib" | grep -B22 -A34 -Ei 'traffic|wan_rate|mesh_wan' | head -n 1200 || true
+            echo '===== LIBPB TRAFFIC SCHEMA ====='
+            strings -a -t x "$pb" | grep -Ei 'traffic|uprate|downrate|total_up|total_down|WanRate|WanPortRate|HostInfo' | head -n 260 || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: ol-hosts-api-map
-          path: docs/reverse-generated/ol-hosts-api-map.txt
+          name: mesh-wan-traffic-api
+          path: docs/reverse-generated/mesh-wan-traffic-api.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ol-hosts-api-map.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add legacy online-hosts API map'; git push || true; fi
+          git add docs/reverse-generated/mesh-wan-traffic-api.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add mesh WAN traffic API map'; git push || true; fi
