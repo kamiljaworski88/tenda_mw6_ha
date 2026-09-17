@@ -13,30 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace traffic input function at 0x50820
+      - name: Trace dev traffic upload producer
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/traffic-input-50820.txt'
+          out='docs/reverse-generated/dev-traffic-upload-producer-call.txt'
           {
-            echo '===== RUN 82 GOAL ====='
-            echo 'Identify function 0x50820 and inspect how it prepares data before dev_traffic_upload_json_packer.'
-            echo '===== SYMBOL AT / AROUND 0x50820 ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei '50820|traffic|host|rate|stat' || true
-            echo '===== DISASSEMBLY 0x50820..0x509a0 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x50820 --stop-address=0x509a0 "$lib" || true
+            echo '===== RUN 83 GOAL ====='
+            echo 'Disassemble cmd_cloud_info_dev_traffic_upload and identify the first indirect call made with a0=3.'
+            echo '===== cmd_cloud_info_dev_traffic_upload 0x30ae0..0x30c60 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x30ae0 --stop-address=0x30c60 "$lib" || true
+            echo '===== TRAFFIC / HOST SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'traffic|host|rate|stat|upload|cmd_send|uc_api|inner|cloud' || true
+            echo '===== DYNSYM ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: traffic-input-50820
-          path: docs/reverse-generated/traffic-input-50820.txt
+          name: dev-traffic-upload-producer-call
+          path: docs/reverse-generated/dev-traffic-upload-producer-call.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/traffic-input-50820.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add 0x50820 traffic-input trace'; git push || true; fi
+          git add docs/reverse-generated/dev-traffic-upload-producer-call.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic producer-call report'; git push || true; fi
