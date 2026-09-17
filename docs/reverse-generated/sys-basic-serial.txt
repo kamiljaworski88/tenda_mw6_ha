@@ -1,0 +1,54 @@
+===== RUN 50 GOAL =====
+Trace M_SYS cmd0 / GetBasicInfo and determine whether serial.number feeds its response.
+===== BASIC INFO REG WRAPPER =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+000167e4 <uc_api_lib_sys_basic_info_hdl_reg@@Base>:
+   167e4:	3c1c0002 	lui	gp,0x2
+   167e8:	279c36ec 	addiu	gp,gp,14060
+   167ec:	0399e021 	addu	gp,gp,t9
+   167f0:	27bdffd0 	addiu	sp,sp,-48
+   167f4:	afbf002c 	sw	ra,44(sp)
+   167f8:	afbc0020 	sw	gp,32(sp)
+   167fc:	24020002 	li	v0,2
+   16800:	afa20010 	sw	v0,16(sp)
+   16804:	8fa20040 	lw	v0,64(sp)
+   16808:	8f99802c 	lw	t9,-32724(gp)
+   1680c:	afa20014 	sw	v0,20(sp)
+   16810:	8fa20044 	lw	v0,68(sp)
+   16814:	27396500 	addiu	t9,t9,25856
+   16818:	0320f809 	jalr	t9
+   1681c:	afa20018 	sw	v0,24(sp)
+   16820:	8fbf002c 	lw	ra,44(sp)
+   16824:	03e00008 	jr	ra
+   16828:	27bd0030 	addiu	sp,sp,48
+   1682c:	3c1c0002 	lui	gp,0x2
+   16830:	279c36a4 	addiu	gp,gp,13988
+   16834:	0399e021 	addu	gp,gp,t9
+   16838:	27bdfe20 	addiu	sp,sp,-480
+   1683c:	afbf01dc 	sw	ra,476(sp)
+===== BASIC INFO / SERIAL STRINGS =====
+  2019c GetBasicInfo
+  32314 serial.number
+  3233c sys.model
+  32348 sys.model.ver
+  32358 up.soft.ver
+  37b20 serial.number
+  37b84 [%s][%d][luminais] 	serial_num : %s
+  37c80 [%s][%d][luminais] serial_num : %s
+  3b3f8 serial.number
+  3b4d0 [%s][%d]serial_num %s is find!!
+  3b690 [%s][%d][luminais] serial_num %s is not in group, restore zero
+  3b6f4 [%s][%d][luminais] GetValue serial.number failed
+  3c158 serial.number
+  3f148 serial.number
+  3f180 [%s][%d][luminais] GetValue serial.number failed
+  42434 up.soft.ver
+  428c0 serial.number
+  428ec sys.model
+  428f8 sys.model.ver
+===== CONFCLI SYS-RELATED SYMBOLS =====
