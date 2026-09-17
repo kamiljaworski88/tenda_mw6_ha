@@ -21,13 +21,13 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
 
-      - name: Trace upstream traffic producers
+      - name: Locate every caller of dev traffic send API
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-producers.txt'
+          out='docs/reverse-generated/dev-traffic-send-callers.txt'
 
           python3 - "$out" <<'PY'
           from pathlib import Path
@@ -37,24 +37,23 @@ jobs:
           import subprocess
           import sys
 
-          out_path = Path(sys.argv[1])
           root = Path('firmware-src/RootFS-unpacked')
-          candidates = [
-              root / 'bin/confsrv',
-              root / 'bin/device_list',
-              root / 'lib/libucapi.so',
-              root / 'lib/libcommon.so',
-              root / 'lib/libcloud.so',
-          ]
-          name_re = re.compile(r'(traffic|cloud_info.*dev|dev.*traffic|send.*traffic|upload.*traffic)', re.I)
+          out_path = Path(sys.argv[1])
+          target_name = 'uc_api_m_cloud_info_send_dev_traffic'
 
-          def disassemble(path: Path):
-              text = subprocess.check_output(
+          def is_elf(path):
+              try:
+                  with path.open('rb') as fh:
+                      return fh.read(4) == b'\x7fELF'
+              except OSError:
+                  return False
+
+          def disassemble(path):
+              return subprocess.check_output(
                   ['mipsel-linux-gnu-objdump', '-drwC', str(path)],
                   text=True,
                   errors='replace',
-              )
-              return text.splitlines()
+              ).splitlines()
 
           def current_function(lines, idx):
               for j in range(idx, -1, -1):
@@ -63,105 +62,93 @@ jobs:
                       return int(m.group(1), 16), m.group(2)
               return None, '<unknown>'
 
-          with out_path.open('w', encoding='utf-8') as out:
-              out.write('===== RUN 115 GOAL =====\n')
-              out.write('Find the upstream producer/caller path that supplies per-client traffic data before libcloud packages it.\n')
+          hits = []
+          for path in root.rglob('*'):
+              if not path.is_file() or not is_elf(path):
+                  continue
+              try:
+                  with path.open('rb') as fh:
+                      elf = ELFFile(fh)
+                      dynsym = elf.get_section_by_name('.dynsym')
+                      if dynsym is None:
+                          continue
+                      for sym in dynsym.iter_symbols():
+                          if sym.name == target_name:
+                              hits.append((path, int(sym['st_value']), sym['st_shndx']))
+              except Exception:
+                  continue
 
-              for path in candidates:
-                  if not path.exists():
-                      continue
-                  out.write(f'\n\n===== FILE {path} =====\n')
+          with out_path.open('w', encoding='utf-8') as out:
+              out.write('===== RUN 116 GOAL =====\n')
+              out.write('Locate every ELF importing/defining uc_api_m_cloud_info_send_dev_traffic and recover caller functions.\n')
+              out.write(f'ELF symbol hits: {len(hits)}\n')
+
+              for path, value, shndx in hits:
+                  out.write(f'\n===== {path} =====\n')
+                  out.write(f'{target_name} value=0x{value:x} shndx={shndx}\n')
                   lines = disassemble(path)
 
                   with path.open('rb') as fh:
                       elf = ELFFile(fh)
                       got = elf.get_section_by_name('.got')
-                      dynsym = elf.get_section_by_name('.dynsym')
-                      if dynsym is None:
-                          out.write('NO .dynsym\n')
-                          continue
-
-                      matches = []
-                      symbols_by_value = {}
-                      for sym in dynsym.iter_symbols():
-                          if sym.name:
-                              symbols_by_value.setdefault(int(sym['st_value']), set()).add(sym.name)
-                              if name_re.search(sym.name):
-                                  matches.append((sym.name, int(sym['st_value']), sym['st_shndx']))
-
-                      out.write('--- matching dynamic symbols ---\n')
-                      for name, value, ndx in matches:
-                          out.write(f'{name:55s} value=0x{value:x} shndx={ndx}\n')
-                      if not matches:
-                          out.write('NONE\n')
-
                       if got is None:
+                          out.write('NO .got\n')
                           continue
                       got_base = int(got['sh_addr'])
-                      got_data = got.data()
                       gp = got_base + 0x7ff0
-                      out.write(f'--- GOT base=0x{got_base:x} inferred gp=0x{gp:x} ---\n')
+                      data = got.data()
 
-                      target_values = {value: name for name, value, _ in matches if value}
-                      got_hits = []
-                      for off in range(0, len(got_data) - 3, 4):
-                          word = struct.unpack_from('<I', got_data, off)[0]
-                          if word in target_values:
+                  got_entries = []
+                  if value:
+                      for off in range(0, len(data) - 3, 4):
+                          word = struct.unpack_from('<I', data, off)[0]
+                          if word == value:
                               addr = got_base + off
-                              got_hits.append((target_values[word], word, addr, addr - gp))
+                              got_entries.append((addr, addr - gp))
 
-                      out.write('--- matching GOT entries and code xrefs ---\n')
-                      for name, value, addr, gp_off in got_hits:
-                          out.write(f'GOT symbol={name} value=0x{value:x} addr=0x{addr:x} gp_off={gp_off}\n')
-                          pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(gp_off)) + r'\(gp\)')
-                          found = False
-                          for i, line in enumerate(lines):
-                              if not pat.search(line):
-                                  continue
-                              found = True
-                              fn_addr, fn_name = current_function(lines, i)
-                              out.write(f'  XREF {fn_name} @ {fn_addr and hex(fn_addr)} disasm_line={i+1}\n')
-                              for row in lines[max(0, i-10):min(len(lines), i+18)]:
-                                  out.write('    ' + row + '\n')
-                          if not found:
-                              out.write('  NO CODE XREF FOUND\n')
+                  out.write(f'.got=0x{got_base:x} inferred_gp=0x{gp:x}\n')
+                  if not got_entries:
+                      out.write('NO GOT WORD MATCHING SYMBOL VALUE\n')
 
-                      # For locally defined traffic-related functions, emit their complete bodies.
-                      labels = {}
+                  for addr, gp_off in got_entries:
+                      out.write(f'GOT=0x{addr:x} gp_off={gp_off}\n')
+                      pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(gp_off)) + r'\(gp\)')
+                      found = []
                       for i, line in enumerate(lines):
-                          m = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', line)
-                          if m:
-                              labels[i] = (int(m.group(1), 16), m.group(2))
-                      label_indices = sorted(labels)
-                      for pos, idx in enumerate(label_indices):
-                          addr, name = labels[idx]
-                          if not name_re.search(name):
-                              continue
-                          end = label_indices[pos + 1] if pos + 1 < len(label_indices) else len(lines)
-                          out.write(f'\n--- FUNCTION {name} @ 0x{addr:x} ---\n')
-                          for row in lines[idx:end]:
-                              out.write(row + '\n')
+                          if pat.search(line):
+                              found.append(i)
+                      if not found:
+                          out.write('  NO CODE XREF\n')
+                      for i in found:
+                          fn_addr, fn_name = current_function(lines, i)
+                          out.write(f'  XREF {fn_name} @ {fn_addr and hex(fn_addr)} line={i+1}\n')
+                          for row in lines[max(0, i-18):min(len(lines), i+30)]:
+                              out.write('    ' + row + '\n')
 
-                  # Strings often expose command names not present as symbols.
-                  strings = subprocess.check_output(['strings', '-tx', str(path)], text=True, errors='replace')
-                  selected = [line for line in strings.splitlines() if name_re.search(line)]
-                  out.write('\n--- matching strings ---\n')
-                  for line in selected[:300]:
-                      out.write(line + '\n')
+              out.write('\n===== STRING-ONLY REFERENCES ACROSS ROOTFS =====\n')
+              for path in root.rglob('*'):
+                  if not path.is_file():
+                      continue
+                  try:
+                      data = path.read_bytes()
+                  except OSError:
+                      continue
+                  if target_name.encode() in data and not any(path == h[0] for h in hits):
+                      out.write(str(path) + '\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-producers
-          path: docs/reverse-generated/dev-traffic-producers.txt
+          name: dev-traffic-send-callers
+          path: docs/reverse-generated/dev-traffic-send-callers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-producers.txt
+          git add docs/reverse-generated/dev-traffic-send-callers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace upstream traffic producers'
+            git commit -m 'reverse: locate dev traffic send callers'
             git push || true
           fi
