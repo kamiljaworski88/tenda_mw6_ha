@@ -1,0 +1,232 @@
+===== RUN 114 GOAL =====
+Map cmd_cloud_info_dev_traffic_upload @ 0x30ae0, all code/data references, and GOT-backed dependencies used inside the handler.
+
+===== TARGET SYMBOL =====
+cmd_cloud_info_dev_traffic_upload = 0x30ae0
+gp = 0x93370; .got = 0x8b380
+
+===== GOT ENTRIES POINTING TO TARGET =====
+GOT=0x8bb58 OFFSET=-30744
+
+===== ALLOCATED-SECTION POINTERS TO TARGET =====
+.dynsym @ 0x6e34
+.got @ 0x8bb58
+
+===== CODE XREFS THROUGH TARGET GOT OFFSET (ANY DEST REGISTER) =====
+--- common_business_init@@Base @ 0x2cd08 uses GOT 0x8bb58 offset -30744, disasm line 24057 ---
+   2d274:	afa00034 	sw	zero,52(sp)
+   2d278:	afa00038 	sw	zero,56(sp)
+   2d27c:	afa0003c 	sw	zero,60(sp)
+   2d280:	afa00040 	sw	zero,64(sp)
+   2d284:	afa00044 	sw	zero,68(sp)
+   2d288:	afa00048 	sw	zero,72(sp)
+   2d28c:	24040008 	li	a0,8
+   2d290:	0320f809 	jalr	t9
+   2d294:	24060008 	li	a2,8
+   2d298:	8fbc0050 	lw	gp,80(sp)
+   2d29c:	26057128 	addiu	a1,s0,28968
+   2d2a0:	afa00010 	sw	zero,16(sp)
+   2d2a4:	8f8287e8 	lw	v0,-30744(gp)
+   2d2a8:	8f878028 	lw	a3,-32728(gp)
+   2d2ac:	8f9985d0 	lw	t9,-31280(gp)
+   2d2b0:	afa2002c 	sw	v0,44(sp)
+   2d2b4:	24e78d40 	addiu	a3,a3,-29376
+   2d2b8:	afa00014 	sw	zero,20(sp)
+   2d2bc:	afa00018 	sw	zero,24(sp)
+   2d2c0:	afa0001c 	sw	zero,28(sp)
+   2d2c4:	afa00020 	sw	zero,32(sp)
+   2d2c8:	afa00024 	sw	zero,36(sp)
+   2d2cc:	afa00028 	sw	zero,40(sp)
+   2d2d0:	afa00030 	sw	zero,48(sp)
+   2d2d4:	afa00034 	sw	zero,52(sp)
+   2d2d8:	afa00038 	sw	zero,56(sp)
+   2d2dc:	afa0003c 	sw	zero,60(sp)
+   2d2e0:	afa00040 	sw	zero,64(sp)
+   2d2e4:	afa00044 	sw	zero,68(sp)
+   2d2e8:	afa00048 	sw	zero,72(sp)
+   2d2ec:	24040008 	li	a0,8
+   2d2f0:	0320f809 	jalr	t9
+
+===== TARGET FUNCTION GOT DEPENDENCIES =====
+offset= -32276 got=0x8b55c value=0x1d5c8 symbol=cloud_manage_enable
+offset= -32576 got=0x8b430 value=0x1e6cc symbol=server_is_ready
+offset= -29740 got=0x8bf44 value=0x64ac0 symbol=memset
+offset= -32356 got=0x8b50c value=0x64e20 symbol=memcpy
+offset= -32260 got=0x8b56c value=0x30990 symbol=dev_traffic_upload_json_packer
+offset= -31404 got=0x8b8c4 value=0x295dc symbol=cmd_disp_man_send
+offset= -31376 got=0x8b8e0 value=0x0 symbol=?
+offset= -32728 got=0x8b398 value=0x70000 symbol=?
+offset= -32140 got=0x8b5e4 value=0x2ab64 symbol=_cs_print
+
+===== FULL TARGET FUNCTION DISASSEMBLY =====
+00030ae0 <cmd_cloud_info_dev_traffic_upload@@Base>:
+   30ae0:	3c1c0006 	lui	gp,0x6
+   30ae4:	279c2890 	addiu	gp,gp,10384
+   30ae8:	0399e021 	addu	gp,gp,t9
+   30aec:	27bdfb98 	addiu	sp,sp,-1128
+   30af0:	afbf0464 	sw	ra,1124(sp)
+   30af4:	afb50460 	sw	s5,1120(sp)
+   30af8:	afb4045c 	sw	s4,1116(sp)
+   30afc:	afb30458 	sw	s3,1112(sp)
+   30b00:	afb20454 	sw	s2,1108(sp)
+   30b04:	afb10450 	sw	s1,1104(sp)
+   30b08:	afb0044c 	sw	s0,1100(sp)
+   30b0c:	afbc0018 	sw	gp,24(sp)
+   30b10:	00809021 	move	s2,a0
+   30b14:	00c08821 	move	s1,a2
+   30b18:	00e0a821 	move	s5,a3
+   30b1c:	14a00043 	bnez	a1,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30b20:	00001021 	move	v0,zero
+   30b24:	8f9981ec 	lw	t9,-32276(gp)
+   30b28:	0320f809 	jalr	t9
+   30b2c:	00000000 	nop
+   30b30:	1040002f 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b34:	8fbc0018 	lw	gp,24(sp)
+   30b38:	8f9980c0 	lw	t9,-32576(gp)
+   30b3c:	0320f809 	jalr	t9
+   30b40:	24040003 	li	a0,3
+   30b44:	8fbc0018 	lw	gp,24(sp)
+   30b48:	10400029 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b4c:	00409821 	move	s3,v0
+   30b50:	8f998bd4 	lw	t9,-29740(gp)
+   30b54:	27b40044 	addiu	s4,sp,68
+   30b58:	02802021 	move	a0,s4
+   30b5c:	00002821 	move	a1,zero
+   30b60:	0320f809 	jalr	t9
+   30b64:	24060400 	li	a2,1024
+   30b68:	8fbc0018 	lw	gp,24(sp)
+   30b6c:	24020400 	li	v0,1024
+   30b70:	27b00028 	addiu	s0,sp,40
+   30b74:	8f99819c 	lw	t9,-32356(gp)
+   30b78:	02402821 	move	a1,s2
+   30b7c:	02002021 	move	a0,s0
+   30b80:	2406001c 	li	a2,28
+   30b84:	afb40020 	sw	s4,32(sp)
+   30b88:	0320f809 	jalr	t9
+   30b8c:	afa20024 	sw	v0,36(sp)
+   30b90:	8fbc0018 	lw	gp,24(sp)
+   30b94:	24020006 	li	v0,6
+   30b98:	a3a20028 	sb	v0,40(sp)
+   30b9c:	8f9981fc 	lw	t9,-32260(gp)
+   30ba0:	24020003 	li	v0,3
+   30ba4:	a3a20029 	sb	v0,41(sp)
+   30ba8:	2402003e 	li	v0,62
+   30bac:	afb30034 	sw	s3,52(sp)
+   30bb0:	a3a2002a 	sb	v0,42(sp)
+   30bb4:	02202021 	move	a0,s1
+   30bb8:	02a02821 	move	a1,s5
+   30bbc:	27a60020 	addiu	a2,sp,32
+   30bc0:	0320f809 	jalr	t9
+   30bc4:	27a70024 	addiu	a3,sp,36
+   30bc8:	14400018 	bnez	v0,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30bcc:	8fbc0018 	lw	gp,24(sp)
+   30bd0:	8f998554 	lw	t9,-31404(gp)
+   30bd4:	8fa60024 	lw	a2,36(sp)
+   30bd8:	8fa70020 	lw	a3,32(sp)
+   30bdc:	02002021 	move	a0,s0
+   30be0:	0320f809 	jalr	t9
+   30be4:	24050001 	li	a1,1
+   30be8:	10000011 	b	30c30 <cmd_cloud_info_dev_traffic_upload@@Base+0x150>
+   30bec:	8fbf0464 	lw	ra,1124(sp)
+   30bf0:	8f828570 	lw	v0,-31376(gp)
+   30bf4:	8f868028 	lw	a2,-32728(gp)
+   30bf8:	8f878028 	lw	a3,-32728(gp)
+   30bfc:	8c440000 	lw	a0,0(v0)
+   30c00:	24020298 	li	v0,664
+   30c04:	afa20010 	sw	v0,16(sp)
+   30c08:	8f828028 	lw	v0,-32728(gp)
+   30c0c:	8f998274 	lw	t9,-32140(gp)
+   30c10:	24c694d0 	addiu	a2,a2,-27440
+   30c14:	24428fb8 	addiu	v0,v0,-28744
+   30c18:	afa20014 	sw	v0,20(sp)
+   30c1c:	24e78e78 	addiu	a3,a3,-29064
+   30c20:	0320f809 	jalr	t9
+   30c24:	24050002 	li	a1,2
+   30c28:	24020001 	li	v0,1
+   30c2c:	8fbf0464 	lw	ra,1124(sp)
+   30c30:	8fb50460 	lw	s5,1120(sp)
+   30c34:	8fb4045c 	lw	s4,1116(sp)
+   30c38:	8fb30458 	lw	s3,1112(sp)
+   30c3c:	8fb20454 	lw	s2,1108(sp)
+   30c40:	8fb10450 	lw	s1,1104(sp)
+   30c44:	8fb0044c 	lw	s0,1100(sp)
+   30c48:	03e00008 	jr	ra
+   30c4c:	27bd0468 	addiu	sp,sp,1128
+
+
+===== DYNAMIC SYMBOL / RELOCATION CONTEXT =====
+    54: 00031968   116 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__free_unpacked
+   144: 0001da04   260 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_basic_check
+   207: 00044e28   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__pack_to_buffer
+   212: 0002deb8    80 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_account_info_q
+   248: 000451c8   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__pack
+   315: 00044c20    48 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__unpack
+   350: 00044908   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__free_unpacked
+   386: 00045548   100 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__get_packed_size
+   389: 00031ac4    48 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__unpack
+   458: 00031b54   116 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__pack_to_buffer
+   504: 0001db08   192 FUNC    GLOBAL DEFAULT   10 create_statistic_upload_timer
+   639: 0002e830  1112 FUNC    GLOBAL DEFAULT   10 node_status_upload_json_packer
+   644: 00032148   396 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_get_json_packer
+   701: 00030990   336 FUNC    GLOBAL DEFAULT   10 dev_traffic_upload_json_packer
+   706: 00031e0c   100 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__get_packed_size
+   719: 000322d4   396 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_set_json_packer
+   734: 000211a0   152 FUNC    GLOBAL DEFAULT   10 upload_statistics
+   735: 00032460   136 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_set_ack
+   736: 0002f794   360 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_mesh_node_u
+   748: 0002e6b8   264 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_mesh_node_q
+   764: 00042a14   156 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_upgrade_dir_set
+   770: 0002f8fc  1104 FUNC    GLOBAL DEFAULT   10 dev_device_upload_json_packer
+   774: 000320f0    88 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_set_pbuf_packer
+   801: 000300d0   280 FUNC    GLOBAL DEFAULT   10 dev_upload_status_start_parser
+   819: 00031cb0   116 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__pack
+   840: 0002db80   232 FUNC    GLOBAL DEFAULT   10 upload_router_info_task
+   877: 0002e648   112 FUNC    GLOBAL DEFAULT   10 send_start_upload_status_to_inner
+   926: 000301e8   200 FUNC    GLOBAL DEFAULT   10 cmd_cloud_dev_upload_status_start
+   941: 00024720   136 FUNC    GLOBAL DEFAULT   10 m_ucloud_info_upload_register
+   987: 0002ec88   360 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_node_status_upload
+  1010: 0001dfa4   116 FUNC    GLOBAL DEFAULT   10 start_upload_device
+  1033: 0001e43c    76 FUNC    GLOBAL DEFAULT   10 start_upload_statistic
+  1074: 0004287c   408 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_force_upgrade
+  1080: 00030ae0   368 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_traffic_upload
+  1088: 0001def8   172 FUNC    GLOBAL DEFAULT   10 start_upload_sys_basic_info
+  1132: 0002e180   288 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_config_u
+  1140: 0002e2a0   264 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_config_q
+  1148: 00043f44   336 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_check_memory_ack
+  1150: 00022424  1024 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_basic_set
+  1152: 0002e060   288 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_upload_sys_basic_info
+  1169: 000868d8    60 OBJECT  GLOBAL DEFAULT   18 cloud_info_common_ack__descriptor
+  1207: 000325a4   248 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_set_json_parser
+  1277: 000874b4    60 OBJECT  GLOBAL DEFAULT   18 fw_mesh_device_info_t__descriptor
+  1342: 0002fd4c   364 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_device_upload
+  1348: 000324e8   188 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_set_pbuf_parser
+  1375: 00032064   140 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_manage_enable_get_pbuf_packer
+  1391: 0002ef8c   360 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_mark_list_u
+  1525: 00044778    56 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__init
+  1563: 00031930    56 FUNC    GLOBAL DEFAULT   10 cloud_info_common_ack__init
+
+00086914  00049103 R_MIPS_REL32           000868d8   cloud_info_common_ack__descriptor
+000875a0  0004fd03 R_MIPS_REL32           000874b4   fw_mesh_device_info_t__descriptor
+00087770  0004fd03 R_MIPS_REL32           000874b4   fw_mesh_device_info_t__descriptor
+00087800  0004fd03 R_MIPS_REL32           000874b4   fw_mesh_device_info_t__descriptor
+000874e0  0005f503 R_MIPS_REL32           00044778   fw_mesh_device_info_t__init
+00086904  00061b03 R_MIPS_REL32           00031930   cloud_info_common_ack__init
+
+===== RELEVANT STRINGS =====
+   995d start_upload_device
+   b646 cmd_cloud_dev_upload_status_start
+   b6ef cmd_cloud_info_dev_traffic_upload
+   b711 cmd_cloud_info_dev_device_upload
+   b93a dev_device_upload_json_packer
+   b96d dev_upload_status_start_parser
+   b9b2 dev_traffic_upload_json_packer
+  674dc CMD_CLOUD_INFO_DEV_UPLOAD_DEVICE_START
+  67504 CMD_CLOUD_INFO_DEV_UPLOAD_STATUS_START
+  68c70 CMD_CLOUD_DEV_UPLOAD_STATUS_START
+  68d40 CMD_CLOUD_INFO_DEV_TRAFFIC_UPLOAD
+  68d64 CMD_CLOUD_INFO_DEV_DEVICE_UPLOAD
+  690b0 uprate
+  690b8 downrate
+  69470 dev_upload_status_start_parser
+  694ac cmd_cloud_info_dev_device_upload
+  694d0 cmd_cloud_info_dev_traffic_upload
