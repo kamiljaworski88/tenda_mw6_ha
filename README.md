@@ -69,14 +69,24 @@ Static firmware analysis now resolves the complete rate path:
 
 The remaining runtime issue is that some live HostLists responses still return zero `online/uprate/downrate` values. The most likely failure point is now the live population/matching of the strict IP+MAC pair in `g_ip_info`, not the protobuf schema, direction mapping or unit.
 
-## Differential runtime probe
+## Runtime rate probes
 
-`tools/mw6_compare_host_sources.py` compares the same clients through both confirmed local paths:
+For the quickest test of the authentication-free local path, watch TCP/12598 while generating traffic on one client:
+
+```powershell
+python .\tools\mw6_cmd_rate_watch.py `
+  --host 192.168.5.1 `
+  --selector "CLIENT_NAME_OR_IP" `
+  --count 10 `
+  --interval 2
+```
+
+The script uses only the fixed read-only `GetHostList` RPC through `cmdsrv -> confsrv`. It reports `online`, `uprate` and `downrate` directly in the firmware's resolved KiB/s units and prints a final diagnosis.
+
+If that still returns zero values, `tools/mw6_compare_host_sources.py` compares the same clients through both confirmed local paths:
 
 1. authenticated TCP/9000 `M_MESH_HOSTS/GET`,
 2. TCP/12598 `cmdsrv -> confsrv -> GetHostList`.
-
-This test is specifically intended to tell us whether `online/uprate/downrate` are being lost on only one API path or are already zero in the shared runtime data.
 
 Example:
 
@@ -114,9 +124,12 @@ The integration intentionally does not depend on Tenda cloud services.
 
 ## Current research target
 
-The remaining blocker for the original project goal is reliable per-client traffic. The next decision depends on the differential probe:
+The remaining blocker for the original project goal is reliable per-client traffic. Static runs 114-116 also ruled out the separate cloud `DEV_TRAFFIC` wrapper as a useful alternate source: the wrapper exists, but no other ELF in this firmware imports it. The active device-status path still returns to the same `confsrv` HostInfo/rate pipeline.
 
-- if TCP/12598 has valid online/rates while TCP/9000 remains zero, move the HA coordinator to the cmdsrv/confsrv backend;
+The next decision therefore depends on the runtime probes:
+
+- if TCP/12598 has valid online/rates, move the HA coordinator to the authentication-free cmdsrv/confsrv backend;
+- if TCP/12598 is zero but TCP/9000 is valid, retain TCP/9000 for traffic and continue removing the captured-login dependency separately;
 - if both paths return zero, investigate runtime `g_ip_info` population and the strict IP+MAC matcher;
 - only after non-zero live rates are reproducible should upload/download sensors and daily/monthly integration be enabled in HA.
 
