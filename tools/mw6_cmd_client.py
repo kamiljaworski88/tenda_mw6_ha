@@ -22,6 +22,8 @@ import struct
 from pathlib import Path
 from typing import Any
 
+from mw6_hostinfo import decode_host_lists
+
 MAGIC = bytes.fromhex("f7 c6 89 be")
 MASK32 = 0xFFFFFFFF
 P1, P2, P3, P4, P5 = 0x9E3779B1, 0x85EBCA77, 0xC2B2AE3D, 0x27D4EB2F, 0x165667B1
@@ -140,13 +142,13 @@ def frame(payload: bytes) -> bytes:
 
 
 def recv_exact(sock: socket.socket, n: int) -> bytes:
-    b = bytearray()
-    while len(b) < n:
-        x = sock.recv(n - len(b))
-        if not x:
+    data = bytearray()
+    while len(data) < n:
+        chunk = sock.recv(n - len(data))
+        if not chunk:
             raise EOFError("connection closed")
-        b += x
-    return bytes(b)
+        data += chunk
+    return bytes(data)
 
 
 def recv_frame(sock: socket.socket) -> bytes:
@@ -192,8 +194,7 @@ def _resp_value(data: bytes, pos: int = 0) -> tuple[Any, int]:
         end = pos + n
         if end + 2 > len(data) or data[end : end + 2] != b"\r\n":
             raise ValueError("truncated RESP bulk string")
-        value = data[pos:end]
-        return value, end + 2
+        return data[pos:end], end + 2
     if kind == b"*":
         n = int(line())
         if n < 0:
@@ -216,13 +217,7 @@ def parse_resp(data: bytes) -> Any:
 
 
 def conf_envelope(command: bytes, payload: bytes = b"") -> bytes:
-    """Build the 36-byte conf message header recovered from confcli/confsrv.
-
-    Layout:
-      0..31  NUL-padded command name
-      32..35 little-endian payload length
-      36..   payload
-    """
+    """Build the 36-byte confcli/confsrv envelope."""
     if len(command) > 31:
         raise ValueError("conf command name too long")
     return command + b"\x00" * (32 - len(command)) + struct.pack("<I", len(payload)) + payload
@@ -238,102 +233,39 @@ def parse_conf_envelope(data: bytes) -> tuple[str, bytes]:
     return command, data[36 : 36 + n]
 
 
-def _varint(data: bytes, pos: int) -> tuple[int, int]:
-    value = 0
-    shift = 0
-    while True:
-        if pos >= len(data) or shift >= 70:
-            raise ValueError("invalid protobuf varint")
-        b = data[pos]
-        pos += 1
-        value |= (b & 0x7F) << shift
-        if not b & 0x80:
-            return value, pos
-        shift += 7
+def rate_diagnostics(clients: list[dict[str, Any]]) -> dict[str, Any]:
+    """Summarize conditions relevant to firmware fill_host_lists_rate().
 
-
-def protobuf_fields(data: bytes) -> list[tuple[int, int, Any]]:
-    out = []
-    pos = 0
-    while pos < len(data):
-        key, pos = _varint(data, pos)
-        field, wire = key >> 3, key & 7
-        if field == 0:
-            raise ValueError("protobuf field 0")
-        if wire == 0:
-            value, pos = _varint(data, pos)
-        elif wire == 1:
-            if pos + 8 > len(data):
-                raise ValueError("truncated fixed64")
-            value = int.from_bytes(data[pos : pos + 8], "little")
-            pos += 8
-        elif wire == 2:
-            n, pos = _varint(data, pos)
-            if pos + n > len(data):
-                raise ValueError("truncated length-delimited field")
-            value = data[pos : pos + n]
-            pos += n
-        elif wire == 5:
-            if pos + 4 > len(data):
-                raise ValueError("truncated fixed32")
-            value = int.from_bytes(data[pos : pos + 4], "little")
-            pos += 4
-        else:
-            raise ValueError(f"unsupported protobuf wire type {wire}")
-        out.append((field, wire, value))
-    return out
-
-
-def _text_or_hex(value: bytes) -> str:
-    try:
-        text = value.decode("utf-8")
-        if text and all(ch.isprintable() or ch in "\t\r\n" for ch in text):
-            return text
-    except UnicodeDecodeError:
-        pass
-    return value.hex()
-
-
-def decode_host_message(data: bytes) -> dict[str, Any]:
-    """Decode one HostInfo without pretending unresolved field semantics are known."""
-    raw: dict[str, Any] = {}
-    for field, wire, value in protobuf_fields(data):
-        key = f"f{field}"
-        if wire == 2:
-            raw[key] = _text_or_hex(value)
-        else:
-            raw[key] = value
-
-    # Live captures established f7/f8 as the two rate fields. Direction and unit
-    # are intentionally left neutral until the controlled live transfer test.
-    return {
-        "fields": raw,
-        "rate_a": raw.get("f7"),
-        "rate_b": raw.get("f8"),
-    }
-
-
-def decode_host_lists(payload: bytes) -> list[dict[str, Any]]:
-    """Decode HostLists repeated embedded HostInfo messages.
-
-    We accept every length-delimited outer field that itself parses as protobuf;
-    this keeps the tool robust while exact HostLists descriptor field numbering is
-    still being finalized from libpb.so.
+    Firmware checks runtime HostInfo+0x20 before rate processing. Current reverse
+    mapping associates that slot with the condition-time/runtime eligibility path.
+    This diagnostic intentionally does not claim IP/MAC matching succeeded, since
+    g_ip_info is not directly exposed by GetHostList.
     """
-    hosts = []
-    for outer_field, wire, value in protobuf_fields(payload):
-        if wire != 2 or not isinstance(value, bytes):
-            continue
-        try:
-            fields = protobuf_fields(value)
-        except ValueError:
-            continue
-        if not fields:
-            continue
-        host = decode_host_message(value)
-        host["outer_field"] = outer_field
-        hosts.append(host)
-    return hosts
+    rows = []
+    for client in clients:
+        cond = client.get("condtion_time")
+        up = client.get("uprate")
+        down = client.get("downrate")
+        rows.append(
+            {
+                "ip": client.get("ipaddr"),
+                "mac": client.get("ethaddr"),
+                "name": client.get("name"),
+                "assoc_sn": client.get("assoc_sn"),
+                "online": client.get("online"),
+                "condtion_time": cond,
+                "rate_gate_nonzero": bool(cond),
+                "uprate": up,
+                "downrate": down,
+                "both_rates_zero": (up or 0) == 0 and (down or 0) == 0,
+            }
+        )
+    return {
+        "clients": rows,
+        "rate_gate_zero_count": sum(1 for row in rows if not row["rate_gate_nonzero"]),
+        "all_rates_zero": bool(rows) and all(row["both_rates_zero"] for row in rows),
+        "note": "If rate_gate_nonzero is true but rates remain zero under traffic, next suspect is IP/MAC matching against g_ip_info/online_ip.",
+    }
 
 
 def show(data: bytes, index: int, capture_dir: Path | None) -> None:
@@ -344,16 +276,16 @@ def show(data: bytes, index: int, capture_dir: Path | None) -> None:
         print("BINARY HEX:", data.hex(" "))
     if capture_dir:
         capture_dir.mkdir(parents=True, exist_ok=True)
-        p = capture_dir / f"mw6_message_{index:04d}.bin"
-        p.write_bytes(data)
-        print("saved:", p)
+        path = capture_dir / f"mw6_message_{index:04d}.bin"
+        path.write_bytes(data)
+        print("saved:", path)
 
 
 def get_clients(host: str, port: int, timeout: float) -> tuple[list[dict[str, Any]], bytes]:
     request = conf_envelope(GET_HOST_LIST)
 
-    # confsrv listens on confctl_srv_key. Replies are delivered on the fixed
-    # confctl_cli_key bus. Subscribe first so the reply cannot race us.
+    # GetHostList is carried over the fixed confcli/confsrv pub/sub bus.
+    # cmdrpc@ random channels belong to libcmdctl cmd_get and are not used here.
     with socket.create_connection((host, port), 3) as sub_sock:
         sub_sock.settimeout(timeout)
         sub_sock.sendall(frame(resp_bytes(b"SUBSCRIBE", CONFCTL_CLIENT_CHANNEL)))
@@ -388,25 +320,38 @@ def main() -> None:
     ap.add_argument("--host", default="192.168.5.1")
     ap.add_argument("--port", type=int, default=12598)
     sub = ap.add_subparsers(dest="cmd", required=True)
+
     sub.add_parser("ping")
+
     gp = sub.add_parser("get", help="read one Redis key through cmdsrv")
     gp.add_argument("key")
+
     sp = sub.add_parser("subscribe")
     sp.add_argument("channel")
     sp.add_argument("--count", type=int, default=0, help="0 = listen until Ctrl+C")
     sp.add_argument("--timeout", type=float, default=0, help="0 = no read timeout")
     sp.add_argument("--capture-dir", default="mw6_capture")
+
     cp = sub.add_parser("clients", help="read local MW6 GetHostList (read-only)")
     cp.add_argument("--timeout", type=float, default=8.0)
     cp.add_argument("--raw-out", help="optionally save raw packed HostLists protobuf")
     cp.add_argument("--pretty", action="store_true", help="pretty JSON output")
+    cp.add_argument(
+        "--diagnose-rates",
+        action="store_true",
+        help="include read-only rate-gate diagnostics derived from GetHostList",
+    )
+
     a = ap.parse_args()
 
     if a.cmd == "clients":
         clients, raw = get_clients(a.host, a.port, a.timeout)
         if a.raw_out:
             Path(a.raw_out).write_bytes(raw)
-        print(json.dumps(clients, ensure_ascii=False, indent=2 if a.pretty else None))
+        output: Any = clients
+        if a.diagnose_rates:
+            output = {"clients": clients, "rate_diagnostics": rate_diagnostics(clients)}
+        print(json.dumps(output, ensure_ascii=False, indent=2 if a.pretty else None))
         return
 
     if a.cmd == "ping":
