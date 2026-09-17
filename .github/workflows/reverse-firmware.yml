@@ -13,41 +13,34 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Resolve SYS command callbacks
+      - name: Trace SYS BasicInfo serial source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
+          cli='firmware-src/RootFS-unpacked/bin/confcli'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-command-callbacks.txt'
+          out='docs/reverse-generated/sys-basic-serial.txt'
           {
-            echo '===== RUN 49 GOAL ====='
-            echo 'Resolve callback targets for M_SYS command IDs 0..4, especially cmd 0.'
-            echo '===== KNOWN GP / GOT SLOTS FROM uc_api_enable_m_sys ====='
-            echo 'GP=0x39ed0'
-            echo 'cmd0 GOT=0x3200c (gp-32452)'
-            echo 'cmd1 GOT=0x32098 (gp-32312)'
-            echo 'cmd2 GOT=0x3221c (gp-31924)'
-            echo 'cmd3 GOT=0x32188 (gp-32072)'
-            echo 'cmd4 GOT=0x320f4 (gp-32220)'
-            echo '===== RELOCATIONS FOR THESE GOT SLOTS ====='
-            mipsel-linux-gnu-readelf -rW "$lib" | grep -Ei '0003200c|00032098|0003221c|00032188|000320f4|3200c|32098|3221c|32188|320f4' || true
-            echo '===== GOT BYTES AROUND TARGET SLOTS ====='
-            mipsel-linux-gnu-objdump -s -j .got --start-address=0x31ff0 --stop-address=0x32240 "$lib" || true
-            echo '===== SYS HANDLER SYMBOL ADDRESSES ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_lib_sys_(basic_info|advance_info|time_zone|reboot|reset)_hdl_reg' || true
-            echo '===== ENABLE FUNCTION CHECK ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x6a60 --stop-address=0x6b64 "$lib" || true
+            echo '===== RUN 50 GOAL ====='
+            echo 'Trace M_SYS cmd0 / GetBasicInfo and determine whether serial.number feeds its response.'
+            echo '===== BASIC INFO REG WRAPPER ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x167e4 --stop-address=0x16840 "$lib" || true
+            echo '===== BASIC INFO / SERIAL STRINGS ====='
+            strings -a -t x "$lib" | grep -Ei 'GetBasicInfo|BasicInfo|serial.number|serial|sys.model|up.soft.ver' || true
+            strings -a -t x "$cli" | grep -Ei 'GetBasicInfo|BasicInfo|serial.number|serial|sys.model|up.soft.ver' || true
+            echo '===== CONFCLI SYS-RELATED SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$cli" | grep -Ei 'basic|sys.*info|serial|uc_api_enable_m_sys' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-command-callbacks
-          path: docs/reverse-generated/sys-command-callbacks.txt
+          name: sys-basic-serial
+          path: docs/reverse-generated/sys-basic-serial.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-command-callbacks.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add SYS command callback map'; git push || true; fi
+          git add docs/reverse-generated/sys-basic-serial.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: trace SYS basic info serial source'; git push || true; fi
