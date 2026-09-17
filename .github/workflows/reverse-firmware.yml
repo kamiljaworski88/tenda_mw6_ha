@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Narrow online_ip counter scan
+      - name: Trace fastpath online_ip accounting
         shell: bash
         run: |
           set -euo pipefail
@@ -30,86 +30,44 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          dis='/tmp/mw6kernel/netfilter.dis'
-          out='docs/reverse-generated/run127-onlineip-counter-scan.txt'
+          out='docs/reverse-generated/run128-fastpath-onlineip-accounting.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
-          mipsel-linux-gnu-objdump -drwC --start-address=0x803a0000 --stop-address=0x803e0000 "$elf" > "$dis"
 
-          python3 - "$dis" "$out" <<'PY'
-          import re, sys
-          from pathlib import Path
-          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[2])
-          funcs=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-          def fn_for_line(i):
-              best=None
-              for row,a,n in funcs:
-                  if row>i: break
-                  best=(row,a,n)
-              return best
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 127: narrowed ct->online_ip / counter scan =====\n')
-              # Load custom ct->online_ip pointer at +0x8c.
-              load=re.compile(r'\blw\s+([a-z0-9]+),140\(([a-z0-9]+)\)')
-              hits=[]
-              for i,l in enumerate(lines):
-                  m=load.search(l)
-                  if m: hits.append((i,m.group(1),m.group(2),fn_for_line(i)))
-              o.write(f'ct+0x8c loads={len(hits)}\n')
-              seen=set()
-              for i,r,b,fn in hits:
-                  if not fn: continue
-                  key=(fn[1],fn[2])
-                  if key in seen: continue
-                  seen.add(key)
-                  start_row=fn[0]
-                  end_row=len(lines)
-                  for row,a,n in funcs:
-                      if row>start_row:
-                          end_row=row; break
-                  block=lines[start_row:end_row]
-                  regs={mm.group(1) for bl in block if (mm:=load.search(bl))}
-                  rel=[]
-                  for bl in block:
-                      for rr in regs:
-                          if re.search(rf'\b(?:lw|sw|lbu|sb|lh|sh)\s+[^,]+,(64|80|84|88|92|96|100|104|108)\({rr}\)',bl):
-                              rel.append(bl)
-                  o.write(f'\n===== {key} =====\n')
-                  o.write('online ptr registers=' + repr(sorted(regs)) + '\n')
-                  o.write('relevant accesses:\n' + '\n'.join(rel) + '\n')
-                  if rel or 'conntrack' in fn[2].lower():
-                      o.write('\n'.join(block)+'\n')
-
-              o.write('\n===== ANY 64-BIT COUNTER-LIKE UPDATE SEQUENCES IN BM/CONNTRACK =====\n')
-              # Show neighborhoods around offsets +0x50..+0x6c in netfilter region.
-              p=re.compile(r'\b(?:lw|sw)\s+[^,]+,(80|84|88|92|96|100|104|108)\(([a-z0-9]+)\)')
-              for i,l in enumerate(lines):
-                  if not p.search(l): continue
-                  fn=fn_for_line(i)
-                  if fn and any(k in fn[2].lower() for k in ('conntrack','online','statistic','bm_','fastpath','nat')):
-                      o.write(f'\n--- {fn[2]} @ {l.strip()} ---\n')
-                      o.write('\n'.join(lines[max(fn[0],i-10):min(len(lines),i+18)])+'\n')
-          PY
+          {
+            echo '===== RUN 128: fastpath / Realtek conntrack online_ip accounting ====='
+            echo
+            echo '===== RTL CONNTRACK HOOK WRAPPERS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x804646c0 --stop-address=0x80464940 "$elf" || true
+            echo
+            echo '===== FASTPATH PREROUTING HOOK ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x80389640 --stop-address=0x80389940 "$elf" || true
+            echo
+            echo '===== FASTPATH ENTER / ROUTE REGION ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x80454f80 --stop-address=0x8045a700 "$elf" || true
+            echo
+            echo '===== HW NAT IP CHECK ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x801cc900 --stop-address=0x801ccb80 "$elf" || true
+            echo
+            echo '===== SYMBOLS NEAR FASTPATH / HOOKS ====='
+            mipsel-linux-gnu-nm -n "$elf" | grep -Ei 'fastpath|fast_nat|hw_nat|rtl_nf_conntrack|rtl865x_check_hw_nat|online_ip|traffic|statistic' | head -n 1200 || true
+          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run127-onlineip-counter-scan
-          path: docs/reverse-generated/run127-onlineip-counter-scan.txt
+          name: run128-fastpath-onlineip-accounting
+          path: docs/reverse-generated/run128-fastpath-onlineip-accounting.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run127-onlineip-counter-scan.txt
+          git add docs/reverse-generated/run128-fastpath-onlineip-accounting.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: narrow online_ip counter scan'
+            git commit -m 'reverse: trace fastpath online_ip accounting'
             git push
           fi
