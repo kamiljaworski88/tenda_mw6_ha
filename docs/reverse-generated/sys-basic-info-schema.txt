@@ -1,0 +1,45 @@
+===== RUN 57 GOAL =====
+Find BasicInfo protobuf/message descriptor and field names used by M_SYS cmd0 response.
+===== BASICINFO / DESCRIPTOR SYMBOLS =====
+     4: 0000b6a4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+    14: 000074d0    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_sys_basic_info
+    16: 0000aed4   100 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_descriptor_get_field
+    18: 0000ae70   100 FUNC    GLOBAL DEFAULT   10 protobuf_c_enum_descriptor_get_value
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+    31: 0000af38   272 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_descriptor_get_method_by_name
+    55: 0000a6b0    24 FUNC    GLOBAL DEFAULT   10 protobuf_c_version
+    68: 0000b048   272 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_descriptor_get_field_by_name
+    73: 0000ae64    12 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_destroy
+    77: 0000a6c8    12 FUNC    GLOBAL DEFAULT   10 protobuf_c_version_number
+    99: 00015c94    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_basic_info_get
+   123: 0000b158   244 FUNC    GLOBAL DEFAULT   10 protobuf_c_enum_descriptor_get_value_by_name
+   131: 0000b2f4   824 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_free_unpacked
+   152: 0000cff8   292 FUNC    GLOBAL DEFAULT   10 protobuf_c_buffer_simple_append
+   159: 0000b24c   168 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_invoke_internal
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   195: 0000ac10    16 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_init
+   198: 0000bea0  4440 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_unpack
+   218: 0000ac20   580 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_check
+   239: 0000e114  1732 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_get_packed_size
+   310: 0001b8d4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   312: 0000eb40  1724 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_pack
+   328: 0000d4f4  2412 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_pack_to_buffer
+===== BASICINFO / SERIAL STRINGS =====
+   2bcd uc_api_lib_sys_basic_info_hdl_reg
+   2d9a uc_api_m_cloud_info_send_sys_basic_info
+   3138 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   323d uc_api_set_basic_info
+   34f0 protobuf_c_enum_descriptor_get_value
+   3515 protobuf_c_message_descriptor_get_field
+   353d protobuf_c_service_descriptor_get_method_by_name
+   3575 protobuf_c_message_descriptor_get_field_by_name
+   35a5 protobuf_c_enum_descriptor_get_value_by_name
+   3efe cgi_ucloud_sys_basic_info_get
+  1ec90 CMD_SYS_BASIC_INFO_GET
+  1f2e0 CMD_CLOUD_INFO_UPLOAD_SYS_BASIC_INFO_START
+  2019c GetBasicInfo
+  20358 method_index < service->descriptor->n_methods
+  20388 ((message)->descriptor)->magic == PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC
+  203d4 (descriptor)->magic == PROTOBUF_C__SERVICE_DESCRIPTOR_MAGIC
+  20410 (desc)->magic == PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC
+  20448 rv->descriptor != NULL
