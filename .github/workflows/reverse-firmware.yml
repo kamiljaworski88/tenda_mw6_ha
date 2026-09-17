@@ -21,179 +21,147 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
 
-      - name: Trace dev traffic handler and data dependencies
+      - name: Trace upstream traffic producers
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-handler-map.txt'
-          dis='/tmp/libcloud.dis'
+          out='docs/reverse-generated/dev-traffic-producers.txt'
 
-          mipsel-linux-gnu-objdump -drwC "$lib" > "$dis"
-
-          python3 - "$lib" "$dis" "$out" <<'PY'
+          python3 - "$out" <<'PY'
+          from pathlib import Path
           from elftools.elf.elffile import ELFFile
           import re
           import struct
+          import subprocess
           import sys
 
-          lib_path, dis_path, out_path = sys.argv[1:]
-          target = 0x30AE0
-          gp = 0x93370
+          out_path = Path(sys.argv[1])
+          root = Path('firmware-src/RootFS-unpacked')
+          candidates = [
+              root / 'bin/confsrv',
+              root / 'bin/device_list',
+              root / 'lib/libucapi.so',
+              root / 'lib/libcommon.so',
+              root / 'lib/libcloud.so',
+          ]
+          name_re = re.compile(r'(traffic|cloud_info.*dev|dev.*traffic|send.*traffic|upload.*traffic)', re.I)
 
-          lines = open(dis_path, errors='replace').read().splitlines()
+          def disassemble(path: Path):
+              text = subprocess.check_output(
+                  ['mipsel-linux-gnu-objdump', '-drwC', str(path)],
+                  text=True,
+                  errors='replace',
+              )
+              return text.splitlines()
 
-          with open(lib_path, 'rb') as fh:
-              elf = ELFFile(fh)
-              got = elf.get_section_by_name('.got')
-              if got is None:
-                  raise SystemExit('NO .got SECTION')
-              got_base = got['sh_addr']
-              got_data = got.data()
-
-              symbols = {}
-              for sec_name in ('.dynsym', '.symtab'):
-                  sec = elf.get_section_by_name(sec_name)
-                  if sec is None:
-                      continue
-                  for sym in sec.iter_symbols():
-                      if sym.name and sym['st_value']:
-                          symbols.setdefault(int(sym['st_value']), set()).add(sym.name)
-
-              target_ptrs = []
-              needle = struct.pack('<I', target)
-              for section in elf.iter_sections():
-                  flags = int(section['sh_flags'])
-                  if not (flags & 0x2):  # SHF_ALLOC
-                      continue
-                  try:
-                      data = section.data()
-                  except Exception:
-                      continue
-                  base = int(section['sh_addr'])
-                  start = 0
-                  while True:
-                      idx = data.find(needle, start)
-                      if idx < 0:
-                          break
-                      target_ptrs.append((section.name, base + idx))
-                      start = idx + 1
-
-          target_got = []
-          for i in range(0, len(got_data) - 3, 4):
-              value = struct.unpack_from('<I', got_data, i)[0]
-              if value == target:
-                  addr = got_base + i
-                  target_got.append((addr, addr - gp))
-
-          def symbol_for_value(value):
-              names = sorted(symbols.get(value, ()))
-              return ','.join(names) if names else ''
-
-          def current_function(index):
-              for j in range(index, -1, -1):
-                  match = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', lines[j])
-                  if match:
-                      return int(match.group(1), 16), match.group(2)
+          def current_function(lines, idx):
+              for j in range(idx, -1, -1):
+                  m = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', lines[j])
+                  if m:
+                      return int(m.group(1), 16), m.group(2)
               return None, '<unknown>'
 
-          # Locate target function boundaries.
-          start_idx = next(
-              i for i, line in enumerate(lines)
-              if re.match(r'^00030ae0 <cmd_cloud_info_dev_traffic_upload', line)
-          )
-          end_idx = len(lines)
-          for i in range(start_idx + 1, len(lines)):
-              if re.match(r'^[0-9a-fA-F]+ <[^>]+>:', lines[i]):
-                  end_idx = i
-                  break
+          with out_path.open('w', encoding='utf-8') as out:
+              out.write('===== RUN 115 GOAL =====\n')
+              out.write('Find the upstream producer/caller path that supplies per-client traffic data before libcloud packages it.\n')
 
-          used_got = []
-          got_ref_re = re.compile(r'\b(?:lw|addiu)\s+\w+,(-?\d+)\(gp\)')
-          for i in range(start_idx, end_idx):
-              match = got_ref_re.search(lines[i])
-              if not match:
-                  continue
-              off = int(match.group(1))
-              addr = gp + off
-              if got_base <= addr <= got_base + len(got_data) - 4:
-                  value = struct.unpack_from('<I', got_data, addr - got_base)[0]
-                  used_got.append((i, off, addr, value, symbol_for_value(value)))
-
-          xrefs = []
-          for got_addr, off in target_got:
-              pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(off)) + r'\(gp\)')
-              for i, line in enumerate(lines):
-                  if pat.search(line):
-                      fn_addr, fn_name = current_function(i)
-                      xrefs.append((i, got_addr, off, fn_addr, fn_name))
-
-          with open(out_path, 'w', encoding='utf-8') as out:
-              out.write('===== RUN 114 GOAL =====\n')
-              out.write('Map cmd_cloud_info_dev_traffic_upload @ 0x30ae0, all code/data references, and GOT-backed dependencies used inside the handler.\n')
-              out.write('\n===== TARGET SYMBOL =====\n')
-              out.write('cmd_cloud_info_dev_traffic_upload = 0x30ae0\n')
-              out.write(f'gp = 0x{gp:x}; .got = 0x{got_base:x}\n')
-
-              out.write('\n===== GOT ENTRIES POINTING TO TARGET =====\n')
-              for addr, off in target_got:
-                  out.write(f'GOT=0x{addr:x} OFFSET={off}\n')
-              if not target_got:
-                  out.write('NONE\n')
-
-              out.write('\n===== ALLOCATED-SECTION POINTERS TO TARGET =====\n')
-              for sec, addr in target_ptrs:
-                  out.write(f'{sec} @ 0x{addr:x}\n')
-              if not target_ptrs:
-                  out.write('NONE\n')
-
-              out.write('\n===== CODE XREFS THROUGH TARGET GOT OFFSET (ANY DEST REGISTER) =====\n')
-              for i, got_addr, off, fn_addr, fn_name in xrefs:
-                  out.write(f'--- {fn_name} @ {fn_addr and hex(fn_addr)} uses GOT 0x{got_addr:x} offset {off}, disasm line {i+1} ---\n')
-                  for row in lines[max(0, i-12):min(len(lines), i+20)]:
-                      out.write(row + '\n')
-              if not xrefs:
-                  out.write('NONE\n')
-
-              out.write('\n===== TARGET FUNCTION GOT DEPENDENCIES =====\n')
-              seen = set()
-              for i, off, addr, value, name in used_got:
-                  key = (off, value, name)
-                  if key in seen:
+              for path in candidates:
+                  if not path.exists():
                       continue
-                  seen.add(key)
-                  out.write(f'offset={off:7d} got=0x{addr:x} value=0x{value:x} symbol={name or "?"}\n')
+                  out.write(f'\n\n===== FILE {path} =====\n')
+                  lines = disassemble(path)
 
-              out.write('\n===== FULL TARGET FUNCTION DISASSEMBLY =====\n')
-              for row in lines[start_idx:end_idx]:
-                  out.write(row + '\n')
+                  with path.open('rb') as fh:
+                      elf = ELFFile(fh)
+                      got = elf.get_section_by_name('.got')
+                      dynsym = elf.get_section_by_name('.dynsym')
+                      if dynsym is None:
+                          out.write('NO .dynsym\n')
+                          continue
+
+                      matches = []
+                      symbols_by_value = {}
+                      for sym in dynsym.iter_symbols():
+                          if sym.name:
+                              symbols_by_value.setdefault(int(sym['st_value']), set()).add(sym.name)
+                              if name_re.search(sym.name):
+                                  matches.append((sym.name, int(sym['st_value']), sym['st_shndx']))
+
+                      out.write('--- matching dynamic symbols ---\n')
+                      for name, value, ndx in matches:
+                          out.write(f'{name:55s} value=0x{value:x} shndx={ndx}\n')
+                      if not matches:
+                          out.write('NONE\n')
+
+                      if got is None:
+                          continue
+                      got_base = int(got['sh_addr'])
+                      got_data = got.data()
+                      gp = got_base + 0x7ff0
+                      out.write(f'--- GOT base=0x{got_base:x} inferred gp=0x{gp:x} ---\n')
+
+                      target_values = {value: name for name, value, _ in matches if value}
+                      got_hits = []
+                      for off in range(0, len(got_data) - 3, 4):
+                          word = struct.unpack_from('<I', got_data, off)[0]
+                          if word in target_values:
+                              addr = got_base + off
+                              got_hits.append((target_values[word], word, addr, addr - gp))
+
+                      out.write('--- matching GOT entries and code xrefs ---\n')
+                      for name, value, addr, gp_off in got_hits:
+                          out.write(f'GOT symbol={name} value=0x{value:x} addr=0x{addr:x} gp_off={gp_off}\n')
+                          pat = re.compile(r'\b(?:lw|addiu)\s+\w+,' + re.escape(str(gp_off)) + r'\(gp\)')
+                          found = False
+                          for i, line in enumerate(lines):
+                              if not pat.search(line):
+                                  continue
+                              found = True
+                              fn_addr, fn_name = current_function(lines, i)
+                              out.write(f'  XREF {fn_name} @ {fn_addr and hex(fn_addr)} disasm_line={i+1}\n')
+                              for row in lines[max(0, i-10):min(len(lines), i+18)]:
+                                  out.write('    ' + row + '\n')
+                          if not found:
+                              out.write('  NO CODE XREF FOUND\n')
+
+                      # For locally defined traffic-related functions, emit their complete bodies.
+                      labels = {}
+                      for i, line in enumerate(lines):
+                          m = re.match(r'^([0-9a-fA-F]+) <([^>]+)>:', line)
+                          if m:
+                              labels[i] = (int(m.group(1), 16), m.group(2))
+                      label_indices = sorted(labels)
+                      for pos, idx in enumerate(label_indices):
+                          addr, name = labels[idx]
+                          if not name_re.search(name):
+                              continue
+                          end = label_indices[pos + 1] if pos + 1 < len(label_indices) else len(lines)
+                          out.write(f'\n--- FUNCTION {name} @ 0x{addr:x} ---\n')
+                          for row in lines[idx:end]:
+                              out.write(row + '\n')
+
+                  # Strings often expose command names not present as symbols.
+                  strings = subprocess.check_output(['strings', '-tx', str(path)], text=True, errors='replace')
+                  selected = [line for line in strings.splitlines() if name_re.search(line)]
+                  out.write('\n--- matching strings ---\n')
+                  for line in selected[:300]:
+                      out.write(line + '\n')
           PY
-
-          {
-            echo
-            echo '===== DYNAMIC SYMBOL / RELOCATION CONTEXT ====='
-            mipsel-linux-gnu-readelf -Ws "$lib" | grep -Ei 'traffic|device|upload|cloud_info' || true
-            echo
-            mipsel-linux-gnu-readelf -rW "$lib" | grep -Ei 'traffic|device|upload|cloud_info' || true
-            echo
-            echo '===== RELEVANT STRINGS ====='
-            strings -tx "$lib" | grep -Ei 'traffic|upload.*dev|dev.*upload|uprate|downrate|total_up|total_down' || true
-          } >> "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-handler-map
-          path: docs/reverse-generated/dev-traffic-handler-map.txt
+          name: dev-traffic-producers
+          path: docs/reverse-generated/dev-traffic-producers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-handler-map.txt
+          git add docs/reverse-generated/dev-traffic-producers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: map dev traffic handler dependencies'
+            git commit -m 'reverse: trace upstream traffic producers'
             git push || true
           fi
