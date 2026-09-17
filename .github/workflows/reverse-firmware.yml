@@ -13,32 +13,35 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace confsrv dev traffic sender xref
+      - name: Find firmware users of dev traffic sender
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          conf='firmware-src/RootFS-unpacked/bin/confsrv'
+          root='firmware-src/RootFS-unpacked'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/confsrv-dev-traffic-xref.txt'
+          out='docs/reverse-generated/dev-traffic-sender-users.txt'
           {
-            echo '===== RUN 71 GOAL ====='
-            echo 'Find the exact confsrv callsite(s) of uc_api_m_cloud_info_send_dev_traffic and the containing function.'
-            echo '===== SYMBOL / RELOCATION ====='
-            mipsel-linux-gnu-readelf -sW "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
-            mipsel-linux-gnu-readelf -rW "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
-            mipsel-linux-gnu-objdump -R "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
-            echo '===== DISASSEMBLY XREF ====='
-            mipsel-linux-gnu-objdump -drwC "$conf" | grep -B28 -A36 -F 'uc_api_m_cloud_info_send_dev_traffic' || true
+            echo '===== RUN 72 GOAL ====='
+            echo 'Find every ELF or file outside libucapi.so that references uc_api_m_cloud_info_send_dev_traffic.'
+            echo '===== DYNAMIC SYMBOL USERS ====='
+            while IFS= read -r -d '' f; do
+              if mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -q 'uc_api_m_cloud_info_send_dev_traffic'; then
+                echo "--- $f"
+                mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep 'uc_api_m_cloud_info_send_dev_traffic' || true
+              fi
+            done < <(find "$root" -type f -print0)
+            echo '===== STRING USERS (DLSYM / TABLES) ====='
+            grep -RIl --binary-files=text 'uc_api_m_cloud_info_send_dev_traffic' "$root" 2>/dev/null || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: confsrv-dev-traffic-xref
-          path: docs/reverse-generated/confsrv-dev-traffic-xref.txt
+          name: dev-traffic-sender-users
+          path: docs/reverse-generated/dev-traffic-sender-users.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/confsrv-dev-traffic-xref.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add confsrv dev traffic xref'; git push || true; fi
+          git add docs/reverse-generated/dev-traffic-sender-users.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic sender users'; git push || true; fi
