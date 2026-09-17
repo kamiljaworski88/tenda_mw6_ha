@@ -13,41 +13,42 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace per-client traffic record producer
+      - name: Trace per-client traffic producer callsites
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           cloud='firmware-src/RootFS-unpacked/lib/libcloud.so'
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
+          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/per-client-traffic-record-producer.txt'
+          out='docs/reverse-generated/per-client-traffic-producer-callsites.txt'
           {
-            echo '===== RUN 67 GOAL ====='
-            echo 'Identify who fills the 20-byte per-client records consumed by dev_traffic_upload_json_packer; map MAC/up/down offsets and trace the producer back to confsrv/runtime counters.'
-            echo '===== JSON PACKER EXACT WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x30990 --stop-address=0x30ac0 "$cloud" || true
-            echo '===== TRAFFIC UPLOAD COMMAND WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x30ae0 --stop-address=0x30c80 "$cloud" || true
-            echo '===== UPLOAD STATISTICS WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x211a0 --stop-address=0x21320 "$cloud" || true
-            echo '===== START UPLOAD STATISTIC WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x1e43c --stop-address=0x1e600 "$cloud" || true
-            echo '===== SYMBOL / RELOCATION XREFS ====='
-            mipsel-linux-gnu-readelf -rW "$cloud" | grep -Ei 'dev_traffic_upload_json_packer|cmd_cloud_info_dev_traffic_upload|uc_api_m_cloud_info_send_dev_traffic' || true
-            mipsel-linux-gnu-objdump -drwC "$cloud" | grep -E -B18 -A30 '30990|30ae0|dev_traffic_upload_json_packer|cmd_cloud_info_dev_traffic_upload' | head -n 520 || true
-            echo '===== CONFSRV TRAFFIC SEND XREFS ====='
-            mipsel-linux-gnu-readelf -rW "$conf" | grep -Ei 'uc_api_m_cloud_info_send_dev_traffic' || true
-            mipsel-linux-gnu-objdump -drwC "$conf" | grep -Ei -B24 -A45 'send_dev_traffic|up_bytes|last_up_bytes|down_bytes|last_down_bytes|print_device_client_info' | head -n 620 || true
+            echo '===== RUN 68 GOAL ====='
+            echo 'Find the code path that fills the 20-byte traffic records: 4-byte count header, then each record with compact MAC at +0, up at +12, down at +16.'
+            echo '===== CONFSRV IMPORT / SYMBOL CLUES ====='
+            mipsel-linux-gnu-readelf -sW "$conf" | grep -Ei 'uc_api_m_cloud_info_send_dev_traffic|fill_host_lists_rate|online_ip|statistic|traffic|rate' | head -n 260 || true
+            mipsel-linux-gnu-objdump -T "$conf" | grep -Ei 'uc_api_m_cloud_info_send_dev_traffic|traffic|rate|statistic' | head -n 220 || true
+            mipsel-linux-gnu-objdump -R "$conf" | grep -Ei 'uc_api_m_cloud_info_send_dev_traffic|traffic|rate|statistic' | head -n 220 || true
+            echo '===== LIBCLOUD TRAFFIC HANDLER / PACKER CALLSITES ====='
+            mipsel-linux-gnu-objdump -drwC "$cloud" | grep -B40 -A70 -E 'dev_traffic_upload_json_packer|cmd_cloud_info_dev_traffic_upload' | head -n 520 || true
+            echo '===== LIBCLOUD REGISTRATION / PERIODIC UPLOAD ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x210f0 --stop-address=0x21280 "$cloud" || true
+            mipsel-linux-gnu-objdump -drwC --start-address=0x246b0 --stop-address=0x24820 "$cloud" || true
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1da80 --stop-address=0x1e500 "$cloud" || true
+            echo '===== UCAPI DEV TRAFFIC SEND WRAPPER ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x7680 --stop-address=0x76f0 "$uc" || true
+            echo '===== CONFSRV RATE STRINGS NEAR CLOUD SEND ====='
+            strings -a -t x "$conf" | grep -Ei -B12 -A28 'up_bytes|last_up_bytes|down_bytes|last_down_bytes|uprate|downrate|print_device_client_info|send_dev_traffic' | head -n 420 || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: per-client-traffic-record-producer
-          path: docs/reverse-generated/per-client-traffic-record-producer.txt
+          name: per-client-traffic-producer-callsites
+          path: docs/reverse-generated/per-client-traffic-producer-callsites.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/per-client-traffic-record-producer.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add per-client traffic record producer trace'; git push || true; fi
+          git add docs/reverse-generated/per-client-traffic-producer-callsites.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add per-client traffic producer callsites'; git push || true; fi
