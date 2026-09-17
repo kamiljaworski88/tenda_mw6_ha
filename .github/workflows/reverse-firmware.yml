@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Disassemble online_ip kernel pipeline
+      - name: Trace online_ip packet accounting callers
         shell: bash
         run: |
           set -euo pipefail
@@ -30,42 +30,97 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run123-online-ip-kernel-pipeline.txt'
+          dis='/tmp/mw6kernel/kernel.dis'
+          syms='/tmp/mw6kernel/kernel.syms'
+          out='docs/reverse-generated/run124-online-ip-accounting-xrefs.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
-          test -s "$elf"
+          mipsel-linux-gnu-nm -n "$elf" > "$syms"
+          mipsel-linux-gnu-objdump -drwC "$elf" > "$dis"
 
-          {
-            echo '===== RUN 123: online_ip kernel pipeline ====='
-            echo
-            echo '===== TARGET SYMBOLS ====='
-            mipsel-linux-gnu-nm -n "$elf" | grep -E ' (init_online_ip|statistic_rcv|get_online_ip_info|__statistic_rcv|add_online_ip|online_ip_timeout|clear_online_ip_flag|set_online_ip_flag|online_ip_count|online_ip_hash|online_ip_hash_size|online_ip_lock)$' || true
-            echo
-            echo '===== COMPLETE DISASSEMBLY 0x803d3300..0x803d4600 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x803d3300 --stop-address=0x803d4600 "$elf" || true
-            echo
-            echo '===== DATA SYMBOLS NEAR online_ip GLOBALS ====='
-            mipsel-linux-gnu-nm -n "$elf" | awk '$1 >= "81a1f000" && $1 <= "81a21000" {print}' || true
-            echo
-            echo '===== ONLINE_IP / STATISTIC STRINGS ====='
-            strings -a -t x "$raw" | grep -Ei 'online_ip|statistic_rcv|get_online_ip|add_online_ip|netlink buff|online ip data|online ip max|timeout' || true
-          } > "$out"
+          python3 - "$dis" "$syms" "$out" <<'PY'
+          import re, sys
+          from pathlib import Path
+
+          dis_path, sym_path, out_path = map(Path, sys.argv[1:])
+          lines = dis_path.read_text(errors='replace').splitlines()
+          syms=[]
+          for line in sym_path.read_text(errors='replace').splitlines():
+              p=line.split(maxsplit=2)
+              if len(p)==3:
+                  try: syms.append((int(p[0],16),p[2]))
+                  except: pass
+          syms.sort()
+
+          def owner(addr):
+              best=None
+              for a,n in syms:
+                  if a>addr: break
+                  best=(a,n)
+              return best
+
+          def context(i,before=40,after=80):
+              return '\n'.join(lines[max(0,i-before):min(len(lines),i+after+1)])
+
+          targets={
+              'add_online_ip':0x803d4190,
+              'clear_online_ip_flag':0x803d33f8,
+              'set_online_ip_flag':0x803d3490,
+          }
+          with out_path.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 124: online_ip packet accounting cross-references =====\n')
+              for name,addr in targets.items():
+                  o.write(f'\n===== XREFS TO {name} 0x{addr:08x} =====\n')
+                  pat=re.compile(rf'\b(?:jal|j)\s+{addr:08x}\b|<{re.escape(name)}>')
+                  seen=set()
+                  for i,line in enumerate(lines):
+                      if pat.search(line) and not line.lstrip().startswith(f'{addr:08x} <'):
+                          m=re.match(r'^\s*([0-9a-fA-F]+):',line)
+                          call=int(m.group(1),16) if m else 0
+                          own=owner(call)
+                          key=(call,own)
+                          if key in seen: continue
+                          seen.add(key)
+                          o.write(f'\n--- call @ 0x{call:08x} owner={own} ---\n')
+                          o.write(context(i)+'\n')
+
+              o.write('\n===== FUNCTIONS / SYMBOLS NEAR BM ONLINE_IP =====\n')
+              for a,n in syms:
+                  if 0x803d0000 <= a <= 0x803d7000:
+                      o.write(f'{a:08x} {n}\n')
+
+              # Look for direct accesses to the four internal 64-bit accounting pairs
+              # serialized by get_online_ip_info: +0x50/+0x58/+0x60/+0x68.
+              o.write('\n===== MEMORY ACCESS CANDIDATES OFFSETS 0x50..0x6c =====\n')
+              offpat=re.compile(r'\b(?:lw|sw)\s+[^,]+,(80|84|88|92|96|100|104|108)\(([^)]+)\)')
+              candidates=[]
+              for i,line in enumerate(lines):
+                  if offpat.search(line):
+                      m=re.match(r'^\s*([0-9a-fA-F]+):',line)
+                      addr=int(m.group(1),16) if m else 0
+                      own=owner(addr)
+                      if own and any(k in own[1].lower() for k in ('online','stat','forward','hook','fast','nat','track','filter','bm_')):
+                          candidates.append((i,addr,own,line))
+              for i,addr,own,line in candidates[:400]:
+                  o.write(f'\n--- 0x{addr:08x} owner={own}: {line.strip()} ---\n')
+                  o.write(context(i,12,20)+'\n')
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run123-online-ip-kernel-pipeline
-          path: docs/reverse-generated/run123-online-ip-kernel-pipeline.txt
+          name: run124-online-ip-accounting-xrefs
+          path: docs/reverse-generated/run124-online-ip-accounting-xrefs.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run123-online-ip-kernel-pipeline.txt
+          git add docs/reverse-generated/run124-online-ip-accounting-xrefs.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: disassemble online_ip kernel pipeline'
+            git commit -m 'reverse: trace online_ip packet accounting callers'
             git push
           fi
