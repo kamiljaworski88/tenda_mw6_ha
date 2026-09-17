@@ -18,8 +18,9 @@ AUTH_LOGIN = 0x01
 ADV_MODULE = 0x17
 QOS_GET = 0x08
 HIGH_DEVICE_GET = 0x0F
-# Firmware confirms legacy online-hosts API:
+# Firmware confirms legacy online-hosts API in the internal ucapi namespace:
 # M_OL_HOSTS == module 10 (0x0a), CMD_OL_HOSTS_GET == command 0.
+# Whether this namespace is exposed 1:1 on TCP/9000 is being verified live.
 OL_HOSTS_MODULE = 0x0A
 OL_HOSTS_GET = 0x00
 # Firmware boot.log and live wire test confirm:
@@ -95,9 +96,11 @@ def recv_frame(sock):
 
 def show(label, fr, dump_hex=True):
     print(f"\n=== {label} ===")
-    print(f"TID=0x{fr['tid']:02x} module=0x{fr['module']:02x} cmd=0x{fr['command']:02x} payload={fr['payload_len']} B")
+    print(f"TID=0x{fr['tid']:02x} kind=0x{fr['kind']:02x} module=0x{fr['module']:02x} cmd=0x{fr['command']:02x} payload={fr['payload_len']} B")
     if dump_hex:
         print("HEX payload:", fr["payload"].hex(" "))
+        if len(fr["payload"]) >= 4:
+            print("payload[0:4] as LE signed status:", int.from_bytes(fr["payload"][:4], "little", signed=True))
 
 
 def _varint(buf, pos):
@@ -170,12 +173,24 @@ def show_clients(fr):
     return clients
 
 
-def request_hosts(sock, tid, module, command):
+def request_hosts(sock, tid, module, command, diagnostic=False):
     sock.sendall(build_request(tid, module, command))
-    fr = recv_frame(sock)
-    if fr["module"] != module or fr["command"] != command:
-        raise RuntimeError(f"unexpected response module/cmd {fr['module']:02x}/{fr['command']:02x}")
-    return fr
+    max_frames = 4 if diagnostic else 1
+    for idx in range(1, max_frames + 1):
+        try:
+            fr = recv_frame(sock)
+        except socket.timeout:
+            if diagnostic:
+                print(f"No matching response after {idx-1} frame(s); socket timed out.")
+                return None
+            raise
+        if fr["module"] == module and fr["command"] == command:
+            return fr
+        if not diagnostic:
+            raise RuntimeError(f"unexpected response module/cmd {fr['module']:02x}/{fr['command']:02x}")
+        show(f"unexpected/interleaved frame {idx}", fr, dump_hex=True)
+    print(f"No matching module/cmd 0x{module:02x}/0x{command:02x} in first {max_frames} response frames.")
+    return None
 
 
 def request_clients(sock, tid):
@@ -209,7 +224,7 @@ def main():
     ap.add_argument("--host", default=HOST_DEFAULT)
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
-    ap.add_argument("--ol-hosts", action="store_true", help="read-only legacy M_OL_HOSTS/CMD_OL_HOSTS_GET")
+    ap.add_argument("--ol-hosts", action="store_true", help="diagnose legacy M_OL_HOSTS/CMD_OL_HOSTS_GET")
     ap.add_argument("--clients", action="store_true", help="read-only M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
     ap.add_argument("--raw-hex", action="store_true", help="also print full MESH_HOSTS payload as hex")
     ap.add_argument("--watch-client", metavar="NAME_IP_OR_MAC", help="poll one client and show firmware uprate/downrate")
@@ -229,8 +244,11 @@ def main():
             print("LOGIN rejected; stopping before further commands."); sys.exit(2)
         if args.ol_hosts:
             tid += 1
-            print("\nSending read-only firmware-confirmed OL_HOSTS_GET (module=0x0a, cmd=0x00, empty payload)...")
-            r = request_hosts(s, tid, OL_HOSTS_MODULE, OL_HOSTS_GET)
+            print("\nSending diagnostic OL_HOSTS_GET candidate (internal ucapi module=0x0a, cmd=0x00, empty payload)...")
+            print("Note: this test now captures unexpected/interleaved TCP/9000 frames instead of aborting on the first one.")
+            r = request_hosts(s, tid, OL_HOSTS_MODULE, OL_HOSTS_GET, diagnostic=True)
+            if r is None:
+                return
             show("M_OL_HOSTS / OL_HOSTS_GET", r, dump_hex=True)
             try:
                 show_clients(r)
