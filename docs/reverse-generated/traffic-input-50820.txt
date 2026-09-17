@@ -1,0 +1,224 @@
+===== RUN 82 GOAL =====
+Identify function 0x50820 and inspect how it prepares data before dev_traffic_upload_json_packer.
+===== SYMBOL AT / AROUND 0x50820 =====
+    16: 0004ec08   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack
+    25: 0004f200   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__get_packed_size
+    84: 0004f264   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__get_packed_size
+    93: 0005d1d4   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__free_unpacked
+    94: 0005d4f4   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack_to_buffer
+   100: 0005d738   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack_to_buffer
+   141: 0005d434    48 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__unpack
+   186: 0005d160   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__free_unpacked
+   198: 0005d4c4    48 FUNC    GLOBAL DEFAULT   10 ol_host_dev__unpack
+   224: 0005d908   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__pack
+   233: 0005d97c   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__pack
+   240: 0005da64   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack
+   246: 0004ec7c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack
+   254: 0005d7ac   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack_to_buffer
+   255: 000169cc    76 FUNC    GLOBAL DEFAULT   10 get_session_stat
+   264: 0001d550     8 FUNC    GLOBAL DEFAULT   10 get_cloud_state
+   272: 0005207c   100 FUNC    GLOBAL DEFAULT   10 rub_net_status__get_packed_size
+   299: 00051cc8   116 FUNC    GLOBAL DEFAULT   10 rub_net_status__pack
+   322: 0004e5b0   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack_to_buffer
+   341: 0005dda4   100 FUNC    GLOBAL DEFAULT   10 ol_host_dev__get_packed_size
+   344: 0005d650   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__pack_to_buffer
+   362: 0005d2bc   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__free_unpacked
+   369: 0005d330   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__free_unpacked
+   387: 000518b4   116 FUNC    GLOBAL DEFAULT   10 rub_net_status__pack_to_buffer
+   388: 0004dd2c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__free_unpacked
+   412: 0005dd40   100 FUNC    GLOBAL DEFAULT   10 ol_host_info__get_packed_size
+   415: 0005d404    48 FUNC    GLOBAL DEFAULT   10 host_info_msg__unpack
+   421: 0005dc14   100 FUNC    GLOBAL DEFAULT   10 host_info_msg__get_packed_size
+   427: 0004e624   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack_to_buffer
+   434: 0005d5dc   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__pack_to_buffer
+   454: 0005dc78   100 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__get_packed_size
+   467: 0005d078   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__free_unpacked
+   504: 0001db08   192 FUNC    GLOBAL DEFAULT   10 create_statistic_upload_timer
+   506: 0005d3a4    48 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__unpack
+   520: 00039dd4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+   549: 0005d494    48 FUNC    GLOBAL DEFAULT   10 ol_host_info__unpack
+   590: 0005dad8   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack
+   598: 0008c304     4 OBJECT  GLOBAL DEFAULT   22 BAND_TEST_STATUS_T
+   610: 0004e1a8    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__unpack
+   616: 0004004c    72 FUNC    GLOBAL DEFAULT   10 upgrade_status_cb
+   627: 0004b5d4   172 FUNC    GLOBAL DEFAULT   10 rate_get_proto_to_cmd
+   637: 0001d64c    24 FUNC    GLOBAL DEFAULT   10 set_query_version_stat
+   639: 0002e830  1112 FUNC    GLOBAL DEFAULT   10 node_status_upload_json_packer
+   650: 0008a2b4    60 OBJECT  GLOBAL DEFAULT   18 host_info_single_msg__descriptor
+   664: 00040094   184 FUNC    GLOBAL DEFAULT   10 upgrade_status_to_failed
+   682: 0003f5ec   112 FUNC    GLOBAL DEFAULT   10 clear_upgrade_query_stat
+   701: 00030990   336 FUNC    GLOBAL DEFAULT   10 dev_traffic_upload_json_packer
+   704: 00016bc0   292 FUNC    GLOBAL DEFAULT   10 do_check_app_sess_status
+   734: 000211a0   152 FUNC    GLOBAL DEFAULT   10 upload_statistics
+   738: 0005db4c   100 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__get_packed_size
+   743: 0005156c    48 FUNC    GLOBAL DEFAULT   10 rub_net_status__unpack
+   754: 0005cef0    56 FUNC    GLOBAL DEFAULT   10 ol_host_dev__init
+   768: 0005c800  1772 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_json
+   779: 00050c30   228 FUNC    GLOBAL DEFAULT   10 access_user_operate_pbuf_to_cmd
+   780: 0001e018   252 FUNC    GLOBAL DEFAULT   10 check_wan_stat
+   799: 00046138    96 FUNC    GLOBAL DEFAULT   10 clear_speedtest_query_stat
+   801: 000300d0   280 FUNC    GLOBAL DEFAULT   10 dev_upload_status_start_parser
+   810: 0004dcb8   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__free_unpacked
+   821: 0001d548     8 FUNC    GLOBAL DEFAULT   10 set_cloud_state
+   829: 00045818    32 FUNC    GLOBAL DEFAULT   10 check_speedtest_stat
+   847: 0001d69c    32 FUNC    GLOBAL DEFAULT   10 check_query_multi_version_stat
+   877: 0002e648   112 FUNC    GLOBAL DEFAULT   10 send_start_upload_status_to_inner
+   888: 00016a40   132 FUNC    GLOBAL DEFAULT   10 set_same_type_session_stat
+   897: 00050af4   316 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_json
+   902: 00046024   276 FUNC    GLOBAL DEFAULT   10 set_speedtest_stat
+   904: 0004d840    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__init
+   926: 000301e8   200 FUNC    GLOBAL DEFAULT   10 cmd_cloud_dev_upload_status_start
+   928: 00016a38     8 FUNC    GLOBAL DEFAULT   10 do_check_status
+   932: 0008a200    60 OBJECT  GLOBAL DEFAULT   18 ol_host_dev__descriptor
+   939: 0001d664    32 FUNC    GLOBAL DEFAULT   10 check_query_version_stat
+   969: 0004e178    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__unpack
+   980: 00050d14   296 FUNC    GLOBAL DEFAULT   10 access_user_operate_json_to_cmd
+   987: 0002ec88   360 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_node_status_upload
+  1011: 000465f8    28 FUNC    GLOBAL DEFAULT   10 restore_speedtest_state
+  1033: 0001e43c    76 FUNC    GLOBAL DEFAULT   10 start_upload_statistic
+  1047: 00050820   188 FUNC    GLOBAL DEFAULT   10 rub_net_set_pbuf_to_cmd
+  1059: 0001d744    32 FUNC    GLOBAL DEFAULT   10 check_update_acc_info_stat
+  1076: 0005d820   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack
+  1080: 00030ae0   368 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_traffic_upload
+  1087: 00020720   336 FUNC    GLOBAL DEFAULT   10 event_stat_clear
+  1091: 0001d4f8    44 FUNC    GLOBAL DEFAULT   10 get_global_disp_host
+  1096: 0008a23c    60 OBJECT  GLOBAL DEFAULT   18 ol_host_info__descriptor
+  1108: 0001d6f4    24 FUNC    GLOBAL DEFAULT   10 set_query_acc_info_stat
+  1118: 0005ea70    32 FUNC    GLOBAL DEFAULT   10 file_transfer_status_check
+  1123: 0001d72c    24 FUNC    GLOBAL DEFAULT   10 set_update_acc_info_stat
+  1135: 0008a2f0    60 OBJECT  GLOBAL DEFAULT   18 host_info_msg__descriptor
+  1137: 0001d6bc    24 FUNC    GLOBAL DEFAULT   10 set_query_policy_version_stat
+  1171: 00045800    24 FUNC    GLOBAL DEFAULT   10 _set_speedtest_stat
+  1176: 0001d70c    32 FUNC    GLOBAL DEFAULT   10 check_query_acc_info_stat
+  1196: 0005c1a0  1632 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_pbuf
+  1203: 0001d684    24 FUNC    GLOBAL DEFAULT   10 set_query_multi_version_stat
+  1214: 00016a18    32 FUNC    GLOBAL DEFAULT   10 check_session_stat
+  1216: 0005ea90    24 FUNC    GLOBAL DEFAULT   10 file_transfer_status_set
+  1241: 0005eaa8    24 FUNC    GLOBAL DEFAULT   10 file_transfer_status
+  1244: 0004b350   644 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_proto
+  1254: 0008a368    60 OBJECT  GLOBAL DEFAULT   18 ol_host_common_ack__descriptor
+  1262: 0004f7a4    28 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_pbuf
+  1287: 00088b04    60 OBJECT  GLOBAL DEFAULT   18 rub_net_status__descriptor
+  1315: 0001d558    16 FUNC    GLOBAL DEFAULT   10 check_cloud_state
+  1320: 0001d524    36 FUNC    GLOBAL DEFAULT   10 set_global_disp_host
+  1341: 0008835c    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_info__descriptor
+  1364: 00088320    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_detail__descriptor
+  1381: 000457e0    32 FUNC    GLOBAL DEFAULT   10 _check_speedtest_stat
+  1393: 000512f0   116 FUNC    GLOBAL DEFAULT   10 rub_net_status__free_unpacked
+  1394: 0001d6d4    32 FUNC    GLOBAL DEFAULT   10 check_query_policy_version_stat
+  1411: 0001d988   124 FUNC    GLOBAL DEFAULT   10 save_wan_stat
+  1422: 00016958    20 FUNC    GLOBAL DEFAULT   10 set_session_stat
+  1429: 0004b7b0   436 FUNC    GLOBAL DEFAULT   10 rate_get_json_to_cmd
+  1442: 0004af7c   980 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_json
+  1486: 0005d040    56 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__init
+  1493: 0004d878    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__init
+  1498: 0005cfd0    56 FUNC    GLOBAL DEFAULT   10 host_info_msg__init
+  1512: 0005cf28    56 FUNC    GLOBAL DEFAULT   10 ol_host_info__init
+  1521: 0005cf98    56 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__init
+  1536: 00050eb0    56 FUNC    GLOBAL DEFAULT   10 rub_net_status__init
+===== DISASSEMBLY 0x50820..0x509a0 =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00050820 <rub_net_set_pbuf_to_cmd@@Base>:
+   50820:	3c1c0004 	lui	gp,0x4
+   50824:	279c2b50 	addiu	gp,gp,11088
+   50828:	0399e021 	addu	gp,gp,t9
+   5082c:	27bdffd0 	addiu	sp,sp,-48
+   50830:	afbf002c 	sw	ra,44(sp)
+   50834:	afb00028 	sw	s0,40(sp)
+   50838:	afbc0018 	sw	gp,24(sp)
+   5083c:	14a00011 	bnez	a1,50884 <rub_net_set_pbuf_to_cmd@@Base+0x64>
+   50840:	00c08021 	move	s0,a2
+   50844:	8f828570 	lw	v0,-31376(gp)
+   50848:	8f868028 	lw	a2,-32728(gp)
+   5084c:	8f878028 	lw	a3,-32728(gp)
+   50850:	8c440000 	lw	a0,0(v0)
+   50854:	240200f0 	li	v0,240
+   50858:	afa20010 	sw	v0,16(sp)
+   5085c:	8f828028 	lw	v0,-32728(gp)
+   50860:	8f998274 	lw	t9,-32140(gp)
+   50864:	24c6ffcc 	addiu	a2,a2,-52
+   50868:	244291f4 	addiu	v0,v0,-28172
+   5086c:	afa20014 	sw	v0,20(sp)
+   50870:	24e7fe00 	addiu	a3,a3,-512
+   50874:	0320f809 	jalr	t9
+   50878:	24050002 	li	a1,2
+   5087c:	10000013 	b	508cc <rub_net_set_pbuf_to_cmd@@Base+0xac>
+   50880:	2402ffff 	li	v0,-1
+   50884:	8f9982a4 	lw	t9,-32092(gp)
+   50888:	00803021 	move	a2,a0
+   5088c:	afa70020 	sw	a3,32(sp)
+   50890:	0320f809 	jalr	t9
+   50894:	00002021 	move	a0,zero
+   50898:	00402021 	move	a0,v0
+   5089c:	8fbc0018 	lw	gp,24(sp)
+   508a0:	2402ffff 	li	v0,-1
+   508a4:	10800009 	beqz	a0,508cc <rub_net_set_pbuf_to_cmd@@Base+0xac>
+   508a8:	8fa70020 	lw	a3,32(sp)
+   508ac:	8c82000c 	lw	v0,12(a0)
+   508b0:	8f998ccc 	lw	t9,-29492(gp)
+   508b4:	00002821 	move	a1,zero
+   508b8:	ae020000 	sw	v0,0(s0)
+   508bc:	24020004 	li	v0,4
+   508c0:	0320f809 	jalr	t9
+   508c4:	ace20000 	sw	v0,0(a3)
+   508c8:	00001021 	move	v0,zero
+   508cc:	8fbf002c 	lw	ra,44(sp)
+   508d0:	8fb00028 	lw	s0,40(sp)
+   508d4:	03e00008 	jr	ra
+   508d8:	27bd0030 	addiu	sp,sp,48
+
+000508dc <rub_net_get_cmd_to_json@@Base>:
+   508dc:	3c1c0004 	lui	gp,0x4
+   508e0:	279c2a94 	addiu	gp,gp,10900
+   508e4:	0399e021 	addu	gp,gp,t9
+   508e8:	27bdffc8 	addiu	sp,sp,-56
+   508ec:	afbf0034 	sw	ra,52(sp)
+   508f0:	afb40030 	sw	s4,48(sp)
+   508f4:	afb3002c 	sw	s3,44(sp)
+   508f8:	afb20028 	sw	s2,40(sp)
+   508fc:	afb10024 	sw	s1,36(sp)
+   50900:	afb00020 	sw	s0,32(sp)
+   50904:	afbc0018 	sw	gp,24(sp)
+   50908:	8f998504 	lw	t9,-31484(gp)
+   5090c:	00808821 	move	s1,a0
+   50910:	00c09021 	move	s2,a2
+   50914:	0320f809 	jalr	t9
+   50918:	00e0a021 	move	s4,a3
+   5091c:	8fbc0018 	lw	gp,24(sp)
+   50920:	14400009 	bnez	v0,50948 <rub_net_get_cmd_to_json@@Base+0x6c>
+   50924:	00408021 	move	s0,v0
+   50928:	8f828570 	lw	v0,-31376(gp)
+   5092c:	8f998274 	lw	t9,-32140(gp)
+   50930:	8c440000 	lw	a0,0(v0)
+   50934:	240200ba 	li	v0,186
+   50938:	afa20010 	sw	v0,16(sp)
+   5093c:	8f828028 	lw	v0,-32728(gp)
+   50940:	10000052 	b	50a8c <rub_net_get_cmd_to_json@@Base+0x1b0>
+   50944:	24429794 	addiu	v0,v0,-26732
+   50948:	8f998044 	lw	t9,-32700(gp)
+   5094c:	0320f809 	jalr	t9
+   50950:	8e240004 	lw	a0,4(s1)
+   50954:	8fbc0018 	lw	gp,24(sp)
+   50958:	00602821 	move	a1,v1
+   5095c:	8f998d60 	lw	t9,-29344(gp)
+   50960:	0320f809 	jalr	t9
+   50964:	00402021 	move	a0,v0
+   50968:	8fbc0018 	lw	gp,24(sp)
+   5096c:	00403021 	move	a2,v0
+   50970:	02002021 	move	a0,s0
+   50974:	8f858028 	lw	a1,-32728(gp)
+   50978:	8f99814c 	lw	t9,-32436(gp)
+   5097c:	0320f809 	jalr	t9
+   50980:	24a59734 	addiu	a1,a1,-26828
+   50984:	8e220000 	lw	v0,0(s1)
+   50988:	30420002 	andi	v0,v0,0x2
+   5098c:	10400032 	beqz	v0,50a58 <rub_net_get_cmd_to_json@@Base+0x17c>
+   50990:	8fbc0018 	lw	gp,24(sp)
+   50994:	8f998504 	lw	t9,-31484(gp)
+   50998:	0320f809 	jalr	t9
+   5099c:	00000000 	nop
