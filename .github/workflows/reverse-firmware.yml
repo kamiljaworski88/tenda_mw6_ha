@@ -12,38 +12,60 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace uc_api_set_basic_info GOT callers
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
+      - name: Resolve exact uc_api_set_basic_info GOT slot
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-set-basic-info-got-callers.txt'
+          out='docs/reverse-generated/sys-set-basic-info-got-slot.txt'
+          mipsel-linux-gnu-objcopy --dump-section .got=/tmp/libucapi.got "$lib"
           {
-            echo '===== RUN 54 GOAL ====='
-            echo 'Resolve the GOT entry and actual PIC call sites for uc_api_set_basic_info.'
-            echo '===== SYMBOL ====='
+            echo '===== RUN 55 GOAL ====='
+            echo 'Find the exact .got virtual address whose 32-bit little-endian value is uc_api_set_basic_info (0x00008348).'
+            echo '===== .got SECTION ====='
+            mipsel-linux-gnu-readelf -SW "$lib" | grep -E '[[:space:]]\.got[[:space:]]' || true
+            echo '===== EXACT SLOT SCAN ====='
+            python3 - "$lib" /tmp/libucapi.got <<'PY'
+          import re, struct, subprocess, sys
+          lib, got_path = sys.argv[1], sys.argv[2]
+          text = subprocess.check_output(['mipsel-linux-gnu-readelf','-SW',lib], text=True)
+          base = None
+          for line in text.splitlines():
+              if re.search(r'\s\.got\s', line):
+                  m = re.search(r'\.got\s+PROGBITS\s+([0-9a-fA-F]+)', line)
+                  if m:
+                      base = int(m.group(1), 16)
+                      print(f'got_vma=0x{base:08x}')
+                      break
+          if base is None:
+              raise SystemExit('could not parse .got VMA')
+          data = open(got_path,'rb').read()
+          target = 0x00008348
+          hits = []
+          for i in range(0, len(data)-3, 4):
+              val = struct.unpack_from('<I', data, i)[0]
+              if val == target:
+                  hits.append(base+i)
+          if not hits:
+              print('NO_EXACT_GOT_SLOT_FOR_0x00008348')
+          else:
+              for addr in hits:
+                  print(f'GOT_SLOT=0x{addr:08x} -> 0x{target:08x}')
+          PY
+            echo '===== SYMBOL CHECK ====='
             mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info' || true
-            echo '===== MIPS GOT ENTRY ====='
-            mipsel-linux-gnu-readelf -A "$lib" | grep -B5 -A5 -E 'uc_api_set_basic_info' || true
-            echo '===== DYNAMIC RELOCATIONS ====='
-            mipsel-linux-gnu-objdump -R "$lib" | grep -E 'uc_api_set_basic_info' || true
-            echo '===== GOT WORD 0x00008348 ====='
-            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -B2 -A2 -i '48830000' || true
-            echo '===== LIKELY BASIC-INFO CALLER WINDOWS ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x7400 --stop-address=0x7600 "$lib" || true
-            mipsel-linux-gnu-objdump -drwC --start-address=0x15c60 --stop-address=0x15d20 "$lib" || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-set-basic-info-got-callers
-          path: docs/reverse-generated/sys-set-basic-info-got-callers.txt
+          name: sys-set-basic-info-got-slot
+          path: docs/reverse-generated/sys-set-basic-info-got-slot.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-set-basic-info-got-callers.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add uc_api_set_basic_info GOT caller trace'; git push || true; fi
+          git add docs/reverse-generated/sys-set-basic-info-got-slot.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add exact uc_api_set_basic_info GOT slot'; git push || true; fi
