@@ -1,0 +1,10 @@
+{
+  "domain": "tenda_mw6",
+  "name": "Tenda MW6",
+  "codeowners": ["@kamiljaworski88"],
+  "config_flow": true,
+  "documentation": "https://github.com/kamiljaworski88/tenda_mw6_ha",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}
