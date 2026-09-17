@@ -13,34 +13,37 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace uc_api_set_basic_info callers
+      - name: Trace uc_api_set_basic_info GOT callers
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-set-basic-info-callers.txt'
+          out='docs/reverse-generated/sys-set-basic-info-got-callers.txt'
           {
-            echo '===== RUN 53 GOAL ====='
-            echo 'Identify callers / producer path feeding uc_api_set_basic_info and its input structure.'
+            echo '===== RUN 54 GOAL ====='
+            echo 'Resolve the GOT entry and actual PIC call sites for uc_api_set_basic_info.'
             echo '===== SYMBOL ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info|basic_info' || true
-            echo '===== RELOCATIONS / REFERENCES TO 0x8348 ====='
-            mipsel-linux-gnu-readelf -rW "$lib" | grep -Ei '00008348|8348' || true
-            echo '===== DISASSEMBLY REFERENCES TO SYMBOL / ADDRESS ====='
-            mipsel-linux-gnu-objdump -drwC "$lib" | grep -B16 -A20 -E 'uc_api_set_basic_info|0*8348' || true
-            echo '===== NEARBY BASIC-INFO FUNCTIONS ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x7400 --stop-address=0x8800 "$lib" || true
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info' || true
+            echo '===== MIPS GOT ENTRY ====='
+            mipsel-linux-gnu-readelf -A "$lib" | grep -B5 -A5 -E 'uc_api_set_basic_info' || true
+            echo '===== DYNAMIC RELOCATIONS ====='
+            mipsel-linux-gnu-objdump -R "$lib" | grep -E 'uc_api_set_basic_info' || true
+            echo '===== GOT WORD 0x00008348 ====='
+            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -B2 -A2 -i '48830000' || true
+            echo '===== LIKELY BASIC-INFO CALLER WINDOWS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x7400 --stop-address=0x7600 "$lib" || true
+            mipsel-linux-gnu-objdump -drwC --start-address=0x15c60 --stop-address=0x15d20 "$lib" || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-set-basic-info-callers
-          path: docs/reverse-generated/sys-set-basic-info-callers.txt
+          name: sys-set-basic-info-got-callers
+          path: docs/reverse-generated/sys-set-basic-info-got-callers.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-set-basic-info-callers.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add uc_api_set_basic_info caller trace'; git push || true; fi
+          git add docs/reverse-generated/sys-set-basic-info-got-callers.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add uc_api_set_basic_info GOT caller trace'; git push || true; fi
