@@ -13,32 +13,38 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace cloud sys basic registration
+      - name: Resolve SYS BasicInfo callback target
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-basic-enable-path.txt'
+          out='docs/reverse-generated/sys-basic-enable-target.txt'
           {
-            echo '===== RUN 59 GOAL ====='
-            echo 'Trace enable_cloud_get_sys_basic and identify callbacks / data producer used for SYS BasicInfo.'
-            echo '===== SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'enable_cloud_get_sys_basic|uc_api_set_basic_info|sys_basic_info' || true
-            echo '===== enable_cloud_get_sys_basic DISASSEMBLY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0xa3fc --stop-address=0xa4c0 "$lib" || true
-            echo '===== NEARBY RODATA STRINGS ====='
-            strings -a -t x "$lib" | awk '$1 >= "1f000" && $1 <= "20500" {print}' | grep -Ei 'basic|serial|sys|model|soft|firmware|cloud' || true
+            echo '===== RUN 60 GOAL ====='
+            echo 'Resolve t9 target gp-31940 and a3 object source in enable_cloud_get_sys_basic.'
+            echo '===== KNOWN VALUES ====='
+            echo 'function=0x0000a3fc'
+            echo 'gp=0x00039ed0'
+            echo 't9_slot=gp-31940=0x0003220c'
+            echo 'a3_base_slot=gp-32732=0x00031ef4'
+            echo 'a3_adjust=-3360 (0xfffff2e0)'
+            echo '===== GOT BYTES AROUND 0x31ef4 AND 0x3220c ====='
+            mipsel-linux-gnu-objdump -s -j .got --start-address=0x31ee0 --stop-address=0x32230 "$lib" || true
+            echo '===== SYMBOLS / ADDRESSES NEAR GOT TARGET VALUES ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E '0000a[0-9a-f]{3}|0001[0-9a-f]{4}|enable_cloud_get_sys_basic|uc_api_set_basic_info|basic_info' || true
+            echo '===== ENABLE FUNCTION CHECK ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0xa3fc --stop-address=0xa49c "$lib" || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-basic-enable-path
-          path: docs/reverse-generated/sys-basic-enable-path.txt
+          name: sys-basic-enable-target
+          path: docs/reverse-generated/sys-basic-enable-target.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-basic-enable-path.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add SYS BasicInfo enable trace'; git push || true; fi
+          git add docs/reverse-generated/sys-basic-enable-target.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve SYS BasicInfo callback target'; git push || true; fi
