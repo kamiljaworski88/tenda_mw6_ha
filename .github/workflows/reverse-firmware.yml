@@ -12,60 +12,31 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve exact uc_api_set_basic_info GOT slot
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+      - name: Trace direct basic info references
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-set-basic-info-got-slot.txt'
-          mipsel-linux-gnu-objcopy --dump-section .got=/tmp/libucapi.got "$lib"
+          out='docs/reverse-generated/sys-set-basic-info-direct-refs.txt'
           {
-            echo '===== RUN 55 GOAL ====='
-            echo 'Find the exact .got virtual address whose 32-bit little-endian value is uc_api_set_basic_info (0x00008348).'
-            echo '===== .got SECTION ====='
-            mipsel-linux-gnu-readelf -SW "$lib" | grep -E '[[:space:]]\.got[[:space:]]' || true
-            echo '===== EXACT SLOT SCAN ====='
-            python3 - "$lib" /tmp/libucapi.got <<'PY'
-          import re, struct, subprocess, sys
-          lib, got_path = sys.argv[1], sys.argv[2]
-          text = subprocess.check_output(['mipsel-linux-gnu-readelf','-SW',lib], text=True)
-          base = None
-          for line in text.splitlines():
-              if re.search(r'\s\.got\s', line):
-                  m = re.search(r'\.got\s+PROGBITS\s+([0-9a-fA-F]+)', line)
-                  if m:
-                      base = int(m.group(1), 16)
-                      print(f'got_vma=0x{base:08x}')
-                      break
-          if base is None:
-              raise SystemExit('could not parse .got VMA')
-          data = open(got_path,'rb').read()
-          target = 0x00008348
-          hits = []
-          for i in range(0, len(data)-3, 4):
-              val = struct.unpack_from('<I', data, i)[0]
-              if val == target:
-                  hits.append(base+i)
-          if not hits:
-              print('NO_EXACT_GOT_SLOT_FOR_0x00008348')
-          else:
-              for addr in hits:
-                  print(f'GOT_SLOT=0x{addr:08x} -> 0x{target:08x}')
-          PY
-            echo '===== SYMBOL CHECK ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info' || true
+            echo '===== RUN 56 GOAL ====='
+            echo 'Find direct disassembly references to uc_api_set_basic_info at 0x8348.'
+            echo '===== SYMBOL ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep 'uc_api_set_basic_info' || true
+            echo '===== DIRECT REFERENCES ====='
+            mipsel-linux-gnu-objdump -drwC "$lib" | grep -E -B10 -A12 'jal[^r].*8348|8348 <uc_api_set_basic_info|0x8348' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-set-basic-info-got-slot
-          path: docs/reverse-generated/sys-set-basic-info-got-slot.txt
+          name: sys-set-basic-info-direct-refs
+          path: docs/reverse-generated/sys-set-basic-info-direct-refs.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-set-basic-info-got-slot.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add exact uc_api_set_basic_info GOT slot'; git push || true; fi
+          git add docs/reverse-generated/sys-set-basic-info-direct-refs.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add direct basic info reference trace'; git push || true; fi
