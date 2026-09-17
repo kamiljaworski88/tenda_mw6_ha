@@ -13,30 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Resolve upload_statistics second call
+      - name: Resolve upload_statistics third call
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/upload-statistics-second-call.txt'
+          out='docs/reverse-generated/upload-statistics-third-call.txt'
           {
-            echo '===== RUN 76 GOAL ====='
-            echo 'Resolve lw t9,-32420(gp) at upload_statistics 0x211f8. gp=0x93370, GOT address=0x8b4cc.'
-            echo '===== GOT BYTES AROUND 0x8b4cc ====='
-            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -Ei '^ 8b4b0|^ 8b4c0|^ 8b4d0|^ 8b4e0|^ 8b4f0' || true
-            echo '===== STUB / SYMBOL RESOLUTION ====='
+            echo '===== RUN 77 GOAL ====='
+            echo 'Resolve lw t9,-30292(gp) at upload_statistics 0x21210. gp=0x93370, GOT address=0x8bd1c.'
+            echo '===== GOT BYTES AROUND 0x8bd1c ====='
+            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -Ei '^ 8bd00|^ 8bd10|^ 8bd20|^ 8bd30' || true
+            echo '===== MIPS STUBS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x649e0 --stop-address=0x64ea0 "$lib" || true
+            echo '===== DYNSYM ====='
             mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: upload-statistics-second-call
-          path: docs/reverse-generated/upload-statistics-second-call.txt
+          name: upload-statistics-third-call
+          path: docs/reverse-generated/upload-statistics-third-call.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/upload-statistics-second-call.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add upload_statistics second-call report'; git push || true; fi
+          git add docs/reverse-generated/upload-statistics-third-call.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add upload_statistics third-call report'; git push || true; fi
