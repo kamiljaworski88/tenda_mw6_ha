@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import Any
 
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.sensor import SensorEntity
 
+from . import DOMAIN
 from .api import TendaMW6Client
 from .coordinator import TendaMW6Coordinator
-from . import DOMAIN
 
 
 async def async_setup_entry(
@@ -20,22 +20,30 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up sensors for each client known at first refresh."""
+    """Set up sensors and add newly discovered MW6 clients dynamically."""
     coordinator: TendaMW6Coordinator = hass.data[DOMAIN][entry.entry_id]
+    known_macs: set[str] = set()
 
-    entities: list[SensorEntity] = []
-    for client in coordinator.data:
-        if not client.mac:
-            continue
-        entities.extend(
-            (
-                TendaMW6ClientSignalSensor(coordinator, entry, client.mac),
-                TendaMW6ClientIpSensor(coordinator, entry, client.mac),
-                TendaMW6ClientNodeSensor(coordinator, entry, client.mac),
+    def add_new_clients() -> None:
+        entities: list[SensorEntity] = []
+        for client in coordinator.data or []:
+            mac = client.mac.strip().lower()
+            if not mac or mac in known_macs:
+                continue
+            known_macs.add(mac)
+            entities.extend(
+                (
+                    TendaMW6ClientSignalSensor(coordinator, entry, mac),
+                    TendaMW6ClientIpSensor(coordinator, entry, mac),
+                    TendaMW6ClientNodeSensor(coordinator, entry, mac),
+                )
             )
-        )
 
-    async_add_entities(entities)
+        if entities:
+            async_add_entities(entities)
+
+    add_new_clients()
+    entry.async_on_unload(coordinator.async_add_listener(add_new_clients))
 
 
 class TendaMW6ClientSensorBase(CoordinatorEntity[TendaMW6Coordinator], SensorEntity):
@@ -55,7 +63,7 @@ class TendaMW6ClientSensorBase(CoordinatorEntity[TendaMW6Coordinator], SensorEnt
 
     @property
     def _client(self) -> TendaMW6Client | None:
-        for client in self.coordinator.data:
+        for client in self.coordinator.data or []:
             if client.mac.lower() == self._mac:
                 return client
         return None
@@ -117,9 +125,9 @@ class TendaMW6ClientSignalSensor(TendaMW6ClientSensorBase):
             "condition_time": client.condition_time,
         }
 
-        # These three values are intentionally exposed only as raw diagnostics.
-        # Live tests on MW6 firmware showed that they remain zero even for an
-        # active client, so they must not be treated as authoritative status/rate.
+        # These values are kept as diagnostics only. The firmware schema names
+        # them online/uprate/downrate, but live MW6 tests observed zero values
+        # even for an active client. Do not expose them as authoritative HA state.
         attrs["raw_online"] = client.raw_online
         attrs["raw_uprate"] = client.raw_uprate
         attrs["raw_downrate"] = client.raw_downrate
