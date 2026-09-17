@@ -38,7 +38,7 @@ Confirmed read-only commands:
 
 ## Confirmed HostInfo protobuf schema
 
-Firmware strings from `onhosts.pb-c.c` and live TCP/9000 captures map the HostInfo fields as follows:
+Firmware strings from `onhosts.pb-c.c` and live captures map the HostInfo fields as follows:
 
 | Field | Name |
 |---:|---|
@@ -55,13 +55,44 @@ Firmware strings from `onhosts.pb-c.c` and live TCP/9000 captures map the HostIn
 
 The local HostLists response therefore already gives the integration a stable source for IP, MAC, client name, associated mesh-node serial and Wi-Fi signal.
 
-### Important rate caveat
+### Per-client rate pipeline
 
-On the tested MW6 firmware, fields `online`, `uprate` and `downrate` were observed as zero even while the client was active and generating heavy traffic. Firmware disassembly proves that rate calculation exists internally and uses two snapshots of kernel per-client counters, but the live path still needs one more reverse-engineering step before these values can be exposed as trustworthy Home Assistant entities.
+Static firmware analysis now resolves the complete rate path:
+
+- `online != 0` is the gate before rate calculation,
+- the client is matched to `g_ip_info` by strict MAC **and** IPv4,
+- upload counters are read from the record group at `+0x18/+0x20`,
+- download counters are read from `+0x28/+0x30`,
+- two snapshots are taken roughly 500 ms apart,
+- byte deltas are divided by elapsed seconds and by `1024`,
+- exposed `uprate` / `downrate` values are integer KiB/s.
+
+The remaining runtime issue is that some live HostLists responses still return zero `online/uprate/downrate` values. The most likely failure point is now the live population/matching of the strict IP+MAC pair in `g_ip_info`, not the protobuf schema, direction mapping or unit.
+
+## Differential runtime probe
+
+`tools/mw6_compare_host_sources.py` compares the same clients through both confirmed local paths:
+
+1. authenticated TCP/9000 `M_MESH_HOSTS/GET`,
+2. TCP/12598 `cmdsrv -> confsrv -> GetHostList`.
+
+This test is specifically intended to tell us whether `online/uprate/downrate` are being lost on only one API path or are already zero in the shared runtime data.
+
+Example:
+
+```powershell
+python .\tools\mw6_compare_host_sources.py `
+  --pcap .\PCAPdroid_16_wrz_11_20_35.pcap `
+  --host 192.168.5.1 `
+  --count 5 `
+  --interval 3
+```
+
+While it runs, generate traffic on one known client. The script prints paired `9000` and `12598` rows by MAC and marks fields that differ. The captured LOGIN payload is never printed.
 
 ## Home Assistant integration status
 
-A HACS-compatible custom integration now exists in:
+A HACS-compatible custom integration exists in:
 
 ```text
 custom_components/tenda_mw6/
@@ -77,22 +108,17 @@ Current behavior:
 - IP-address diagnostic sensor,
 - associated mesh-node serial diagnostic sensor,
 - automatic creation of entities for clients discovered after integration startup,
-- raw `online/uprate/downrate` values kept only as diagnostic attributes until live semantics are reliable.
+- raw `online/uprate/downrate` values kept only as diagnostic attributes until live runtime behavior is reliable.
 
 The integration intentionally does not depend on Tenda cloud services.
 
 ## Current research target
 
-The remaining blocker for the original project goal is reliable per-client traffic. Firmware reverse engineering has already identified:
+The remaining blocker for the original project goal is reliable per-client traffic. The next decision depends on the differential probe:
 
-- `device_list`, `confsrv`, `libcommon` and kernel online-IP statistics,
-- `fill_host_lists_rate`,
-- `netlink_get_statistic_info`,
-- 232-byte online-IP records,
-- two-snapshot rate calculation with a ~500 ms interval,
-- writes into the internal HostInfo `uprate/downrate` fields.
-
-Next work should focus on why the live HostLists path does not receive the populated rate values, not on brute-forcing unrelated command IDs.
+- if TCP/12598 has valid online/rates while TCP/9000 remains zero, move the HA coordinator to the cmdsrv/confsrv backend;
+- if both paths return zero, investigate runtime `g_ip_info` population and the strict IP+MAC matcher;
+- only after non-zero live rates are reproducible should upload/download sensors and daily/monthly integration be enabled in HA.
 
 ## Safety rule
 
