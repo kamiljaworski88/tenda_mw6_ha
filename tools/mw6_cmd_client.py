@@ -236,14 +236,13 @@ def parse_conf_envelope(data: bytes) -> tuple[str, bytes]:
 def rate_diagnostics(clients: list[dict[str, Any]]) -> dict[str, Any]:
     """Summarize conditions relevant to firmware fill_host_lists_rate().
 
-    Firmware checks runtime HostInfo+0x20 before rate processing. Current reverse
-    mapping associates that slot with the condition-time/runtime eligibility path.
-    This diagnostic intentionally does not claim IP/MAC matching succeeded, since
-    g_ip_info is not directly exposed by GetHostList.
+    On 32-bit protobuf-c, HostInfo+0x20 is the `online` scalar. Firmware checks
+    this slot before parsing IP/MAC and attempting the g_ip_info/online_ip match.
+    `condtion_time` is HostInfo+0x1c and is not the observed rate gate.
     """
     rows = []
     for client in clients:
-        cond = client.get("condtion_time")
+        online = client.get("online")
         up = client.get("uprate")
         down = client.get("downrate")
         rows.append(
@@ -252,9 +251,9 @@ def rate_diagnostics(clients: list[dict[str, Any]]) -> dict[str, Any]:
                 "mac": client.get("ethaddr"),
                 "name": client.get("name"),
                 "assoc_sn": client.get("assoc_sn"),
-                "online": client.get("online"),
-                "condtion_time": cond,
-                "rate_gate_nonzero": bool(cond),
+                "online": online,
+                "condtion_time": client.get("condtion_time"),
+                "rate_gate_nonzero": bool(online),
                 "uprate": up,
                 "downrate": down,
                 "both_rates_zero": (up or 0) == 0 and (down or 0) == 0,
@@ -264,7 +263,7 @@ def rate_diagnostics(clients: list[dict[str, Any]]) -> dict[str, Any]:
         "clients": rows,
         "rate_gate_zero_count": sum(1 for row in rows if not row["rate_gate_nonzero"]),
         "all_rates_zero": bool(rows) and all(row["both_rates_zero"] for row in rows),
-        "note": "If rate_gate_nonzero is true but rates remain zero under traffic, next suspect is IP/MAC matching against g_ip_info/online_ip.",
+        "note": "If online/rate_gate_nonzero is true but both rates stay zero under traffic, the next suspect is the IP+MAC match against g_ip_info/online_ip.",
     }
 
 
