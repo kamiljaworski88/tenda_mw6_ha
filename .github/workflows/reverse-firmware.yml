@@ -13,7 +13,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace per-client traffic builder
+      - name: Trace per-client traffic record producer
         shell: bash
         run: |
           set -euo pipefail
@@ -21,29 +21,33 @@ jobs:
           cloud='firmware-src/RootFS-unpacked/lib/libcloud.so'
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/per-client-traffic-builder.txt'
+          out='docs/reverse-generated/per-client-traffic-record-producer.txt'
           {
-            echo '===== RUN 66 GOAL ====='
-            echo 'Trace the firmware path that builds per-client {mac,up,down} traffic data and identify its source/callers.'
-            echo '===== LIBCLOUD TARGET STRINGS ====='
-            strings -a -t x "$cloud" | grep -Ei '\{"mac":"%s","up":%d,"down":%d\}|ethaddr|uprate|downrate|traffic' | head -n 220 || true
-            echo '===== LIBCLOUD SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$cloud" | grep -Ei 'traffic|device|host|rate|upload' | head -n 260 || true
-            echo '===== LIBCLOUD DISASSEMBLY REFERENCES AROUND 0x6911c STRING OFFSET ====='
-            mipsel-linux-gnu-readelf -SW "$cloud" || true
-            mipsel-linux-gnu-objdump -drwC "$cloud" | grep -Ei -B16 -A30 '6911c|6913c|mac.*up.*down|traffic' | head -n 420 || true
-            echo '===== CONFSRV RATE/CLOUD UPLOAD CLUES ====='
-            strings -a -t x "$conf" | grep -Ei -B8 -A20 'up_bytes|down_bytes|uprate|downrate|send_dev_traffic|traffic' | head -n 320 || true
-            mipsel-linux-gnu-readelf -sW "$conf" | grep -Ei 'traffic|rate|host|cloud' | head -n 260 || true
+            echo '===== RUN 67 GOAL ====='
+            echo 'Identify who fills the 20-byte per-client records consumed by dev_traffic_upload_json_packer; map MAC/up/down offsets and trace the producer back to confsrv/runtime counters.'
+            echo '===== JSON PACKER EXACT WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x30990 --stop-address=0x30ac0 "$cloud" || true
+            echo '===== TRAFFIC UPLOAD COMMAND WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x30ae0 --stop-address=0x30c80 "$cloud" || true
+            echo '===== UPLOAD STATISTICS WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x211a0 --stop-address=0x21320 "$cloud" || true
+            echo '===== START UPLOAD STATISTIC WINDOW ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x1e43c --stop-address=0x1e600 "$cloud" || true
+            echo '===== SYMBOL / RELOCATION XREFS ====='
+            mipsel-linux-gnu-readelf -rW "$cloud" | grep -Ei 'dev_traffic_upload_json_packer|cmd_cloud_info_dev_traffic_upload|uc_api_m_cloud_info_send_dev_traffic' || true
+            mipsel-linux-gnu-objdump -drwC "$cloud" | grep -E -B18 -A30 '30990|30ae0|dev_traffic_upload_json_packer|cmd_cloud_info_dev_traffic_upload' | head -n 520 || true
+            echo '===== CONFSRV TRAFFIC SEND XREFS ====='
+            mipsel-linux-gnu-readelf -rW "$conf" | grep -Ei 'uc_api_m_cloud_info_send_dev_traffic' || true
+            mipsel-linux-gnu-objdump -drwC "$conf" | grep -Ei -B24 -A45 'send_dev_traffic|up_bytes|last_up_bytes|down_bytes|last_down_bytes|print_device_client_info' | head -n 620 || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: per-client-traffic-builder
-          path: docs/reverse-generated/per-client-traffic-builder.txt
+          name: per-client-traffic-record-producer
+          path: docs/reverse-generated/per-client-traffic-record-producer.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/per-client-traffic-builder.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add per-client traffic builder trace'; git push || true; fi
+          git add docs/reverse-generated/per-client-traffic-record-producer.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add per-client traffic record producer trace'; git push || true; fi
