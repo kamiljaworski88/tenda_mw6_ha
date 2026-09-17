@@ -1,0 +1,230 @@
+===== RUN 51 GOAL =====
+Trace GetBasicInfo cmd0 producer and serial.number source.
+===== FUNCTION AFTER BASIC-INFO REG WRAPPER =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0001682c <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x48>:
+   1682c:	3c1c0002 	lui	gp,0x2
+   16830:	279c36a4 	addiu	gp,gp,13988
+   16834:	0399e021 	addu	gp,gp,t9
+   16838:	27bdfe20 	addiu	sp,sp,-480
+   1683c:	afbf01dc 	sw	ra,476(sp)
+   16840:	afb301d8 	sw	s3,472(sp)
+   16844:	afb201d4 	sw	s2,468(sp)
+   16848:	afb101d0 	sw	s1,464(sp)
+   1684c:	afb001cc 	sw	s0,460(sp)
+   16850:	afbc0010 	sw	gp,16(sp)
+   16854:	00e08021 	move	s0,a3
+   16858:	00808821 	move	s1,a0
+   1685c:	10e00004 	beqz	a3,16870 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x8c>
+   16860:	00c09821 	move	s3,a2
+   16864:	8ce20000 	lw	v0,0(a3)
+   16868:	1440000a 	bnez	v0,16894 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0xb0>
+   1686c:	8f9981dc 	lw	t9,-32292(gp)
+   16870:	8f848024 	lw	a0,-32732(gp)
+   16874:	8f868024 	lw	a2,-32732(gp)
+   16878:	8f998398 	lw	t9,-31848(gp)
+   1687c:	24841040 	addiu	a0,a0,4160
+   16880:	24c61094 	addiu	a2,a2,4244
+   16884:	0320f809 	jalr	t9
+   16888:	240500c7 	li	a1,199
+   1688c:	8fbc0010 	lw	gp,16(sp)
+   16890:	8f9981dc 	lw	t9,-32292(gp)
+   16894:	27a70018 	addiu	a3,sp,24
+   16898:	00e02021 	move	a0,a3
+   1689c:	8e120000 	lw	s2,0(s0)
+   168a0:	afa701c0 	sw	a3,448(sp)
+   168a4:	00002821 	move	a1,zero
+   168a8:	0320f809 	jalr	t9
+   168ac:	240601a4 	li	a2,420
+   168b0:	8e060004 	lw	a2,4(s0)
+   168b4:	02602821 	move	a1,s3
+   168b8:	0240c821 	move	t9,s2
+   168bc:	0320f809 	jalr	t9
+   168c0:	02202021 	move	a0,s1
+   168c4:	8fbc0010 	lw	gp,16(sp)
+   168c8:	8fa701c0 	lw	a3,448(sp)
+   168cc:	02202021 	move	a0,s1
+   168d0:	8f998138 	lw	t9,-32456(gp)
+   168d4:	afa2001c 	sw	v0,28(sp)
+   168d8:	00002821 	move	a1,zero
+   168dc:	0320f809 	jalr	t9
+   168e0:	240601a4 	li	a2,420
+   168e4:	8fbf01dc 	lw	ra,476(sp)
+   168e8:	8fb301d8 	lw	s3,472(sp)
+   168ec:	8fb201d4 	lw	s2,468(sp)
+   168f0:	8fb101d0 	lw	s1,464(sp)
+   168f4:	8fb001cc 	lw	s0,460(sp)
+   168f8:	03e00008 	jr	ra
+   168fc:	27bd01e0 	addiu	sp,sp,480
+   16900:	3c1c0002 	lui	gp,0x2
+   16904:	279c35d0 	addiu	gp,gp,13776
+   16908:	0399e021 	addu	gp,gp,t9
+   1690c:	27bdfe30 	addiu	sp,sp,-464
+   16910:	afbf01cc 	sw	ra,460(sp)
+   16914:	afb201c8 	sw	s2,456(sp)
+   16918:	afb101c4 	sw	s1,452(sp)
+   1691c:	afb001c0 	sw	s0,448(sp)
+   16920:	afbc0010 	sw	gp,16(sp)
+   16924:	00e08021 	move	s0,a3
+   16928:	10e00004 	beqz	a3,1693c <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x158>
+   1692c:	00808821 	move	s1,a0
+   16930:	8ce20000 	lw	v0,0(a3)
+   16934:	1440000a 	bnez	v0,16960 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x17c>
+   16938:	8f9981dc 	lw	t9,-32292(gp)
+   1693c:	8f848024 	lw	a0,-32732(gp)
+   16940:	8f868024 	lw	a2,-32732(gp)
+   16944:	8f998398 	lw	t9,-31848(gp)
+   16948:	24841040 	addiu	a0,a0,4160
+   1694c:	24c61094 	addiu	a2,a2,4244
+   16950:	0320f809 	jalr	t9
+   16954:	24050053 	li	a1,83
+   16958:	8fbc0010 	lw	gp,16(sp)
+   1695c:	8f9981dc 	lw	t9,-32292(gp)
+   16960:	27a40018 	addiu	a0,sp,24
+   16964:	00002821 	move	a1,zero
+   16968:	240601a4 	li	a2,420
+   1696c:	0320f809 	jalr	t9
+   16970:	8e120000 	lw	s2,0(s0)
+   16974:	8e060004 	lw	a2,4(s0)
+   16978:	02202021 	move	a0,s1
+   1697c:	0240c821 	move	t9,s2
+   16980:	0320f809 	jalr	t9
+   16984:	27a501a4 	addiu	a1,sp,420
+   16988:	14400004 	bnez	v0,1699c <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x1b8>
+   1698c:	8fbc0010 	lw	gp,16(sp)
+   16990:	8fa30018 	lw	v1,24(sp)
+   16994:	34630002 	ori	v1,v1,0x2
+   16998:	afa30018 	sw	v1,24(sp)
+   1699c:	8f998138 	lw	t9,-32456(gp)
+   169a0:	02202021 	move	a0,s1
+   169a4:	afa2001c 	sw	v0,28(sp)
+   169a8:	00002821 	move	a1,zero
+   169ac:	240601a4 	li	a2,420
+   169b0:	0320f809 	jalr	t9
+   169b4:	27a70018 	addiu	a3,sp,24
+   169b8:	8fbf01cc 	lw	ra,460(sp)
+   169bc:	8fb201c8 	lw	s2,456(sp)
+   169c0:	8fb101c4 	lw	s1,452(sp)
+   169c4:	8fb001c0 	lw	s0,448(sp)
+   169c8:	03e00008 	jr	ra
+   169cc:	27bd01d0 	addiu	sp,sp,464
+   169d0:	3c1c0002 	lui	gp,0x2
+   169d4:	279c3500 	addiu	gp,gp,13568
+   169d8:	0399e021 	addu	gp,gp,t9
+   169dc:	27bdfe28 	addiu	sp,sp,-472
+   169e0:	afbf01d4 	sw	ra,468(sp)
+   169e4:	afb201d0 	sw	s2,464(sp)
+   169e8:	afb101cc 	sw	s1,460(sp)
+   169ec:	afb001c8 	sw	s0,456(sp)
+   169f0:	afbc0010 	sw	gp,16(sp)
+   169f4:	00e08021 	move	s0,a3
+   169f8:	10e00004 	beqz	a3,16a0c <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x228>
+   169fc:	00808821 	move	s1,a0
+   16a00:	8ce20000 	lw	v0,0(a3)
+   16a04:	1440000a 	bnez	v0,16a30 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x24c>
+   16a08:	8f9981dc 	lw	t9,-32292(gp)
+   16a0c:	8f848024 	lw	a0,-32732(gp)
+   16a10:	8f868024 	lw	a2,-32732(gp)
+   16a14:	8f998398 	lw	t9,-31848(gp)
+   16a18:	24841040 	addiu	a0,a0,4160
+   16a1c:	24c61094 	addiu	a2,a2,4244
+   16a20:	0320f809 	jalr	t9
+   16a24:	240500a1 	li	a1,161
+   16a28:	8fbc0010 	lw	gp,16(sp)
+   16a2c:	8f9981dc 	lw	t9,-32292(gp)
+   16a30:	27a70018 	addiu	a3,sp,24
+   16a34:	00e02021 	move	a0,a3
+   16a38:	afa701c0 	sw	a3,448(sp)
+   16a3c:	00002821 	move	a1,zero
+   16a40:	240601a4 	li	a2,420
+   16a44:	0320f809 	jalr	t9
+   16a48:	8e120000 	lw	s2,0(s0)
+   16a4c:	8e050004 	lw	a1,4(s0)
+   16a50:	0240c821 	move	t9,s2
+   16a54:	0320f809 	jalr	t9
+   16a58:	02202021 	move	a0,s1
+   16a5c:	2403000a 	li	v1,10
+   16a60:	8fbc0010 	lw	gp,16(sp)
+   16a64:	10430007 	beq	v0,v1,16a84 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x2a0>
+   16a68:	8fa701c0 	lw	a3,448(sp)
+   16a6c:	8f998138 	lw	t9,-32456(gp)
+   16a70:	afa2001c 	sw	v0,28(sp)
+   16a74:	02202021 	move	a0,s1
+   16a78:	00002821 	move	a1,zero
+   16a7c:	0320f809 	jalr	t9
+   16a80:	240601a4 	li	a2,420
+   16a84:	8fbf01d4 	lw	ra,468(sp)
+   16a88:	8fb201d0 	lw	s2,464(sp)
+   16a8c:	8fb101cc 	lw	s1,460(sp)
+   16a90:	8fb001c8 	lw	s0,456(sp)
+   16a94:	03e00008 	jr	ra
+   16a98:	27bd01d8 	addiu	sp,sp,472
+   16a9c:	3c1c0002 	lui	gp,0x2
+   16aa0:	279c3434 	addiu	gp,gp,13364
+   16aa4:	0399e021 	addu	gp,gp,t9
+   16aa8:	27bdfe28 	addiu	sp,sp,-472
+   16aac:	afbf01d4 	sw	ra,468(sp)
+   16ab0:	afb201d0 	sw	s2,464(sp)
+   16ab4:	afb101cc 	sw	s1,460(sp)
+   16ab8:	afb001c8 	sw	s0,456(sp)
+   16abc:	afbc0010 	sw	gp,16(sp)
+   16ac0:	00e08021 	move	s0,a3
+   16ac4:	10e00004 	beqz	a3,16ad8 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x2f4>
+   16ac8:	00808821 	move	s1,a0
+   16acc:	8ce20000 	lw	v0,0(a3)
+   16ad0:	1440000a 	bnez	v0,16afc <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x318>
+   16ad4:	8f9981dc 	lw	t9,-32292(gp)
+   16ad8:	8f848024 	lw	a0,-32732(gp)
+   16adc:	8f868024 	lw	a2,-32732(gp)
+   16ae0:	8f998398 	lw	t9,-31848(gp)
+   16ae4:	24841040 	addiu	a0,a0,4160
+   16ae8:	24c61094 	addiu	a2,a2,4244
+   16aec:	0320f809 	jalr	t9
+   16af0:	2405007b 	li	a1,123
+   16af4:	8fbc0010 	lw	gp,16(sp)
+   16af8:	8f9981dc 	lw	t9,-32292(gp)
+   16afc:	27a70018 	addiu	a3,sp,24
+   16b00:	00e02021 	move	a0,a3
+   16b04:	afa701c0 	sw	a3,448(sp)
+   16b08:	00002821 	move	a1,zero
+   16b0c:	240601a4 	li	a2,420
+   16b10:	0320f809 	jalr	t9
+   16b14:	8e120000 	lw	s2,0(s0)
+   16b18:	8e050004 	lw	a1,4(s0)
+   16b1c:	0240c821 	move	t9,s2
+   16b20:	0320f809 	jalr	t9
+   16b24:	02202021 	move	a0,s1
+   16b28:	2403000a 	li	v1,10
+   16b2c:	8fbc0010 	lw	gp,16(sp)
+   16b30:	10430007 	beq	v0,v1,16b50 <uc_api_lib_sys_basic_info_hdl_reg@@Base+0x36c>
+   16b34:	8fa701c0 	lw	a3,448(sp)
+   16b38:	8f998138 	lw	t9,-32456(gp)
+   16b3c:	afa2001c 	sw	v0,28(sp)
+   16b40:	02202021 	move	a0,s1
+   16b44:	00002821 	move	a1,zero
+   16b48:	0320f809 	jalr	t9
+   16b4c:	240601a4 	li	a2,420
+   16b50:	8fbf01d4 	lw	ra,468(sp)
+   16b54:	8fb201d0 	lw	s2,464(sp)
+   16b58:	8fb101cc 	lw	s1,460(sp)
+   16b5c:	8fb001c8 	lw	s0,456(sp)
+   16b60:	03e00008 	jr	ra
+   16b64:	27bd01d8 	addiu	sp,sp,472
+   16b68:	3c1c0002 	lui	gp,0x2
+   16b6c:	279c3368 	addiu	gp,gp,13160
+   16b70:	0399e021 	addu	gp,gp,t9
+   16b74:	27bdfe30 	addiu	sp,sp,-464
+   16b78:	afbf01cc 	sw	ra,460(sp)
+   16b7c:	afb201c8 	sw	s2,456(sp)
+===== SYMBOLS 0x16800..0x16c00 =====
+===== DYNAMIC SYMBOLS: GetValue / BASIC INFO =====
+    14: 000074d0    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_sys_basic_info
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+    99: 00015c94    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_basic_info_get
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   310: 0001b8d4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
