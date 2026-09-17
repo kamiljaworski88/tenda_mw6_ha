@@ -13,30 +13,30 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace event_add_queue internals
+      - name: Resolve event_add_queue tail call
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/event-add-queue-trace.txt'
+          out='docs/reverse-generated/event-add-queue-tailcall.txt'
           {
-            echo '===== RUN 78 GOAL ====='
-            echo 'Disassemble event_add_queue and identify the queue object / downstream dispatch path used by event type 64.'
-            echo '===== event_add_queue 0x21030..0x211a0 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x21030 --stop-address=0x211a0 "$lib" || true
-            echo '===== SYMBOLS NEAR QUEUE / EVENT ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'event|queue|dispatch|upload_statistics|start_upload_statistic' || true
+            echo '===== RUN 79 GOAL ====='
+            echo 'Resolve lw t9,-31196(gp) at event_add_queue 0x2114c. gp=0x93370, GOT address=0x8b994.'
+            echo '===== GOT BYTES AROUND 0x8b994 ====='
+            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -Ei '^ 8b980|^ 8b990|^ 8b9a0|^ 8b9b0' || true
+            echo '===== DYNSYM ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: event-add-queue-trace
-          path: docs/reverse-generated/event-add-queue-trace.txt
+          name: event-add-queue-tailcall
+          path: docs/reverse-generated/event-add-queue-tailcall.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/event-add-queue-trace.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add event_add_queue trace'; git push || true; fi
+          git add docs/reverse-generated/event-add-queue-tailcall.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add event_add_queue tail-call report'; git push || true; fi
