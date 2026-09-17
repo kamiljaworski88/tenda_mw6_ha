@@ -20,63 +20,59 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Trace kernel netlink statistics handler
+      - name: Decode bm kernel client statistics
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/run119-kernel-stat-handler.txt'
           root='firmware-src/RootFS-unpacked/lib/modules'
+          out='docs/reverse-generated/run120-bm-client-statistics.txt'
+          bm="$root/bm.ko"
           {
-            echo '===== RUN 119: kernel-side statistics/netlink handler ====='
+            echo '===== RUN 120: bm.ko client statistics / netlink ====='
             echo
-            echo '===== COMMON_NETLINK MODULE SYMBOLS ====='
-            mipsel-linux-gnu-nm -a "$root/common_netlink.ko" || true
+            echo '===== BM SYMBOLS ====='
+            mipsel-linux-gnu-nm -a "$bm" | sort || true
             echo
-            echo '===== COMMON_NETLINK DISASSEMBLY + RELOCATIONS ====='
-            mipsel-linux-gnu-objdump -drwC "$root/common_netlink.ko" || true
+            echo '===== BM STRINGS ====='
+            strings -a -t x "$bm" | grep -Ei 'netlink|online|hash|stat|traffic|byte|packet|client|host|clear|upload|download|up_|down_|fast|nat|ip|mac' || true
             echo
-            echo '===== MODULES IMPORTING/EXPORTING COMMON NETLINK API ====='
+            echo '===== BM RELOCATIONS ====='
+            mipsel-linux-gnu-readelf -r "$bm" || true
+            echo
+            echo '===== BM DISASSEMBLY ====='
+            mipsel-linux-gnu-objdump -drwC "$bm" || true
+            echo
+            echo '===== NETLINK CALL CONTEXTS ====='
+            mipsel-linux-gnu-objdump -drwC "$bm" | grep -n -B24 -A48 -E '__netlink_kernel_create|netlink_rcv_skb|netlink_broadcast|bm_netlink|nlmsg|online_ip_hash|clear_online_ip_flag' || true
+            echo
+            echo '===== CANDIDATE MODULES USING online_ip_hash ====='
             find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
-              hits=$(mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -Ei 'common_netlink|netlink_msg_to_user|send_to_user' || true)
+              hits=$(mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -E 'online_ip_hash|online_ip_hash_size|clear_online_ip_flag' || true)
               if [ -n "$hits" ]; then
                 echo "--- $f ---"
                 echo "$hits"
               fi
             done
             echo
-            echo '===== MODULE STRINGS RELATED TO CLIENT STATISTICS ====='
-            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
-              hits=$(strings -a "$f" | grep -Ei 'online|client|host|statistic|traffic|up_bytes|down_bytes|ip_info|netlink|fastpath|hw_nat|sw_nat' | head -n 120 || true)
-              if [ -n "$hits" ]; then
-                echo "--- $f ---"
-                echo "$hits"
-              fi
-            done
-            echo
-            echo '===== MODULE SYMBOLS RELATED TO STATISTICS/CLIENT TRACKING ====='
-            find "$root" -type f -name '*.ko' -size +0c -print0 | while IFS= read -r -d '' f; do
-              hits=$(mipsel-linux-gnu-nm -a "$f" 2>/dev/null | grep -Ei 'statistic|traffic|online|client|ip_info|host|nat.*stat|stat.*nat' | head -n 160 || true)
-              if [ -n "$hits" ]; then
-                echo "--- $f ---"
-                echo "$hits"
-              fi
-            done
+            echo '===== NOS SYMBOLS / STRINGS AROUND ONLINE TRACKING ====='
+            mipsel-linux-gnu-nm -a "$root/nos.ko" 2>/dev/null | grep -Ei 'online|track|stat|byte|traffic|netlink|hash' || true
+            strings -a -t x "$root/nos.ko" | grep -Ei 'online|track|stat|byte|traffic|netlink|hash|fastpath|nat' || true
           } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run119-kernel-stat-handler
-          path: docs/reverse-generated/run119-kernel-stat-handler.txt
+          name: run120-bm-client-statistics
+          path: docs/reverse-generated/run120-bm-client-statistics.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run119-kernel-stat-handler.txt
+          git add docs/reverse-generated/run120-bm-client-statistics.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace kernel netlink statistics handler'
+            git commit -m 'reverse: decode bm kernel client statistics'
             git push
           fi
