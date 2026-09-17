@@ -33,8 +33,10 @@ jobs:
           out='docs/reverse-generated/run123-online-ip-kernel-pipeline.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
-          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw"
+          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
+          test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
+          test -s "$elf"
 
           {
             echo '===== RUN 123: online_ip kernel pipeline ====='
