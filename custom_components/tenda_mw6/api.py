@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 import socket
 from typing import Any
 
@@ -13,6 +14,7 @@ AUTH_GET_STA = 0x00
 AUTH_LOGIN = 0x01
 MESH_HOSTS_MODULE = 0x14
 MESH_HOSTS_GET = 0x00
+LOGIN_ACCOUNT_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 
 
 class TendaMW6Error(Exception):
@@ -20,7 +22,7 @@ class TendaMW6Error(Exception):
 
 
 class TendaMW6AuthError(TendaMW6Error):
-    """Raised when the router rejects the login payload."""
+    """Raised when the router rejects the login account."""
 
 
 @dataclass(slots=True)
@@ -37,14 +39,45 @@ class TendaMW6Client:
     raw_downrate: int | None
 
 
+def build_login_payload(login_account: str) -> bytes:
+    """Build the firmware LoginMsg protobuf from its 32-character account value.
+
+    Live official-app captures use:
+      field 1 (account): 32 ASCII hex characters
+      field 2 (qrmsg): empty string
+
+    Wire form is therefore: 0a 20 <32 bytes> 12 00.
+    """
+    account = login_account.strip()
+    if not LOGIN_ACCOUNT_RE.fullmatch(account):
+        raise ValueError("login account must contain exactly 32 hexadecimal characters")
+    return b"\x0a\x20" + account.encode("ascii") + b"\x12\x00"
+
+
+def extract_login_account(login_payload: bytes) -> str:
+    """Extract the 32-character account from a captured LoginMsg payload."""
+    if len(login_payload) != 36 or login_payload[:2] != b"\x0a\x20" or login_payload[34:] != b"\x12\x00":
+        raise ValueError("unsupported MW6 LoginMsg payload shape")
+    account = login_payload[2:34].decode("ascii", "strict")
+    if not LOGIN_ACCOUNT_RE.fullmatch(account):
+        raise ValueError("invalid MW6 login account")
+    return account
+
+
 class TendaMW6Api:
     """Small read-only client for the locally exposed TCP/9000 protocol."""
 
-    def __init__(self, host: str, login_payload: bytes, port: int = 9000, timeout: float = 4.0) -> None:
+    def __init__(
+        self,
+        host: str,
+        login_account: str,
+        port: int = 9000,
+        timeout: float = 4.0,
+    ) -> None:
         self.host = host
         self.port = port
         self.timeout = timeout
-        self._login_payload = login_payload
+        self._login_payload = build_login_payload(login_account)
 
     def validate(self) -> None:
         """Authenticate and verify that MESH_HOSTS can be read."""
@@ -62,7 +95,7 @@ class TendaMW6Api:
             sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_LOGIN, self._login_payload))
             login = _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_LOGIN)
             if _status(login["payload"]) != 0:
-                raise TendaMW6AuthError("Router rejected login payload")
+                raise TendaMW6AuthError("Router rejected login account")
 
             tid = (tid + 1) & 0xFF
             sock.sendall(_build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
@@ -150,12 +183,18 @@ def _protobuf_fields(buf: bytes) -> list[tuple[int, int, int | bytes]]:
             value, pos = _read_varint(buf, pos)
         elif wire_type == 2:
             length, pos = _read_varint(buf, pos)
+            if pos + length > len(buf):
+                raise TendaMW6Error("Truncated protobuf field")
             value = buf[pos : pos + length]
             pos += length
         elif wire_type == 1:
+            if pos + 8 > len(buf):
+                raise TendaMW6Error("Truncated fixed64 field")
             value = buf[pos : pos + 8]
             pos += 8
         elif wire_type == 5:
+            if pos + 4 > len(buf):
+                raise TendaMW6Error("Truncated fixed32 field")
             value = buf[pos : pos + 4]
             pos += 4
         else:
