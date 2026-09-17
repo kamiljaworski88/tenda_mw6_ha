@@ -13,32 +13,34 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace uc_api_set_basic_info fields
+      - name: Trace uc_api_set_basic_info callers
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-set-basic-info.txt'
+          out='docs/reverse-generated/sys-set-basic-info-callers.txt'
           {
-            echo '===== RUN 52 GOAL ====='
-            echo 'Trace uc_api_set_basic_info and determine whether serial.number is one of its BasicInfo sources.'
-            echo '===== uc_api_set_basic_info DISASSEMBLY ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x8348 --stop-address=0x85a0 "$lib" || true
-            echo '===== BASIC INFO / CONFIG SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info|GetValue|basic_info|BasicInfo' || true
-            echo '===== RELEVANT CONFIG STRINGS ====='
-            strings -a -t x "$lib" | grep -E 'serial\.number|sys\.model|sys\.model\.ver|up\.soft\.ver' || true
+            echo '===== RUN 53 GOAL ====='
+            echo 'Identify callers / producer path feeding uc_api_set_basic_info and its input structure.'
+            echo '===== SYMBOL ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_set_basic_info|basic_info' || true
+            echo '===== RELOCATIONS / REFERENCES TO 0x8348 ====='
+            mipsel-linux-gnu-readelf -rW "$lib" | grep -Ei '00008348|8348' || true
+            echo '===== DISASSEMBLY REFERENCES TO SYMBOL / ADDRESS ====='
+            mipsel-linux-gnu-objdump -drwC "$lib" | grep -B16 -A20 -E 'uc_api_set_basic_info|0*8348' || true
+            echo '===== NEARBY BASIC-INFO FUNCTIONS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x7400 --stop-address=0x8800 "$lib" || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-set-basic-info
-          path: docs/reverse-generated/sys-set-basic-info.txt
+          name: sys-set-basic-info-callers
+          path: docs/reverse-generated/sys-set-basic-info-callers.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-set-basic-info.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add uc_api_set_basic_info trace'; git push || true; fi
+          git add docs/reverse-generated/sys-set-basic-info-callers.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add uc_api_set_basic_info caller trace'; git push || true; fi
