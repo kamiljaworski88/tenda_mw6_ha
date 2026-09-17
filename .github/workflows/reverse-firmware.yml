@@ -13,30 +13,33 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace start_event_task
+      - name: Resolve start_event_task worker scheduling calls
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/start-event-task-trace.txt'
+          out='docs/reverse-generated/start-event-task-worker-calls.txt'
           {
-            echo '===== RUN 80 GOAL ====='
-            echo 'Disassemble start_event_task (0x20df8..0x21030) and identify how queued events are consumed / dispatched.'
-            echo '===== START_EVENT_TASK ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x20df8 --stop-address=0x21030 "$lib" || true
-            echo '===== RELEVANT SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'event|queue|dispatch|task|recv|read|pthread|sem|mutex|cond' || true
+            echo '===== RUN 81 GOAL ====='
+            echo 'Resolve the two calls used by start_event_task when it creates/wakes the event worker.'
+            echo 'gp=0x93370; -30892 => GOT 0x8bad4; -32252 => GOT 0x8b56c.'
+            echo '===== GOT BYTES ====='
+            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -Ei '^ 8bac0|^ 8bad0|^ 8bae0|^ 8b550|^ 8b560|^ 8b570' || true
+            echo '===== SYMBOLS OF INTEREST ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'do_event_task|task|thread|pthread|queue|event|cond|mutex' || true
+            echo '===== DYNSYM ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: start-event-task-trace
-          path: docs/reverse-generated/start-event-task-trace.txt
+          name: start-event-task-worker-calls
+          path: docs/reverse-generated/start-event-task-worker-calls.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/start-event-task-trace.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add start_event_task trace'; git push || true; fi
+          git add docs/reverse-generated/start-event-task-worker-calls.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add start_event_task worker-call report'; git push || true; fi
