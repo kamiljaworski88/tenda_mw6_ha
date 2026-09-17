@@ -13,32 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Resolve upload_statistics first GOT call
+      - name: Resolve upload_statistics first-call stub
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          cloud='firmware-src/RootFS-unpacked/lib/libcloud.so'
+          lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/upload-statistics-first-call.txt'
+          out='docs/reverse-generated/upload-statistics-first-call-stub.txt'
           {
-            echo '===== RUN 73 GOAL ====='
-            echo 'Resolve lw t9,-32356(gp) at upload_statistics 0x211c0. gp=0x93370, so GOT address=0x8b50c.'
-            echo '===== SECTION MAP ====='
-            mipsel-linux-gnu-readelf -SW "$cloud" | grep -E '\.got|\.text|\.data' || true
-            echo '===== GOT WORD AROUND 0x8b50c ====='
-            mipsel-linux-gnu-objdump -s -j .got "$cloud" | awk '$1 ~ /^[0-9a-fA-F]+$/ {a=strtonum("0x"$1); if (a >= strtonum("0x8b4f0") && a <= strtonum("0x8b520")) print}' || true
-            echo '===== SYMBOLS NEAR TARGET VALUES ====='
-            mipsel-linux-gnu-readelf -sW "$cloud" | head -n 420 || true
+            echo '===== RUN 74 GOAL ====='
+            echo 'Resolve GOT value 0x00064e20 used by upload_statistics first call to the exact imported symbol/function.'
+            echo '===== SECTION MAP AROUND 0x64e20 ====='
+            mipsel-linux-gnu-readelf -SW "$lib" | grep -E '\.text|\.MIPS\.stubs|\.plt|\.fini' || true
+            echo '===== DISASSEMBLY 0x64de0..0x64e60 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x64de0 --stop-address=0x64e60 "$lib" || true
+            echo '===== DYNSYM WITH INDEX ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: upload-statistics-first-call
-          path: docs/reverse-generated/upload-statistics-first-call.txt
+          name: upload-statistics-first-call-stub
+          path: docs/reverse-generated/upload-statistics-first-call-stub.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/upload-statistics-first-call.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add upload statistics first call map'; git push || true; fi
+          git add docs/reverse-generated/upload-statistics-first-call-stub.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add upload_statistics first-call stub report'; git push || true; fi
