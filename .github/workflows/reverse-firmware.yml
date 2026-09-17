@@ -13,34 +13,46 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace SYS BasicInfo callback slots
+      - name: Find live per-client traffic command candidates
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
+          root='firmware-src/RootFS-unpacked'
+          lib="$root/lib/libucapi.so"
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-basic-callback-slots.txt'
+          out='docs/reverse-generated/client-traffic-command-candidates.txt'
           {
-            echo '===== RUN 62 GOAL ====='
-            echo 'Identify who populates uc_api_enable_m_cloud_info input slots +0x50/+0x54 used as SYS BasicInfo callback/context.'
-            echo '===== DEFINITIVE REGISTRATION WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x8040 --stop-address=0x80e0 "$lib" || true
-            echo '===== STORES TO OFFSETS 80/84 ====='
-            mipsel-linux-gnu-objdump -drwC "$lib" | grep -E -B12 -A16 'sw[[:space:]].*,(80|84)\(' || true
-            echo '===== uc_api_lib_init WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x6f80 --stop-address=0x7420 "$lib" || true
-            echo '===== RELEVANT SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_enable_m_cloud_info|uc_api_set_basic_info|sys_basic|cloud_info' || true
+            echo '===== RUN 63 GOAL ====='
+            echo 'Find a local API command that can expose live per-client upload/download rates; M_MESH_HOSTS GET returns valid hosts but rate fields stay zero on this MW6 firmware.'
+            echo '===== LIBUCAPI COMMAND STRINGS ====='
+            strings -a -t x "$lib" | grep -Ei 'CMD_.*(RATE|SPEED|TRAFFIC|FLOW|HOST|QOS|ONLINE|DEVICE)|Get.*(Rate|Speed|Traffic|Flow|Host|Online|Device)|(Rate|Speed|Traffic|Flow|Host|Online|Device).*Get' || true
+            echo '===== LIBUCAPI RELEVANT SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'rate|speed|traffic|flow|host|qos|online|statistic' || true
+            echo '===== FILES CONTAINING UPRATE / DOWNRATE ====='
+            while IFS= read -r -d '' f; do
+              if strings -a "$f" 2>/dev/null | grep -Eiq 'uprate|downrate'; then
+                echo "--- $f ---"
+                strings -a -t x "$f" 2>/dev/null | grep -Ei -B12 -A20 'uprate|downrate' || true
+              fi
+            done < <(find "$root" -type f -print0)
+            echo '===== FILES / STRINGS FOR LIVE STATISTICS ====='
+            while IFS= read -r -d '' f; do
+              hits=$(strings -a "$f" 2>/dev/null | grep -Ei 'netlink_get_statistic_info|online_ip|traffic[_ -]?stat|flow[_ -]?stat|host[_ -]?rate|device[_ -]?rate' || true)
+              if [ -n "$hits" ]; then
+                echo "--- $f ---"
+                printf '%s\n' "$hits"
+              fi
+            done < <(find "$root" -type f -print0)
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-basic-callback-slots
-          path: docs/reverse-generated/sys-basic-callback-slots.txt
+          name: client-traffic-command-candidates
+          path: docs/reverse-generated/client-traffic-command-candidates.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-basic-callback-slots.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add SYS BasicInfo callback slot trace'; git push || true; fi
+          git add docs/reverse-generated/client-traffic-command-candidates.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add live client traffic command candidates'; git push || true; fi
