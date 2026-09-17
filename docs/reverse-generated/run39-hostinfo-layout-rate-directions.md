@@ -1,4 +1,4 @@
-# Run 39 — resolved HostInfo memory layout, host matcher and rate directions
+# Run 39 — resolved HostInfo memory layout, host matcher, directions and rate unit
 
 ## Major correction
 
@@ -79,7 +79,7 @@ Therefore matching is strict **MAC AND IP**. There is no IP-only or MAC-only fal
 
 ## Direction mapping resolved
 
-The rate helper computes two independent 64-bit counter deltas from the matched `online_ip` record.
+The rate helper computes two independent 64-bit byte-counter deltas from the matched `online_ip` record.
 
 ### Record group at +0x28 / +0x30
 
@@ -93,19 +93,37 @@ Current counter begins at record `+0x18`, previous/sample counter begins at `+0x
 
 Therefore the counter group based at `+0x18` is UPLOAD.
 
-## Arithmetic helpers resolved
+Firmware debug strings explicitly identify the source counters as `up_bytes`, `last_up_bytes`, `down_bytes` and `last_down_bytes`.
 
-The rate path uses the expected soft-float helpers:
+## Arithmetic and unit resolved
 
-- `__floatundisf` to convert a 64-bit unsigned delta to float,
-- `__divsf3` for normalization/division,
-- `__fixunssfdi` to convert the normalized float back to an unsigned integer.
+The rate path uses the soft-float helpers:
 
-The elapsed-time path also uses `__divsf3` and falls back to a positive constant when the computed interval is not positive. The final upload/download calculation performs an additional division by the same firmware constant at the data slot corresponding to `base+0x3360`.
+- `__floatundisf` — unsigned 64-bit counter delta -> float,
+- `__divsf3` — normalization,
+- `__fixunssfdi` — normalized float -> unsigned integer.
 
-The exact numeric value of that final scale constant is the only remaining item needed before assigning a display unit such as B/s, kB/s or KiB/s with full confidence.
+The recovered adjacent float constants used by this path are:
 
-## Resolved pipeline
+```text
+1.0f
+1000000.0f
+1024.0f
+```
+
+The elapsed timestamp delta is divided by `1,000,000`, converting microseconds to seconds. Each byte-counter delta is then divided by elapsed seconds and by `1024`.
+
+Therefore the protobuf values are integer **KiB/s** rates:
+
+```text
+uprate   = (up_bytes_delta   / elapsed_seconds) / 1024
+
+downrate = (down_bytes_delta / elapsed_seconds) / 1024
+```
+
+The original Tenda UI may colloquially label this as `KB/s`, but the binary scaling is 1024, so the precise unit is KiB/s.
+
+## Fully resolved pipeline
 
 ```text
 GetHostList
@@ -120,12 +138,14 @@ GetHostList
        strict match: MAC == rec+0x04 AND IP == rec+0x00
        upload delta  : record +0x18 versus +0x20
        download delta: record +0x28 versus +0x30
-       normalize by elapsed time and firmware scale constant
-       HostInfo.uprate   = result at +0x24
-       HostInfo.downrate = result at +0x28
+       elapsed_s = elapsed_us / 1,000,000
+       uprate   = upload_bytes_delta   / elapsed_s / 1024
+       downrate = download_bytes_delta / elapsed_s / 1024
+       write HostInfo.uprate at +0x24
+       write HostInfo.downrate at +0x28
   -> protobuf pack
 ```
 
-## Remaining unknown
+## Remaining issue
 
-For current-rate support only one material item remains: the exact exposed unit/scaling of `uprate` and `downrate` after the final `__divsf3` normalization.
+The HostInfo schema, gate, matching rule, direction mapping and unit are now resolved. The remaining engineering question is runtime behavior: if an online client still reports `0/0 KiB/s` during traffic, inspect why its strict IP+MAC pair is absent or stale in `g_ip_info` rather than revisiting protobuf or RPC semantics.
