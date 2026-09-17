@@ -1,0 +1,214 @@
+===== RUN 54 GOAL =====
+Resolve the GOT entry and actual PIC call sites for uc_api_set_basic_info.
+===== SYMBOL =====
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+===== MIPS GOT ENTRY =====
+===== DYNAMIC RELOCATIONS =====
+===== GOT WORD 0x00008348 =====
+===== LIKELY BASIC-INFO CALLER WINDOWS =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00007400 <uc_api_lib_init@@Base+0x474>:
+    7400:	8fb30054 	lw	s3,84(sp)
+    7404:	8fb20050 	lw	s2,80(sp)
+    7408:	8fb1004c 	lw	s1,76(sp)
+    740c:	8fb00048 	lw	s0,72(sp)
+    7410:	03e00008 	jr	ra
+    7414:	27bd0060 	addiu	sp,sp,96
+
+00007418 <uc_api_lib_cmd_send@@Base>:
+    7418:	3c1c0003 	lui	gp,0x3
+    741c:	279c2ab8 	addiu	gp,gp,10936
+    7420:	0399e021 	addu	gp,gp,t9
+    7424:	27bdffd8 	addiu	sp,sp,-40
+    7428:	afbf0024 	sw	ra,36(sp)
+    742c:	afbc0018 	sw	gp,24(sp)
+    7430:	8fa20038 	lw	v0,56(sp)
+    7434:	8f998028 	lw	t9,-32728(gp)
+    7438:	afa00014 	sw	zero,20(sp)
+    743c:	27397230 	addiu	t9,t9,29232
+    7440:	0320f809 	jalr	t9
+    7444:	afa20010 	sw	v0,16(sp)
+    7448:	8fbf0024 	lw	ra,36(sp)
+    744c:	03e00008 	jr	ra
+    7450:	27bd0028 	addiu	sp,sp,40
+
+00007454 <uc_api_m_wifi_push_wifi_info@@Base>:
+    7454:	3c1c0003 	lui	gp,0x3
+    7458:	279c2a7c 	addiu	gp,gp,10876
+    745c:	0399e021 	addu	gp,gp,t9
+    7460:	27bdffd8 	addiu	sp,sp,-40
+    7464:	afbf0024 	sw	ra,36(sp)
+    7468:	afb00020 	sw	s0,32(sp)
+    746c:	afbc0018 	sw	gp,24(sp)
+    7470:	14800009 	bnez	a0,7498 <uc_api_m_wifi_push_wifi_info@@Base+0x44>
+    7474:	00808021 	move	s0,a0
+    7478:	8f848024 	lw	a0,-32732(gp)
+    747c:	8f868024 	lw	a2,-32732(gp)
+    7480:	8f998398 	lw	t9,-31848(gp)
+    7484:	2484e580 	addiu	a0,a0,-6784
+    7488:	24c6eeec 	addiu	a2,a2,-4372
+    748c:	0320f809 	jalr	t9
+    7490:	240506dd 	li	a1,1757
+    7494:	8fbc0018 	lw	gp,24(sp)
+    7498:	8f998238 	lw	t9,-32200(gp)
+    749c:	afb00010 	sw	s0,16(sp)
+    74a0:	24040006 	li	a0,6
+    74a4:	24050005 	li	a1,5
+    74a8:	24060008 	li	a2,8
+    74ac:	0320f809 	jalr	t9
+    74b0:	240702e8 	li	a3,744
+    74b4:	2403ffff 	li	v1,-1
+    74b8:	8fbf0024 	lw	ra,36(sp)
+    74bc:	8fb00020 	lw	s0,32(sp)
+    74c0:	0002180a 	movz	v1,zero,v0
+    74c4:	00601021 	move	v0,v1
+    74c8:	03e00008 	jr	ra
+    74cc:	27bd0028 	addiu	sp,sp,40
+
+000074d0 <uc_api_m_cloud_info_send_sys_basic_info@@Base>:
+    74d0:	3c1c0003 	lui	gp,0x3
+    74d4:	279c2a00 	addiu	gp,gp,10752
+    74d8:	0399e021 	addu	gp,gp,t9
+    74dc:	27bdffd8 	addiu	sp,sp,-40
+    74e0:	afbf0024 	sw	ra,36(sp)
+    74e4:	afbc0018 	sw	gp,24(sp)
+    74e8:	8f998238 	lw	t9,-32200(gp)
+    74ec:	afa50010 	sw	a1,16(sp)
+    74f0:	00803821 	move	a3,a0
+    74f4:	24050008 	li	a1,8
+    74f8:	2404000c 	li	a0,12
+    74fc:	0320f809 	jalr	t9
+    7500:	2406001d 	li	a2,29
+    7504:	2403ffff 	li	v1,-1
+    7508:	8fbf0024 	lw	ra,36(sp)
+    750c:	0002180a 	movz	v1,zero,v0
+    7510:	00601021 	move	v0,v1
+    7514:	03e00008 	jr	ra
+    7518:	27bd0028 	addiu	sp,sp,40
+
+0000751c <uc_api_m_cloud_info_send_dev_config_u@@Base>:
+    751c:	3c1c0003 	lui	gp,0x3
+    7520:	279c29b4 	addiu	gp,gp,10676
+    7524:	0399e021 	addu	gp,gp,t9
+    7528:	27bdffd8 	addiu	sp,sp,-40
+    752c:	afbf0024 	sw	ra,36(sp)
+    7530:	afbc0018 	sw	gp,24(sp)
+    7534:	8f998238 	lw	t9,-32200(gp)
+    7538:	afa50010 	sw	a1,16(sp)
+    753c:	00803821 	move	a3,a0
+    7540:	24050008 	li	a1,8
+    7544:	2404000c 	li	a0,12
+    7548:	0320f809 	jalr	t9
+    754c:	2406001a 	li	a2,26
+    7550:	2403ffff 	li	v1,-1
+    7554:	8fbf0024 	lw	ra,36(sp)
+    7558:	0002180a 	movz	v1,zero,v0
+    755c:	00601021 	move	v0,v1
+    7560:	03e00008 	jr	ra
+    7564:	27bd0028 	addiu	sp,sp,40
+
+00007568 <uc_api_m_cloud_info_send_dev_config_q@@Base>:
+    7568:	3c1c0003 	lui	gp,0x3
+    756c:	279c2968 	addiu	gp,gp,10600
+    7570:	0399e021 	addu	gp,gp,t9
+    7574:	27bdffd8 	addiu	sp,sp,-40
+    7578:	afbf0024 	sw	ra,36(sp)
+    757c:	afbc0018 	sw	gp,24(sp)
+    7580:	8f998238 	lw	t9,-32200(gp)
+    7584:	afa50010 	sw	a1,16(sp)
+    7588:	00803821 	move	a3,a0
+    758c:	24050008 	li	a1,8
+    7590:	2404000c 	li	a0,12
+    7594:	0320f809 	jalr	t9
+    7598:	24060018 	li	a2,24
+    759c:	2403ffff 	li	v1,-1
+    75a0:	8fbf0024 	lw	ra,36(sp)
+    75a4:	0002180a 	movz	v1,zero,v0
+    75a8:	00601021 	move	v0,v1
+    75ac:	03e00008 	jr	ra
+    75b0:	27bd0028 	addiu	sp,sp,40
+
+000075b4 <uc_api_m_cloud_info_send_dev_mark_list_u@@Base>:
+    75b4:	3c1c0003 	lui	gp,0x3
+    75b8:	279c291c 	addiu	gp,gp,10524
+    75bc:	0399e021 	addu	gp,gp,t9
+    75c0:	27bdffd8 	addiu	sp,sp,-40
+    75c4:	afbf0024 	sw	ra,36(sp)
+    75c8:	afbc0018 	sw	gp,24(sp)
+    75cc:	8f998238 	lw	t9,-32200(gp)
+    75d0:	afa50010 	sw	a1,16(sp)
+    75d4:	00803821 	move	a3,a0
+    75d8:	24050008 	li	a1,8
+    75dc:	2404000c 	li	a0,12
+    75e0:	0320f809 	jalr	t9
+    75e4:	24060016 	li	a2,22
+    75e8:	2403ffff 	li	v1,-1
+    75ec:	8fbf0024 	lw	ra,36(sp)
+    75f0:	0002180a 	movz	v1,zero,v0
+    75f4:	00601021 	move	v0,v1
+    75f8:	03e00008 	jr	ra
+    75fc:	27bd0028 	addiu	sp,sp,40
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00015c60 <cgi_ucloud_sys_advance_info_get@@Base+0x24>:
+   15c60:	afa50014 	sw	a1,20(sp)
+   15c64:	24c6eee8 	addiu	a2,a2,-4376
+   15c68:	24040001 	li	a0,1
+   15c6c:	24050001 	li	a1,1
+   15c70:	0320f809 	jalr	t9
+   15c74:	00003821 	move	a3,zero
+   15c78:	00021027 	nor	v0,zero,v0
+   15c7c:	2403ffff 	li	v1,-1
+   15c80:	8fbf0024 	lw	ra,36(sp)
+   15c84:	0002180b 	movn	v1,zero,v0
+   15c88:	00601021 	move	v0,v1
+   15c8c:	03e00008 	jr	ra
+   15c90:	27bd0028 	addiu	sp,sp,40
+
+00015c94 <cgi_ucloud_sys_basic_info_get@@Base>:
+   15c94:	3c1c0002 	lui	gp,0x2
+   15c98:	279c423c 	addiu	gp,gp,16956
+   15c9c:	0399e021 	addu	gp,gp,t9
+   15ca0:	27bdffd8 	addiu	sp,sp,-40
+   15ca4:	afbf0024 	sw	ra,36(sp)
+   15ca8:	afbc0018 	sw	gp,24(sp)
+   15cac:	8f868024 	lw	a2,-32732(gp)
+   15cb0:	8f9981f0 	lw	t9,-32272(gp)
+   15cb4:	afa40010 	sw	a0,16(sp)
+   15cb8:	afa50014 	sw	a1,20(sp)
+   15cbc:	24c6eee8 	addiu	a2,a2,-4376
+   15cc0:	24040001 	li	a0,1
+   15cc4:	00002821 	move	a1,zero
+   15cc8:	0320f809 	jalr	t9
+   15ccc:	00003821 	move	a3,zero
+   15cd0:	00021027 	nor	v0,zero,v0
+   15cd4:	2403ffff 	li	v1,-1
+   15cd8:	8fbf0024 	lw	ra,36(sp)
+   15cdc:	0002180b 	movn	v1,zero,v0
+   15ce0:	00601021 	move	v0,v1
+   15ce4:	03e00008 	jr	ra
+   15ce8:	27bd0028 	addiu	sp,sp,40
+
+00015cec <cgi_ucloud_login_sta_update@@Base>:
+   15cec:	3c1c0002 	lui	gp,0x2
+   15cf0:	279c41e4 	addiu	gp,gp,16868
+   15cf4:	0399e021 	addu	gp,gp,t9
+   15cf8:	27bdffd0 	addiu	sp,sp,-48
+   15cfc:	afbf002c 	sw	ra,44(sp)
+   15d00:	afbc0018 	sw	gp,24(sp)
+   15d04:	8f9981f0 	lw	t9,-32272(gp)
+   15d08:	27a20020 	addiu	v0,sp,32
+   15d0c:	afa20010 	sw	v0,16(sp)
+   15d10:	27a20024 	addiu	v0,sp,36
+   15d14:	afa20014 	sw	v0,20(sp)
+   15d18:	afa00020 	sw	zero,32(sp)
+   15d1c:	afa00024 	sw	zero,36(sp)
