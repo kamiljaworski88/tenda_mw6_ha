@@ -13,32 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Dump ucapi GOT around traffic sender
+      - name: Trace confsrv dev traffic sender xref
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
+          conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/ucapi-traffic-send-got-bytes.txt'
+          out='docs/reverse-generated/confsrv-dev-traffic-xref.txt'
           {
-            echo '===== RUN 70 GOAL ====='
-            echo 'Dump raw GOT words around virtual address 0x32108 used by uc_api_m_cloud_info_send_dev_traffic.'
-            echo '===== SECTION MAP ====='
-            mipsel-linux-gnu-readelf -SW "$uc" | grep -E '\.got|\.data|\.text' || true
-            echo '===== RAW GOT AROUND 0x32108 ====='
-            mipsel-linux-gnu-objdump -s -j .got "$uc" | awk '$1 ~ /^[0-9a-fA-F]+$/ {a=strtonum("0x"$1); if (a >= strtonum("0x320e0") && a <= strtonum("0x32130")) print}' || true
-            echo '===== READELF HEX CROSS-CHECK ====='
-            mipsel-linux-gnu-readelf -x .got "$uc" | grep -Ei '0x000320e|0x000320f|0x0003210|0x0003211|0x0003212|0x0003213' || true
+            echo '===== RUN 71 GOAL ====='
+            echo 'Find the exact confsrv callsite(s) of uc_api_m_cloud_info_send_dev_traffic and the containing function.'
+            echo '===== SYMBOL / RELOCATION ====='
+            mipsel-linux-gnu-readelf -sW "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
+            mipsel-linux-gnu-readelf -rW "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
+            mipsel-linux-gnu-objdump -R "$conf" | grep -F 'uc_api_m_cloud_info_send_dev_traffic' || true
+            echo '===== DISASSEMBLY XREF ====='
+            mipsel-linux-gnu-objdump -drwC "$conf" | grep -B28 -A36 -F 'uc_api_m_cloud_info_send_dev_traffic' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: ucapi-traffic-send-got-bytes
-          path: docs/reverse-generated/ucapi-traffic-send-got-bytes.txt
+          name: confsrv-dev-traffic-xref
+          path: docs/reverse-generated/confsrv-dev-traffic-xref.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/ucapi-traffic-send-got-bytes.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add ucapi traffic sender GOT bytes'; git push || true; fi
+          git add docs/reverse-generated/confsrv-dev-traffic-xref.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add confsrv dev traffic xref'; git push || true; fi
