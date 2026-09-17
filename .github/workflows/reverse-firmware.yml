@@ -12,37 +12,33 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
-      - name: Resolve confcli runtime id source
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+      - name: Map SYS module and basic info command
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          cli='firmware-src/RootFS-unpacked/bin/confcli'
+          lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/confcli-runtime-id.txt'
+          out='docs/reverse-generated/sys-module-map.txt'
           {
-            echo '===== RUN 47 GOAL ====='
-            echo 'B3 only: identify the source of <runtime-id> used in confctl_cli@<runtime-id>.'
-            echo '===== MAIN BUILD WINDOW ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x406650 --stop-address=0x4066e8 "$cli" || true
-            echo '===== GOT 0x4544d0..0x454540 ====='
-            mipsel-linux-gnu-readelf -x .got "$cli" | grep -E '0x004544d0|0x004544e0|0x004544f0|0x00454500|0x00454510|0x00454520|0x00454530|0x00454540' || true
-            echo '===== SYMBOLS AT GOT TARGET VALUES ====='
-            mipsel-linux-gnu-readelf -sW "$cli" | grep -E '00430|00431|00432' || true
-            echo '===== RODATA AROUND VA 0x432300 ====='
-            mipsel-linux-gnu-objdump -s --start-address=0x4322f0 --stop-address=0x432350 "$cli" || true
-            echo '===== STRINGS FILE OFFSETS 0x322f0..0x32350 ====='
-            strings -a -t x "$cli" | awk '$1 >= "322f0" && $1 <= "32350" {print}' || true
+            echo '===== RUN 48 GOAL ====='
+            echo 'Resolve module ID and command ID for uc_api_enable_m_sys / sys_basic_info.'
+            echo '===== SYS ENABLE DISASSEMBLY ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x69e4 --stop-address=0x6b84 "$lib" || true
+            echo '===== SYS HANDLER SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -E 'uc_api_(enable_m_sys|lib_sys_.*hdl_reg)' || true
+            echo '===== SYS/BASIC COMMAND STRINGS ====='
+            strings -a -t x "$lib" | grep -E 'M_MESH_BASIC|CMD_MESH_BASIC|SysBasic|BasicInfo|BasicInfo|GetSys|SysInfo' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: confcli-runtime-id
-          path: docs/reverse-generated/confcli-runtime-id.txt
+          name: sys-module-map
+          path: docs/reverse-generated/sys-module-map.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/confcli-runtime-id.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: resolve confcli runtime id source'; git push || true; fi
+          git add docs/reverse-generated/sys-module-map.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add SYS module map'; git push || true; fi
