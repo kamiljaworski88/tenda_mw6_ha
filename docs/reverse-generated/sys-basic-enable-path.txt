@@ -1,0 +1,116 @@
+===== RUN 59 GOAL =====
+Trace enable_cloud_get_sys_basic and identify callbacks / data producer used for SYS BasicInfo.
+===== SYMBOLS =====
+    14: 000074d0    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_sys_basic_info
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+    62: 0000a3fc   160 FUNC    GLOBAL DEFAULT   10 enable_cloud_get_sys_basic
+    99: 00015c94    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_basic_info_get
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   310: 0001b8d4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+===== enable_cloud_get_sys_basic DISASSEMBLY =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0000a3fc <enable_cloud_get_sys_basic@@Base>:
+    a3fc:	3c1c0003 	lui	gp,0x3
+    a400:	279cfad4 	addiu	gp,gp,-1324
+    a404:	0399e021 	addu	gp,gp,t9
+    a408:	27bdffd8 	addiu	sp,sp,-40
+    a40c:	afbf0024 	sw	ra,36(sp)
+    a410:	afbc0018 	sw	gp,24(sp)
+    a414:	1080001d 	beqz	a0,a48c <enable_cloud_get_sys_basic@@Base+0x90>
+    a418:	8f878024 	lw	a3,-32732(gp)
+    a41c:	afa50014 	sw	a1,20(sp)
+    a420:	8f858024 	lw	a1,-32732(gp)
+    a424:	8f99833c 	lw	t9,-31940(gp)
+    a428:	afa40010 	sw	a0,16(sp)
+    a42c:	24a5f018 	addiu	a1,a1,-4072
+    a430:	24e7f2e0 	addiu	a3,a3,-3360
+    a434:	24040008 	li	a0,8
+    a438:	0320f809 	jalr	t9
+    a43c:	2406001c 	li	a2,28
+    a440:	2403ffff 	li	v1,-1
+    a444:	14430011 	bne	v0,v1,a48c <enable_cloud_get_sys_basic@@Base+0x90>
+    a448:	8fbc0018 	lw	gp,24(sp)
+    a44c:	8f8283ac 	lw	v0,-31828(gp)
+    a450:	8f868024 	lw	a2,-32732(gp)
+    a454:	8f878024 	lw	a3,-32732(gp)
+    a458:	8c440000 	lw	a0,0(v0)
+    a45c:	2402006f 	li	v0,111
+    a460:	afa20010 	sw	v0,16(sp)
+    a464:	8f828024 	lw	v0,-32732(gp)
+    a468:	8f9981c4 	lw	t9,-32316(gp)
+    a46c:	24c60308 	addiu	a2,a2,776
+    a470:	2442f098 	addiu	v0,v0,-3944
+    a474:	afa20014 	sw	v0,20(sp)
+    a478:	24e7022c 	addiu	a3,a3,556
+    a47c:	0320f809 	jalr	t9
+    a480:	24050002 	li	a1,2
+    a484:	10000002 	b	a490 <enable_cloud_get_sys_basic@@Base+0x94>
+    a488:	2402ffff 	li	v0,-1
+    a48c:	00001021 	move	v0,zero
+    a490:	8fbf0024 	lw	ra,36(sp)
+    a494:	03e00008 	jr	ra
+    a498:	27bd0028 	addiu	sp,sp,40
+
+0000a49c <eanble_inter_chk_request@@Base>:
+    a49c:	3c1c0003 	lui	gp,0x3
+    a4a0:	279cfa34 	addiu	gp,gp,-1484
+    a4a4:	0399e021 	addu	gp,gp,t9
+    a4a8:	27bdffd0 	addiu	sp,sp,-48
+    a4ac:	afbf002c 	sw	ra,44(sp)
+    a4b0:	afb00028 	sw	s0,40(sp)
+    a4b4:	afbc0020 	sw	gp,32(sp)
+    a4b8:	14800009 	bnez	a0,a4e0 <eanble_inter_chk_request@@Base+0x44>
+    a4bc:	00808021 	move	s0,a0
+===== NEARBY RODATA STRINGS =====
+  1f018 M_CLOUD_INFO
+  1f028 CMD_CLOUD_INFO_MANAGE_EN_GET
+  1f048 Cloud Info Manage enable get register failed
+  1f078 CMD_CLOUD_INFO_MANAGE_EN_SET
+  1f098 Cloud Info Manage enable Set register failed
+  1f0c8 CMD_CLOUD_INFO_ACCOUNT_INFO_A
+  1f0e8 Cloud Info account ack register failed
+  1f110 CMD_CLOUD_INFO_CLEAR_ACC_ACK
+  1f130 Cloud Info account clear ack register failed
+  1f160 CMD_CLOUD_INFO_MESH_NODE_A
+  1f17c Cloud Info mesh node ack register failed
+  1f1a8 CMD_CLOUD_INFO_DEV_UPLOAD_STATUS_START
+  1f1d0 CMD_CLOUD_INFO_DEV_UPLOAD_DEVICE_START
+  1f1f8 CMD_CLOUD_INFO_DEV_MARK_LIST_A
+  1f218 Cloud Info dev mark list a register failed
+  1f244 CMD_CLOUD_INFO_DEV_CONFIG_TIME_A
+  1f268 Cloud Info dev config time a register failed
+  1f298 CMD_CLOUD_INFO_DEV_CONFIG_A
+  1f2b4 Cloud Info dev config a register failed
+  1f2e0 CMD_CLOUD_INFO_UPLOAD_SYS_BASIC_INFO_START
+  1f30c CMD_CLOUD_INFO_WEB_AUTH_CONFIG_TIME_A
+  1f334 CMD_CLOUD_INFO_UP_SPEED_SET
+  1f350 CMD_CLOUD_INFO_BEGIN_POLICY_UPGRADE
+  1f374 CMD_CLOUD_INFO_CHECK_MEMORY
+  1f390 CMD_CLOUD_INFO_BEGIN_UPGRADE
+  1f3b0 CMD_CLOUD_INFO_SN_SET
+  1f3c8 CMD_CLOUD_INFO_MESH_SET
+  1f400 Close notice fd, can't notice to send data to ucloud!
+  1f438 accept ucloud session %d
+  1f650 ucloud_event_accept2
+  1f6a0 ucloud_event_read
+  1f720 uc_api_enable_m_cloud_info
+  1fa2c M_MESH_BASIC
+  1fa3c CMD_MESH_BASIC_SUILT
+  1fa54 SetSysTimeZone
+  1fa64 CMD_MESH_BASIC_TZ_SET
+  1fa7c SetSysTime
+  1fa88 CMD_MESH_BASIC_TIME_SET
+  1faa8 CMD_MESH_BASIC_LANG_SET
+  1fad0 CMD_MESH_BASIC_FAST_DONE
+  1faf8 CMD_MESH_BASIC_GET_MESH_ID
+  1fb24 CMD_MESH_BASIC_UPLOAD_LOG
+  20114 M_CLOUD
+  2011c CMD_CLOUD_VERSION_Q
+  2019c GetBasicInfo
+  2023c Basic Info already registerd , drop this request(%d:%d)
+  20308 enable_cloud_get_sys_basic
