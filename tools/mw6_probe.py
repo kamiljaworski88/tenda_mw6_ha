@@ -18,6 +18,10 @@ AUTH_LOGIN = 0x01
 ADV_MODULE = 0x17
 QOS_GET = 0x08
 HIGH_DEVICE_GET = 0x0F
+# Firmware confirms legacy online-hosts API:
+# M_OL_HOSTS == module 10 (0x0a), CMD_OL_HOSTS_GET == command 0.
+OL_HOSTS_MODULE = 0x0A
+OL_HOSTS_GET = 0x00
 # Firmware boot.log and live wire test confirm:
 # M_MESH_HOSTS[20] == TCP/9000 module 0x14 and CMD_MESH_HOSTS_GET[0] == 0x00.
 MESH_HOSTS_MODULE = 0x14
@@ -130,7 +134,7 @@ def decode_mesh_hosts(payload):
     HostInfo schema: 1 ipaddr, 2 ethaddr, 3 access, 4 assoc_sn,
     5 condtion_time, 6 online, 7 uprate, 8 downrate, 9 signal, 10 name.
     """
-    if len(payload) < 4: raise ValueError("MESH_HOSTS response too short")
+    if len(payload) < 4: raise ValueError("hosts response too short")
     status = int.from_bytes(payload[:4], "little", signed=True)
     records = []
     for field, wire, value in _protobuf_fields(payload[4:]):
@@ -166,12 +170,16 @@ def show_clients(fr):
     return clients
 
 
-def request_clients(sock, tid):
-    sock.sendall(build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
+def request_hosts(sock, tid, module, command):
+    sock.sendall(build_request(tid, module, command))
     fr = recv_frame(sock)
-    if fr["module"] != MESH_HOSTS_MODULE or fr["command"] != MESH_HOSTS_GET:
+    if fr["module"] != module or fr["command"] != command:
         raise RuntimeError(f"unexpected response module/cmd {fr['module']:02x}/{fr['command']:02x}")
     return fr
+
+
+def request_clients(sock, tid):
+    return request_hosts(sock, tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET)
 
 
 def watch_client_rates(sock, tid, selector, interval, count):
@@ -201,6 +209,7 @@ def main():
     ap.add_argument("--host", default=HOST_DEFAULT)
     ap.add_argument("--port", type=int, default=PORT_DEFAULT)
     ap.add_argument("--high-device", action="store_true")
+    ap.add_argument("--ol-hosts", action="store_true", help="read-only legacy M_OL_HOSTS/CMD_OL_HOSTS_GET")
     ap.add_argument("--clients", action="store_true", help="read-only M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
     ap.add_argument("--raw-hex", action="store_true", help="also print full MESH_HOSTS payload as hex")
     ap.add_argument("--watch-client", metavar="NAME_IP_OR_MAC", help="poll one client and show firmware uprate/downrate")
@@ -218,6 +227,16 @@ def main():
         s.sendall(build_request(tid, AUTH_MODULE, AUTH_LOGIN, login_payload)); r = recv_frame(s); show("AUTH LOGIN", r)
         if r["raw"][-4:] != b"\x00\x00\x00\x00":
             print("LOGIN rejected; stopping before further commands."); sys.exit(2)
+        if args.ol_hosts:
+            tid += 1
+            print("\nSending read-only firmware-confirmed OL_HOSTS_GET (module=0x0a, cmd=0x00, empty payload)...")
+            r = request_hosts(s, tid, OL_HOSTS_MODULE, OL_HOSTS_GET)
+            show("M_OL_HOSTS / OL_HOSTS_GET", r, dump_hex=True)
+            try:
+                show_clients(r)
+            except Exception as exc:
+                print(f"HostLists decode failed: {exc}")
+            return
         if args.watch_client:
             watch_client_rates(s, tid, args.watch_client, args.interval, args.count); return
         if args.clients:
