@@ -1,0 +1,27 @@
+{
+  "title": "Tenda MW6",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Tenda MW6",
+        "description": "Connect to the local Tenda MW6 TCP/9000 service.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "login_payload_hex": "Login payload (hex)"
+        },
+        "data_description": {
+          "login_payload_hex": "Hex-encoded login payload extracted from a successful official-app login capture."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the router or read the client list.",
+      "invalid_auth": "The router rejected the login payload.",
+      "invalid_payload": "The login payload is invalid."
+    },
+    "abort": {
+      "already_configured": "This Tenda MW6 host is already configured."
+    }
+  }
+}
