@@ -13,35 +13,32 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Find firmware users of dev traffic sender
+      - name: Resolve upload_statistics first GOT call
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          root='firmware-src/RootFS-unpacked'
+          cloud='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-sender-users.txt'
+          out='docs/reverse-generated/upload-statistics-first-call.txt'
           {
-            echo '===== RUN 72 GOAL ====='
-            echo 'Find every ELF or file outside libucapi.so that references uc_api_m_cloud_info_send_dev_traffic.'
-            echo '===== DYNAMIC SYMBOL USERS ====='
-            while IFS= read -r -d '' f; do
-              if mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep -q 'uc_api_m_cloud_info_send_dev_traffic'; then
-                echo "--- $f"
-                mipsel-linux-gnu-readelf -sW "$f" 2>/dev/null | grep 'uc_api_m_cloud_info_send_dev_traffic' || true
-              fi
-            done < <(find "$root" -type f -print0)
-            echo '===== STRING USERS (DLSYM / TABLES) ====='
-            grep -RIl --binary-files=text 'uc_api_m_cloud_info_send_dev_traffic' "$root" 2>/dev/null || true
+            echo '===== RUN 73 GOAL ====='
+            echo 'Resolve lw t9,-32356(gp) at upload_statistics 0x211c0. gp=0x93370, so GOT address=0x8b50c.'
+            echo '===== SECTION MAP ====='
+            mipsel-linux-gnu-readelf -SW "$cloud" | grep -E '\.got|\.text|\.data' || true
+            echo '===== GOT WORD AROUND 0x8b50c ====='
+            mipsel-linux-gnu-objdump -s -j .got "$cloud" | awk '$1 ~ /^[0-9a-fA-F]+$/ {a=strtonum("0x"$1); if (a >= strtonum("0x8b4f0") && a <= strtonum("0x8b520")) print}' || true
+            echo '===== SYMBOLS NEAR TARGET VALUES ====='
+            mipsel-linux-gnu-readelf -sW "$cloud" | head -n 420 || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-sender-users
-          path: docs/reverse-generated/dev-traffic-sender-users.txt
+          name: upload-statistics-first-call
+          path: docs/reverse-generated/upload-statistics-first-call.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-sender-users.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic sender users'; git push || true; fi
+          git add docs/reverse-generated/upload-statistics-first-call.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add upload statistics first call map'; git push || true; fi
