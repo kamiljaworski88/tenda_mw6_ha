@@ -1,0 +1,208 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+import socket
+from typing import Any
+
+MAGIC = b"\x24\x00"
+REQ_KIND = 0x07
+RESP_KIND = 0x06
+FIXED = b"\x00\xd5"
+AUTH_MODULE = 0x18
+AUTH_GET_STA = 0x00
+AUTH_LOGIN = 0x01
+MESH_HOSTS_MODULE = 0x14
+MESH_HOSTS_GET = 0x00
+
+
+class TendaMW6Error(Exception):
+    """Base exception for the Tenda MW6 local protocol."""
+
+
+class TendaMW6AuthError(TendaMW6Error):
+    """Raised when the router rejects the login payload."""
+
+
+@dataclass(slots=True)
+class TendaMW6Client:
+    ip: str
+    mac: str
+    name: str
+    node_sn: str
+    signal: int | None
+    access: int | None
+    condition_time: int | None
+    raw_online: int | None
+    raw_uprate: int | None
+    raw_downrate: int | None
+
+
+class TendaMW6Api:
+    """Small read-only client for the locally exposed TCP/9000 protocol."""
+
+    def __init__(self, host: str, login_payload: bytes, port: int = 9000, timeout: float = 4.0) -> None:
+        self.host = host
+        self.port = port
+        self.timeout = timeout
+        self._login_payload = login_payload
+
+    def validate(self) -> None:
+        """Authenticate and verify that MESH_HOSTS can be read."""
+        self.get_clients()
+
+    def get_clients(self) -> list[TendaMW6Client]:
+        with socket.create_connection((self.host, self.port), timeout=self.timeout) as sock:
+            sock.settimeout(self.timeout)
+            tid = 0xA0
+
+            sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_GET_STA))
+            _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_GET_STA)
+
+            tid = (tid + 1) & 0xFF
+            sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_LOGIN, self._login_payload))
+            login = _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_LOGIN)
+            if _status(login["payload"]) != 0:
+                raise TendaMW6AuthError("Router rejected login payload")
+
+            tid = (tid + 1) & 0xFF
+            sock.sendall(_build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
+            hosts = _expect_response(_recv_frame(sock), MESH_HOSTS_MODULE, MESH_HOSTS_GET)
+            status, records = _decode_mesh_hosts(hosts["payload"])
+            if status != 0:
+                raise TendaMW6Error(f"MESH_HOSTS returned status={status}")
+            return records
+
+
+def _build_request(tid: int, module: int, command: int, payload: bytes = b"") -> bytes:
+    return (
+        MAGIC
+        + bytes([REQ_KIND, tid & 0xFF])
+        + FIXED
+        + len(payload).to_bytes(2, "big")
+        + bytes([module, command, 0, 0])
+        + b"\x01\x00\x00\x00"
+        + payload
+    )
+
+
+def _recv_exact(sock: socket.socket, size: int) -> bytes:
+    data = bytearray()
+    while len(data) < size:
+        chunk = sock.recv(size - len(data))
+        if not chunk:
+            raise TendaMW6Error("Router closed the connection")
+        data.extend(chunk)
+    return bytes(data)
+
+
+def _recv_frame(sock: socket.socket) -> dict[str, Any]:
+    header = _recv_exact(sock, 16)
+    if header[:2] != MAGIC:
+        raise TendaMW6Error("Unexpected TCP/9000 frame magic")
+    payload_len = int.from_bytes(header[6:8], "big")
+    payload = _recv_exact(sock, payload_len)
+    return {
+        "kind": header[2],
+        "tid": header[3],
+        "module": header[8],
+        "command": header[9],
+        "payload": payload,
+    }
+
+
+def _expect_response(frame: dict[str, Any], module: int, command: int) -> dict[str, Any]:
+    if frame["kind"] != RESP_KIND:
+        raise TendaMW6Error(f"Unexpected response kind 0x{frame['kind']:02x}")
+    if frame["module"] != module or frame["command"] != command:
+        raise TendaMW6Error(
+            f"Unexpected response module/cmd 0x{frame['module']:02x}/0x{frame['command']:02x}"
+        )
+    return frame
+
+
+def _status(payload: bytes) -> int:
+    if len(payload) < 4:
+        raise TendaMW6Error("Response payload too short")
+    return int.from_bytes(payload[:4], "little", signed=True)
+
+
+def _read_varint(buf: bytes, pos: int) -> tuple[int, int]:
+    value = 0
+    shift = 0
+    while pos < len(buf) and shift < 70:
+        byte = buf[pos]
+        pos += 1
+        value |= (byte & 0x7F) << shift
+        if not (byte & 0x80):
+            return value, pos
+        shift += 7
+    raise TendaMW6Error("Invalid protobuf varint")
+
+
+def _protobuf_fields(buf: bytes) -> list[tuple[int, int, int | bytes]]:
+    pos = 0
+    fields: list[tuple[int, int, int | bytes]] = []
+    while pos < len(buf):
+        key, pos = _read_varint(buf, pos)
+        field_no = key >> 3
+        wire_type = key & 7
+        if wire_type == 0:
+            value, pos = _read_varint(buf, pos)
+        elif wire_type == 2:
+            length, pos = _read_varint(buf, pos)
+            value = buf[pos : pos + length]
+            pos += length
+        elif wire_type == 1:
+            value = buf[pos : pos + 8]
+            pos += 8
+        elif wire_type == 5:
+            value = buf[pos : pos + 4]
+            pos += 4
+        else:
+            raise TendaMW6Error(f"Unsupported protobuf wire type {wire_type}")
+        fields.append((field_no, wire_type, value))
+    return fields
+
+
+def _signed64(value: int) -> int:
+    return value - (1 << 64) if value >= (1 << 63) else value
+
+
+def _as_text(value: bytes) -> str:
+    try:
+        return value.decode("utf-8")
+    except UnicodeDecodeError:
+        return value.hex()
+
+
+def _decode_mesh_hosts(payload: bytes) -> tuple[int, list[TendaMW6Client]]:
+    status = _status(payload)
+    clients: list[TendaMW6Client] = []
+
+    for field_no, wire_type, value in _protobuf_fields(payload[4:]):
+        if field_no != 1 or wire_type != 2 or not isinstance(value, bytes):
+            continue
+
+        raw: dict[int, int | str] = {}
+        for inner_no, inner_wire, inner_value in _protobuf_fields(value):
+            if inner_wire == 2 and isinstance(inner_value, bytes):
+                raw[inner_no] = _as_text(inner_value)
+            elif inner_wire == 0 and isinstance(inner_value, int):
+                raw[inner_no] = _signed64(inner_value) if inner_no == 9 else inner_value
+
+        clients.append(
+            TendaMW6Client(
+                ip=str(raw.get(1, "")),
+                mac=str(raw.get(2, "")),
+                access=raw.get(3) if isinstance(raw.get(3), int) else None,
+                node_sn=str(raw.get(4, "")),
+                condition_time=raw.get(5) if isinstance(raw.get(5), int) else None,
+                raw_online=raw.get(6) if isinstance(raw.get(6), int) else None,
+                raw_uprate=raw.get(7) if isinstance(raw.get(7), int) else None,
+                raw_downrate=raw.get(8) if isinstance(raw.get(8), int) else None,
+                signal=raw.get(9) if isinstance(raw.get(9), int) else None,
+                name=str(raw.get(10, "")),
+            )
+        )
+
+    return status, clients
