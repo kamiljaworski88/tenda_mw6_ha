@@ -13,35 +13,37 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Map mesh WAN traffic API
+      - name: Trace per-client traffic builder
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
-          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
+          cloud='firmware-src/RootFS-unpacked/lib/libcloud.so'
+          conf='firmware-src/RootFS-unpacked/bin/confsrv'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/mesh-wan-traffic-api.txt'
+          out='docs/reverse-generated/per-client-traffic-builder.txt'
           {
-            echo '===== RUN 65 GOAL ====='
-            echo 'Map GetTrafficInfo / CMD_MESH_WAN_TRAFFIC to exact module id, command id, registration function, handler and response schema. Determine whether it can expose client traffic or only aggregate WAN traffic.'
-            echo '===== SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'traffic|wan.*rate|mesh.*wan|GetTrafficInfo|uc_api_enable_m_mesh' || true
-            echo '===== COMMAND / MODULE STRINGS ====='
-            strings -a -t x "$lib" | grep -Ei 'GetTrafficInfo|CMD_MESH_WAN_TRAFFIC|M_MESH_WAN|WAN_TRAFFIC|traffic' | head -n 240 || true
-            echo '===== DISASSEMBLY AROUND STRING-RELATED SYMBOLS ====='
-            mipsel-linux-gnu-objdump -drwC "$lib" | grep -B22 -A34 -Ei 'traffic|wan_rate|mesh_wan' | head -n 1200 || true
-            echo '===== LIBPB TRAFFIC SCHEMA ====='
-            strings -a -t x "$pb" | grep -Ei 'traffic|uprate|downrate|total_up|total_down|WanRate|WanPortRate|HostInfo' | head -n 260 || true
+            echo '===== RUN 66 GOAL ====='
+            echo 'Trace the firmware path that builds per-client {mac,up,down} traffic data and identify its source/callers.'
+            echo '===== LIBCLOUD TARGET STRINGS ====='
+            strings -a -t x "$cloud" | grep -Ei '\{"mac":"%s","up":%d,"down":%d\}|ethaddr|uprate|downrate|traffic' | head -n 220 || true
+            echo '===== LIBCLOUD SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$cloud" | grep -Ei 'traffic|device|host|rate|upload' | head -n 260 || true
+            echo '===== LIBCLOUD DISASSEMBLY REFERENCES AROUND 0x6911c STRING OFFSET ====='
+            mipsel-linux-gnu-readelf -SW "$cloud" || true
+            mipsel-linux-gnu-objdump -drwC "$cloud" | grep -Ei -B16 -A30 '6911c|6913c|mac.*up.*down|traffic' | head -n 420 || true
+            echo '===== CONFSRV RATE/CLOUD UPLOAD CLUES ====='
+            strings -a -t x "$conf" | grep -Ei -B8 -A20 'up_bytes|down_bytes|uprate|downrate|send_dev_traffic|traffic' | head -n 320 || true
+            mipsel-linux-gnu-readelf -sW "$conf" | grep -Ei 'traffic|rate|host|cloud' | head -n 260 || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: mesh-wan-traffic-api
-          path: docs/reverse-generated/mesh-wan-traffic-api.txt
+          name: per-client-traffic-builder
+          path: docs/reverse-generated/per-client-traffic-builder.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/mesh-wan-traffic-api.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add mesh WAN traffic API map'; git push || true; fi
+          git add docs/reverse-generated/per-client-traffic-builder.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add per-client traffic builder trace'; git push || true; fi
