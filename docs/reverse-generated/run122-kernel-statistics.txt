@@ -1,0 +1,962 @@
+===== RUN 122: built-in kernel statistics handler =====
+KernelFS LZMA relative offset: 0x2818
+
+===== FILE TYPES / SIZES =====
+firmware-src/image-unpacked-as-per-mtd/30_KernelFS: data
+/tmp/mw6kernel/kernel.lzma:                         LZMA compressed data, non-streamed, size 6890804
+/tmp/mw6kernel/kernel.raw:                          data
+ 2064402 firmware-src/image-unpacked-as-per-mtd/30_KernelFS
+ 2054138 /tmp/mw6kernel/kernel.lzma
+ 6890804 /tmp/mw6kernel/kernel.raw
+11009344 total
+
+===== RAW KERNEL RELEVANT STRINGS =====
+ 486720 odm_FalseAlarmCounterStatistics
+ 48e320 init_online_ip
+ 48e39c init_online_ip_procfs
+ 48e3c4 __statistic_rcv
+ 48e3d4 get_online_ip_count
+ 48e3e8 get_online_ip_info
+ 48e40c add_online_ip
+ 508e2c TLB modify handler fastpath space exceeded
+ 508e58 TLB store handler fastpath space exceeded
+ 508e84 TLB load handler fastpath space exceeded
+ 518409 3kobject_uevent: unable to create netlink socket!
+ 518919 4netlink: %d bytes leftover after parsing attributes in process `%s'.
+ 519eb4 %s: netlink create failed
+ 519ef4 WFD netlink rcv an unknown command %d
+ 519f1c netlink socket
+ 51f940   Debug Statistics Info:
+ 51f9dc     statistic_total:	%d
+ 51f9f8     statistic_ps:	%d
+ 51fa10     statistic_ipv6_fp:	%d
+ 51fa2c     statistic_fp:	%d
+ 520364 	TrafficClassP: %d   TrafficClassM: %d   NextHeaderP: %d   NextHeaderM: %d
+ 52164d 3Netlink[Kernel] Cannot create netlink socket for hw qos config.
+ 521690 Netlink[Kernel] create socket for hw qos config ok.
+ 525fa0 %s(): odm_FalseAlarmCounterStatistics()======>
+ 525fd0 %s(): odm_FalseAlarmCounterStatistics(): Cnt_Fast_Fsync=%d, Cnt_SB_Search_fail=%d
+ 526024 %s(): odm_FalseAlarmCounterStatistics(): Cnt_Parity_Fail=%d, Cnt_Rate_Illegal=%d
+ 526078 %s(): odm_FalseAlarmCounterStatistics(): Cnt_Crc8_fail=%d, Cnt_Mcs_fail=%d
+ 5260c4 %s(): odm_FalseAlarmCounterStatistics(): Cnt_OFDM_CCA=%d
+ 526100 %s(): odm_FalseAlarmCounterStatistics(): Cnt_CCK_CCA=%d
+ 52613c %s(): odm_FalseAlarmCounterStatistics(): Cnt_CCA_all=%d
+ 526178 %s(): odm_FalseAlarmCounterStatistics(): Cnt_Ofdm_fail=%d
+ 5261b4 %s(): odm_FalseAlarmCounterStatistics(): Cnt_Cck_fail=%d
+ 5261f0 %s(): odm_FalseAlarmCounterStatistics(): Total False Alarm=%d
+ 526230 %s(): odm_FalseAlarmCounterStatistics(): CCK CRC32 fail: %d, ok: %d
+ 526278 %s(): odm_FalseAlarmCounterStatistics(): OFDM CRC32 fail: %d, ok: %d
+ 5262c0 %s(): odm_FalseAlarmCounterStatistics(): HT CRC32 fail: %d, ok: %d
+ 526304 %s(): odm_FalseAlarmCounterStatistics(): VHT CRC32 fail: %d, ok: %d
+ 52634c %s(): odm_FalseAlarmCounterStatistics(): Total CRC32 fail: %d, ok: %d
+ 526394 %s(): odm_FalseAlarmCounterStatistics(): dbg port 0x0 = 0x%x, EDCCA = %d
+ 52813c =====Rx SU Rate Statistics=====
+ 5282a0 =====Rx MU Rate Statistics=====
+ 5341f0   Statistics...
+ 53985c   Systems Statistics...
+ 5398a0   Mesh Networks Statistics...
+ 53c789 4Number of in use tx queues changed invalidating tc mappings. Priority traffic classification disabled!
+ 53cab8 cannot create neighbour cache statistics
+ 53cc3c Unable to register rtnetlink message handler, protocol = %d, message type = %d
+ 53cc8c rtnetlink_init: cannot initialize rtnetlink
+ 53ccbc net/core/rtnetlink.c
+ 53d0e0 statistics
+ 53d82c netlink
+ 53d8ec net/netlink/af_netlink.c
+ 53d909 3Freeing alive netlink socket %p
+ 53d940 netlink_add_usersock_entry: Cannot allocate listeners
+ 53d978 netlink_init: Cannot allocate nl_table
+ 53d9e8 GENL: Cannot initialize generic netlink
+ 53dd4d 3init_online_ip failure!
+ 53f4a8 online_ip_cache
+ 53f4b8 Unable to create bm_online_ip_cachep slab cache
+ 53f510 Create netlink failed
+ 53f558 online_ip
+ 53f564 online_ip proc file created error
+ 53f588 online_ip proc file created
+ 53f5c4 netlink buff is not enough
+ 53f6ec add_online_ip: Can't alloc.
+ 53f70c add_online_ip: ip = %u.%u.%u.%u ,index = %u
+ 542f54 net/bridge/br_netlink.c
+ 543bdc rtk_hw_nat_lan_vid = %d
+ 5440d4 Realtek FastPath
+ 54426c fastpath_bypass_num
+ 5442b0 fastpath: [%d]
+ 544f40 hw_nat
+ 556957 igmp_delete_init_netlink
+ 557e0d fastpath_xmit_prerouting_hook
+ 558775 rtnetlink_put_metrics
+ 5590be netlink_unregister_notifier
+ 5590da netlink_register_notifier
+ 559101 netlink_rcv_skb
+ 559111 netlink_ack
+ 55911d __netlink_dump_start
+ 55913e netlink_kernel_release
+ 559155 __netlink_kernel_create
+ 55916d netlink_set_err
+ 55917d netlink_broadcast
+ 55918f netlink_broadcast_filtered
+ 5591aa netlink_has_listeners
+ 5591c0 netlink_alloc_skb
+ 5591d2 netlink_unicast
+ 5591e2 netlink_net_capable
+ 5591f6 netlink_capable
+ 559206 netlink_ns_capable
+ 559219 __netlink_ns_capable
+ 5598be nfnetlink_parse_nat_setup_hook
+ 55a38a clear_online_ip_flag
+ 55a39f set_online_ip_flag
+ 55a3ce online_ip_count
+ 55a3de online_ip_lock
+ 55a3ed online_ip_hash
+ 55a3fc online_ip_hash_size
+ 55bc1d rtk_vlan_hw_nat_lan_vid
+ 662c6c NETLINK
+
+===== RAW STRING OFFSETS =====
+5612525:online_ip_hash
+5612540:online_ip_hash
+5612540:online_ip_hash_size
+5612426:clear_online_ip_flag
+5342251:netlink
+5343514:netlink
+5349048:netlink
+5349112:netlink
+5349148:netlink
+5379692:netlink
+5491793:netlink
+5491854:netlink
+5491888:netlink
+5491911:netlink
+5494828:netlink
+5495024:netlink
+5495035:netlink
+5495064:netlink
+5495104:netlink
+5495160:netlink
+5495304:netlink
+5502231:netlink
+5502404:netlink
+5517154:netlink
+5597544:netlink
+5605239:netlink
+5607614:netlink
+5607642:netlink
+5607681:netlink
+5607697:netlink
+5607711:netlink
+5607742:netlink
+5607767:netlink
+5607789:netlink
+5607805:netlink
+5607823:netlink
+5607850:netlink
+5607872:netlink
+5607890:netlink
+5607906:netlink
+5607926:netlink
+5607942:netlink
+5607963:netlink
+5609664:netlink
+
+===== VMLINUX-TO-ELF =====
+[+] Version string: Linux version 3.10.90 (root@linux-bkb8) (gcc version 4.4.7 (Realtek MSDK-4.4.7 Build 2001) ) #4 Mon Jul 2 10:57:35 CST 2018
+[+]   Other related strings containing the version number: [b'Linux version 3.10.90 (root@linux-bkb8) (gcc version 4.4.7 (Realtek MSDK-4.4.7 Build 2001) ) #4 Mon Jul 2 10:57:35 CST 2018', b'3.10.90 mod_unload MIPS32_R2 32BIT ', b'3.10.90', b'/lib/firmware/updates/3.10.90', b'/lib/firmware/3.10.90', b'3.10.90']
+[+]   Architecture string: mod_unload MIPS32_R2 32BIT 
+[+] Guessed architecture: mipsle successfully in 0.12 seconds
+[+] Kernel found in database
+[+]   Read kernel source: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/?id=v3.10
+[+]   Download kernel: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/v3.10.tar.gz
+[+]   Kernel release date: 2013-06-30
+[+]   Interesting files:
+[~]     - kernel/kallsyms.c: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/kallsyms.c?id=v3.10
+[~]     - scripts/kallsyms.c: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kallsyms.c?id=v3.10
+[~]     - include/linux/elf.h: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/elf.h?id=v3.10
+[~]     - include/uapi/linux/elf-em.h: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf-em.h?id=v3.10
+[~]     - include/uapi/linux/elf.h: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf.h?id=v3.10
+[~]     - Documentation/Changes: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/Changes?id=v3.10
+[+]   Architecture mips (EM_MIPS) supports 32-bit, 64-bit, big-endian, little-endian
+[~]     - arch/mips/boot/compressed/head.S: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/boot/compressed/head.S?id=v3.10
+[~]     - arch/mips/boot/compressed/Makefile: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/boot/compressed/Makefile?id=v3.10
+[~]     - arch/mips/kernel/vmlinux.lds.S: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/kernel/vmlinux.lds.S?id=v3.10
+[~]     - arch/mips/kernel/head.S: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/kernel/head.S?id=v3.10
+[~]     - arch/mips/kernel/Makefile: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/kernel/Makefile?id=v3.10
+[~]     - arch/mips/boot/Makefile: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/boot/Makefile?id=v3.10
+[~]     - arch/mips/include/asm/elf.h: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/asm/elf.h?id=v3.10
+[+]   Suggested build environment: docker run -it debian/eol:wheezy (Debian 7.0 "Wheezy" released 2013-05-04)
+[+] Found kallsyms_token_table at file offset 0x005067d0
+[+] Found kallsyms_token_index at file offset 0x00506b50
+[+] Found kallsyms_markers at file offset 0x00506600
+[+] Found kallsyms_names at file offset 0x004ae670 (29625 symbols)
+[+] Found kallsyms_num_syms at file offset 0x004ae660
+[+] Null addresses overall: 0 %
+[+] Found kallsyms_addresses at file offset 0x00491770
+[+] Guessed the base address using the first_symbol_virtual_address fallback heuristic (80000000)
+[+] Reconstructing ELF with guessed base address (80000000)
+[+] Successfully wrote the new ELF kernel to /tmp/mw6kernel/kernel.elf
+/tmp/mw6kernel/kernel.elf: ELF 32-bit LSB executable, MIPS, MIPS-I version 1 (SYSV), statically linked, not stripped
+-- symbols --
+         U netlink_chain
+         U online_ip_count
+         U online_ip_hash
+         U online_ip_hash_rnd
+         U online_ip_lock
+80112650 T cap_netlink_send
+80136dc8 T kobj_ns_netlink
+801b9630 T rtl8651_setAsicEthernetLinkStatus
+801c3480 T hw_qos_init_netlink
+801c350c T hw_qos_netlink_receive
+801d7aa8 T igmp_delete_init_netlink
+801dd124 T rtl8367c_getAsicGreenHighPriorityTraffic
+801dd158 T rtl8367c_getAsicGreenTrafficType
+801dd194 T rtl8367c_setAsicGreenHighPriorityTraffic
+801dd1c4 T rtl8367c_setAsicGreenTrafficType
+80201ca8 T rtk_trunk_trafficPause_get
+80201d18 T rtk_trunk_trafficPause_set
+80201e20 T rtk_trunk_trafficSeparate_get
+80201ea0 T rtk_trunk_trafficSeparate_set
+80219f74 T phydm_traffic_load_decision
+80222524 T odm_FalseAlarmCounterStatistics
+80231f40 T Phydm_NHMCounterStatisticsReset
+80232e2c T Phydm_GetNHMCounterStatistics
+80232ec4 T Phydm_NHMCounterStatistics
+80233e94 T Phydm_NHMCounterStatisticsInit
+802448b8 T phydm_GetNHMStatisticsAP
+80323b4c T _FA_statistic
+80324ce0 T rtl8192cd_NHMCounterStatisticsReset
+80325150 T FA_statistic
+80325914 T rtl8192cd_GetNHMCounterStatistics
+80325964 T rtl8192cd_NHMCounterStatistics
+8039b348 T rtnetlink_put_metrics
+8039dfd4 t rtnetlink_event
+8039e2b0 T rtnetlink_send
+8039e3a0 t rtnetlink_rcv
+8039e3cc t rtnetlink_rcv_msg
+803a2b5c t net_netlink_ns
+803b4a60 t netlink_update_listeners
+803b4b28 t netlink_getname
+803b4b94 T netlink_set_err
+803b4cdc t netlink_update_socket_mc
+803b4dd4 t netlink_data_ready
+803b4de0 T __netlink_clear_multicast_users
+803b4e50 t netlink_seq_start
+803b4f34 t netlink_seq_next
+803b5088 t netlink_seq_stop
+803b5090 t netlink_seq_open
+803b50a4 t netlink_seq_show
+803b5198 T netlink_getsockbyfilp
+803b51ec t netlink_overrun
+803b5270 t netlink_getsockopt
+803b53b8 T netlink_table_ungrab
+803b53d8 t __netlink_create
+803b54a8 t netlink_create
+803b56cc t netlink_destroy_callback
+803b573c t netlink_skb_set_owner_r
+803b57d0 t netlink_skb_destructor
+803b57ec t __netlink_sendskb
+803b5834 T netlink_has_listeners
+803b5948 T netlink_alloc_skb
+803b5960 t netlink_dump
+803b5b70 t netlink_recvmsg
+803b5ee8 T netlink_detachskb
+803b5f40 T netlink_sendskb
+803b5fa4 t netlink_sock_destruct
+803b60c0 T __netlink_change_ngroups
+803b63b4 T netlink_unregister_notifier
+803b63c8 T netlink_register_notifier
+803b63dc T netlink_kernel_release
+803b63e4 t netlink_trim
+803b64b4 T netlink_broadcast_filtered
+803b689c T netlink_broadcast
+803b68c4 T netlink_attachskb
+803b6aec T __netlink_ns_capable
+803b6b54 T netlink_ns_capable
+803b6b60 T netlink_net_capable
+803b6b78 T netlink_capable
+803b6b90 T netlink_table_grab
+803b6c90 t netlink_insert
+803b6f44 t netlink_autobind
+803b70fc t netlink_connect
+803b7230 t netlink_realloc_groups
+803b7320 t netlink_setsockopt
+803b7550 t netlink_bind
+803b77d0 t netlink_release
+803b7ab8 T netlink_clear_multicast_users
+803b7ae4 T netlink_change_ngroups
+803b7b1c T __netlink_kernel_create
+803b7e50 T netlink_unicast
+803b82c8 T netlink_ack
+803b8458 T netlink_rcv_skb
+803b8574 t netlink_sendmsg
+803b88d4 T __netlink_dump_start
+803cab6c t nfnetlink_parse_nat_setup
+803d2c4c T find_online_ip
+803d2cbc t online_ip_get_idx
+803d2e3c t online_ip_seq_next
+803d2f24 t online_ip_open
+803d2fac t online_ip_seq_show
+803d3398 t online_ip_seq_stop
+803d33a0 t online_ip_seq_start
+803d33f8 T clear_online_ip_flag
+803d3490 T set_online_ip_flag
+803d3518 T init_online_ip
+803d3710 t statistic_rcv
+803d3720 t get_online_ip_info
+803d3c28 t __statistic_rcv
+803d4190 T add_online_ip
+803d43c8 t online_ip_timeout
+8042369c t mroute_netlink_event
+80426658 t ipip_netlink_parms
+80427bd4 t ipgre_netlink_parms
+804672f4 t rtnetlink_net_exit
+804673c4 t netlink_net_exit
+8048d718 t netlink_family_ops
+8048d724 t netlink_seq_fops
+8048d790 t netlink_seq_ops
+8048d7a0 t netlink_ops
+8048e330 t online_ip_fops
+8048e3b4 t online_ip_seq_ops
+80545470 t __ksymtab___netlink_dump_start
+80545478 t __ksymtab___netlink_kernel_create
+80545480 t __ksymtab___netlink_ns_capable
+80546ea8 t __ksymtab_igmp_delete_init_netlink
+80547db0 t __ksymtab_netlink_ack
+80547db8 t __ksymtab_netlink_broadcast
+80547dc0 t __ksymtab_netlink_broadcast_filtered
+80547dc8 t __ksymtab_netlink_capable
+80547dd0 t __ksymtab_netlink_kernel_release
+80547dd8 t __ksymtab_netlink_net_capable
+80547de0 t __ksymtab_netlink_ns_capable
+80547de8 t __ksymtab_netlink_rcv_skb
+80547df0 t __ksymtab_netlink_register_notifier
+80547df8 t __ksymtab_netlink_set_err
+80547e00 t __ksymtab_netlink_unicast
+80547e08 t __ksymtab_netlink_unregister_notifier
+80548828 t __ksymtab_rtnetlink_put_metrics
+8054a3b0 t __ksymtab_clear_online_ip_flag
+8054b2e8 t __ksymtab_netlink_alloc_skb
+8054b2f0 t __ksymtab_netlink_has_listeners
+8054b628 t __ksymtab_nfnetlink_parse_nat_setup_hook
+8054b668 t __ksymtab_online_ip_count
+8054b670 t __ksymtab_online_ip_hash
+8054b678 t __ksymtab_online_ip_hash_size
+8054b680 t __ksymtab_online_ip_lock
+8054ba70 t __ksymtab_set_online_ip_flag
+80556957 t __kstrtab_igmp_delete_init_netlink
+80558775 t __kstrtab_rtnetlink_put_metrics
+805590be t __kstrtab_netlink_unregister_notifier
+805590da t __kstrtab_netlink_register_notifier
+80559101 t __kstrtab_netlink_rcv_skb
+80559111 t __kstrtab_netlink_ack
+8055911d t __kstrtab___netlink_dump_start
+8055913e t __kstrtab_netlink_kernel_release
+80559155 t __kstrtab___netlink_kernel_create
+8055916d t __kstrtab_netlink_set_err
+8055917d t __kstrtab_netlink_broadcast
+8055918f t __kstrtab_netlink_broadcast_filtered
+805591aa t __kstrtab_netlink_has_listeners
+805591c0 t __kstrtab_netlink_alloc_skb
+805591d2 t __kstrtab_netlink_unicast
+805591e2 t __kstrtab_netlink_net_capable
+805591f6 t __kstrtab_netlink_capable
+80559206 t __kstrtab_netlink_ns_capable
+80559219 t __kstrtab___netlink_ns_capable
+805598be t __kstrtab_nfnetlink_parse_nat_setup_hook
+8055a38a t __kstrtab_clear_online_ip_flag
+8055a39f t __kstrtab_set_online_ip_flag
+8055a3ce t __kstrtab_online_ip_count
+8055a3de t __kstrtab_online_ip_lock
+8055a3ed t __kstrtab_online_ip_hash
+8055a3fc t __kstrtab_online_ip_hash_size
+8056b6f0 T nfnetlink_parse_nat_setup_hook
+8056d850 t online_ip_cache
+806623f0 t rtnetlink_net_ops
+8066240c t rtnetlink_dev_notifier
+80662bd0 t netlink_proto
+80663b20 T online_ip_hash_size
+8067813c t rtnetlink_net_init
+806781ac T rtnetlink_init
+806788b4 t netlink_net_init
+806788f4 t netlink_proto_init
+8067c73c T br_netlink_init
+8067ca38 T vlan_netlink_init
+8068e980 t netlink_net_ops
+80690f70 t __initcall_netlink_proto_init1
+8069224c T br_netlink_fini
+8069232c T vlan_netlink_fini
+80a4e100 T statistic_total
+80a4e104 T statistic_ps
+80a4e108 T statistic_ipv6_fp
+80a4e10c T statistic_fp
+-- target symbol neighborhoods --
+### online_ip_hash_size @ 0x80663b20
+
+/tmp/mw6kernel/kernel.elf:     file format elf32-tradlittlemips
+
+
+Disassembly of section .kernel:
+
+80663920 <rtcache_ops+0x30>:
+80663920:	02 00 00 00 ff ff ff 7f                             ........
+
+80663928 <nf_rtcache_notifier>:
+80663928:	9c 51 3c 80 00 00 00 00 00 00 00 00 00 00 00 00     .Q<.............
+	...
+
+80663940 <proto_gre_net_ops>:
+	...
+80663948:	0c 58 3c 80 34 5a 3c 80 00 00 00 00 40 bb 56 80     .X<.4Z<.....@.V.
+80663958:	24 00 00 00 00 00 00 00                             $.......
+
+80663960 <nf_conntrack_pptp_net_ops>:
+	...
+8066396c:	e0 69 3c 80 00 00 00 00 00 00 00 00 00 00 00 00     .i<.............
+8066397c:	00 00 00 00                                         ....
+
+80663980 <nf_nat_net_ops>:
+	...
+80663988:	a8 94 67 80 4c 74 46 80 00 00 00 00 00 00 00 00     ..g.LtF.........
+80663998:	00 00 00 00                                         ....
+
+8066399c <follow_master_nat>:
+	...
+806639a4:	94 eb 53 80 60 c2 3c 80                             ..S.`.<.
+
+806639ac <nfq_ct_nat>:
+806639ac:	00 cd 3c 80                                         ..<.
+
+806639b0 <nf_nat_proto_mutex>:
+806639b0:	01 00 00 00 b4 39 66 80 b4 39 66 80 00 00 00 00     .....9f..9f.....
+
+806639c0 <__param_ops_ports>:
+806639c0:	d0 cd 3c 80 00 00 00 00 00 00 00 00 00 00 00 00     ..<.............
+
+806639d0 <sip_nat>:
+	...
+806639d8:	00 de 53 80 60 d0 3c 80                             ..S.`.<.
+
+806639e0 <xt_net_ops>:
+	...
+806639e8:	18 97 67 80 00 00 00 00 00 00 00 00 00 00 00 00     ..g.............
+806639f8:	00 00 00 00                                         ....
+
+806639fc <xt_recseq>:
+806639fc:	00 00 00 00                                         ....
+
+80663a00 <xt_vlanpriority_match>:
+	...
+80663a08:	76 6c 61 6e 70 72 69 6f 72 69 74 79 00 00 00 00     vlanpriority....
+	...
+80663a28:	40 25 3d 80 68 25 3d 80 00 00 00 00 00 00 00 00     @%=.h%=.........
+80663a38:	00 00 00 00 02 00 00 00 00 00 00 00 00 00 02 00     ................
+	...
+80663a50:	76 6c 61 6e 70 72 69 6f 72 69 74 79 00 00 00 00     vlanpriority....
+	...
+80663a70:	40 25 3d 80 68 25 3d 80 00 00 00 00 00 00 00 00     @%=.h%=.........
+80663a80:	00 00 00 00 02 00 00 00 00 00 00 00 00 00 0a 00     ................
+
+80663a90 <xt_vlanid_match>:
+	...
+80663a98:	76 6c 61 6e 69 64 00 00 00 00 00 00 00 00 00 00     vlanid..........
+	...
+80663ab8:	c0 26 3d 80 c8 26 3d 80 00 00 00 00 00 00 00 00     .&=..&=.........
+80663ac8:	00 00 00 00 04 00 00 00 00 00 00 00 00 00 02 00     ................
+	...
+80663ae0:	76 6c 61 6e 69 64 00 00 00 00 00 00 00 00 00 00     vlanid..........
+	...
+80663b00:	c0 26 3d 80 c8 26 3d 80 00 00 00 00 00 00 00 00     .&=..&=.........
+80663b10:	00 00 00 00 04 00 00 00 00 00 00 00 00 00 0a 00     ................
+
+80663b20 <online_ip_hash_size>:
+80663b20:	c7 00 00 00                                         ....
+
+80663b24 <qos_user_list>:
+80663b24:	24 3b 66 80 24 3b 66 80 00 00 00 00                 $;f.$;f.....
+
+80663b30 <ipv4_route_table>:
+80663b30:	0c b6 50 80 74 3d 66 80 04 00 00 00 a4 01 00 00     ..P.t=f.........
+80663b40:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+80663b50:	00 00 00 00 18 b6 50 80 34 08 a2 81 04 00 00 00     ......P.4.......
+80663b60:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663b78:	24 b6 50 80 80 d8 56 80 04 00 00 00 a4 01 00 00     $.P...V.........
+80663b88:	00 00 00 00 74 b3 02 80 00 00 00 00 00 00 00 00     ....t...........
+80663b98:	00 00 00 00 34 b6 50 80 80 d8 56 80 04 00 00 00     ....4.P...V.....
+80663ba8:	a4 01 00 00 00 00 00 00 d4 b2 02 80 00 00 00 00     ................
+	...
+80663bc0:	48 b6 50 80 84 d8 56 80 04 00 00 00 a4 01 00 00     H.P...V.........
+80663bd0:	00 00 00 00 74 b3 02 80 00 00 00 00 00 00 00 00     ....t...........
+80663be0:	00 00 00 00 74 b0 50 80 88 d8 56 80 04 00 00 00     ....t.P...V.....
+80663bf0:	a4 01 00 00 00 00 00 00 74 b3 02 80 00 00 00 00     ........t.......
+	...
+80663c08:	54 b6 50 80 58 d8 56 80 04 00 00 00 a4 01 00 00     T.P.X.V.........
+80663c18:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+80663c28:	00 00 00 00 64 b6 50 80 5c d8 56 80 04 00 00 00     ....d.P.\.V.....
+80663c38:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663c50:	74 b6 50 80 60 d8 56 80 04 00 00 00 a4 01 00 00     t.P.`.V.........
+80663c60:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+80663c70:	00 00 00 00 88 b6 50 80 64 d8 56 80 04 00 00 00     ......P.d.V.....
+80663c80:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663c98:	94 b6 50 80 68 d8 56 80 04 00 00 00 a4 01 00 00     ..P.h.V.........
+80663ca8:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+80663cb8:	00 00 00 00 a0 b6 50 80 8c d8 56 80 04 00 00 00     ......P...V.....
+80663cc8:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663ce0:	b0 b6 50 80 6c d8 56 80 04 00 00 00 a4 01 00 00     ..P.l.V.........
+80663cf0:	00 00 00 00 74 b3 02 80 00 00 00 00 00 00 00 00     ....t...........
+80663d00:	00 00 00 00 bc b6 50 80 70 d8 56 80 04 00 00 00     ......P.p.V.....
+80663d10:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663d28:	c8 b6 50 80 74 d8 56 80 04 00 00 00 a4 01 00 00     ..P.t.V.........
+80663d38:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+	...
+
+80663d70 <ipv4_dst_ops>:
+80663d70:	02 00 08 00 00 00 00 00 00 00 00 00 60 51 3d 80     ............`Q=.
+80663d80:	98 51 3d 80 a8 52 3d 80 80 60 3d 80 28 53 3d 80     .Q=..R=..`=.(S=.
+80663d90:	40 50 3d 80 1c 61 3d 80 a8 60 3d 80 ac 5b 3d 80     @P=..a=..`=..[=.
+80663da0:	d4 5f 3d 80 d8 f9 3d 80 b8 54 3d 80 00 00 00 00     ._=...=..T=.....
+	...
+
+80663db8 <ipv4_dst_blackhole_ops>:
+80663db8:	02 00 08 00 00 00 00 00 00 00 00 00 e4 51 3d 80     .............Q=.
+80663dc8:	98 51 3d 80 ec 51 3d 80 24 52 3d 80 00 00 00 00     .Q=..Q=.$R=.....
+	...
+80663de4:	14 52 3d 80 1c 52 3d 80 00 00 00 00 b8 54 3d 80     .R=..R=......T=.
+	...
+
+80663e00 <ipv4_route_flush_table>:
+80663e00:	04 b6 50 80 00 00 00 00 04 00 00 00 80 00 00 00     ..P.............
+80663e10:	00 00 00 00 54 52 3d 80 00 00 00 00 00 00 00 00     ....TR=.........
+	...
+
+80663e48 <rt_uncached_list>:
+80663e48:	48 3e 66 80 48 3e 66 80                             H>f.H>f.
+
+80663e50 <rt_cache_stat>:
+	...
+
+80663e90 <gc_list>:
+80663e90:	90 3e 66 80 90 3e 66 80 00 00 00 00 00 00 00 00     .>f..>f.........
+
+80663ea0 <ip4_frags_ops>:
+	...
+80663ea8:	e0 9c 67 80 74 75 46 80 00 00 00 00 00 00 00 00     ..g.tuF.........
+80663eb8:	00 00 00 00                                         ....
+
+80663ebc <ip4_frags_ns_ctl_table>:
+80663ebc:	b0 ac 50 80 c4 1e 66 80 04 00 00 00 a4 01 00 00     ..P...f.........
+80663ecc:	00 00 00 00 0c b5 02 80 00 00 00 00 00 00 00 00     ................
+80663edc:	00 00 00 00 c4 ac 50 80 c8 1e 66 80 04 00 00 00     ......P...f.....
+80663eec:	a4 01 00 00 00 00 00 00 0c b5 02 80 00 00 00 00     ................
+	...
+80663f04:	d8 ac 50 80 c0 1e 66 80 04 00 00 00 a4 01 00 00     ..P...f.........
+80663f14:	00 00 00 00 74 b3 02 80 00 00 00 00                 ....t.......
+### clear_online_ip_flag @ 0x803d33f8
+
+/tmp/mw6kernel/kernel.elf:     file format elf32-tradlittlemips
+
+
+Disassembly of section .kernel:
+
+803d31f8 <online_ip_seq_show+0x24c>:
+803d31f8:	8fb300e8 	lw	s3,232(sp)
+803d31fc:	8fb200e4 	lw	s2,228(sp)
+803d3200:	8fb100e0 	lw	s1,224(sp)
+803d3204:	8fb000dc 	lw	s0,220(sp)
+803d3208:	00001021 	move	v0,zero
+803d320c:	03e00008 	jr	ra
+803d3210:	27bd0100 	addiu	sp,sp,256
+803d3214:	00042080 	sll	a0,a0,0x2
+803d3218:	00442025 	or	a0,v0,a0
+803d321c:	00031080 	sll	v0,v1,0x2
+803d3220:	00023f82 	srl	a3,v0,0x1e
+803d3224:	00043080 	sll	a2,a0,0x2
+803d3228:	00031900 	sll	v1,v1,0x4
+803d322c:	00431821 	addu	v1,v0,v1
+803d3230:	00e63025 	or	a2,a3,a2
+803d3234:	0062102b 	sltu	v0,v1,v0
+803d3238:	00862021 	addu	a0,a0,a2
+803d323c:	00442021 	addu	a0,v0,a0
+803d3240:	00033f82 	srl	a3,v1,0x1e
+803d3244:	00031080 	sll	v0,v1,0x2
+803d3248:	00043080 	sll	a2,a0,0x2
+803d324c:	00621021 	addu	v0,v1,v0
+803d3250:	00e63025 	or	a2,a3,a2
+803d3254:	00863021 	addu	a2,a0,a2
+803d3258:	0043182b 	sltu	v1,v0,v1
+803d325c:	00663021 	addu	a2,v1,a2
+803d3260:	afa20068 	sw	v0,104(sp)
+803d3264:	14c00048 	bnez	a2,803d3388 <online_ip_seq_show+0x3dc>
+803d3268:	afa6006c 	sw	a2,108(sp)
+803d326c:	0045001b 	divu	zero,v0,a1
+803d3270:	afa0006c 	sw	zero,108(sp)
+803d3274:	00002812 	mflo	a1
+803d3278:	080f4c3c 	j	803d30f0 <online_ip_seq_show+0x144>
+803d327c:	afa50068 	sw	a1,104(sp)
+803d3280:	3c0281a2 	lui	v0,0x81a2
+803d3284:	8c46fba0 	lw	a2,-1120(v0)
+803d3288:	3c058052 	lui	a1,0x8052
+803d328c:	0c02d42a 	jal	800b50a8 <seq_printf>
+803d3290:	24a5fa54 	addiu	a1,a1,-1452
+803d3294:	3c028054 	lui	v0,0x8054
+803d3298:	2442f3c0 	addiu	v0,v0,-3136
+803d329c:	afa20010 	sw	v0,16(sp)
+803d32a0:	3c028054 	lui	v0,0x8054
+803d32a4:	2442f3cc 	addiu	v0,v0,-3124
+803d32a8:	afa20014 	sw	v0,20(sp)
+803d32ac:	3c028054 	lui	v0,0x8054
+803d32b0:	2442f3dc 	addiu	v0,v0,-3108
+803d32b4:	afa20018 	sw	v0,24(sp)
+803d32b8:	3c028051 	lui	v0,0x8051
+803d32bc:	2442c208 	addiu	v0,v0,-15864
+803d32c0:	afa2001c 	sw	v0,28(sp)
+803d32c4:	3c028054 	lui	v0,0x8054
+803d32c8:	2442f3e4 	addiu	v0,v0,-3100
+803d32cc:	afa20020 	sw	v0,32(sp)
+803d32d0:	3c028054 	lui	v0,0x8054
+803d32d4:	2442f3f0 	addiu	v0,v0,-3088
+803d32d8:	afa20024 	sw	v0,36(sp)
+803d32dc:	3c028054 	lui	v0,0x8054
+803d32e0:	2442f3fc 	addiu	v0,v0,-3076
+803d32e4:	afa20028 	sw	v0,40(sp)
+803d32e8:	3c028054 	lui	v0,0x8054
+803d32ec:	2442f400 	addiu	v0,v0,-3072
+803d32f0:	afa2002c 	sw	v0,44(sp)
+803d32f4:	3c028054 	lui	v0,0x8054
+803d32f8:	2442f408 	addiu	v0,v0,-3064
+803d32fc:	afa20030 	sw	v0,48(sp)
+803d3300:	3c028054 	lui	v0,0x8054
+803d3304:	2442f410 	addiu	v0,v0,-3056
+803d3308:	afa20034 	sw	v0,52(sp)
+803d330c:	3c028054 	lui	v0,0x8054
+803d3310:	2442f41c 	addiu	v0,v0,-3044
+803d3314:	afa20038 	sw	v0,56(sp)
+803d3318:	3c058054 	lui	a1,0x8054
+803d331c:	3c068053 	lui	a2,0x8053
+803d3320:	3c078052 	lui	a3,0x8052
+803d3324:	3c028054 	lui	v0,0x8054
+803d3328:	02602021 	move	a0,s3
+803d332c:	24a5f374 	addiu	a1,a1,-3212
+803d3330:	24c69890 	addiu	a2,a2,-26480
+803d3334:	24e7e048 	addiu	a3,a3,-8120
+803d3338:	2442f428 	addiu	v0,v0,-3032
+803d333c:	0c02d42a 	jal	800b50a8 <seq_printf>
+803d3340:	afa2003c 	sw	v0,60(sp)
+803d3344:	8fbf00fc 	lw	ra,252(sp)
+803d3348:	8fb700f8 	lw	s7,248(sp)
+803d334c:	8fb600f4 	lw	s6,244(sp)
+803d3350:	8fb500f0 	lw	s5,240(sp)
+803d3354:	8fb400ec 	lw	s4,236(sp)
+803d3358:	8fb300e8 	lw	s3,232(sp)
+803d335c:	8fb200e4 	lw	s2,228(sp)
+803d3360:	8fb100e0 	lw	s1,224(sp)
+803d3364:	8fb000dc 	lw	s0,220(sp)
+803d3368:	00001021 	move	v0,zero
+803d336c:	03e00008 	jr	ra
+803d3370:	27bd0100 	addiu	sp,sp,256
+803d3374:	27a40060 	addiu	a0,sp,96
+803d3378:	0c05059c 	jal	80141670 <__div64_32>
+803d337c:	24050064 	li	a1,100
+803d3380:	080f4c2b 	j	803d30ac <online_ip_seq_show+0x100>
+803d3384:	8e040080 	lw	a0,128(s0)
+803d3388:	0c05059c 	jal	80141670 <__div64_32>
+803d338c:	27a40068 	addiu	a0,sp,104
+803d3390:	080f4c3d 	j	803d30f4 <online_ip_seq_show+0x148>
+803d3394:	8e021434 	lw	v0,5172(s0)
+
+803d3398 <online_ip_seq_stop>:
+803d3398:	0800a1e6 	j	80028798 <local_bh_enable>
+803d339c:	00000000 	nop
+
+803d33a0 <online_ip_seq_start>:
+803d33a0:	27bdffe0 	addiu	sp,sp,-32
+803d33a4:	afbf001c 	sw	ra,28(sp)
+803d33a8:	afa40010 	sw	a0,16(sp)
+803d33ac:	0c00a0d0 	jal	80028340 <local_bh_disable>
+803d33b0:	afa50014 	sw	a1,20(sp)
+803d33b4:	8fa50014 	lw	a1,20(sp)
+803d33b8:	8ca30004 	lw	v1,4(a1)
+803d33bc:	8ca20000 	lw	v0,0(a1)
+803d33c0:	00432825 	or	a1,v0,v1
+803d33c4:	14a00005 	bnez	a1,803d33dc <online_ip_seq_start+0x3c>
+803d33c8:	8fa40010 	lw	a0,16(sp)
+803d33cc:	8fbf001c 	lw	ra,28(sp)
+803d33d0:	24020001 	li	v0,1
+803d33d4:	03e00008 	jr	ra
+803d33d8:	27bd0020 	addiu	sp,sp,32
+803d33dc:	2446ffff 	addiu	a2,v0,-1
+803d33e0:	8fbf001c 	lw	ra,28(sp)
+803d33e4:	00c2102b 	sltu	v0,a2,v0
+803d33e8:	2463ffff 	addiu	v1,v1,-1
+803d33ec:	00433821 	addu	a3,v0,v1
+803d33f0:	080f4b2f 	j	803d2cbc <online_ip_get_idx>
+803d33f4:	27bd0020 	addiu	sp,sp,32
+
+803d33f8 <clear_online_ip_flag>:
+803d33f8:	27bdffe0 	addiu	sp,sp,-32
+803d33fc:	afbf001c 	sw	ra,28(sp)
+803d3400:	0c00a0d0 	jal	80028340 <local_bh_disable>
+803d3404:	afa40010 	sw	a0,16(sp)
+803d3408:	3c098066 	lui	t1,0x8066
+803d340c:	8d223b20 	lw	v0,15136(t1)
+803d3410:	1040001c 	beqz	v0,803d3484 <clear_online_ip_flag+0x8c>
+803d3414:	8fa40010 	lw	a0,16(sp)
+803d3418:	24020001 	li	v0,1
+803d341c:	00822004 	sllv	a0,v0,a0
+803d3420:	00042027 	nor	a0,zero,a0
+803d3424:	00004021 	move	t0,zero
+803d3428:	3c0781a2 	lui	a3,0x81a2
+803d342c:	8ce3fba4 	lw	v1,-1116(a3)
+803d3430:	000830c0 	sll	a2,t0,0x3
+803d3434:	00661821 	addu	v1,v1,a2
+803d3438:	8c620000 	lw	v0,0(v1)
+803d343c:	1062000c 	beq	v1,v0,803d3470 <clear_online_ip_flag+0x78>
+803d3440:	00000000 	nop
+803d3444:	8c45000c 	lw	a1,12(v0)
+803d3448:	8c430010 	lw	v1,16(v0)
+803d344c:	00a42824 	and	a1,a1,a0
+803d3450:	00641824 	and	v1,v1,a0
+803d3454:	ac45000c 	sw	a1,12(v0)
+803d3458:	ac430010 	sw	v1,16(v0)
+803d345c:	8ce3fba4 	lw	v1,-1116(a3)
+803d3460:	8c420000 	lw	v0,0(v0)
+803d3464:	00661821 	addu	v1,v1,a2
+803d3468:	1443fff6 	bne	v0,v1,803d3444 <clear_online_ip_flag+0x4c>
+803d346c:	00000000 	nop
+803d3470:	8d223b20 	lw	v0,15136(t1)
+803d3474:	25080001 	addiu	t0,t0,1
+803d3478:	0102102b 	sltu	v0,t0,v0
+803d347c:	1440ffec 	bnez	v0,803d3430 <clear_online_ip_flag+0x38>
+803d3480:	8ce3fba4 	lw	v1,-1116(a3)
+803d3484:	8fbf001c 	lw	ra,28(sp)
+803d3488:	0800a1e6 	j	80028798 <local_bh_enable>
+803d348c:	27bd0020 	addiu	sp,sp,32
+
+803d3490 <set_online_ip_flag>:
+803d3490:	27bdffe0 	addiu	sp,sp,-32
+803d3494:	afbf001c 	sw	ra,28(sp)
+803d3498:	0c00a0d0 	jal	80028340 <local_bh_disable>
+803d349c:	afa40010 	sw	a0,16(sp)
+803d34a0:	3c088066 	lui	t0,0x8066
+803d34a4:	8d023b20 	lw	v0,15136(t0)
+803d34a8:	10400018 	beqz	v0,803d350c <set_online_ip_flag+0x7c>
+803d34ac:	8fa40010 	lw	a0,16(sp)
+803d34b0:	24020001 	li	v0,1
+803d34b4:	00822004 	sllv	a0,v0,a0
+803d34b8:	00003821 	move	a3,zero
+803d34bc:	3c0681a2 	lui	a2,0x81a2
+803d34c0:	8cc3fba4 	lw	v1,-1116(a2)
+803d34c4:	000728c0 	sll	a1,a3,0x3
+803d34c8:	00651821 	addu	v1,v1,a1
+803d34cc:	8c620000 	lw	v0,0(v1)
+803d34d0:	10620009 	beq	v1,v0,803d34f8 <set_online_ip_flag+0x68>
+803d34d4:	00000000 	nop
+803d34d8:	8c43000c 	lw	v1,12(v0)
+803d34dc:	00641825 	or	v1,v1,a0
+803d34e0:	ac43000c 	sw	v1,12(v0)
+803d34e4:	8cc3fba4 	lw	v1,-1116(a2)
+803d34e8:	8c420000 	lw	v0,0(v0)
+803d34ec:	00651821 	addu	v1,v1,a1
+803d34f0:	1443fff9 	bne	v0,v1,803d34d8 <set_online_ip_flag+0x48>
+803d34f4:	00000000 	nop
+803d34f8:	8d023b20 	lw	v0,15136(t0)
+803d34fc:	24e70001 	addiu	a3,a3,1
+803d3500:	00e2102b 	sltu	v0,a3,v0
+803d3504:	1440ffef 	bnez	v0,803d34c4 <set_online_ip_flag+0x34>
+803d3508:	8cc3fba4 	lw	v1,-1116(a2)
+803d350c:	8fbf001c 	lw	ra,28(sp)
+803d3510:	0800a1e6 	j	80028798 <local_bh_enable>
+803d3514:	27bd0020 	addiu	sp,sp,32
+
+803d3518 <init_online_ip>:
+803d3518:	27bdffc0 	addiu	sp,sp,-64
+803d351c:	afbf003c 	sw	ra,60(sp)
+803d3520:	afb20038 	sw	s2,56(sp)
+803d3524:	afb10034 	sw	s1,52(sp)
+803d3528:	afb00030 	sw	s0,48(sp)
+803d352c:	00809021 	move	s2,a0
+803d3530:	3c048054 	lui	a0,0x8054
+803d3534:	2484f4a8 	addiu	a0,a0,-2904
+803d3538:	24051450 	li	a1,5200
+803d353c:	00003021 	move	a2,zero
+803d3540:	00003821 	move	a3,zero
+803d3544:	afa00010 	sw	zero,16(sp)
+803d3548:	0c01f1e2 	jal	8007c788 <kmem_cache_create>
+803d354c:	3c118057 	lui	s1,0x8057
+803d3550:	1040005b 	beqz	v0,803d36c0 <init_online_ip+0x1a8>
+803d3554:	ae22d850 	sw	v0,-10160(s1)
+803d3558:	3c108066 	lui	s0,0x8066
+803d355c:	8e043b20 	lw	a0,15136(s0)
+803d3560:	340580d0 	li	a1,0x80d0
+803d3564:	0c02484e 	jal	80092138 <__kmalloc>
+803d3568:	000420c0 	sll	a0,a0,0x3
+803d356c:	3c0581a2 	lui	a1,0x81a2
+803d3570:	1040005c 	beqz	v0,803d36e4 <init_online_ip+0x1cc>
+803d3574:	aca2fba4 	sw	v0,-1116(a1)
+803d3578:	8e023b20 	lw	v0,15136(s0)
+803d357c:	1040000b 	beqz	v0,803d35ac <init_online_ip+0x94>
+803d3580:	00001821 	move	v1,zero
+803d3584:	8ca4fba4 	lw	a0,-1116(a1)
+803d3588:	000310c0 	sll	v0,v1,0x3
+803d358c:	24630001 	addiu	v1,v1,1
+803d3590:	00821021 	addu	v0,a0,v0
+803d3594:	ac420004 	sw	v0,4(v0)
+803d3598:	ac420000 	sw	v0,0(v0)
+803d359c:	8e023b20 	lw	v0,15136(s0)
+803d35a0:	0062102b 	sltu	v0,v1,v0
+803d35a4:	1440fff8 	bnez	v0,803d3588 <init_online_ip+0x70>
+803d35a8:	8ca4fba4 	lw	a0,-1116(a1)
+803d35ac:	3c0481a2 	lui	a0,0x81a2
+803d35b0:	2484fba8 	addiu	a0,a0,-1112
+803d35b4:	0c05bfbd 	jal	8016fef4 <get_random_bytes>
+803d35b8:	24050004 	li	a1,4
+803d35bc:	3c048066 	lui	a0,0x8066
+803d35c0:	3c02803d 	lui	v0,0x803d
+803d35c4:	24423710 	addiu	v0,v0,14096
+803d35c8:	24841d88 	addiu	a0,a0,7560
+803d35cc:	2405001f 	li	a1,31
+803d35d0:	00003021 	move	a2,zero
+803d35d4:	27a70018 	addiu	a3,sp,24
+803d35d8:	afa20020 	sw	v0,32(sp)
+803d35dc:	afa00018 	sw	zero,24(sp)
+803d35e0:	afa0001c 	sw	zero,28(sp)
+803d35e4:	afa00024 	sw	zero,36(sp)
+803d35e8:	0c0edec7 	jal	803b7b1c <__netlink_kernel_create>
+803d35ec:	afa00028 	sw	zero,40(sp)
+803d35f0:	3c0381a2 	lui	v1,0x81a2
+803d35f4:	10400021 	beqz	v0,803d367c <init_online_ip+0x164>
+803d35f8:	ac62fbb8 	sw	v0,-1096(v1)
+803d35fc:	8e023b20 	lw	v0,15136(s0)
+803d3600:	3c048049 	lui	a0,0x8049
+803d3604:	3c078054 	lui	a3,0x8054
+803d3608:	2484e320 	addiu	a0,a0,-7392
+803d360c:	24e7f528 	addiu	a3,a3,-2776
+803d3610:	2405041d 	li	a1,1053
+803d3614:	2406000c 	li	a2,12
+803d3618:	0c0f4aa7 	jal	803d2a9c <bm_k_info>
+803d361c:	afa20010 	sw	v0,16(sp)
+803d3620:	8e460028 	lw	a2,40(s2)
+803d3624:	3c048054 	lui	a0,0x8054
+803d3628:	3c078049 	lui	a3,0x8049
+803d362c:	2484f558 	addiu	a0,a0,-2728
+803d3630:	24e7e330 	addiu	a3,a3,-7376
+803d3634:	24050120 	li	a1,288
+803d3638:	0c039ea5 	jal	800e7a94 <proc_create_data>
+803d363c:	afa00010 	sw	zero,16(sp)
+803d3640:	10400017 	beqz	v0,803d36a0 <init_online_ip+0x188>
+803d3644:	3c048049 	lui	a0,0x8049
+803d3648:	3c078054 	lui	a3,0x8054
+803d364c:	2484e39c 	addiu	a0,a0,-7268
+803d3650:	24e7f588 	addiu	a3,a3,-2680
+803d3654:	24050287 	li	a1,647
+803d3658:	0c0f4aa7 	jal	803d2a9c <bm_k_info>
+803d365c:	2406000c 	li	a2,12
+803d3660:	00001021 	move	v0,zero
+803d3664:	8fbf003c 	lw	ra,60(sp)
+803d3668:	8fb20038 	lw	s2,56(sp)
+803d366c:	8fb10034 	lw	s1,52(sp)
+803d3670:	8fb00030 	lw	s0,48(sp)
+803d3674:	03e00008 	jr	ra
+803d3678:	27bd0040 	addiu	sp,sp,64
+803d367c:	3c048049 	lui	a0,0x8049
+803d3680:	3c078054 	lui	a3,0x8054
+803d3684:	2484e320 	addiu	a0,a0,-7392
+803d3688:	24e7f510 	addiu	a3,a3,-2800
+803d368c:	24050418 	li	a1,1048
+803d3690:	0c0f4a62 	jal	803d2988 <bm_k_error>
+803d3694:	2406000c 	li	a2,12
+803d3698:	080f4d99 	j	803d3664 <init_online_ip+0x14c>
+803d369c:	24020001 	li	v0,1
+803d36a0:	3c078054 	lui	a3,0x8054
+803d36a4:	2484e39c 	addiu	a0,a0,-7268
+803d36a8:	24e7f564 	addiu	a3,a3,-2716
+803d36ac:	24050283 	li	a1,643
+803d36b0:	0c0f4a62 	jal	803d2988 <bm_k_error>
+803d36b4:	2406000c 	li	a2,12
+803d36b8:	080f4d99 	j	803d3664 <init_online_ip+0x14c>
+803d36bc:	00001021 	move	v0,zero
+803d36c0:	3c048049 	lui	a0,0x8049
+803d36c4:	3c078054 	lui	a3,0x8054
+803d36c8:	2484e320 	addiu	a0,a0,-7392
+803d36cc:	24e7f4b8 	addiu	a3,a3,-2888
+803d36d0:	240503ff 	li	a1,1023
+803d36d4:	0c0f4a62 	jal	803d2988 <bm_k_error>
+803d36d8:	2406000c 	li	a2,12
+803d36dc:	080f4d99 	j	803d3664 <init_online_ip+0x14c>
+803d36e0:	24020001 	li	v0,1
+803d36e4:	3c048049 	lui	a0,0x8049
+803d36e8:	3c078054 	lui	a3,0x8054
+803d36ec:	2484e320 	addiu	a0,a0,-7392
+803d36f0:	24e7f4ec 	addiu	a3,a3,-2836
+803d36f4:	24050405 	li	a1,1029
+803d36f8:	0c0f4a62 	jal	803d2988 <bm_k_error>
+803d36fc:	2406000c 	li	a2,12
+803d3700:	0c01f11d 	jal	8007c474 <kmem_cache_destroy>
+803d3704:	8e24d850 	lw	a0,-10160(s1)
+803d3708:	080f4d99 	j	803d3664 <init_online_ip+0x14c>
+803d370c:	24020001 	li	v0,1
+
+803d3710 <statistic_rcv>:
+803d3710:	3c05803d 	lui	a1,0x803d
+803d3714:	24a53c28 	addiu	a1,a1,15400
+803d3718:	080ee116 	j	803b8458 <netlink_rcv_skb>
+803d371c:	00000000 	nop
+
+803d3720 <get_online_ip_info>:
+803d3720:	27bdfeb8 	addiu	sp,sp,-328
+803d3724:	afbf0144 	sw	ra,324(sp)
+803d3728:	afbe0140 	sw	s8,320(sp)
+803d372c:	afb7013c 	sw	s7,316(sp)
+803d3730:	afb60138 	sw	s6,312(sp)
+803d3734:	afb50134 	sw	s5,308(sp)
+803d3738:	afb40130 	sw	s4,304(sp)
+803d373c:	afb3012c 	sw	s3,300(sp)
+803d3740:	afb20128 	sw	s2,296(sp)
+803d3744:	afb10124 	sw	s1,292(sp)
+803d3748:	afb00120 	sw	s0,288(sp)
+803d374c:	3c1181a2 	lui	s1,0x81a2
+803d3750:	8e22fba0 	lw	v0,-1120(s1)
+803d3754:	8c830000 	lw	v1,0(a0)
+803d3758:	00808021 	move	s0,a0
+803d375c:	00023140 	sll	a2,v0,0x5
+803d3760:	00022080 	sll	a0,v0,0x2
+803d3764:	00c42023 	subu	a0,a2,a0
+803d3768:	00821021 	addu	v0,a0,v0
+803d376c:	000210c0 	sll	v0,v0,0x3
+803d3770:	24420014 	addiu	v0,v0,20
+803d3774:	0062982b 	sltu	s3,v1,v0
+803d3778:	0053180a 	.word	0x53180a
+803d377c:	24640013 	addiu	a0,v1,19
+803d3780:	2402fffc 	li	v0,-4
+803d3784:	00a09021 	move	s2,a1
+803d3788:	00822024 	and	a0,a0,v0
+803d378c:	00003021 	move	a2,zero
+803d3790:	240500d0 	li	a1,208
+803d3794:	2407ffff 	li	a3,-1
+803d3798:	0c0e078b 	jal	80381e2c <__alloc_skb>
+803d379c:	00609821 	move	s3,v1
+803d37a0:	10400107 	beqz	v0,803d3bc0 <get_online_ip_info+0x4a0>
+803d37a4:	ae420000 	sw	v0,0(s2)
+803d37a8:	8e060008 	lw	a2,8(s0)
+803d37ac:	8e05000c 	lw	a1,12(s0)
+803d37b0:	00003821 	move	a3,zero
+803d37b4:	00402021 	move	a0,v0
+803d37b8:	afb30010 	sw	s3,16(sp)
+803d37bc:	0c0ed62c 	jal	803b58b0 <__nlmsg_put>
+803d37c0:	afa00014 	sw	zero,20(sp)
+803d37c4:	8e440000 	lw	a0,0(s2)
+803d37c8:	3c1081a2 	lui	s0,0x81a2
+803d37cc:	8e02fbb0 	lw	v0,-1104(s0)
+803d37d0:	8c8400cc 	lw	a0,204(a0)
+803d37d4:	8e03fbb4 	lw	v1,-1100(s0)
+803d37d8:	afa40114 	sw	a0,276(sp)
+803d37dc:	8fa50114 	lw	a1,276(sp)
+803d37e0:	27a40108 	addiu	a0,sp,264
+803d37e4:	aca20010 	sw	v0,16(a1)
+803d37e8:	0c013f90 	jal	8004fe40 <ktime_get>
+803d37ec:	aca30014 	sw	v1,20(a1)
+803d37f0:	8fa2010c 	lw	v0,268(sp)
+803d37f4:	3c043b9a 	lui	a0,0x3b9a
