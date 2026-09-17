@@ -13,32 +13,30 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace dev traffic upload producer
+      - name: Resolve dev traffic producer call
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libcloud.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/dev-traffic-upload-producer-call.txt'
+          out='docs/reverse-generated/dev-traffic-a0-3-call.txt'
           {
-            echo '===== RUN 83 GOAL ====='
-            echo 'Disassemble cmd_cloud_info_dev_traffic_upload and identify the first indirect call made with a0=3.'
-            echo '===== cmd_cloud_info_dev_traffic_upload 0x30ae0..0x30c60 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x30ae0 --stop-address=0x30c60 "$lib" || true
-            echo '===== TRAFFIC / HOST SYMBOLS ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'traffic|host|rate|stat|upload|cmd_send|uc_api|inner|cloud' || true
+            echo '===== RUN 84 GOAL ====='
+            echo 'Resolve cmd_cloud_info_dev_traffic_upload call at 0x30b3c: lw t9,-32576(gp), gp=0x93370, GOT=0x8b430, called with a0=3.'
+            echo '===== GOT BYTES AROUND 0x8b430 ====='
+            mipsel-linux-gnu-objdump -s -j .got "$lib" | grep -Ei '^ 8b420|^ 8b430|^ 8b440|^ 8b450' || true
             echo '===== DYNSYM ====='
             mipsel-linux-gnu-readelf -sW "$lib" | nl -ba | sed -n '1,1700p' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: dev-traffic-upload-producer-call
-          path: docs/reverse-generated/dev-traffic-upload-producer-call.txt
+          name: dev-traffic-a0-3-call
+          path: docs/reverse-generated/dev-traffic-a0-3-call.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/dev-traffic-upload-producer-call.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic producer-call report'; git push || true; fi
+          git add docs/reverse-generated/dev-traffic-a0-3-call.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add dev traffic a0=3 call report'; git push || true; fi
