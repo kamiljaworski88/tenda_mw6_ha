@@ -13,30 +13,30 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace direct basic info references
+      - name: Trace BasicInfo protobuf schema
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           lib='firmware-src/RootFS-unpacked/lib/libucapi.so'
           mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/sys-set-basic-info-direct-refs.txt'
+          out='docs/reverse-generated/sys-basic-info-schema.txt'
           {
-            echo '===== RUN 56 GOAL ====='
-            echo 'Find direct disassembly references to uc_api_set_basic_info at 0x8348.'
-            echo '===== SYMBOL ====='
-            mipsel-linux-gnu-readelf -sW "$lib" | grep 'uc_api_set_basic_info' || true
-            echo '===== DIRECT REFERENCES ====='
-            mipsel-linux-gnu-objdump -drwC "$lib" | grep -E -B10 -A12 'jal[^r].*8348|8348 <uc_api_set_basic_info|0x8348' || true
+            echo '===== RUN 57 GOAL ====='
+            echo 'Find BasicInfo protobuf/message descriptor and field names used by M_SYS cmd0 response.'
+            echo '===== BASICINFO / DESCRIPTOR SYMBOLS ====='
+            mipsel-linux-gnu-readelf -sW "$lib" | grep -Ei 'basic.?info|descriptor|protobuf|serial' || true
+            echo '===== BASICINFO / SERIAL STRINGS ====='
+            strings -a -t x "$lib" | grep -Ei 'BasicInfo|basic_info|serial(_num|\.number|number)?|sys\.model|soft\.ver|descriptor' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: sys-set-basic-info-direct-refs
-          path: docs/reverse-generated/sys-set-basic-info-direct-refs.txt
+          name: sys-basic-info-schema
+          path: docs/reverse-generated/sys-basic-info-schema.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/sys-set-basic-info-direct-refs.txt
-          if ! git diff --cached --quiet; then git commit -m 'reverse: add direct basic info reference trace'; git push || true; fi
+          git add docs/reverse-generated/sys-basic-info-schema.txt
+          if ! git diff --cached --quiet; then git commit -m 'reverse: add BasicInfo schema trace'; git push || true; fi
