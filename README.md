@@ -9,7 +9,7 @@ Reverse engineering and Home Assistant integration for Tenda Nova MW6.
 - Firmware observed: `V1.0.0.32(9821)`
 - Local proprietary API: TCP `9000`
 - UPnP/IGD: TCP `5500`
-- Additional service: TCP `12598`
+- Additional internal bridge: TCP `12598`
 
 ## Confirmed TCP/9000 protocol
 
@@ -25,67 +25,75 @@ Observed header layout:
 - byte 8: module
 - byte 9: command
 
-Confirmed commands:
+Confirmed read-only commands:
 
 | Module | Command | Name | Result |
 |---|---:|---|---|
 | `0x18` (24) | `0x00` | `M_MESH_AUTH / GET_STA` | works |
 | `0x18` (24) | `0x01` | `M_MESH_AUTH / LOGIN` | works |
-| `0x17` (23) | `0x08` | `M_MESH_ADVANCE / QOS_GET` | global QoS config, not client list |
-| `0x17` (23) | `0x0f` | `M_MESH_ADVANCE / HIGH_DEVICE_GET` | high-priority-device state, not client list |
+| `0x14` (20) | `0x00` | `M_MESH_HOSTS / GET` (`GetHostList`) | works; returns HostLists |
+| `0x17` (23) | `0x08` | `M_MESH_ADVANCE / QOS_GET` | global QoS config |
+| `0x17` (23) | `0x0f` | `M_MESH_ADVANCE / HIGH_DEVICE_GET` | high-priority-device state |
+| `0x12` (18) | `0x08` | `M_MESH_WAN / GetTrafficInfo` | aggregate WAN traffic |
 
-Successful `QOS_GET` response payload observed after authentication:
+## Confirmed HostInfo protobuf schema
 
-```text
-00 00 00 00 08 01 10 80 c0 3e 18 80 c0 3e 20 00
-```
+Firmware strings from `onhosts.pb-c.c` and live TCP/9000 captures map the HostInfo fields as follows:
 
-The two protobuf-like varints `80 c0 3e` decode to `1,024,000`, consistent with QoS bandwidth configuration rather than per-client traffic.
+| Field | Name |
+|---:|---|
+| 1 | `ipaddr` |
+| 2 | `ethaddr` |
+| 3 | `access` |
+| 4 | `assoc_sn` |
+| 5 | `condtion_time` |
+| 6 | `online` |
+| 7 | `uprate` |
+| 8 | `downrate` |
+| 9 | `signal` |
+| 10 | `name` |
 
-`HIGH_DEVICE_GET` response:
+The local HostLists response therefore already gives the integration a stable source for IP, MAC, client name, associated mesh-node serial and Wi-Fi signal.
 
-```text
-00 00 00 00 08 01
-```
+### Important rate caveat
 
-## Current research target
+On the tested MW6 firmware, fields `online`, `uprate` and `downrate` were observed as zero even while the client was active and generating heavy traffic. Firmware disassembly proves that rate calculation exists internally and uses two snapshots of kernel per-client counters, but the live path still needs one more reverse-engineering step before these values can be exposed as trustworthy Home Assistant entities.
 
-Do **not** brute-force command IDs. The current target is the firmware's device inventory/traffic path.
+## Home Assistant integration status
 
-Firmware reverse-engineering evidence shows separate processes/services including:
-
-- `device_list`
-- `ucloud`
-- `redis-server`
-- `cmdsrv -l tcp://0.0.0.0:12598 -R tcp://127.0.0.1:6379`
-
-Known cloud-info command names include device upload/status operations. The goal is to identify the read-only internal command/data structure that exposes connected clients and, if available:
-
-- hostname
-- IP address
-- MAC address
-- online state
-- mesh node
-- upload rate
-- download rate
-- cumulative traffic
-
-## Safety rule
-
-Development probes should issue only confirmed read-only GET operations. Do not probe unknown command numbers or send SET operations to a production mesh.
-
-## Planned Home Assistant integration
-
-Target structure:
+A HACS-compatible custom integration now exists in:
 
 ```text
 custom_components/tenda_mw6/
-  __init__.py
-  manifest.json
-  config_flow.py
-  const.py
-  coordinator.py
-  sensor.py
 ```
 
-The integration should use local polling only and should not depend on Tenda cloud services.
+Current behavior:
+
+- local-only communication with the MW6 master on TCP/9000,
+- 10-second coordinator polling,
+- authentication using a previously captured successful LOGIN payload,
+- one HA device per discovered client MAC,
+- signal sensor,
+- IP-address diagnostic sensor,
+- associated mesh-node serial diagnostic sensor,
+- automatic creation of entities for clients discovered after integration startup,
+- raw `online/uprate/downrate` values kept only as diagnostic attributes until live semantics are reliable.
+
+The integration intentionally does not depend on Tenda cloud services.
+
+## Current research target
+
+The remaining blocker for the original project goal is reliable per-client traffic. Firmware reverse engineering has already identified:
+
+- `device_list`, `confsrv`, `libcommon` and kernel online-IP statistics,
+- `fill_host_lists_rate`,
+- `netlink_get_statistic_info`,
+- 232-byte online-IP records,
+- two-snapshot rate calculation with a ~500 ms interval,
+- writes into the internal HostInfo `uprate/downrate` fields.
+
+Next work should focus on why the live HostLists path does not receive the populated rate values, not on brute-forcing unrelated command IDs.
+
+## Safety rule
+
+Development probes issue only confirmed read-only operations. Unknown SET commands are not used against the production mesh.
