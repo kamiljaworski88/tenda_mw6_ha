@@ -1,0 +1,131 @@
+===== RUN 49 GOAL =====
+Resolve callback targets for M_SYS command IDs 0..4, especially cmd 0.
+===== KNOWN GP / GOT SLOTS FROM uc_api_enable_m_sys =====
+GP=0x39ed0
+cmd0 GOT=0x3200c (gp-32452)
+cmd1 GOT=0x32098 (gp-32312)
+cmd2 GOT=0x3221c (gp-31924)
+cmd3 GOT=0x32188 (gp-32072)
+cmd4 GOT=0x320f4 (gp-32220)
+===== RELOCATIONS FOR THESE GOT SLOTS =====
+===== GOT BYTES AROUND TARGET SLOTS =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+Contents of section .got:
+ 31ff0 908a0000 74960100 5c550100 64b90100  ....t...\U..d...
+ 32000 40e40100 685f0100 f4570000 e4670100  @...h_...W...g..
+ 32010 0c020100 946e0000 d4b20100 ccba0100  .....n..........
+ 32020 686d0100 30e40100 3c870000 20e40100  hm..0...<... ...
+ 32030 849a0000 28860100 68a80100 280f0100  ....(...h...(...
+ 32040 10ac0000 14bb0100 24fc0000 a0be0000  ........$.......
+ 32050 34050100 84450100 f8150100 30770000  4....E......0w..
+ 32060 64020100 70720100 10e40100 5cbb0100  d...pr......\...
+ 32070 e8830100 2c7c0100 a84a0100 00e40100  ....,|...J......
+ 32080 1cb90100 900b0100 f0e30100 8cb80100  ................
+ 32090 e4300100 d4f30000 9c670100 20ac0000  .0.......g.. ...
+ 320a0 68500000 e0e30100 98850100 d0e30100  hP..............
+ 320b0 c0e30100 b0e30100 b8490100 6c0b0100  .........I..l...
+ 320c0 b0560100 64190100 c0040100 184d0100  .V..d........M..
+ 320d0 dc490100 a0e30100 90e30100 80e30100  .I..............
+ 320e0 70e30100 e4950100 60e30100 0c0d0100  p.......`.......
+ 320f0 14e10000 c8660100 50e30100 b8720100  .....f..P....r..
+ 32100 40e30100 30e30100 18740000 48a70100  @...0....t..H...
+ 32110 28a50000 20a20100 409d0100 b44f0000  (... ...@....O..
+ 32120 78840100 d0220300 fc3a0100 20e30100  x...."...:.. ...
+ 32130 0c310100 10e30100 80110100 00e30100  .1..............
+ 32140 f4b90100 e47b0100 54540100 f0e20100  .....{..TT......
+ 32150 00000000 6c890000 b80d0100 e0e20100  ....l...........
+ 32160 80620100 40410100 3caf0100 84040100  .b..@A..<.......
+ 32170 d0e20100 00730100 547b0100 e46e0100  .....s..T{...n..
+ 32180 10830100 48510100 10670100 086d0000  ....HQ...g...m..
+ 32190 c0e20100 b0e20100 50850100 144f0100  ........P....O..
+ 321a0 e0850100 44c60100 70860100 acb90100  ....D...p.......
+ 321b0 44b20100 889d0100 a0e20100 90e20100  D...............
+ 321c0 e4050100 c8820100 bc4f0100 0c950100  .........O......
+ 321d0 98710100 d01e0300 80e20100 cc3d0100  .q...........=..
+ 321e0 70e20100 00000000 d44b0100 48730100  p........K..Hs..
+ 321f0 00000000 60e20100 b0a20100 08850100  ....`...........
+ 32200 50e20100 40e20100 2c960100 d4b80100  P...@...,.......
+ 32210 e0710100 40eb0000 6c780000 58670100  .q..@...lx..Xg..
+ 32220 68a20100 d8a70100 00000000 30e20100  h...........0...
+ 32230 54950100 206d0100 c0110100 9c7b0100  T... m.......{..
+===== SYS HANDLER SYMBOL ADDRESSES =====
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   217: 0001679c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_advance_info_hdl_reg
+   240: 000166c8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_time_zone_hdl_reg
+   277: 00016710    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_reboot_hdl_reg
+   314: 00016758    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_reset_hdl_reg
+===== ENABLE FUNCTION CHECK =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00006a60 <uc_api_enable_m_sys@@Base+0x7c>:
+    6a60:	10600041 	beqz	v1,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6a64:	8f918024 	lw	s1,-32732(gp)
+    6a68:	8e030004 	lw	v1,4(s0)
+    6a6c:	8f878024 	lw	a3,-32732(gp)
+    6a70:	8f99813c 	lw	t9,-32452(gp)
+    6a74:	afa20010 	sw	v0,16(sp)
+    6a78:	afa30014 	sw	v1,20(sp)
+    6a7c:	24e7ec90 	addiu	a3,a3,-4976
+    6a80:	24040001 	li	a0,1
+    6a84:	2625ec88 	addiu	a1,s1,-4984
+    6a88:	0320f809 	jalr	t9
+    6a8c:	00003021 	move	a2,zero
+    6a90:	14400035 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6a94:	8fbc0018 	lw	gp,24(sp)
+    6a98:	8e030008 	lw	v1,8(s0)
+    6a9c:	8e02000c 	lw	v0,12(s0)
+    6aa0:	8f878024 	lw	a3,-32732(gp)
+    6aa4:	8f9981c8 	lw	t9,-32312(gp)
+    6aa8:	afa30010 	sw	v1,16(sp)
+    6aac:	afa20014 	sw	v0,20(sp)
+    6ab0:	24e7eca8 	addiu	a3,a3,-4952
+    6ab4:	24040001 	li	a0,1
+    6ab8:	2625ec88 	addiu	a1,s1,-4984
+    6abc:	0320f809 	jalr	t9
+    6ac0:	24060001 	li	a2,1
+    6ac4:	14400028 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6ac8:	8fbc0018 	lw	gp,24(sp)
+    6acc:	8e030010 	lw	v1,16(s0)
+    6ad0:	8e020014 	lw	v0,20(s0)
+    6ad4:	8f878024 	lw	a3,-32732(gp)
+    6ad8:	8f99834c 	lw	t9,-31924(gp)
+    6adc:	afa30010 	sw	v1,16(sp)
+    6ae0:	afa20014 	sw	v0,20(sp)
+    6ae4:	24e7ecc4 	addiu	a3,a3,-4924
+    6ae8:	24040001 	li	a0,1
+    6aec:	2625ec88 	addiu	a1,s1,-4984
+    6af0:	0320f809 	jalr	t9
+    6af4:	24060002 	li	a2,2
+    6af8:	1440001b 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6afc:	8fbc0018 	lw	gp,24(sp)
+    6b00:	8e030018 	lw	v1,24(s0)
+    6b04:	8e02001c 	lw	v0,28(s0)
+    6b08:	8f878024 	lw	a3,-32732(gp)
+    6b0c:	8f9982b8 	lw	t9,-32072(gp)
+    6b10:	afa30010 	sw	v1,16(sp)
+    6b14:	afa20014 	sw	v0,20(sp)
+    6b18:	24e7ecd4 	addiu	a3,a3,-4908
+    6b1c:	24040001 	li	a0,1
+    6b20:	2625ec88 	addiu	a1,s1,-4984
+    6b24:	0320f809 	jalr	t9
+    6b28:	24060003 	li	a2,3
+    6b2c:	1440000e 	bnez	v0,6b68 <uc_api_enable_m_sys@@Base+0x184>
+    6b30:	8fbc0018 	lw	gp,24(sp)
+    6b34:	8e030020 	lw	v1,32(s0)
+    6b38:	8e020024 	lw	v0,36(s0)
+    6b3c:	8f878024 	lw	a3,-32732(gp)
+    6b40:	8f998224 	lw	t9,-32220(gp)
+    6b44:	afa30010 	sw	v1,16(sp)
+    6b48:	afa20014 	sw	v0,20(sp)
+    6b4c:	2625ec88 	addiu	a1,s1,-4984
+    6b50:	24e7ece4 	addiu	a3,a3,-4892
+    6b54:	24040001 	li	a0,1
+    6b58:	0320f809 	jalr	t9
+    6b5c:	24060004 	li	a2,4
+    6b60:	10400002 	beqz	v0,6b6c <uc_api_enable_m_sys@@Base+0x188>
