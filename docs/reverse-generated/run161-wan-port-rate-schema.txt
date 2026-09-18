@@ -1,0 +1,7 @@
+===== RUN 161: wan_port_rate schema =====
+descriptor 0x3fd84 name WanPortRate sizeof 40 n_fields 5 fields 0x3d64c
+id=1 name=idx label=0 type=0 quant=0x0 offset=0xc descriptor=0x0 flags=0x0
+id=2 name=uprate label=0 type=0 quant=0x0 offset=0x10 descriptor=0x0 flags=0x0
+id=3 name=downrate label=0 type=0 quant=0x0 offset=0x14 descriptor=0x0 flags=0x0
+id=4 name=total_up label=1 type=0 quant=0x18 offset=0x1c descriptor=0x0 flags=0x0
+id=5 name=total_down label=1 type=0 quant=0x20 offset=0x24 descriptor=0x0 flags=0x0
