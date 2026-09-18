@@ -109,3 +109,56 @@ The highest-value live distinction remains:
 `tools/mw6_probe.py --diagnose-rates` captures IP and assoc_sn across the
 same >45-second window, so an IP or node transition will also be visible in a
 single run.
+
+
+## Run 156 — exact wireless identity source
+
+The wireless path is now resolved more precisely.
+
+Inside `get_all_wireless_client`, the local helper at `0x4087b8` is
+identified by its own `__FUNCTION__` string as:
+
+`find_if_arp_in_arp_list_by_mac`
+
+Its loop walks the current ARP-entry array and performs:
+
+- a 6-byte MAC comparison against the requested client MAC,
+- interface/name filtering,
+- returns the matching ARP entry.
+
+The ARP entry layout used here is:
+
+| ARP entry offset | Meaning |
+| --- | --- |
+| `+0x00` | IPv4 |
+| `+0x04` | MAC (6 bytes) |
+| `+0x0a` | interface/name area |
+
+The wireless client builder then copies:
+
+```text
+ARP entry +0x00  --4 B--> raw_client +0x50
+ARP entry +0x04  --6 B--> raw_client +0x54
+```
+
+Therefore, for wireless clients:
+
+```text
+current /proc/net/arp identity
+        ↓
+raw device_list record
+        ↓
+central client hash
+        ↓
+HostInfo.ipaddr / HostInfo.ethaddr
+```
+
+This makes a generic persistent HostInfo IP/MAC mismatch with kernel
+`online_ip` unlikely during stable traffic:
+
+- userspace identity is refreshed from current ARP state,
+- kernel online_ip IP comes from the packet's IPv4 source,
+- kernel online_ip MAC comes from the reconstructed Ethernet source MAC.
+
+A transient mismatch around DHCP/ARP changes remains possible, but static code
+does not support the earlier idea of a permanently stale cached identity.
