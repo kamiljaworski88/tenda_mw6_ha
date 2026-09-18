@@ -16,165 +16,148 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
           python3 -m pip install --break-system-packages pyelftools
-      - name: Resolve timer dispatch and client-list publish
+      - name: Resolve device_list timer dispatch and publish channel
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run166
+          mkdir -p docs/reverse-generated /tmp/run167
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt'
-          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run166/dis.txt
-          mipsel-linux-gnu-readelf -A "$dev" > /tmp/run166/abi.txt
-          mipsel-linux-gnu-readelf -Ws "$dev" > /tmp/run166/syms.txt
-          strings -tx "$dev" > /tmp/run166/strings.txt
+          out='docs/reverse-generated/run167-device-list-dispatch-channel.txt'
 
-          python3 - "$dev" /tmp/run166/dis.txt /tmp/run166/abi.txt /tmp/run166/syms.txt /tmp/run166/strings.txt "$out" <<'PY'
-          import re,sys,struct
+          python3 - "$dev" "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
           from elftools.elf.elffile import ELFFile
 
-          dev=Path(sys.argv[1])
-          lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          abi=Path(sys.argv[3]).read_text(errors='replace')
-          syms=Path(sys.argv[4]).read_text(errors='replace').splitlines()
-          strs=Path(sys.argv[5]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[6])
+          dev=Path(sys.argv[1]); out=Path(sys.argv[2])
+
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+
+          dis=run(["mipsel-linux-gnu-objdump","-drwC",str(dev)]).splitlines()
+          abi=run(["mipsel-linux-gnu-readelf","-A",str(dev)])
+
+          got={}
+          for l in abi.splitlines():
+              m=re.match(r'\s*([0-9a-fA-F]+)\s+(-?\d+)\(gp\)\s+([0-9a-fA-F]+)\s+[0-9a-fA-F]+\s+\S+\s+\S+\s+(.+)$',l)
+              if m:
+                  got[int(m.group(2))]=m.group(5).strip()
 
           funcs=[]
-          for i,l in enumerate(lines):
+          for i,l in enumerate(dis):
               m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
               if m: funcs.append((i,int(m.group(1),16),m.group(2)))
           starts=[]
-          for i,l in enumerate(lines):
+          for i,l in enumerate(dis):
               m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if m:
-                  nxt='\n'.join(lines[i:min(len(lines),i+8)])
-                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                      starts.append((i,int(m.group(1),16)))
+              if not m: continue
+              nxt='\n'.join(dis[i:min(len(dis),i+8)])
+              if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
+                  starts.append((i,int(m.group(1),16)))
           starts=sorted(starts)
 
-          def owner(idx):
-              best=None
-              for st,a,n in funcs:
-                  if st>idx:break
-                  best=(st,a,n)
-              for st,a in starts:
-                  if st>idx:break
-                  if best is None or st>best[0]:
-                      best=(st,a,f'sub_{a:08x}')
-              return best
+          def slice_addr(start,stop):
+              outl=[]; active=False
+              for l in dis:
+                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
+                  if m:
+                      a=int(m.group(1),16)
+                      if start<=a<stop: active=True
+                      elif active and a>=stop: break
+                  if active: outl.append(l)
+              return outl
 
-          # ELF string VA helper
-          raw=dev.read_bytes()
-          strvas={}
+          dispatch=slice_addr(0x404bd0,0x405150)
+          start_timer=slice_addr(0x403940,0x403a50)
+          upload=slice_addr(0x40bb84,0x40bfd4)
+
+          def annotate(block):
+              ann=[]
+              for i,l in enumerate(block):
+                  m=re.search(r'\blw\s+v0,(-?\d+)\(gp\)',l)
+                  if not m: continue
+                  off=int(m.group(1))
+                  sym=got.get(off)
+                  near='\n'.join(block[i:min(len(block),i+5)])
+                  if sym and 'jalr' in near:
+                      ann.append((i,off,sym,block[max(0,i-6):min(len(block),i+8)]))
+              return ann
+
           with dev.open('rb') as f:
               ef=ELFFile(f)
-              for lit in [b'do_upload_client_list',b'do_client_timeout_check',
-                          b'device_list_upload',b'timer',b'start_device_list_timer']:
-                  positions=[]
-                  pos=0
-                  while True:
-                      off=raw.find(lit,pos)
-                      if off<0:break
-                      va=None
-                      for sec in ef.iter_sections():
-                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
-                          if so<=off<so+sz:
-                              va=int(sec['sh_addr'])+(off-so);break
-                      positions.append((off,va))
-                      pos=off+1
-                  strvas[lit.decode()]=positions
+              def read_va(addr,n):
+                  for sec in ef.iter_sections():
+                      va=int(sec['sh_addr']); z=int(sec['sh_size'])
+                      if va<=addr and addr+n<=va+z:
+                          return sec.data()[addr-va:addr-va+n],sec.name
+                  raise KeyError(hex(addr))
+              raw,sec=read_va(0x4103b0,0x80)
 
-          # Identify xrefs to do_upload/client_timeout function-name strings.
-          xrefs=[]
-          for name,positions in strvas.items():
-              for off,va in positions:
-                  if not va:continue
-                  lo=va&0xffff; signed=lo if lo<0x8000 else lo-0x10000
-                  for i,l in enumerate(lines):
-                      if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
-                          fn=owner(i)
-                          xrefs.append((name,va,fn,i,lines[max(fn[0] if fn else 0,i-40):min(len(lines),i+110)]))
+          mini=[]
+          base=0x4103b0
+          p=0
+          while p<len(raw):
+              q=p
+              while q<len(raw) and 32<=raw[q]<127:q+=1
+              if q>p and q<len(raw) and raw[q]==0:
+                  mini.append((base+p,raw[p:q].decode('ascii','replace')))
+                  p=q+1
+              else:
+                  p+=1
 
-          # All contexts containing constants 3/4 and calls/jalr around timer-processing functions.
-          dispatch=[]
-          for i,l in enumerate(lines):
-              if re.search(r'\b(?:li|addiu)\s+[a-z0-9]+,(?:zero,)?(?:3|4)\b',l):
-                  fn=owner(i)
-                  if not fn:continue
-                  ctx=lines[max(fn[0],i-25):min(len(lines),i+70)]
-                  joined='\n'.join(ctx)
-                  if re.search(r'timer|40afcc|40bb84|jalr|cmd_pub',joined,re.I):
-                      dispatch.append((fn,i,ctx))
-
-          # Resolve GOT map from ABI output; retain device_list relevant imported symbols.
-          got_lines=[]
-          for l in abi.splitlines():
-              if re.search(r'cmd_pub|timer_start|timer_stop|timer_check_ok|do_upload|client_timeout',l,re.I):
-                  got_lines.append(l)
-
-          # Explicit do_upload_client_list body and final calls.
-          def body_by_addr(addr,stop):
-              outl=[]; active=False
-              for l in lines:
-                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
-                  if not m:
-                      if active:outl.append(l)
-                      continue
-                  a=int(m.group(1),16)
-                  if addr<=a<stop:
-                      active=True;outl.append(l)
-                  elif active and a>=stop:break
-              return outl
-          upload=body_by_addr(0x40bb84,0x40bfd4)
+          branch_ctx=[]
+          for i,l in enumerate(dispatch):
+              if re.search(r'\bli\s+v1,(?:3|4)\b',l):
+                  branch_ctx.append((i,dispatch[max(0,i-12):min(len(dispatch),i+70)]))
 
           with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 166: timer dispatch + device_list_upload publish =====\n\n')
-              o.write('===== STRING VAS =====\n')
-              for k,v in strvas.items():o.write(f'{k}: {v}\n')
+              o.write('===== RUN 167: device_list timer dispatch + publish channel =====\n\n')
 
-              o.write('\n===== STRING XREF CONTEXTS =====\n')
-              seen=set()
-              for name,va,fn,i,ctx in xrefs:
-                  key=(name,fn[1] if fn else 0)
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- {name} @0x{va:x} owner={('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
+              o.write('===== RODATA 0x4103b0..0x410430 =====\n')
+              o.write(f'section={sec}\nhex={raw.hex(" ")}\n')
+              for a,s in mini:o.write(f'0x{a:08x}: {s!r}\n')
 
-              o.write('\n===== ID 3/4 DISPATCH CANDIDATES =====\n')
-              seen=set()
-              for fn,i,ctx in dispatch:
-                  key=(fn[1],i)
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
-                  o.write('\n'.join(ctx)+'\n')
+              o.write('\n===== start_device_list_timer =====\n')
+              o.write('\n'.join(start_timer)+'\n')
+              o.write('\n--- annotated calls ---\n')
+              for i,off,sym,ctx in annotate(start_timer):
+                  o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
 
-              o.write('\n===== GOT SYMBOL CLUES =====\n')
-              o.write('\n'.join(got_lines)+'\n')
+              o.write('\n===== TIMER/EVENT DISPATCH 0x404bd0..0x405150 =====\n')
+              o.write('\n'.join(dispatch)+'\n')
+              o.write('\n--- annotated calls ---\n')
+              for i,off,sym,ctx in annotate(dispatch):
+                  o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
 
-              o.write('\n===== FULL do_upload_client_list =====\n')
-              o.write('\n'.join(upload)+'\n')
+              o.write('\n===== ID 3 / ID 4 BRANCH CONTEXTS =====\n')
+              for i,ctx in branch_ctx:
+                  o.write('\n---\n'+'\n'.join(ctx)+'\n')
 
-              o.write('\n===== do_upload_client_list CALL-LIKE SITES =====\n')
-              for i,l in enumerate(upload):
-                  if re.search(r'\bjalr\b|\bjal\b',l):
-                      o.write('\n'.join(upload[max(0,i-9):min(len(upload),i+12)])+'\n---\n')
+              o.write('\n===== do_upload_client_list TAIL / PUBLISH =====\n')
+              o.write('\n'.join(upload[-120:])+'\n')
+              o.write('\n--- annotated calls ---\n')
+              for i,off,sym,ctx in annotate(upload):
+                  if sym and re.search(r'cmd_pub|memcpy|free|malloc|time',sym,re.I):
+                      o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
+
+              o.write('\n===== STATIC EXPECTATION TO VERIFY =====\n')
+              o.write('timer id 3 should dispatch timeout check; timer id 4 should dispatch client-list upload.\n')
+              o.write('publish key at 0x4103d4 is expected to be confctl_srv_key; command embedded in payload is device_list_upload.\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run166-device-list-timer-dispatch-publish
-          path: docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt
+          name: run167-device-list-dispatch-channel
+          path: docs/reverse-generated/run167-device-list-dispatch-channel.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt
+          git add docs/reverse-generated/run167-device-list-dispatch-channel.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve device-list timer dispatch'
+            git commit -m 'reverse: resolve device-list timer dispatch channel'
             git push
           fi
