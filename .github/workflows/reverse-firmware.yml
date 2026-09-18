@@ -20,54 +20,51 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Resolve wireless client IP/MAC source
+      - name: Identify wireless ARP lookup helper
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run154-wireless-client-identity-source.txt'
+          out='docs/reverse-generated/run155-wireless-arp-lookup.txt'
 
           {
-            echo '===== RUN 154: get_all_wireless_client identity source ====='
+            echo '===== RUN 155: identify device_list helper 0x404580 ====='
             echo
-            echo '===== SYMBOLS ====='
-            mipsel-linux-gnu-nm -n "$dev" | grep -Ei 'get_all_wireless_client|wireless|client|arp|ip_info|mac|station|assoc|ifaddrs' || true
+            echo '===== TARGET FUNCTION 0x404580 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404580 --stop-address=0x404900 "$dev"
 
             echo
-            echo '===== DYNAMIC SYMBOLS ====='
-            mipsel-linux-gnu-readelf -Ws "$dev" | grep -Ei 'wireless|client|arp|ip_info|mac|station|assoc|ifaddrs|memcpy|strcmp|ioctl' || true
+            echo '===== NEIGHBOR FUNCTIONS ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404000 --stop-address=0x404b00 "$dev"
+
+            echo
+            echo '===== STRINGS ====='
+            strings -tx "$dev" | grep -Ei 'find_if_arp_in_arp_list_by_mac|arp_receive|/proc/net/arp|arp|mac' || true
 
             echo
             echo '===== GOT ====='
             mipsel-linux-gnu-readelf -A "$dev"
 
             echo
-            echo '===== get_all_wireless_client / helper region ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x40a010 --stop-address=0x40a820 "$dev"
-
-            echo
-            echo '===== CALLERS / REFERENCES TO 0x40a46c ====='
-            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B30 -A40 -E '40a46c|a46c' || true
-
-            echo
-            echo '===== STRINGS AROUND WIRELESS/ARP/CLIENT ====='
-            strings -tx "$dev" | grep -Ei 'wireless|wlan|client|station|assoc|arp|ip_info|mac|ethaddr' || true
+            echo '===== XREF-STYLE IMM/STRING CLUES ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404000 --stop-address=0x404b00 "$dev" |
+              grep -B12 -A24 -E 'faa0|f644|ffa4|f2e4|df44|cc24|e9a4' || true
           } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run154-wireless-client-identity-source
-          path: docs/reverse-generated/run154-wireless-client-identity-source.txt
+          name: run155-wireless-arp-lookup
+          path: docs/reverse-generated/run155-wireless-arp-lookup.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run154-wireless-client-identity-source.txt
+          git add docs/reverse-generated/run155-wireless-arp-lookup.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve wireless client identity source'
+            git commit -m 'reverse: identify wireless ARP lookup'
             git push
           fi
