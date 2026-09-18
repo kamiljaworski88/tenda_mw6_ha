@@ -162,3 +162,49 @@ This makes a generic persistent HostInfo IP/MAC mismatch with kernel
 
 A transient mismatch around DHCP/ARP changes remains possible, but static code
 does not support the earlier idea of a permanently stale cached identity.
+
+
+## Run 157 — wired clients use the same ARP identity source
+
+The wired-client path is now resolved as well.
+
+The local function at `0x408b3c` is definitively
+`update_wire_client_from_sw_list`: its own `__FUNCTION__` string resolves
+to `0x40fa5c` (`update_wire_client_from_sw_list`). The adjacent
+`0x408968` resolves to `del_wire_client_not_in_sw_l2_list`.
+
+`update_wire_client_from_sw_list` iterates the switch L2 client list, takes
+the client's L2 MAC and calls the same helper used by Wi-Fi:
+
+`0x4087b8 = find_if_arp_in_arp_list_by_mac`
+
+When the ARP record is found, the wired path uses the same identity layout:
+
+```text
+ARP entry +0x00 -> raw_client +0x50   (IPv4, 4 B)
+ARP entry +0x04 -> raw_client +0x54   (MAC, 6 B)
+```
+
+For an existing wired client the current ARP IPv4 is refreshed into the raw
+client record. For a newly allocated raw client, both ARP IPv4 and ARP MAC are
+copied, and the MAC is also passed to `update_new_mac_list`.
+
+Therefore both normal client classes converge on the same identity source:
+
+```text
+Wi-Fi station MAC ─┐
+                   ├─> current ARP lookup by MAC
+switch L2 MAC ─────┘        ↓
+                       IPv4 + MAC
+                           ↓
+                    raw device_list
+                           ↓
+                    central client hash
+                           ↓
+                  HostInfo.ipaddr/ethaddr
+```
+
+This further reduces the probability of a steady-state strict IP+MAC mismatch
+between HostInfo and kernel `online_ip`. A transient race during DHCP/ARP
+change is still possible, but both wired and wireless inventory identities are
+constructed from current ARP state.
