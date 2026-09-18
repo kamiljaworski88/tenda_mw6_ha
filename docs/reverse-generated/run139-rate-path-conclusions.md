@@ -303,7 +303,7 @@ The local client hash uses a 148-byte status object. Important fields are:
 | `+0x60` | reporting node / associated-node serial context |
 | `+0x84` | online flag |
 | `+0x88` | last-seen timestamp |
-| `+0x5c` | online/offline state-change timestamp |
+| `+0x5c` | online/offline state-change timestamp; exported `condtion_time = now - value` |
 
 The identified functions are:
 
@@ -331,7 +331,9 @@ client.state_change = now
 ```
 
 Therefore `HostInfo.online` means "freshly reported by device_list within the
-inventory watchdog", not "kernel currently sees IP traffic".
+inventory watchdog", not "kernel currently sees IP traffic". `HostInfo.condtion_time`
+is the elapsed number of seconds since `client_status+0x5c`, i.e. since the
+last online/offline state transition; it is not the last-seen age.
 
 This matters because `fill_host_lists_rate` checks `HostInfo.online`
 before parsing IP/MAC or consulting `g_ip_info`. A stale inventory record can
