@@ -168,7 +168,30 @@ This also explains why Wi-Fi/LAN receive functions set bit `0x2`: a packet
 received by the router from a LAN client is traffic that will be transmitted
 toward WAN.
 
-The producer of complementary bit `0x1` is the next reverse target.
+Run 142 resolves the complementary RX producer as well. In the Ethernet RX
+path, firmware normally applies `skb+0x78 |= 0x2`. Before that write it checks
+the selected interface private data. When the first 32-bit field equals `8`,
+it instead executes:
+
+```text
+skb+0x78 |= 0x5
+```
+
+The public Realtek SDK defines the first member of `struct dev_priv` as
+`u32 id` (the VLAN/interface ID), and defines:
+
+- `RTL_WANVLANID = 8`
+- `RTL_LANVLANID = 9`
+
+Therefore this branch is the WAN receive branch:
+
+- LAN/Wi-Fi RX → `field |= 0x2` → upload,
+- WAN Ethernet RX (`dev_priv.id == 8`) → `field |= 0x5`.
+
+`0x5` contains bit `0x1` and does not contain bit `0x2`, so
+`tbq_timer_func` takes its WAN-RX/download accounting branch. Bit `0x4`
+has an additional vendor meaning that is not yet required to distinguish
+upload from download.
 
 ## 8. Packet accounting
 
@@ -239,10 +262,14 @@ The unresolved runtime fault domain is now narrow:
 
 ## 12. Next reverse target
 
-Resolve the producer of skb private direction bit `0x1` (WAN RX/download),
-then determine whether HW NAT / fastpath can bypass:
+The direction-bit producers are now resolved. The next target is whether HW
+NAT / Realtek FastPath can bypass or short-circuit:
 
 `direction mark → nf_conntrack_in → online_ip → NOS/TBQ accounting`.
+
+In particular, determine whether established accelerated flows continue to
+feed `tbq_timer_func` / online-ip counters or only their initial slow-path
+packets are accounted.
 
 Only after that should a live test be added, and it should distinguish:
 
