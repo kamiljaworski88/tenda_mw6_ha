@@ -426,6 +426,179 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
     return tid
 
 
+def diagnose_inventory(sock, tid, selector, interval, duration):
+    """Compare a stale client with peers reported by the same mesh node.
+
+    The firmware publishes a node's local client list every 20 seconds and
+    marks central inventory entries offline after 45 seconds without a fresh
+    report. Observing for at least 45 seconds distinguishes a node-wide stale
+    publisher from a target-only enumeration/reporting problem.
+    """
+    print(
+        f"\nDiagnosing inventory for {selector!r}; interval={interval:g}s; "
+        f"duration={duration:g}s (upload timer: 20s; watchdog: 45s)"
+    )
+    print(
+        "TIME      TARGET_ON  NODE_SN                           "
+        "NODE_ON/NODE_TOTAL  ALL_ON/ALL_TOTAL  TARGET"
+    )
+
+    deadline = time.monotonic() + duration
+    selected_mac = None
+    target_node = None
+    target_samples = []
+    observations = {}
+    snapshots = 0
+    missing_samples = 0
+
+    while True:
+        tid = (tid + 1) & 0xff
+        fr = request_clients(sock, tid)
+        status, clients = decode_mesh_hosts(fr["payload"])
+        if status != 0:
+            raise RuntimeError(f"MESH_HOSTS status={status}")
+        snapshots += 1
+
+        if selected_mac:
+            matches = [
+                c for c in clients
+                if (c["mac"] or "").lower() == selected_mac
+            ]
+        else:
+            matches = _match_clients(clients, selector)
+            if len(matches) > 1:
+                exact = [
+                    c for c in matches
+                    if selector.strip().lower() in {
+                        (c["ip"] or "").lower(),
+                        (c["mac"] or "").lower(),
+                        (c["name"] or "").lower(),
+                    }
+                ]
+                if len(exact) == 1:
+                    matches = exact
+                else:
+                    choices = ", ".join(
+                        f"{c['name'] or '?'} [{c['ip'] or '?'} / {c['mac'] or '?'}]"
+                        for c in matches
+                    )
+                    raise RuntimeError(
+                        f"selector {selector!r} matches multiple clients: {choices}. "
+                        "Use exact IP or MAC."
+                    )
+
+        if matches:
+            target = matches[0]
+            if selected_mac is None:
+                selected_mac = (target["mac"] or "").lower()
+            if target_node is None and target["node_sn"]:
+                target_node = target["node_sn"]
+            target_samples.append(int(target["online"] or 0))
+            target_label = (
+                f"{target['name'] or '?'} [{target['ip'] or '?'} / "
+                f"{target['mac'] or '?'}]"
+            )
+        else:
+            missing_samples += 1
+            target = None
+            target_label = "MISSING"
+
+        for client in clients:
+            mac = (client["mac"] or "").lower()
+            if not mac:
+                continue
+            record = observations.setdefault(mac, {
+                "name": client["name"] or "",
+                "ip": client["ip"] or "",
+                "nodes": set(),
+                "online": [],
+            })
+            if client["name"]:
+                record["name"] = client["name"]
+            if client["ip"]:
+                record["ip"] = client["ip"]
+            if client["node_sn"]:
+                record["nodes"].add(client["node_sn"])
+            record["online"].append(int(client["online"] or 0))
+
+        node_clients = [
+            c for c in clients
+            if target_node and c["node_sn"] == target_node
+        ]
+        node_online = sum(int(c["online"] or 0) != 0 for c in node_clients)
+        all_online = sum(int(c["online"] or 0) != 0 for c in clients)
+        target_online = "MISSING" if target is None else str(int(target["online"] or 0))
+        stamp = time.strftime("%H:%M:%S")
+        print(
+            f"{stamp}  {target_online:>9}  {(target_node or '?'):<32}  "
+            f"{node_online:>7}/{len(node_clients):<10}  "
+            f"{all_online:>6}/{len(clients):<9}  {target_label}"
+        )
+
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        time.sleep(min(interval, remaining))
+
+    print("\n=== INVENTORY DIAGNOSTIC SUMMARY ===")
+    print(f"selector: {selector}")
+    print(f"snapshots: {snapshots}")
+    print(f"target_samples_present: {len(target_samples)}")
+    print(f"target_samples_missing: {missing_samples}")
+    print(f"target_node_sn: {target_node or '?'}")
+
+    if not target_samples:
+        print("classification: TARGET_NOT_FOUND")
+        print("meaning: the selected client was absent from HostLists during the whole run.")
+        return tid
+
+    peers = []
+    for mac, record in observations.items():
+        if mac == selected_mac or target_node not in record["nodes"]:
+            continue
+        peers.append((mac, record))
+
+    print("same_node_peers:")
+    if not peers:
+        print("  none")
+    else:
+        for mac, record in sorted(peers, key=lambda item: (item[1]["name"], item[0])):
+            states = sorted(set(record["online"]))
+            print(
+                f"  {record['name'] or '?'} [{record['ip'] or '?'} / {mac}] "
+                f"online_values={states}"
+            )
+
+    if any(target_samples):
+        print("classification: TARGET_INVENTORY_REFRESHED")
+        print(
+            "meaning: the target became/stayed online at least once, so its device_list "
+            "inventory path is active during this run."
+        )
+    elif any(any(record["online"]) for _, record in peers):
+        print("classification: TARGET_ONLY_STALE")
+        print(
+            "meaning: another client associated with the same NODE_SN was refreshed while "
+            "the target stayed offline. Focus on target enumeration/ARP-to-client merge or "
+            "a stale target NODE_SN, not a node-wide publish failure."
+        )
+    elif peers:
+        print("classification: NODE_REPORTING_STALE")
+        print(
+            "meaning: the target and every observed peer associated with the same NODE_SN "
+            "stayed offline. This points to a node-wide device_list collection/publish/delivery "
+            "failure."
+        )
+    else:
+        print("classification: STALE_TARGET_NODE_INCONCLUSIVE")
+        print(
+            "meaning: the target stayed offline and no same-node peer was available as a "
+            "control. A second client on that mesh node is needed to separate target-only "
+            "enumeration from node-wide reporting."
+        )
+    return tid
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pcap", required=True)
@@ -441,6 +614,11 @@ def main():
         metavar="NAME_IP_OR_MAC",
         help="observe one client across the 45 s inventory watchdog and classify zero-rate cause",
     )
+    ap.add_argument(
+        "--diagnose-inventory",
+        metavar="NAME_IP_OR_MAC",
+        help="compare one client with peers on the same NODE_SN across the 45 s watchdog",
+    )
     ap.add_argument("--interval", type=float, default=3.0, help="watch polling interval in seconds (default: 3)")
     ap.add_argument("--count", type=int, default=10, help="watch sample count; 0 = continuous (default: 10)")
     ap.add_argument(
@@ -452,8 +630,8 @@ def main():
     args = ap.parse_args()
     if args.interval < 1: ap.error("--interval must be >= 1 second")
     if args.count < 0: ap.error("--count must be >= 0")
-    if args.diagnose_rates and args.duration < 45:
-        ap.error("--duration must be >= 45 seconds with --diagnose-rates")
+    if (args.diagnose_rates or args.diagnose_inventory) and args.duration < 45:
+        ap.error("--duration must be >= 45 seconds with inventory/rate diagnostics")
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
     with socket.create_connection((args.host, args.port), timeout=4) as s:
@@ -478,6 +656,8 @@ def main():
             return
         if args.diagnose_rates:
             diagnose_client_rates(s, tid, args.diagnose_rates, args.interval, args.duration); return
+        if args.diagnose_inventory:
+            diagnose_inventory(s, tid, args.diagnose_inventory, args.interval, args.duration); return
         if args.watch_client:
             watch_client_rates(s, tid, args.watch_client, args.interval, args.count); return
         if args.clients:
