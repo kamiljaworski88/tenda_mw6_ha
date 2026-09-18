@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–161.
+after Runs 37 and 123–167.
 
 ## 1. Local API surface
 
@@ -465,16 +465,71 @@ HostInfo reports zero per-client rate.
 The diagnostic intentionally uses WAN `uprate/downrate` only as a non-zero
 control and does not yet assign a user-facing unit to those aggregate fields.
 
-## 16. Current zero-rate decision tree
+## 16. Live result — Run 162
 
-Static reverse engineering has now resolved the kernel accounting path,
-userspace inventory gate, normal wired/wireless identity source, exact
-per-client arithmetic, and an independent WAN traffic control.
+The 65-second live diagnostic for client `192.168.5.47` (`Kamil-Dell`) returned
+`HostInfo.online=0` and `uprate/downrate=0/0` in every sample, while the
+independent WAN control was non-zero in all 14 samples.
 
-The live distinction is now:
+`condition_time` increased monotonically and no fresh report returned the
+client to online state. The result is therefore:
 
-1. **HostInfo.online drops to 0** while the client is expected to be active:
-   investigate `device_list` reporting / 45-second last-seen watchdog first.
+```text
+INVENTORY_ONLINE_DROPPED
+```
+
+The rate helper is behaving as recovered: it skips clients whose inventory
+flag is offline. Runtime `g_ip_info` / `online_ip` is not the primary target
+until inventory refresh is restored or independently proven active.
+
+## 17. Device-list scheduler and publication — Runs 163–167
+
+The `device_list` process has two self-rearming timer events:
+
+| Timer ID | Interval | Action |
+| ---: | ---: | --- |
+| 3 | 10,000 ms | client timeout/maintenance path |
+| 4 | 20,000 ms | `do_upload_client_list` publication path |
+
+The timer-event dispatcher explicitly handles IDs 3 and 4. For ID 4 it calls
+the local upload routine with the process-wide client-list pointer and client
+count, then rearms timer 4 for another 20 seconds.
+
+`do_upload_client_list` serializes the 32-byte reporting-node identity followed
+by 124-byte client records and publishes the result through `cmd_pub` under
+`device_list_upload`. This is the payload consumed by the central merge path
+resolved in Run 151.
+
+The live failure is therefore narrower than an unknown cadence: a healthy
+reporter should refresh its clients before the 45-second central watchdog.
+For a client that remains offline, the leading split is now:
+
+1. **same-node peers also remain offline** — node-wide collection, publish, or
+   delivery failure;
+2. **a same-node peer is refreshed** — target-only enumeration/ARP-to-client
+   merge problem, or a stale `assoc_sn` on the target record;
+3. **no same-node peer exists** — the current evidence cannot separate those
+   two cases.
+
+`tools/mw6_probe.py --diagnose-inventory` implements this comparison over a
+65-second window and reports one of:
+
+- `TARGET_INVENTORY_REFRESHED`,
+- `TARGET_ONLY_STALE`,
+- `NODE_REPORTING_STALE`,
+- `STALE_TARGET_NODE_INCONCLUSIVE`,
+- `TARGET_NOT_FOUND`.
+
+## 18. Current decision tree
+
+Static reverse engineering has resolved the kernel accounting path, userspace
+inventory gate, normal wired/wireless identity source, exact per-client
+arithmetic, WAN traffic control, and the device-list publish cadence.
+
+The next live distinction is now:
+
+1. **HostInfo.online is 0**: use `--diagnose-inventory` to separate node-wide
+   reporting failure from a target-only enumeration problem.
 2. **HostInfo.online stays 1, WAN traffic is independently non-zero, but the
    selected client remains 0/0**: this is strong evidence to focus directly on
    the live per-client `g_ip_info` / `online_ip` record or match.
@@ -484,6 +539,6 @@ The live distinction is now:
 4. **Any non-zero client rate appears**: the complete local per-client rate
    pipeline is working for that client.
 
-`tools/mw6_probe.py --diagnose-rates` implements this read-only test.
-Its default observation window is 65 seconds, intentionally longer than the
-45-second inventory watchdog.
+Both diagnostics are read-only. Their default observation window is 65
+seconds, intentionally longer than the 45-second inventory watchdog and three
+times the 20-second upload interval.
