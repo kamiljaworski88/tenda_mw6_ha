@@ -18,178 +18,157 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Resolve device-list merge and mesh reporter identity
+      - name: Trace raw device_list MAC source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run151
-          conf='firmware-src/RootFS-unpacked/bin/confsrv'
+          mkdir -p docs/reverse-generated /tmp/run153
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run151-device-list-merge-mesh.txt'
+          out='docs/reverse-generated/run153-device-list-mac-source.txt'
+          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run153/device_list.dis
+          mipsel-linux-gnu-nm -n "$dev" > /tmp/run153/device_list.nm
+          mipsel-linux-gnu-readelf -Ws "$dev" > /tmp/run153/device_list.sym
 
-          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/run151/confsrv.dis
-          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run151/device_list.dis
-
-          python3 - /tmp/run151/confsrv.dis /tmp/run151/device_list.dis "$conf" "$dev" "$out" <<'PY'
-          import re, subprocess, sys
+          python3 - /tmp/run153/device_list.dis /tmp/run153/device_list.nm "$out" <<'PY'
+          import re, sys
           from pathlib import Path
 
-          cdis=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          ddis=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          conf=Path(sys.argv[3]); dev=Path(sys.argv[4]); out=Path(sys.argv[5])
+          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
+          nm=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[3])
 
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+          funcs=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
 
-          def slice_addr(lines,start,stop):
-              out=[]
-              active=False
-              for l in lines:
-                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
-                  if not m:
-                      if active: out.append(l)
-                      continue
-                  a=int(m.group(1),16)
-                  if start <= a < stop:
-                      active=True; out.append(l)
-                  elif active and a>=stop:
-                      break
-              return out
+          # Also infer stripped PIC starts.
+          starts=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'^s*([0-9a-fA-F]+):s+.*luis+gp,',l)
+              if not m: continue
+              nxt='
+'.join(lines[i:min(len(lines),i+8)])
+              if re.search(r'addus+gp,gp,t9',nxt) and re.search(r'addius+sp,sp,-',nxt):
+                  starts.append((i,int(m.group(1),16)))
+          starts=sorted(starts)
 
-          merge=slice_addr(cdis,0x4320f0,0x4324c8)
-          upload=slice_addr(cdis,0x4324c8,0x432780)
+          def owner(idx):
+              # Prefer named function, otherwise inferred start.
+              named=None
+              for st,a,n in funcs:
+                  if st>idx: break
+                  named=(st,a,n)
+              inferred=None
+              for st,a in starts:
+                  if st>idx: break
+                  inferred=(st,a,f"sub_{a:08x}")
+              if named and (not inferred or named[0]>=inferred[0]): return named
+              return inferred
 
-          # GOT slot -31956 contains local text base 0x430000; annotate addiu
-          # offsets that become stripped-local function addresses.
-          known={
-              0x431534:"upload_client_online_status_change",
-              0x431744:"add_new_client_to_hash_table",
-              0x431b04:"update_client_info_to_hash_table",
-              0x4320f0:"update_list_to_client_hash_table (candidate)",
-              0x432780:"device_client_offline_check",
-          }
+          candidates=[]
 
-          def local_call_annotations(block):
-              anns=[]
-              for i,l in enumerate(block):
-                  if "-31956(gp)" not in l: continue
-                  # Find addiu using the loaded v0 within next 4 instructions.
-                  for j in range(i+1,min(len(block),i+5)):
-                      m=re.search(r'\baddiu\s+([a-z0-9]+),([a-z0-9]+),(-?\d+)',block[j],re.I)
-                      if not m: continue
-                      imm=int(m.group(3))
-                      target=(0x430000+imm)&0xffffffff
-                      # Require nearby jalr.
-                      near="\n".join(block[j:min(len(block),j+5)])
-                      if "jalr" in near:
-                          anns.append((i,j,imm,target,known.get(target,"unknown local")))
-                          break
-              return anns
+          # Pattern 1: build destination ptr = record + 0x54 then memcpy(...,6)
+          for i,l in enumerate(lines):
+              # look for addiu REG, BASE, 84
+              m=re.search(r'addius+([a-z0-9]+),([a-z0-9]+),(?:84|0x54)',l,re.I)
+              if not m: continue
+              dreg,base=m.group(1),m.group(2)
+              for j in range(i+1,min(len(lines),i+20)):
+                  if re.match(r'^[0-9a-fA-F]+ <[^>]+>:',lines[j]): break
+                  # destination moved into a0?
+                  if re.search(rf'moves+a0,{dreg}',lines[j]) or re.search(rf'addus+a0,{dreg},zero',lines[j]):
+                      window=lines[j:min(len(lines),j+12)]
+                      if any(re.search(r'lis+a2,6|addius+a2,zero,6',x) for x in window):
+                          fn=owner(i)
+                          candidates.append((fn,i,j,lines[max(fn[0] if fn else 0,i-18):min(len(lines),j+28)]))
 
-          anns=local_call_annotations(merge)
+          # Pattern 2: byte/half/word stores directly to +0x54..+0x59
+          direct=[]
+          for i,l in enumerate(lines):
+              if re.search(r'(?:sb|sh|sw)s+[^,]+,(?:84|85|86|87|88|89)([^)]+)',l):
+                  fn=owner(i)
+                  direct.append((fn,i,lines[max(fn[0] if fn else 0,i-18):min(len(lines),i+24)]))
 
-          # Find the device_list-side string and likely xref function for upload.
-          strings=run(["strings","-tx",str(dev)])
-          interesting_strings=[]
-          for l in strings.splitlines():
-              if re.search(r'device_list_upload|upload.*client|client.*upload|send_all_client_status|assoc_sn|node.*sn',l,re.I):
-                  interesting_strings.append(l)
-
-          # Get file virtual addresses for strong literal strings and report
-          # nearby code references using immediate low16 values.
-          raw=dev.read_bytes()
-          vas=[]
-          from elftools.elf.elffile import ELFFile
-          with dev.open('rb') as f:
-              ef=ELFFile(f)
-              for lit in [b'device_list_upload',b'send_all_client_status_list']:
-                  pos=0
-                  while True:
-                      off=raw.find(lit,pos)
-                      if off<0: break
-                      va=None
-                      for sec in ef.iter_sections():
-                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
-                          if so<=off<so+sz:
-                              va=int(sec['sh_addr'])+(off-so); break
-                      vas.append((lit.decode(),off,va))
-                      pos=off+1
-
-          # Discover PIC function starts in device_list and code slices that
-          # contain relevant string low16 immediates or construct 32-byte areas.
-          dstarts=[]
-          for i,l in enumerate(ddis):
-              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if m:
-                  nxt="\n".join(ddis[i:min(len(ddis),i+8)])
-                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                      dstarts.append((i,int(m.group(1),16)))
-
-          def downer(idx):
-              prev=None
-              for i,a in dstarts:
-                  if i>idx: break
-                  prev=(i,a)
-              return prev
-
-          xrefs=[]
-          for name,off,va in vas:
-              if va is None: continue
-              lo=va & 0xffff
-              signed=lo if lo<0x8000 else lo-0x10000
-              for i,l in enumerate(ddis):
-                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
-                      ow=downer(i)
-                      xrefs.append((name,va,ow,i,ddis[max(ow[0] if ow else 0,i-24):min(len(ddis),i+80)]))
+          # Find memcpy-like imports and WLAN/client symbols.
+          relevant_nm=[x for x in nm if re.search(r'client|station|sta|wlan|eth|mac|upload|list|assoc',x,re.I)]
 
           with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 151: device_list merge and mesh reporter identity =====\n')
-              o.write('Known input to confctl_device_list_upload: 32-byte prefix + N * 124-byte client records.\n\n')
+              o.write('===== RUN 153: raw device_list client MAC source =====
+')
+              o.write('Target field: raw 124-byte client record +0x54..+0x59, later copied into client_status+0x50 and HostInfo.ethaddr.
 
-              o.write('===== confsrv local 0x4320f0 merge function =====\n')
-              o.write('\n'.join(merge)+'\n\n')
+')
 
-              o.write('===== ANNOTATED LOCAL CALLS FROM 0x4320f0 =====\n')
-              for i,j,imm,target,name in anns:
-                  o.write(f'imm={imm:+d} -> 0x{target:08x} {name}\n')
-                  o.write('\n'.join(merge[max(0,i-3):min(len(merge),j+6)])+'\n---\n')
+              o.write('===== RELEVANT SYMBOLS =====
+')
+              o.write('
+'.join(relevant_nm)+'
 
-              o.write('\n===== confctl_device_list_upload 0x4324c8 =====\n')
-              o.write('\n'.join(upload)+'\n')
+')
 
-              o.write('\n===== DEVICE_LIST RELEVANT STRINGS =====\n')
-              o.write('\n'.join(interesting_strings)+'\n')
+              o.write('===== MEMCPY-6 CANDIDATES INTO RECORD+0x54 =====
+')
+              if not candidates:o.write('NO SIMPLE PATTERN FOUND
+')
+              seen=set()
+              for fn,i,j,ctx in candidates:
+                  key=(fn[1] if fn else 0,i,j)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"
+--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---
+")
+                  o.write('
+'.join(ctx)+'
+')
 
-              o.write('\n===== DEVICE_LIST STRING VAs =====\n')
-              for x in vas:o.write(f'{x}\n')
+              o.write('
+===== DIRECT STORES TO +0x54..+0x59 =====
+')
+              if not direct:o.write('NO DIRECT STORES FOUND
+')
+              seen=set()
+              for fn,i,ctx in direct:
+                  key=(fn[1] if fn else 0,i)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"
+--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---
+")
+                  o.write('
+'.join(ctx)+'
+')
 
-              o.write('\n===== DEVICE_LIST XREF CANDIDATES =====\n')
-              if not xrefs:o.write('NO SIMPLE LOW16 XREFS FOUND\n')
-              for name,va,ow,i,ctx in xrefs:
-                  o.write(f"\n--- {name} VA=0x{va:x} owner={('0x%x'%ow[1]) if ow else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== INTERPRETATION TARGET =====\n')
-              o.write('Verify that 0x4320f0 iterates the N raw client records, finds by identity, calls add_new or update, and supplies the 32-byte upload prefix as assoc/node serial context.\n')
+              o.write('
+===== ALL FUNCTIONS TOUCHING 124-BYTE STRIDE =====
+')
+              for i,l in enumerate(lines):
+                  if re.search(r'(?:li|addiu)s+[a-z0-9]+,(?:zero,)?124',l,re.I):
+                      fn=owner(i)
+                      o.write(f"
+--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---
+")
+                      o.write('
+'.join(lines[max(fn[0] if fn else 0,i-12):min(len(lines),i+22)])+'
+')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run151-device-list-merge-mesh
-          path: docs/reverse-generated/run151-device-list-merge-mesh.txt
+          name: run153-device-list-mac-source
+          path: docs/reverse-generated/run153-device-list-mac-source.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run151-device-list-merge-mesh.txt
+          git add docs/reverse-generated/run153-device-list-mac-source.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve device-list merge path'
+            git commit -m 'reverse: trace device-list client MAC source'
             git push
           fi
