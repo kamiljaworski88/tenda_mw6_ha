@@ -1,7 +1,7 @@
 # Run 167 — device-list scheduler conclusions
 
 Run 162 proved live that the selected client remains in the central offline
-inventory state even while the router sees WAN traffic. Runs 163–166 trace the
+inventory state even while the router sees WAN traffic. Runs 163–168 trace the
 producer side far enough to define the next runtime split without returning to
 the rate-accounting path.
 
@@ -12,9 +12,11 @@ the rate-accounting path.
 - ID 3: 10,000 ms, client timeout/maintenance;
 - ID 4: 20,000 ms, client-list upload.
 
-The event dispatcher switches on IDs 3 and 4. The ID-4 branch calls
-`do_upload_client_list(global_client_list, global_client_count)` and then
-rearms timer 4 for another 20 seconds.
+The event dispatcher switches on IDs 3 and 4. Run 168 resolves the ID-4 GOT
+targets directly as `g_client_hs_list`, `g_client_hs_list_num`, and
+`do_upload_client_list`. The branch calls
+`do_upload_client_list(g_client_hs_list, g_client_hs_list_num)` and then rearms
+timer 4 for another 20 seconds.
 
 The timer worker is monitored by `timer_check_ok_and_wait`; the main process
 restarts the device-list timers when the worker is unavailable.
