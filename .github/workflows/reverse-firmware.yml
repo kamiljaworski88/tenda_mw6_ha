@@ -18,104 +18,79 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
+          python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace netlink_get_statistic_info
+      - name: Trace online_ip creation gate
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated
-          out='docs/reverse-generated/run135-netlink-statistic-userspace.txt'
+          mkdir -p docs/reverse-generated /tmp/mw6kernel
+          img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
+          raw='/tmp/mw6kernel/kernel.raw'
+          elf='/tmp/mw6kernel/kernel.elf'
+          out='docs/reverse-generated/run136-onlineip-creation-gate.txt'
 
-          python3 - firmware-src "$out" <<'PY'
-          import re, subprocess, sys
-          from pathlib import Path
+          dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
+          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
+          test -s "$raw"
+          vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          root=Path(sys.argv[1]); out=Path(sys.argv[2])
+          {
+            echo '===== RUN 136: online_ip creation gate ====='
+            echo
+            echo '===== SYMBOLS ====='
+            mipsel-linux-gnu-nm -n "$elf" | grep -E 'check_ip_addr|find_online_ip|add_online_ip|nf_conntrack_in|online_ip|fastpath|skb|mark' || true
 
-          def run(cmd):
-              return subprocess.run(cmd, text=True, errors='replace',
-                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+            echo
+            echo '===== check_ip_addr + find_online_ip ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x803d2b80 --stop-address=0x803d2d80 "$elf"
 
-          defs=[]
-          for p in root.rglob("*"):
-              if not p.is_file():
-                  continue
-              try:
-                  nm=run(["mipsel-linux-gnu-nm","-D",str(p)])
-              except Exception:
-                  continue
-              if "netlink_get_statistic_info" in nm:
-                  for l in nm.splitlines():
-                      if "netlink_get_statistic_info" not in l: continue
-                      parts=l.split()
-                      if len(parts)>=3 and parts[-1]=="netlink_get_statistic_info":
-                          defs.append((p,l))
+            echo
+            echo '===== nf_conntrack_in full relevant body ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x803bea80 --stop-address=0x803bf320 "$elf"
 
-          with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 135: userspace netlink_get_statistic_info =====\n")
-              o.write("===== DEFINITIONS / REFERENCES =====\n")
-              for p,l in defs:
-                  o.write(f"{p}: {l}\n")
+            echo
+            echo '===== ALL DIRECT CALLS TO add_online_ip ====='
+            mipsel-linux-gnu-objdump -d "$elf" | grep -B18 -A24 -E 'jal[[:space:]]+803d4190|<add_online_ip>' || true
 
-              for p,l in defs:
-                  parts=l.split()
-                  typ=parts[-2] if len(parts)>=3 else ""
-                  if typ.upper()=="U":
-                      continue
-                  try:
-                      addr=int(parts[0],16)
-                  except Exception:
-                      continue
+            echo
+            echo '===== KERNEL ACCESSES TO skb-ish offset +0x78 / decimal 120 NEAR CONNTRACK/FASTPATH ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x80380000 --stop-address=0x8045c000 "$elf" |
+              grep -B8 -A12 -E '\b(lw|sw)[[:space:]].*,120\([^)]*\)|0x78\)' || true
 
-                  syms=[]
-                  for sl in run(["mipsel-linux-gnu-nm","-D","-n",str(p)]).splitlines():
-                      q=sl.split(maxsplit=2)
-                      if len(q)==3:
-                          try:a=int(q[0],16)
-                          except:continue
-                          syms.append((a,q[1],q[2]))
-                  syms.sort()
-                  nxt=addr+0x3000
-                  for a,t,n in syms:
-                      if a>addr:
-                          nxt=a; break
+            echo
+            echo '===== MODULES IMPORTING add/find/check online_ip ====='
+            find firmware-src -name '*.ko' -type f -print0 | while IFS= read -r -d '' ko; do
+              hits="$(mipsel-linux-gnu-nm -u "$ko" 2>/dev/null | grep -E 'add_online_ip|find_online_ip|check_ip_addr|online_ip' || true)"
+              if [ -n "$hits" ]; then
+                echo "--- $ko ---"
+                echo "$hits"
+              fi
+            done
 
-                  o.write(f"\n===== OWNER {p} @ 0x{addr:x} =====\n")
-                  o.write(run(["mipsel-linux-gnu-readelf","-A",str(p)]))
-                  o.write("\n===== SYMBOLS FILTERED =====\n")
-                  for sl in run(["mipsel-linux-gnu-readelf","-Ws",str(p)]).splitlines():
-                      if re.search(r'netlink|statistic|g_ip_info|socket|send|recv|malloc|calloc|free|online|nlmsg|poll|select|time|usleep',sl,re.I):
-                          o.write(sl+"\n")
-                  o.write("\n===== FUNCTION DISASSEMBLY =====\n")
-                  o.write(run(["mipsel-linux-gnu-objdump","-drwC",
-                               f"--start-address=0x{addr:x}",f"--stop-address=0x{nxt:x}",str(p)]))
-
-                  # Also dump nearby named functions that look related.
-                  for a,t,n in syms:
-                      if re.search(r'netlink|statistic|online|nlmsg',n,re.I) and n!="netlink_get_statistic_info":
-                          stop=a+0x1800
-                          for aa,tt,nn in syms:
-                              if aa>a:
-                                  stop=aa; break
-                          o.write(f"\n===== RELATED {n} @ 0x{a:x} =====\n")
-                          o.write(run(["mipsel-linux-gnu-objdump","-drwC",
-                                     f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(p)]))
-          PY
+            echo
+            echo '===== LIBCOMMON STATISTIC CONFIG STRINGS / RODATA ====='
+            lib='firmware-src/RootFS-unpacked/lib/libcommon.so'
+            strings -tx "$lib" | grep -E -i 'statistic|online.?ip|ip.?info|max.*host|host.*max|netlink' || true
+            echo
+            echo '--- rodata around 0x5ab80 ---'
+            mipsel-linux-gnu-objdump -s --start-address=0x5ab60 --stop-address=0x5ac40 "$lib" || true
+          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run135-netlink-statistic-userspace
-          path: docs/reverse-generated/run135-netlink-statistic-userspace.txt
+          name: run136-onlineip-creation-gate
+          path: docs/reverse-generated/run136-onlineip-creation-gate.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run135-netlink-statistic-userspace.txt
+          git add docs/reverse-generated/run136-onlineip-creation-gate.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace userspace netlink statistics'
+            git commit -m 'reverse: trace online_ip creation gate'
             git push
           fi
