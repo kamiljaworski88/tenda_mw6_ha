@@ -2,9 +2,9 @@
 """Read-only MW6 WAN traffic probe.
 
 Firmware boot.log confirms M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8].
-The response is status(int32 LE) + protobuf WanRate. This tool deliberately
-keeps protobuf fields labelled f1/f2/f3 until their exact semantic names/units
-are confirmed from firmware/live deltas.
+The response is status(int32 LE) + protobuf WanRate containing repeated
+WanPortRate records. Firmware descriptors resolve WanPortRate fields as:
+idx, uprate, downrate, total_up, total_down.
 """
 import argparse
 import socket
@@ -22,17 +22,18 @@ def decode_wan_traffic(payload):
     if len(payload) < 4:
         raise ValueError("GetTrafficInfo payload too short")
     status = int.from_bytes(payload[:4], "little", signed=True)
-    outer = _protobuf_fields(payload[4:])
     records = []
-    for field, wire, value in outer:
-        if wire == 2:
-            try:
-                inner = _protobuf_fields(value)
-                records.append({f"f{f}": v for f, w, v in inner if w == 0})
-            except ValueError:
-                records.append({f"outer_f{field}": value.hex()})
-        elif wire == 0:
-            records.append({f"outer_f{field}": value})
+    for field, wire, value in _protobuf_fields(payload[4:]):
+        if field != 1 or wire != 2:
+            continue
+        raw = {f: v for f, w, v in _protobuf_fields(value) if w == 0}
+        records.append({
+            "idx": raw.get(1),
+            "uprate": int(raw.get(2, 0)),
+            "downrate": int(raw.get(3, 0)),
+            "total_up": raw.get(4),
+            "total_down": raw.get(5),
+        })
     return status, records
 
 
