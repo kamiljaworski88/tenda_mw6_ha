@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–144.
+after Runs 37 and 123–146.
 
 ## 1. Local API surface
 
@@ -227,25 +227,78 @@ known traffic, the following layers are already resolved:
 - LAN/WAN direction producers,
 - software FastPath accounting.
 
-The highest-value unresolved fault domain is now:
+Runs 145–146 narrow the kernel-side fault domain further.
 
-1. `online_ip` record is not created for the client/flow,
-2. conntrack exists but its online-ip association remains NULL/stale,
-3. online-ip identity differs from HostInfo IP/MAC at sampling time,
-4. online-ip record lifetime/timeout removes the record before sampling.
+### Conntrack attachment
+
+For normal LAN-originated IPv4 traffic, `nf_conntrack_in` enters the
+online-ip creation/attachment path only when the upload marker
+`skb+0x78 & 0x2` is present.
+
+- `ct+0x8c` is the stored `online_ip *`.
+- If already non-NULL, firmware marks `online_ip+0x40 = 1` (active).
+- Otherwise `find_online_ip(client_ipv4)` searches by IPv4.
+- If absent, `add_online_ip` creates the record.
+- Firmware stores `ct+0x8c = online_ip`, increments
+  `online_ip+0x08`, and links `ct+0x90/+0x94` into the record's
+  conntrack list at `online_ip+0x38`.
+
+### MAC source
+
+`add_online_ip` copies six bytes into `online_ip+0x2c` from
+`skb_mac_header(skb)+6`, i.e. the source MAC of the reconstructed Ethernet
+frame.
+
+The close RTL8197F/MW5 source confirms that 802.11s receive processing calls
+`skb_p80211_to_ether` before `rtl_netif_rx`. For a six-address mesh frame
+that conversion explicitly builds the Ethernet source address from
+`mesh_header.SrcMACAddr`, not the intermediate mesh-neighbor MAC. A simple
+satellite/backhaul MAC substitution is therefore not a likely reason for the
+strict HostInfo-vs-online_ip MAC match to fail.
+
+### Lifetime
+
+The firmware reports HZ=100. `online_ip_timeout` runs every 6000 jiffies,
+therefore every 60 seconds.
+
+A timeout frees a record only when all of these are true:
+
+- active flag `online_ip+0x40 == 0`,
+- conntrack refcount `online_ip+0x08 == 0`,
+- conntrack list at `online_ip+0x38` is empty,
+- byte flag `online_ip+0x99 == 0`.
+
+If the active flag or any reference is present, the record is retained and the
+timer is rearmed for another 60 seconds.
+
+Run 146 confirms the inverse path in `destroy_conntrack`: if `ct+0x8c`
+is set, firmware atomically decrements `online_ip+0x08`, unlinks
+`ct+0x90/+0x94` from the online-ip list, and clears `ct+0x8c`.
+
+Therefore an online-ip record cannot age out while a referenced active
+conntrack remains attached. Plain timeout/lifetime is no longer a leading
+explanation for zero rates during active transfer.
+
+The highest-value unresolved fault domain is now above that layer:
+
+1. `HostInfo.online` is zero/stale, so the rate helper skips the client
+   before matching `g_ip_info`,
+2. the client never creates a qualifying LAN→WAN IPv4 conntrack/online-ip
+   association,
+3. HostInfo IP/MAC is stale or otherwise differs from the reconstructed
+   Ethernet identity in `online_ip`.
 
 ## 13. Next reverse target
 
-Trace the exact `nf_conntrack_in → find_online_ip/add_online_ip → ct online_ip`
-attachment path, especially the conntrack member used by NOS at `ct+0x8c`.
+The kernel attachment, MAC source and lifetime path are now resolved. The next
+target moves back to userspace inventory state:
 
-Resolve:
+`device_list client status → fill_host_info_from_client_status → HostInfo.online`.
 
-- every write/read of `ct+0x8c`,
-- when the association can remain NULL,
-- online-ip IP/MAC identity offsets and source,
-- timeout/removal behavior,
-- whether an existing conntrack can outlive or miss its online-ip record.
+Resolve the exact source field and offline/aging logic for HostInfo.online,
+because a false zero there prevents `fill_host_lists_rate` from attempting
+the otherwise-correct online-ip match.
 
-Only after this static path is exhausted should a live test distinguish
-missing online-ip, static counters, and HostInfo identity mismatch.
+After that static path is exhausted, one live read-only test should distinguish
+a stale HostInfo.online value from missing online-ip counters or an identity
+mismatch.
