@@ -15,46 +15,40 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Map timer branch calls
+      - name: Trace need_upload filtering
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run168-timer-branch-calls.txt'
+          out='docs/reverse-generated/run169-need-upload-filter.txt'
           {
-            echo '===== RUN 168: timer ID 3/4 branch calls ====='
+            echo '===== RUN 169: need_upload filtering ====='
             echo
-            echo '===== GOT OFFSETS OF INTEREST ====='
-            mipsel-linux-gnu-readelf -A "$dev" | grep -E -- '-32716\(gp\)|-32704\(gp\)|-32692\(gp\)|-32652\(gp\)|-32648\(gp\)|-32644\(gp\)|-32640\(gp\)|-32636\(gp\)|do_client_timeout_check|do_upload_client_list' || true
+            echo '===== strings ====='
+            strings -tx "$dev" | grep -Ei 'need_upload|upload_nova_client_node|upload.*client|client.*upload' || true
             echo
-            echo '===== DYNAMIC SYMBOLS ====='
-            mipsel-linux-gnu-readelf -Ws "$dev" | grep -E 'do_client_timeout_check|do_upload_client_list|wired_client_timeout_check|get_all_wireless_client|update_wire_client_from_sw_list|wifi|arp|client' || true
+            echo '===== xref windows for rodata low16 d373/d988 ====='
+            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B40 -A80 -E 'd373|d988' || true
             echo
-            echo '===== LOCAL HELPERS 0x404780..0x404b80 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404780 --stop-address=0x404b80 "$dev"
+            echo '===== full do_upload_client_list ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x40bb84 --stop-address=0x40bfd4 "$dev"
             echo
-            echo '===== TIMER BRANCH 3 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404df4 --stop-address=0x404f00 "$dev"
-            echo
-            echo '===== TIMER BRANCH 4 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404f00 --stop-address=0x404fd4 "$dev"
-            echo
-            echo '===== STRINGS / FUNCTION NAMES AROUND RELEVANT RODATA ====='
-            strings -tx "$dev" | grep -E 'do_client_timeout_check|do_upload_client_list|wired_client_timeout_check|get_all_wireless_client|update_wire_client_from_sw_list|CLIENT_LIST_UPLOAD|CLIENT_TIMEOUT_CHECK|wifi|arp|upload' || true
+            echo '===== client record update/upload helpers nearby ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x40b2a8 --stop-address=0x40bb84 "$dev"
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: run168-timer-branch-calls
-          path: docs/reverse-generated/run168-timer-branch-calls.txt
+          name: run169-need-upload-filter
+          path: docs/reverse-generated/run169-need-upload-filter.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run168-timer-branch-calls.txt
+          git add docs/reverse-generated/run169-need-upload-filter.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: map device-list timer branch calls'
+            git commit -m 'reverse: trace need_upload filtering'
             git push
           fi
