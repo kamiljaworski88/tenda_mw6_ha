@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace skb direction marks
+      - name: Trace skb bit writers across kernel and modules
         shell: bash
         run: |
           set -euo pipefail
@@ -30,105 +30,109 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run137-skb-direction-mark.txt'
+          out='docs/reverse-generated/run138-skb-bit-writers.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          mipsel-linux-gnu-objdump -drwC "$elf" > /tmp/mw6kernel/all.dis
-
-          python3 - /tmp/mw6kernel/all.dis "$out" <<'PY'
-          import re, sys
+          python3 - "$elf" firmware-src "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
-          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[2])
 
-          funcs=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m:
-                  funcs.append((i,int(m.group(1),16),m.group(2)))
-          def owner(i):
-              lo=0; hi=len(funcs)
-              while lo<hi:
-                  mid=(lo+hi)//2
-                  if funcs[mid][0]<=i: lo=mid+1
-                  else: hi=mid
-              return funcs[lo-1] if lo else None
+          kernel=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
 
-          mem=re.compile(r'\b(lw|sw)\s+([a-z0-9]+),120\(([a-z0-9]+)\)',re.I)
-          candidates=[]
-          seen=set()
-          for i,l in enumerate(lines):
-              m=mem.search(l)
-              if not m or m.group(1).lower()!='sw':
-                  continue
-              fn=owner(i)
-              if not fn: continue
-              start=fn[0]
-              end=next((x[0] for x in funcs if x[0]>start),len(lines))
-              block=lines[start:end]
-              bi=i-start
-              ctx=block[max(0,bi-35):min(len(block),bi+25)]
-              joined='\n'.join(ctx)
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-              # Strong RMW candidate: same function/context reads offset 120,
-              # manipulates bit 1/2, then writes it.
-              has_load=bool(re.search(r'\blw\s+[^,]+,120\([^)]+\)',joined,re.I))
-              bitops=bool(re.search(
-                  r'\b(?:ori|xori|andi)\s+[^\n]*(?:0x1\b|0x2\b)|\bli\s+[^,]+,(?:1|2)\b',
-                  joined,re.I))
-              networkish=bool(re.search(
-                  r'skb|conntrack|fastpath|nat|netif|eth|rtl|ip_|ipv4|bridge|br_|nf_|forward|route|wan|lan',
-                  fn[2],re.I))
-              if has_load and bitops and networkish:
-                  key=(fn[1],i)
-                  if key not in seen:
-                      seen.add(key)
-                      candidates.append((fn,i,ctx))
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 137: skb +0x78 direction mark writers =====\n')
-              o.write('Target behavior: nf_conntrack_in tests skb+0x78 bit 0x2 before online_ip creation; NOS tests bit 0x2 as TX and bit 0x1 as RX.\n\n')
-
-              o.write('===== STRONG RMW / NETWORK FUNCTION CANDIDATES =====\n')
-              for fn,i,ctx in candidates:
-                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> store-line {i} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== ALL +0x78 STORES IN NAMED NETWORKISH FUNCTIONS =====\n')
-              emitted=set()
+          def analyze(path, label):
+              txt=run(["mipsel-linux-gnu-objdump","-drwC",str(path)])
+              lines=txt.splitlines()
+              funcs=[]
               for i,l in enumerate(lines):
-                  m=mem.search(l)
-                  if not m or m.group(1).lower()!='sw': continue
-                  fn=owner(i)
-                  if not fn or not re.search(r'skb|conntrack|fastpath|nat|netif|eth|rtl|ip_|ipv4|bridge|br_|nf_|forward|route|wan|lan',fn[2],re.I):
-                      continue
-                  if (fn[1],i) in emitted: continue
-                  emitted.add((fn[1],i))
-                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
-                  o.write('\n'.join(lines[max(fn[0],i-18):min(len(lines),i+20)])+'\n')
+                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                  if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+              hits=[]
+              for fi,(start,addr,name) in enumerate(funcs):
+                  end=funcs[fi+1][0] if fi+1<len(funcs) else len(lines)
+                  block=lines[start:end]
+                  # Track only short straight-line sequences around offset 120.
+                  for bi,l in enumerate(block):
+                      m=re.search(r'\blw\s+([a-z0-9]+),120\(([a-z0-9]+)\)',l,re.I)
+                      if not m: continue
+                      src,base=m.group(1),m.group(2)
+                      regs={src}
+                      for j in range(bi+1,min(len(block),bi+18)):
+                          x=block[j]
+                          # stop after branch/jump/call, except simple delay-friendly sequence
+                          if j>bi+1 and re.search(r'\b(?:beq|bne|bnez|beqz|j|jal|jalr|jr)\b',x):
+                              break
+                          mm=re.search(r'\bmove\s+([a-z0-9]+),([a-z0-9]+)',x,re.I)
+                          if mm and mm.group(2) in regs: regs.add(mm.group(1))
+                          mm=re.search(r'\b(?:ori|xori)\s+([a-z0-9]+),([a-z0-9]+),(0x[0-9a-f]+|\d+)',x,re.I)
+                          if mm and mm.group(2) in regs:
+                              val=int(mm.group(3),0)
+                              regs.add(mm.group(1))
+                              if val in (1,2,3):
+                                  dst=mm.group(1)
+                                  for k in range(j+1,min(len(block),j+8)):
+                                      sw=re.search(rf'\bsw\s+{dst},120\({base}\)',block[k],re.I)
+                                      if sw:
+                                          hits.append((addr,name,val,start+bi,start+j,start+k,
+                                                       lines[max(start,start+bi-10):min(end,start+k+10)]))
+                          mm=re.search(r'\baddiu\s+([a-z0-9]+),zero,(1|2|3)\b',x,re.I)
+                          if mm:
+                              dst=mm.group(1); val=int(mm.group(2))
+                              for k in range(j+1,min(len(block),j+8)):
+                                  if re.search(rf'\bsw\s+{dst},120\({base}\)',block[k],re.I):
+                                      hits.append((addr,name,val,start+bi,start+j,start+k,
+                                                   lines[max(start,start+bi-10):min(end,start+k+10)]))
+                  # Also direct constant stores produced as li + sw without prior load.
+                  for bi,l in enumerate(block):
+                      mm=re.search(r'\bli\s+([a-z0-9]+),(1|2|3)\b',l,re.I)
+                      if not mm: continue
+                      reg,val=mm.group(1),int(mm.group(2))
+                      for k in range(bi+1,min(len(block),bi+10)):
+                          sm=re.search(rf'\bsw\s+{reg},120\(([a-z0-9]+)\)',block[k],re.I)
+                          if sm:
+                              hits.append((addr,name,val,start+bi,start+bi,start+k,
+                                           lines[max(start,start+bi-8):min(end,start+k+10)]))
+              return hits, lines
 
-              o.write('\n===== nf_conntrack_in TEST SITES =====\n')
-              for i,l in enumerate(lines):
-                  if re.search(r'803b[e-f][0-9a-f]{4}:',l,re.I) and re.search(r'120\([^)]+\)',l):
-                      o.write('\n'.join(lines[max(0,i-12):min(len(lines),i+18)])+'\n---\n')
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 138: skb +0x78 bit writers across kernel/modules =====\n")
+              targets=[(kernel,"kernel")]
+              targets += [(p,str(p.relative_to(root))) for p in root.rglob("*.ko")]
+              total=0
+              for p,label in targets:
+                  hits,_=analyze(p,label)
+                  # Keep all exact RMW/direct hits; name/path provides context.
+                  if not hits: continue
+                  o.write(f"\n===== {label} =====\n")
+                  seen=set()
+                  for addr,name,val,li,oi,si,ctx in hits:
+                      key=(addr,name,val,si)
+                      if key in seen: continue
+                      seen.add(key); total+=1
+                      o.write(f"\n--- 0x{addr:x} <{name}> sets value/bit {val} around +0x78 ---\n")
+                      o.write("\n".join(ctx)+"\n")
+              o.write(f"\n===== TOTAL EXACT CANDIDATES: {total} =====\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run137-skb-direction-mark
-          path: docs/reverse-generated/run137-skb-direction-mark.txt
+          name: run138-skb-bit-writers
+          path: docs/reverse-generated/run138-skb-bit-writers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run137-skb-direction-mark.txt
+          git add docs/reverse-generated/run138-skb-bit-writers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace skb direction mark'
+            git commit -m 'reverse: trace skb bit writers across firmware'
             git push
           fi
