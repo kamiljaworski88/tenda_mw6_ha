@@ -18,116 +18,104 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Resolve GetHostList call targets
+      - name: Trace netlink_get_statistic_info
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          bin='firmware-src/RootFS-unpacked/bin/confsrv'
-          out='docs/reverse-generated/run134-gethostlist-got-callmap.txt'
+          out='docs/reverse-generated/run135-netlink-statistic-userspace.txt'
 
-          python3 - "$bin" "$out" <<'PY'
+          python3 - firmware-src "$out" <<'PY'
           import re, subprocess, sys
           from pathlib import Path
 
-          binary=Path(sys.argv[1]); out=Path(sys.argv[2])
+          root=Path(sys.argv[1]); out=Path(sys.argv[2])
 
           def run(cmd):
               return subprocess.run(cmd, text=True, errors='replace',
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
 
-          dis=run(["mipsel-linux-gnu-objdump","-drwC",
-                   "--start-address=0x434f9c","--stop-address=0x435424",str(binary)])
-          attrs=run(["mipsel-linux-gnu-readelf","-A",str(binary)])
-          syms=run(["mipsel-linux-gnu-readelf","-Ws",str(binary)])
-          rels=run(["mipsel-linux-gnu-readelf","-r",str(binary)])
-
-          # confctl_get_host_list prologue:
-          # gp = t9 + 0x621c4; t9 is the function address 0x434f9c.
-          gp=0x434f9c+0x621c4
-
-          # Parse readelf -A MIPS GOT global table. Typical lines contain:
-          # Address ... Sym.Val. Type Ndx Name
-          got_by_addr={}
-          for line in attrs.splitlines():
-              m=re.match(r'^\s*(0x[0-9a-fA-F]+)\s+.*?\s([A-Za-z_][A-Za-z0-9_@.]*)(?:\s*)$',line)
-              if m:
-                  got_by_addr[int(m.group(1),16)]=m.group(2)
-
-          # More robust symbol-name recovery: for every computed GOT address, search
-          # the readelf -A line containing that address and keep the final token.
-          lines=dis.splitlines()
-          calls=[]
-          for i,l in enumerate(lines):
-              m=re.search(r'\blw\s+([a-z0-9]+),(-?\d+)\(gp\)',l)
-              if not m:
+          defs=[]
+          for p in root.rglob("*"):
+              if not p.is_file():
                   continue
-              reg=m.group(1); off=int(m.group(2))
-              # Only treat it as a function pointer when a jalr of that same register
-              # appears in the next handful of instructions.
-              window=lines[i+1:i+8]
-              if not any(re.search(rf'\bjalr\s+{re.escape(reg)}\b',x) for x in window):
+              try:
+                  nm=run(["mipsel-linux-gnu-nm","-D",str(p)])
+              except Exception:
                   continue
-              addr=(gp+off)&0xffffffff
-              symbol=None
-              addr_forms={f"0x{addr:08x}",f"{addr:08x}"}
-              for a in attrs.splitlines():
-                  if any(x.lower() in a.lower() for x in addr_forms):
-                      toks=a.split()
-                      if toks:
-                          symbol=toks[-1]
-                          if symbol in ("UNDEF","UND","LOCAL","GLOBAL","DEFAULT"):
-                              symbol=None
-                      if symbol:
-                          break
-              calls.append((i,l,reg,off,addr,symbol,window))
+              if "netlink_get_statistic_info" in nm:
+                  for l in nm.splitlines():
+                      if "netlink_get_statistic_info" not in l: continue
+                      parts=l.split()
+                      if len(parts)>=3 and parts[-1]=="netlink_get_statistic_info":
+                          defs.append((p,l))
 
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 134: confctl_get_host_list GOT call map =====\n")
-              o.write(f"Computed gp = 0x{gp:08x}\n")
-              o.write("Function range: 0x434f9c..0x435420\n\n")
+              o.write("===== RUN 135: userspace netlink_get_statistic_info =====\n")
+              o.write("===== DEFINITIONS / REFERENCES =====\n")
+              for p,l in defs:
+                  o.write(f"{p}: {l}\n")
 
-              o.write("===== RESOLVED INDIRECT CALLS IN EXECUTION ORDER =====\n")
-              for n,(i,l,reg,off,addr,sym,window) in enumerate(calls,1):
-                  o.write(f"\n[{n}] GOT {off:+d}(gp) => 0x{addr:08x} => {sym or 'UNRESOLVED'}\n")
-                  o.write(l+"\n")
-                  o.write("\n".join(window)+"\n")
+              for p,l in defs:
+                  parts=l.split()
+                  typ=parts[-2] if len(parts)>=3 else ""
+                  if typ.upper()=="U":
+                      continue
+                  try:
+                      addr=int(parts[0],16)
+                  except Exception:
+                      continue
 
-              o.write("\n===== TARGETED KNOWN OFFSETS =====\n")
-              for off in (-31956,-31216,-30976,-30912,-32192,-30416,-30460,-31212,-30584,-30768):
-                  addr=(gp+off)&0xffffffff
-                  hits=[a for a in attrs.splitlines() if f"{addr:08x}" in a.lower() or f"0x{addr:08x}" in a.lower()]
-                  o.write(f"{off:+d}(gp) -> 0x{addr:08x}\n")
-                  for h in hits:
-                      o.write("  "+h+"\n")
+                  syms=[]
+                  for sl in run(["mipsel-linux-gnu-nm","-D","-n",str(p)]).splitlines():
+                      q=sl.split(maxsplit=2)
+                      if len(q)==3:
+                          try:a=int(q[0],16)
+                          except:continue
+                          syms.append((a,q[1],q[2]))
+                  syms.sort()
+                  nxt=addr+0x3000
+                  for a,t,n in syms:
+                      if a>addr:
+                          nxt=a; break
 
-              o.write("\n===== GET HOST LIST DISASSEMBLY =====\n")
-              o.write(dis)
-              o.write("\n===== MIPS ABI / GOT TABLE =====\n")
-              o.write(attrs)
-              o.write("\n===== DYNAMIC SYMBOLS FILTERED =====\n")
-              for l in syms.splitlines():
-                  if re.search(r'host|statistic|netlink|feature|pack|malloc|free|sleep|usleep|rate|client|online|assoc|signal',l,re.I):
-                      o.write(l+"\n")
-              o.write("\n===== RELOCATIONS =====\n")
-              o.write(rels)
+                  o.write(f"\n===== OWNER {p} @ 0x{addr:x} =====\n")
+                  o.write(run(["mipsel-linux-gnu-readelf","-A",str(p)]))
+                  o.write("\n===== SYMBOLS FILTERED =====\n")
+                  for sl in run(["mipsel-linux-gnu-readelf","-Ws",str(p)]).splitlines():
+                      if re.search(r'netlink|statistic|g_ip_info|socket|send|recv|malloc|calloc|free|online|nlmsg|poll|select|time|usleep',sl,re.I):
+                          o.write(sl+"\n")
+                  o.write("\n===== FUNCTION DISASSEMBLY =====\n")
+                  o.write(run(["mipsel-linux-gnu-objdump","-drwC",
+                               f"--start-address=0x{addr:x}",f"--stop-address=0x{nxt:x}",str(p)]))
+
+                  # Also dump nearby named functions that look related.
+                  for a,t,n in syms:
+                      if re.search(r'netlink|statistic|online|nlmsg',n,re.I) and n!="netlink_get_statistic_info":
+                          stop=a+0x1800
+                          for aa,tt,nn in syms:
+                              if aa>a:
+                                  stop=aa; break
+                          o.write(f"\n===== RELATED {n} @ 0x{a:x} =====\n")
+                          o.write(run(["mipsel-linux-gnu-objdump","-drwC",
+                                     f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(p)]))
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run134-gethostlist-got-callmap
-          path: docs/reverse-generated/run134-gethostlist-got-callmap.txt
+          name: run135-netlink-statistic-userspace
+          path: docs/reverse-generated/run135-netlink-statistic-userspace.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run134-gethostlist-got-callmap.txt
+          git add docs/reverse-generated/run135-netlink-statistic-userspace.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve GetHostList call targets'
+            git commit -m 'reverse: trace userspace netlink statistics'
             git push
           fi
