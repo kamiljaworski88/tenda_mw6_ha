@@ -20,46 +20,43 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Identify helper 0x4087b8
+      - name: Resolve wired client identity source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt'
+          out='docs/reverse-generated/run157-wired-client-identity-source.txt'
 
           {
-            echo '===== RUN 156: identify get_all_wireless_client helper 0x4087b8 ====='
+            echo '===== RUN 157: wired client identity source ====='
             echo
-            echo '===== TARGET 0x4087b8 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x408700 --stop-address=0x408b20 "$dev"
-
-            echo
-            echo '===== NEARBY SYMBOLS ====='
-            mipsel-linux-gnu-nm -n "$dev" | awk '$1 >= "00408600" && $1 <= "00408c00" {print}' || true
-
-            echo
-            echo '===== STRING TABLE CLUES ====='
-            strings -tx "$dev" | grep -Ei 'find_if_arp_in_arp_list_by_mac|get_proc_arp_list|arp_receive|/proc/net/arp|wifi_list|mac =|ip =' || true
+            echo '===== DISASSEMBLY 0x408900..0x409900 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x408900 --stop-address=0x409900 "$dev"
 
             echo
             echo '===== GOT ====='
             mipsel-linux-gnu-readelf -A "$dev"
+
+            echo
+            echo '===== SYMBOLS / STRINGS ====='
+            mipsel-linux-gnu-readelf -Ws "$dev" | grep -Ei 'wired|wire_client|client|arp|l2|switch|mac|eth' || true
+            strings -tx "$dev" | grep -Ei 'wired client|update_wire_client_from_sw_list|del_wire_client_not_in_sw_l2_list|find_if_arp_in_arp_list_by_mac|get_proc_arp_list|sw_l2|arp' || true
           } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run156-wireless-arp-helper
-          path: docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt
+          name: run157-wired-client-identity-source
+          path: docs/reverse-generated/run157-wired-client-identity-source.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt
+          git add docs/reverse-generated/run157-wired-client-identity-source.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: identify wireless ARP helper'
+            git commit -m 'reverse: resolve wired client identity source'
             git push
           fi
