@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–138.
+after Runs 37 and 123–141.
 
 ## 1. Local API surface
 
@@ -92,7 +92,7 @@ this firmware is `nf_conntrack_in`.
 
 The creation path requires:
 
-- vendor skb direction bit `0x2` at skb offset `+0x78`,
+- vendor skb direction/accounting bit `0x2` at skb offset `+0x78`,
 - a valid unicast IPv4 address.
 
 `check_ip_addr` rejects:
@@ -107,17 +107,75 @@ Concrete bit-0x2 producers found in the kernel:
 - `rtl_netif_rx`: `skb+0x78 |= 0x2`
 - `interrupt_dsr_rx`: `skb+0x78 |= 0x2`
 
-The exact source of complementary bit `0x1` remains unresolved.
+## 6. MW6 sk_buff layout around the direction field
 
-## 6. Packet accounting
+Runs 140–141 resolve the relevant neighborhood in the actual MW6 Linux
+3.10.90 / RTL8197F kernel:
+
+| skb offset | Meaning |
+| --- | --- |
+| `+0x70` | `skb_iif` |
+| `+0x74` | Tenda/Realtek private 32-bit field A |
+| `+0x78` | Tenda/Realtek private 32-bit direction/accounting field B |
+| `+0x7c` | `rxhash` |
+| `+0x80` | `vlan_proto` |
+| `+0x82` | `vlan_tci` |
+| `+0x84` | `tc_index` |
+
+The earlier hypothesis that `+0x78` could be `rxhash` is disproved:
+`__skb_get_rxhash` writes `rxhash` at exactly `+0x7c`.
+
+The `skb_iif` identity is independently confirmed by
+`__netif_receive_skb_core`, where the assembly corresponding to
+`skb->skb_iif = skb->dev->ifindex` stores at `+0x70`.
+
+Both private fields `+0x74` and `+0x78` are:
+
+- zeroed by `__alloc_skb`,
+- explicitly copied by `__copy_skb_header`.
+
+Therefore field B is persistent packet metadata, not temporary driver scratch
+space.
+
+The exact C member name of field B is still unknown because the closest public
+Realtek SDK v3.4.11C source does not contain these two extra words.
+
+## 7. Direction bits are now resolved
+
+`nos.ko::tbq_timer_func` tests the private word at `skb+0x78`:
+
+- `field & 0x2` takes the TX branch,
+- otherwise `field & 0x1` takes the RX branch.
+
+The TX branch:
+
+- adds `skb->len` to the online-ip TX byte counter,
+- increments the online-ip TX packet counter,
+- adds `skb->len` to global `wan_tx_bytes`.
+
+The RX branch:
+
+- adds `skb->len` to the online-ip RX byte counter,
+- increments the online-ip RX packet counter,
+- adds `skb->len` to global `wan_rx_bytes`.
+
+Therefore the semantics are proven:
+
+- **bit `0x2` = WAN TX / client upload / LAN → WAN**
+- **bit `0x1` = WAN RX / client download / WAN → LAN**
+
+This also explains why Wi-Fi/LAN receive functions set bit `0x2`: a packet
+received by the router from a LAN client is traffic that will be transmitted
+toward WAN.
+
+The producer of complementary bit `0x1` is the next reverse target.
+
+## 8. Packet accounting
 
 `nos.ko::tbq_timer_func` is the confirmed writer of per-client traffic
 counters.
 
-It obtains the connection's attached `online_ip` pointer and adds packet
-length according to direction flags.
-
-Kernel record counters:
+Kernel online-ip record:
 
 | Kernel offset | Meaning |
 | --- | --- |
@@ -125,12 +183,15 @@ Kernel record counters:
 | `+0x58/+0x5c` | previous TX/upload snapshot |
 | `+0x60/+0x64` | current RX/download bytes |
 | `+0x68/+0x6c` | previous RX/download snapshot |
+| `+0x70/+0x74` | TX/upload packet count |
+| `+0x78/+0x7c` | RX/download packet count |
 
-The same function also updates global `wan_tx_bytes` / `wan_rx_bytes`.
+The online-ip record offsets above are unrelated to the identically numbered
+offsets in `struct sk_buff`.
 
-## 7. Kernel → userspace counter mapping
+## 9. Kernel → userspace counter mapping
 
-`get_online_ip_info` repacks the counters:
+`get_online_ip_info` repacks the byte counters:
 
 | Kernel | 232-byte userspace record |
 | --- | --- |
@@ -142,7 +203,7 @@ The same function also updates global `wan_tx_bytes` / `wan_rx_bytes`.
 During serialization the current values are copied into previous-snapshot
 slots, which provides the sampling baseline for the next request.
 
-## 8. Rate calculation
+## 10. Rate calculation
 
 The userspace helper samples statistics, measures elapsed microseconds and
 calculates deltas.
@@ -156,7 +217,7 @@ Therefore:
 - `uprate` = upload rate in KiB/s,
 - `downrate` = download rate in KiB/s.
 
-## 9. What zero rates now mean
+## 11. What zero rates now mean
 
 If an online client has valid IP/MAC but `uprate == downrate == 0` under
 known traffic, the already-resolved layers are:
@@ -166,7 +227,8 @@ known traffic, the already-resolved layers are:
 - rate-helper invocation,
 - rate units,
 - strict identity matcher,
-- userspace netlink request format.
+- userspace netlink request format,
+- TX/RX direction-bit semantics.
 
 The unresolved runtime fault domain is now narrow:
 
@@ -175,10 +237,10 @@ The unresolved runtime fault domain is now narrow:
 3. HW NAT / Realtek fastpath / bridge shortcut bypasses the expected slow path,
 4. HostInfo IP/MAC does not equal the online-ip record at sampling time.
 
-## 10. Next reverse target
+## 12. Next reverse target
 
-Resolve the origin and semantics of skb direction bit `0x1`, then determine
-whether HW NAT / fastpath can bypass:
+Resolve the producer of skb private direction bit `0x1` (WAN RX/download),
+then determine whether HW NAT / fastpath can bypass:
 
 `direction mark → nf_conntrack_in → online_ip → NOS/TBQ accounting`.
 
