@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–141.
+after Runs 37 and 123–144.
 
 ## 1. Local API surface
 
@@ -25,16 +25,16 @@ Authenticated TCP/9000:
 9. `signal`
 10. `name`
 
-TCP/12598 cmdsrv is useful for its supported command/Redis transport, but
-`GetHostList` is not a valid pub/sub reply path there. Per-client HostList
-work therefore stays on authenticated TCP/9000.
+TCP/12598 cmdsrv remains useful for its supported command/Redis transport, but
+`GetHostList` does not provide a usable response path there. Per-client
+HostList work stays on authenticated TCP/9000.
 
-## 2. GetHostList really executes the rate helper
+## 2. GetHostList executes the rate helper
 
 `confctl_get_host_list` builds the host list and calls the local helper at
 `0x434258`.
 
-Run 134 resolves that helper's important imports, including:
+Run 134 resolves that helper's important imports:
 
 - `netlink_get_statistic_info`
 - `inet_addr`
@@ -43,25 +43,20 @@ Run 134 resolves that helper's important imports, including:
 - `host_lists__get_packed_size`
 - `host_lists__pack`
 
-Therefore fields 7/8 are not unused schema members: the local GetHostList path
-actively tries to populate them.
+Fields 7/8 are therefore active rate fields, not unused protobuf members.
 
 ## 3. HostInfo rate gate and matching
 
-The per-host gate is:
-
-`HostInfo.online != 0`
-
-It is **not** `condtion_time`.
+The per-host gate is `HostInfo.online != 0`, not `condtion_time`.
 
 For online clients the helper parses both IP and MAC and performs a strict
-match against `g_ip_info` using:
+match against `g_ip_info`:
 
 - IPv4 equality,
 - 6-byte MAC equality,
 - 232-byte online-ip record stride.
 
-No IP-only or MAC-only fallback is used.
+There is no IP-only or MAC-only fallback.
 
 ## 4. Userspace statistics transport
 
@@ -73,44 +68,32 @@ It:
 2. sends netlink message type `17`,
 3. receives the kernel statistics reply,
 4. reads the online-ip record count,
-5. if `count > 0`, allocates `count * 232` bytes and copies records to
-   `g_ip_info`,
+5. if `count > 0`, allocates `count * 232` bytes and fills `g_ip_info`,
 6. if `count == 0`, leaves `g_ip_info == NULL`.
 
-So a NULL `g_ip_info` is primarily evidence of an empty kernel online-ip
-snapshot, not a protobuf/API failure.
+A NULL `g_ip_info` is therefore primarily evidence of an empty kernel
+online-ip snapshot, not a protobuf/API failure.
 
 ## 5. Kernel online_ip lifecycle
 
-Netlink message type 17 reaches `get_online_ip_info`.
+Netlink message type 17 reaches `get_online_ip_info`, which serializes records
+already present in `online_ip_hash`; it does not create clients.
 
-That function serializes records already present in `online_ip_hash`; it does
-not create clients.
-
-Creation is performed by `add_online_ip`, whose only direct caller found in
+Creation is performed by `add_online_ip`. The only direct caller found in
 this firmware is `nf_conntrack_in`.
 
 The creation path requires:
 
-- vendor skb direction/accounting bit `0x2` at skb offset `+0x78`,
+- vendor skb direction/accounting bit `0x2` at `skb+0x78`,
 - a valid unicast IPv4 address.
 
-`check_ip_addr` rejects:
+`check_ip_addr` rejects only address zero and first IPv4 octet >= 224, so
+normal LAN addresses such as `192.168.5.x` pass.
 
-- address zero,
-- first IPv4 octet >= 224.
+## 6. MW6 sk_buff direction metadata
 
-Thus normal LAN addresses such as `192.168.5.x` are accepted.
-
-Concrete bit-0x2 producers found in the kernel:
-
-- `rtl_netif_rx`: `skb+0x78 |= 0x2`
-- `interrupt_dsr_rx`: `skb+0x78 |= 0x2`
-
-## 6. MW6 sk_buff layout around the direction field
-
-Runs 140–141 resolve the relevant neighborhood in the actual MW6 Linux
-3.10.90 / RTL8197F kernel:
+Runs 140–141 resolve this neighborhood in the actual MW6 Linux 3.10.90 /
+RTL8197F kernel:
 
 | skb offset | Meaning |
 | --- | --- |
@@ -122,81 +105,79 @@ Runs 140–141 resolve the relevant neighborhood in the actual MW6 Linux
 | `+0x82` | `vlan_tci` |
 | `+0x84` | `tc_index` |
 
-The earlier hypothesis that `+0x78` could be `rxhash` is disproved:
-`__skb_get_rxhash` writes `rxhash` at exactly `+0x7c`.
+`__alloc_skb` zeroes the two private words and `__copy_skb_header` copies
+both, so they are persistent packet metadata.
 
-The `skb_iif` identity is independently confirmed by
-`__netif_receive_skb_core`, where the assembly corresponding to
-`skb->skb_iif = skb->dev->ifindex` stores at `+0x70`.
+## 7. Direction bits and producers
 
-Both private fields `+0x74` and `+0x78` are:
+`nos.ko` proves:
 
-- zeroed by `__alloc_skb`,
-- explicitly copied by `__copy_skb_header`.
+- bit `0x2` = WAN TX / client upload / LAN → WAN,
+- bit `0x1` = WAN RX / client download / WAN → LAN.
 
-Therefore field B is persistent packet metadata, not temporary driver scratch
-space.
+LAN/Wi-Fi receive paths set `skb+0x78 |= 0x2`.
 
-The exact C member name of field B is still unknown because the closest public
-Realtek SDK v3.4.11C source does not contain these two extra words.
-
-## 7. Direction bits are now resolved
-
-`nos.ko::tbq_timer_func` tests the private word at `skb+0x78`:
-
-- `field & 0x2` takes the TX branch,
-- otherwise `field & 0x1` takes the RX branch.
-
-The TX branch:
-
-- adds `skb->len` to the online-ip TX byte counter,
-- increments the online-ip TX packet counter,
-- adds `skb->len` to global `wan_tx_bytes`.
-
-The RX branch:
-
-- adds `skb->len` to the online-ip RX byte counter,
-- increments the online-ip RX packet counter,
-- adds `skb->len` to global `wan_rx_bytes`.
-
-Therefore the semantics are proven:
-
-- **bit `0x2` = WAN TX / client upload / LAN → WAN**
-- **bit `0x1` = WAN RX / client download / WAN → LAN**
-
-This also explains why Wi-Fi/LAN receive functions set bit `0x2`: a packet
-received by the router from a LAN client is traffic that will be transmitted
-toward WAN.
-
-Run 142 resolves the complementary RX producer as well. In the Ethernet RX
-path, firmware normally applies `skb+0x78 |= 0x2`. Before that write it checks
-the selected interface private data. When the first 32-bit field equals `8`,
-it instead executes:
-
-```text
-skb+0x78 |= 0x5
-```
-
-The public Realtek SDK defines the first member of `struct dev_priv` as
-`u32 id` (the VLAN/interface ID), and defines:
+Run 142 resolves the WAN receive branch too. Ethernet RX checks the first
+32-bit member of the selected Realtek `struct dev_priv`. The public Realtek
+SDK defines this member as `u32 id`, with:
 
 - `RTL_WANVLANID = 8`
 - `RTL_LANVLANID = 9`
 
-Therefore this branch is the WAN receive branch:
+When `dev_priv.id == 8`, MW6 executes `skb+0x78 |= 0x5`. Since `0x5`
+contains bit `0x1` and not bit `0x2`, NOS classifies it as WAN
+RX/download. Bit `0x4` has an additional vendor meaning that is not required
+for direction accounting.
 
-- LAN/Wi-Fi RX → `field |= 0x2` → upload,
-- WAN Ethernet RX (`dev_priv.id == 8`) → `field |= 0x5`.
+## 8. Packet accounting and software FastPath
 
-`0x5` contains bit `0x1` and does not contain bit `0x2`, so
-`tbq_timer_func` takes its WAN-RX/download accounting branch. Bit `0x4`
-has an additional vendor meaning that is not yet required to distinguish
-upload from download.
-
-## 8. Packet accounting
-
-`nos.ko::tbq_timer_func` is the confirmed writer of per-client traffic
+`nos.ko::tbq_timer_func` is one confirmed writer of per-client traffic
 counters.
+
+Runs 143–144 resolve a second, more important packet-accounting path. During
+module initialization, `nos.ko` writes its callback at `.text+0x5e9c` into
+the exported kernel callback pointer `nos_tbq_enqueue`.
+
+Run 144 resolves:
+
+- `__ksymtab_nos_tbq_enqueue` at `0x80547fd8`,
+- exported callback-pointer variable at `0x81a1b8b8`,
+- exactly two kernel call sites:
+  - `fastpath_xmit_prerouting_hook` at `0x80389730`,
+  - `dev_queue_xmit` at `0x8038e1dc`.
+
+Both call the installed NOS callback when present.
+
+The callback:
+
+- receives the skb,
+- follows the skb conntrack pointer,
+- follows the conntrack online-ip association,
+- tests `skb+0x78` bits 0x2/0x1,
+- updates per-client TX/RX byte and packet counters,
+- updates global `wan_tx_bytes` / `wan_rx_bytes`,
+- participates in TBQ filter/queue decisions,
+- marks a processed skb with byte `skb+0x47 = 16`.
+
+The two kernel call sites skip the callback when that processed marker is
+already present, avoiding double accounting when a FastPath packet later
+reaches `dev_queue_xmit`.
+
+**Conclusion:** software Realtek FastPath does not bypass Tenda per-client
+NOS/TBQ accounting. It explicitly invokes it.
+
+## 9. HW NAT state
+
+The reference boot log for the same firmware family shows HW NAT initially
+reaching `/proc/hw_nat = 1`, but WAN/TBQ configuration later changes it to
+`0`. In the captured TBQ-enabled operating state, repeated
+`cat /proc/hw_nat` output is `0`.
+
+Therefore HW NAT is not the leading explanation for zero per-client rates in
+the known firmware state. A live router could still be checked later if needed,
+but the static/reference evidence now points elsewhere.
+
+## 10. online_ip counters
 
 Kernel online-ip record:
 
@@ -212,7 +193,7 @@ Kernel online-ip record:
 The online-ip record offsets above are unrelated to the identically numbered
 offsets in `struct sk_buff`.
 
-## 9. Kernel → userspace counter mapping
+## 11. Kernel → userspace counter mapping
 
 `get_online_ip_info` repacks the byte counters:
 
@@ -223,56 +204,48 @@ offsets in `struct sk_buff`.
 | `+0x60/+0x64` | `+0x28` current download |
 | `+0x68/+0x6c` | `+0x30` previous download |
 
-During serialization the current values are copied into previous-snapshot
-slots, which provides the sampling baseline for the next request.
-
-## 10. Rate calculation
-
-The userspace helper samples statistics, measures elapsed microseconds and
-calculates deltas.
-
-The final conversion is:
-
-`delta_bytes / elapsed_seconds / 1024`
+The userspace helper then computes
+`delta_bytes / elapsed_seconds / 1024`.
 
 Therefore:
 
 - `uprate` = upload rate in KiB/s,
 - `downrate` = download rate in KiB/s.
 
-## 11. What zero rates now mean
+## 12. What zero rates now mean
 
-If an online client has valid IP/MAC but `uprate == downrate == 0` under
-known traffic, the already-resolved layers are:
+For an online client with valid IP/MAC but zero `uprate/downrate` during
+known traffic, the following layers are already resolved:
 
-- protobuf field mapping,
-- TCP/9000 MESH_HOSTS/GetHostList routing,
+- protobuf schema,
+- TCP/9000 GetHostList routing,
 - rate-helper invocation,
-- rate units,
-- strict identity matcher,
-- userspace netlink request format,
-- TX/RX direction-bit semantics.
+- units,
+- strict IP+MAC matcher,
+- netlink transport,
+- TX/RX direction metadata,
+- LAN/WAN direction producers,
+- software FastPath accounting.
 
-The unresolved runtime fault domain is now narrow:
+The highest-value unresolved fault domain is now:
 
-1. no online-ip record is created/returned for that flow,
-2. the flow is attached to online-ip but bypasses NOS/TBQ byte accounting,
-3. HW NAT / Realtek fastpath / bridge shortcut bypasses the expected slow path,
-4. HostInfo IP/MAC does not equal the online-ip record at sampling time.
+1. `online_ip` record is not created for the client/flow,
+2. conntrack exists but its online-ip association remains NULL/stale,
+3. online-ip identity differs from HostInfo IP/MAC at sampling time,
+4. online-ip record lifetime/timeout removes the record before sampling.
 
-## 12. Next reverse target
+## 13. Next reverse target
 
-The direction-bit producers are now resolved. The next target is whether HW
-NAT / Realtek FastPath can bypass or short-circuit:
+Trace the exact `nf_conntrack_in → find_online_ip/add_online_ip → ct online_ip`
+attachment path, especially the conntrack member used by NOS at `ct+0x8c`.
 
-`direction mark → nf_conntrack_in → online_ip → NOS/TBQ accounting`.
+Resolve:
 
-In particular, determine whether established accelerated flows continue to
-feed `tbq_timer_func` / online-ip counters or only their initial slow-path
-packets are accounted.
+- every write/read of `ct+0x8c`,
+- when the association can remain NULL,
+- online-ip IP/MAC identity offsets and source,
+- timeout/removal behavior,
+- whether an existing conntrack can outlive or miss its online-ip record.
 
-Only after that should a live test be added, and it should distinguish:
-
-- no online-ip record,
-- record with static counters,
-- record with moving counters but failed HostInfo match.
+Only after this static path is exhausted should a live test distinguish
+missing online-ip, static counters, and HostInfo identity mismatch.
