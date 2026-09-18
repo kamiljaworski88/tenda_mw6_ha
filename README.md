@@ -143,7 +143,9 @@ The summary classifies the result as:
 
 Run 162 produced `INVENTORY_ONLINE_DROPPED` for `192.168.5.47`. Static
 analysis then confirmed that the reporting process publishes its local client
-list every 20 seconds, which should beat the 45-second central watchdog.
+list every 20 seconds, which should beat the 45-second central watchdog. Run
+168 directly resolves the timer branch to `g_client_hs_list`,
+`g_client_hs_list_num`, and `do_upload_client_list`.
 
 Use the node/peer diagnostic to distinguish a node-wide reporting failure from
 a target-only enumeration problem:
@@ -200,7 +202,7 @@ Runs 149–151 prove:
 - the reporting MW6 identity becomes `HostInfo.assoc_sn`,
 - each device-list upload is merged by client MAC into the central client hash.
 
-The current live result is `INVENTORY_ONLINE_DROPPED`. Runs 163–167 further
+The current live result is `INVENTORY_ONLINE_DROPPED`. Runs 163–168 further
 prove that the reporting node's normal upload timer fires every 20 seconds and
 publishes `device_list_upload`. The next blocker is therefore this distinction:
 
