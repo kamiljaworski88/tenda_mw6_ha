@@ -20,174 +20,175 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Resolve client online refresh pipeline
+      - name: Resolve device-list merge and mesh reporter identity
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run150
+          mkdir -p docs/reverse-generated /tmp/run151
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          out='docs/reverse-generated/run150-client-online-refresh-pipeline.txt'
-          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/run150/confsrv.dis
-          mipsel-linux-gnu-readelf -Ws "$conf" > /tmp/run150/confsrv.sym
+          dev='firmware-src/RootFS-unpacked/bin/device_list'
+          out='docs/reverse-generated/run151-device-list-merge-mesh.txt'
 
-          python3 - /tmp/run150/confsrv.dis /tmp/run150/confsrv.sym "$out" <<'PY'
-          import re, sys
+          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/run151/confsrv.dis
+          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run151/device_list.dis
+
+          python3 - /tmp/run151/confsrv.dis /tmp/run151/device_list.dis "$conf" "$dev" "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
 
-          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          symtxt=Path(sys.argv[2]).read_text(errors='replace')
-          out=Path(sys.argv[3])
+          cdis=Path(sys.argv[1]).read_text(errors='replace').splitlines()
+          ddis=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          conf=Path(sys.argv[3]); dev=Path(sys.argv[4]); out=Path(sys.argv[5])
 
-          # Function-name strings are based at the rodata object reached as 0x470000 + imm.
-          fn_strings={
-              0x3040:"fill_host_info_from_client_status",
-              0x3120:"device_client_offline_check",
-              0x317c:"update_client_info_to_hash_table",
-              0x31a0:"add_new_client_to_hash_table",
-              0x31c0:"upload_client_online_status_change",
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+
+          def slice_addr(lines,start,stop):
+              out=[]
+              active=False
+              for l in lines:
+                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
+                  if not m:
+                      if active: out.append(l)
+                      continue
+                  a=int(m.group(1),16)
+                  if start <= a < stop:
+                      active=True; out.append(l)
+                  elif active and a>=stop:
+                      break
+              return out
+
+          merge=slice_addr(cdis,0x4320f0,0x4324c8)
+          upload=slice_addr(cdis,0x4324c8,0x432780)
+
+          # GOT slot -31956 contains local text base 0x430000; annotate addiu
+          # offsets that become stripped-local function addresses.
+          known={
+              0x431534:"upload_client_online_status_change",
+              0x431744:"add_new_client_to_hash_table",
+              0x431b04:"update_client_info_to_hash_table",
+              0x4320f0:"update_list_to_client_hash_table (candidate)",
+              0x432780:"device_client_offline_check",
           }
 
-          # Discover stripped local function starts from the standard PIC prologue:
-          #   lui gp,...
-          #   addiu gp,...
-          #   addu gp,gp,t9
-          # followed shortly by stack allocation.
-          starts=[]
-          for i,l in enumerate(lines):
+          def local_call_annotations(block):
+              anns=[]
+              for i,l in enumerate(block):
+                  if "-31956(gp)" not in l: continue
+                  # Find addiu using the loaded v0 within next 4 instructions.
+                  for j in range(i+1,min(len(block),i+5)):
+                      m=re.search(r'\baddiu\s+([a-z0-9]+),([a-z0-9]+),(-?\d+)',block[j],re.I)
+                      if not m: continue
+                      imm=int(m.group(3))
+                      target=(0x430000+imm)&0xffffffff
+                      # Require nearby jalr.
+                      near="\n".join(block[j:min(len(block),j+5)])
+                      if "jalr" in near:
+                          anns.append((i,j,imm,target,known.get(target,"unknown local")))
+                          break
+              return anns
+
+          anns=local_call_annotations(merge)
+
+          # Find the device_list-side string and likely xref function for upload.
+          strings=run(["strings","-tx",str(dev)])
+          interesting_strings=[]
+          for l in strings.splitlines():
+              if re.search(r'device_list_upload|upload.*client|client.*upload|send_all_client_status|assoc_sn|node.*sn',l,re.I):
+                  interesting_strings.append(l)
+
+          # Get file virtual addresses for strong literal strings and report
+          # nearby code references using immediate low16 values.
+          raw=dev.read_bytes()
+          vas=[]
+          from elftools.elf.elffile import ELFFile
+          with dev.open('rb') as f:
+              ef=ELFFile(f)
+              for lit in [b'device_list_upload',b'send_all_client_status_list']:
+                  pos=0
+                  while True:
+                      off=raw.find(lit,pos)
+                      if off<0: break
+                      va=None
+                      for sec in ef.iter_sections():
+                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
+                          if so<=off<so+sz:
+                              va=int(sec['sh_addr'])+(off-so); break
+                      vas.append((lit.decode(),off,va))
+                      pos=off+1
+
+          # Discover PIC function starts in device_list and code slices that
+          # contain relevant string low16 immediates or construct 32-byte areas.
+          dstarts=[]
+          for i,l in enumerate(ddis):
               m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if not m: continue
-              a=int(m.group(1),16)
-              nxt="\n".join(lines[i:min(len(lines),i+8)])
-              if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                  starts.append((i,a))
-          starts=sorted(starts)
+              if m:
+                  nxt="\n".join(ddis[i:min(len(ddis),i+8)])
+                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
+                      dstarts.append((i,int(m.group(1),16)))
 
-          def block_for_addr(addr):
-              for k,(i,a) in enumerate(starts):
-                  if a==addr:
-                      e=starts[k+1][0] if k+1<len(starts) else len(lines)
-                      return i,e
-              return None,None
-
-          def owner(idx):
+          def downer(idx):
               prev=None
-              for i,a in starts:
+              for i,a in dstarts:
                   if i>idx: break
                   prev=(i,a)
               return prev
 
-          # Restrict to the client-management area.
-          focus=[(i,a) for i,a in starts if 0x431500 <= a < 0x432b80]
-          named=[]
-          for k,(i,a) in enumerate(focus):
-              # end by next global discovered start, not only focus end
-              allidx=next(x for x,(ii,aa) in enumerate(starts) if ii==i and aa==a)
-              e=starts[allidx+1][0] if allidx+1<len(starts) else len(lines)
-              b=lines[i:e]
-              names=[]
-              for imm,name in fn_strings.items():
-                  # __FUNCTION__ pointer is built from rodata-base pointer + immediate.
-                  # Match both decimal and canonical hex immediates.
-                  dec=str(imm)
-                  hx=f"0x{imm:x}"
-                  if any(re.search(rf'\baddiu\s+[a-z0-9]+,[a-z0-9]+,(?:{re.escape(dec)}|{re.escape(hx)})\b',x,re.I) for x in b):
-                      names.append(name)
-              named.append((a,names,b))
+          xrefs=[]
+          for name,off,va in vas:
+              if va is None: continue
+              lo=va & 0xffff
+              signed=lo if lo<0x8000 else lo-0x10000
+              for i,l in enumerate(ddis):
+                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
+                      ow=downer(i)
+                      xrefs.append((name,va,ow,i,ddis[max(ow[0] if ow else 0,i-24):min(len(ddis),i+80)]))
 
-          # Exact important writes/reads to online +0x84 and last_seen +0x88.
-          state_sites=[]
-          for i,l in enumerate(lines):
-              if not (re.search(r'\b(?:lbu|sb|lw|sw)\s+[^,]+,(132|136)\([^)]+\)',l,re.I)):
-                  continue
-              o=owner(i)
-              if not o or not (0x431500 <= o[1] < 0x432b80):
-                  continue
-              state_sites.append((o[1],i,lines[max(o[0],i-15):min(len(lines),i+25)]))
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 151: device_list merge and mesh reporter identity =====\n')
+              o.write('Known input to confctl_device_list_upload: 32-byte prefix + N * 124-byte client records.\n\n')
 
-          # Direct calls/branches to the three named local function starts.
-          targets={0x431744:"candidate_add_new_client",0x431b04:"update_client_info_to_hash_table",
-                   0x432780:"device_client_offline_check"}
-          callers=[]
-          for i,l in enumerate(lines):
-              for addr,name in targets.items():
-                  if re.search(rf'\b(?:jal|bal|j)\s+0*{addr:x}\b',l,re.I):
-                      o=owner(i)
-                      callers.append((addr,name,o,i,lines[max(o[0] if o else 0,i-18):min(len(lines),i+28)]))
+              o.write('===== confsrv local 0x4320f0 merge function =====\n')
+              o.write('\n'.join(merge)+'\n\n')
 
-          # Dynamic symbols around exported upload/init routines.
-          dyn=[]
-          for l in symtxt.splitlines():
-              if re.search(r'confctl_device_list|client|offline|online',l,re.I):
-                  dyn.append(l)
+              o.write('===== ANNOTATED LOCAL CALLS FROM 0x4320f0 =====\n')
+              for i,j,imm,target,name in anns:
+                  o.write(f'imm={imm:+d} -> 0x{target:08x} {name}\n')
+                  o.write('\n'.join(merge[max(0,i-3):min(len(merge),j+6)])+'\n---\n')
 
-          with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 150: client online refresh pipeline =====\n")
-              o.write("Resolved before this run: HostInfo.online = client_status[+0x84]; last_seen candidate = +0x88; offline threshold = 45 s.\n\n")
+              o.write('\n===== confctl_device_list_upload 0x4324c8 =====\n')
+              o.write('\n'.join(upload)+'\n')
 
-              o.write("===== DYNAMIC SYMBOLS =====\n")
-              o.write("\n".join(dyn)+"\n\n")
+              o.write('\n===== DEVICE_LIST RELEVANT STRINGS =====\n')
+              o.write('\n'.join(interesting_strings)+'\n')
 
-              o.write("===== STRIPPED LOCAL FUNCTIONS 0x431500..0x432b80 =====\n")
-              for a,names,b in named:
-                  o.write(f"\n--- 0x{a:08x} names={','.join(names) if names else '?'} ---\n")
-                  # Full dump only for relevant/named functions or those touching online/last_seen.
-                  joined="\n".join(b)
-                  if names or re.search(r'\b(?:lbu|sb|lw|sw)\s+[^,]+,(132|136)\([^)]+\)',joined,re.I):
-                      o.write(joined+"\n")
+              o.write('\n===== DEVICE_LIST STRING VAs =====\n')
+              for x in vas:o.write(f'{x}\n')
 
-              o.write("\n===== ONLINE/LAST_SEEN ACCESS SITES =====\n")
-              seen=set()
-              for a,i,ctx in state_sites:
-                  key=(a,i)
-                  if key in seen: continue
-                  seen.add(key)
-                  o.write(f"\n--- owner 0x{a:08x} ---\n")
-                  o.write("\n".join(ctx)+"\n")
+              o.write('\n===== DEVICE_LIST XREF CANDIDATES =====\n')
+              if not xrefs:o.write('NO SIMPLE LOW16 XREFS FOUND\n')
+              for name,va,ow,i,ctx in xrefs:
+                  o.write(f"\n--- {name} VA=0x{va:x} owner={('0x%x'%ow[1]) if ow else '?'} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
 
-              o.write("\n===== DIRECT CALLERS OF KEY LOCAL FUNCTIONS =====\n")
-              if not callers:
-                  o.write("No direct jal/bal/j references; calls may use PIC GOT/jalr.\n")
-              for addr,name,ow,i,ctx in callers:
-                  o.write(f"\n--- target 0x{addr:08x} {name}; caller={('0x%08x'%ow[1]) if ow else '?'} ---\n")
-                  o.write("\n".join(ctx)+"\n")
-
-              o.write("\n===== EXPORTED confctl_device_list_upload BODY =====\n")
-              m=re.search(r'\b([0-9a-fA-F]+)\s+\d+\s+FUNC\s+GLOBAL\s+DEFAULT\s+\d+\s+confctl_device_list_upload(?:@@Base)?',symtxt)
-              if m:
-                  a=int(m.group(1),16)
-                  st,en=block_for_addr(a)
-                  o.write(f"symbol address=0x{a:x}\n")
-                  if st is not None:o.write("\n".join(lines[st:en])+"\n")
-              else:
-                  # readelf formatting varies; report matching line(s) above and raw
-                  # disassembly around known 0x4324c8..0x432b00.
-                  o.write("symbol parser did not resolve address; dumping known containing region\n")
-                  for l in lines:
-                      mm=re.match(r'^\s*([0-9a-fA-F]+):',l)
-                      if mm and 0x432400 <= int(mm.group(1),16) < 0x432b80:
-                          o.write(l+"\n")
-
-              o.write("\n===== STATIC CONCLUSIONS =====\n")
-              o.write("Expected identities to verify from __FUNCTION__ xrefs:\n")
-              o.write("  0x431b04 -> update_client_info_to_hash_table\n")
-              o.write("  0x432780 -> device_client_offline_check\n")
-              o.write("  0x431744 -> likely add_new_client_to_hash_table if 0x31a0 xref is present\n")
-              o.write("Both add/update paths should set online=1 and last_seen=now; watchdog clears online after >=45 s without refresh.\n")
+              o.write('\n===== INTERPRETATION TARGET =====\n')
+              o.write('Verify that 0x4320f0 iterates the N raw client records, finds by identity, calls add_new or update, and supplies the 32-byte upload prefix as assoc/node serial context.\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run150-client-online-refresh-pipeline
-          path: docs/reverse-generated/run150-client-online-refresh-pipeline.txt
+          name: run151-device-list-merge-mesh
+          path: docs/reverse-generated/run151-device-list-merge-mesh.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run150-client-online-refresh-pipeline.txt
+          git add docs/reverse-generated/run151-device-list-merge-mesh.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve client online refresh pipeline'
+            git commit -m 'reverse: resolve device-list merge path'
             git push
           fi
