@@ -1,0 +1,24 @@
+name: Python smoke tests
+
+on:
+  push:
+    paths:
+      - "tools/**/*.py"
+      - ".github/workflows/python-smoke.yml"
+  pull_request:
+    paths:
+      - "tools/**/*.py"
+      - ".github/workflows/python-smoke.yml"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile tools
+        run: python -m compileall -q tools
+      - name: Check MW6 probe CLI
+        run: python tools/mw6_probe.py --help
