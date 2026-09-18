@@ -20,129 +20,55 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Trace HostInfo online state source
+      - name: Map HostInfo online field
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run147
-
+          mkdir -p docs/reverse-generated
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run147-hostinfo-online-source.txt'
+          out='docs/reverse-generated/run148-hostinfo-online-field-map.txt'
 
-          python3 - "$conf" "$dev" "$out" <<'PY'
-          import re, subprocess, sys
-          from pathlib import Path
+          {
+            echo '===== RUN 148: HostInfo online field map ====='
+            echo 'Known call targets from confctl_get_host_list:'
+            echo '  0x433e3c = fill_host_lists_info candidate (HostLists*, client_array, count)'
+            echo '  0x434258 = fill_host_lists_rate'
+            echo
 
-          conf=Path(sys.argv[1]); dev=Path(sys.argv[2]); out=Path(sys.argv[3])
+            echo '===== DISASSEMBLY 0x433700..0x434258 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x433700 --stop-address=0x434258 "$conf"
 
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+            echo
+            echo '===== RATE HELPER HEAD 0x434258..0x434380 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x434258 --stop-address=0x434380 "$conf"
 
-          def load(path):
-              dis=run(["mipsel-linux-gnu-objdump","-drwC",str(path)]).splitlines()
-              nm=run(["mipsel-linux-gnu-nm","-n",str(path)]).splitlines()
-              funcs=[]
-              for i,l in enumerate(dis):
-                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-                  if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-              return dis,nm,funcs
+            echo
+            echo '===== GOT ====='
+            mipsel-linux-gnu-readelf -A "$conf"
 
-          cdis,cnm,cfuncs=load(conf)
-          ddis,dnm,dfuncs=load(dev)
+            echo
+            echo '===== IMPORTED HOST/PROTOBUF SYMBOLS ====='
+            mipsel-linux-gnu-readelf -Ws "$conf" | grep -Ei 'host_info|host_lists|strdup|malloc|memcpy|strcmp|strlen|inet|ethaddr' || true
 
-          def block(lines,funcs,name):
-              for idx,(st,a,n) in enumerate(funcs):
-                  if n==name:
-                      en=funcs[idx+1][0] if idx+1<len(funcs) else len(lines)
-                      return a,lines[st:en]
-              return None,[]
-
-          conf_names=[
-              "fill_host_info_from_client_status",
-              "fill_host_lists_info",
-              "fill_host_lists_rate",
-              "confctl_get_host_list",
-              "device_client_offline_check",
-              "update_list_to_client_hash_table",
-              "update_client_info_to_hash_table",
-              "add_new_client_to_hash_table",
-              "upload_client_online_status_change",
-              "transform_client_status_to_user_device",
-              "del_from_offline_client_list",
-              "add_to_offline_client_list",
-          ]
-          dev_names=[
-              "do_upload_client_list",
-              "do_upload_one_client",
-              "update_client_status",
-              "client_offline_check",
-              "update_client_info",
-              "add_client",
-          ]
-
-          def matching_symbols(nm_lines, rx):
-              vals=[]
-              for l in nm_lines:
-                  p=l.split(maxsplit=2)
-                  if len(p)==3 and re.search(rx,p[2],re.I):
-                      vals.append(l)
-              return vals
-
-          with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 147: HostInfo.online source and client aging =====\n")
-              o.write("Goal: map device_list/client-status fields into HostInfo, especially protobuf field 6 (online), and find who clears that source field.\n\n")
-
-              o.write("===== CONFSRV RELEVANT SYMBOLS =====\n")
-              o.write("\n".join(matching_symbols(cnm,r'host|client|offline|online|device_list|remark|roam'))+"\n\n")
-
-              o.write("===== DEVICE_LIST RELEVANT SYMBOLS =====\n")
-              o.write("\n".join(matching_symbols(dnm,r'client|offline|online|upload|device|dhcp|wlan|mesh'))+"\n\n")
-
-              for name in conf_names:
-                  a,b=block(cdis,cfuncs,name)
-                  o.write(f"===== confsrv:{name} @ {('0x%x'%a) if a is not None else 'NOT FOUND'} =====\n")
-                  if b:o.write("\n".join(b)+"\n")
-                  o.write("\n")
-
-              for name in dev_names:
-                  a,b=block(ddis,dfuncs,name)
-                  o.write(f"===== device_list:{name} @ {('0x%x'%a) if a is not None else 'NOT FOUND'} =====\n")
-                  if b:o.write("\n".join(b)+"\n")
-                  o.write("\n")
-
-              a,b=block(cdis,cfuncs,"fill_host_info_from_client_status")
-              o.write("===== fill_host_info_from_client_status ALL LOAD/STORE OFFSETS =====\n")
-              if not b:
-                  o.write("FUNCTION NOT FOUND\n")
-              else:
-                  for i,l in enumerate(b):
-                      if re.search(r'\b(?:lw|sw|lhu|lh|lbu|lb|sh|sb)\s+[^,]+,-?\d+\([^)]+\)',l,re.I):
-                          o.write("\n---\n"+"\n".join(b[max(0,i-4):min(len(b),i+7)])+"\n")
-
-              o.write("\n===== STRING CLUES =====\n")
-              for label,path in [("confsrv",conf),("device_list",dev)]:
-                  st=run(["strings","-tx",str(path)])
-                  o.write(f"\n--- {label} ---\n")
-                  for l in st.splitlines():
-                      if re.search(r'offline|online|client.*status|status.*client|assoc|roam|expire|timeout|device_list|hostname|dhcp',l,re.I):
-                          o.write(l+"\n")
-          PY
+            echo
+            echo '===== LOCAL FUNCTION PROLOGUE CANDIDATES 0x433700..0x434258 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x433700 --stop-address=0x434258 "$conf" |
+              grep -B2 -A8 -E 'addiu[[:space:]]+sp,sp,-|lui[[:space:]]+gp,' || true
+          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run147-hostinfo-online-source
-          path: docs/reverse-generated/run147-hostinfo-online-source.txt
+          name: run148-hostinfo-online-field-map
+          path: docs/reverse-generated/run148-hostinfo-online-field-map.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run147-hostinfo-online-source.txt
+          git add docs/reverse-generated/run148-hostinfo-online-field-map.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace HostInfo online source'
+            git commit -m 'reverse: map HostInfo online field'
             git push
           fi
