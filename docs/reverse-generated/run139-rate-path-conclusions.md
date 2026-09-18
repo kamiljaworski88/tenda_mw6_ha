@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–168.
+after Runs 37 and 123–170.
 
 ## 1. Local API surface
 
@@ -497,14 +497,30 @@ the ID-4 GOT targets directly as `g_client_hs_list`,
 routine with the process-wide list pointer and count, then rearms timer 4 for
 another 20 seconds.
 
-`do_upload_client_list` serializes the 32-byte reporting-node identity followed
-by 124-byte client records and publishes the result through `cmd_pub` under
-`device_list_upload`. This is the payload consumed by the central merge path
-resolved in Run 151.
+`do_upload_client_list` serializes the command envelope plus the 32-byte
+reporting-node identity followed by 124-byte client records. Run 167 resolves
+the exact publication call as:
 
-The live failure is therefore narrower than an unknown cadence: a healthy
-reporter should refresh its clients before the 45-second central watchdog.
-For a client that remains offline, the leading split is now:
+```text
+cmd_pub("confctl_srv_key", envelope("device_list_upload", payload), len)
+```
+
+So `confctl_srv_key` is the pub/sub channel and `device_list_upload` is the
+command embedded in the payload consumed by the central merge path resolved in
+Run 151.
+
+Run 170 also inspects the serializer's client loop. The routine walks the
+32 hash buckets of `g_client_hs_list` and serializes client records until the
+reported global count is reached. It does not contain a per-record branch that
+skips a client merely because the source record's `+0x60` value was set to
+1 after a previous upload. That field is byte-order converted into the payload
+and then set to 1 in the source record after serialization, but it is not a
+simple "already uploaded, skip forever" filter in the periodic list upload.
+
+The live failure is therefore narrower than an unknown cadence or a trivial
+one-shot filter: a healthy reporter should refresh its clients before the
+45-second central watchdog. For a client that remains offline, the leading
+split is now:
 
 1. **same-node peers also remain offline** — node-wide collection, publish, or
    delivery failure;
