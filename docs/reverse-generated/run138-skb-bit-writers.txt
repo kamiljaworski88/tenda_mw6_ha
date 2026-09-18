@@ -1,0 +1,339 @@
+===== RUN 138: skb +0x78 bit writers across kernel/modules =====
+
+===== kernel =====
+
+--- 0x8002bba8 <SyS_sysctl> sets value/bit 1 around +0x78 ---
+8002bec8:	8fb20088 	lw	s2,136(sp)
+8002becc:	8fb10084 	lw	s1,132(sp)
+8002bed0:	8fb00080 	lw	s0,128(sp)
+8002bed4:	03e00008 	jr	ra
+8002bed8:	27bd00a8 	addiu	sp,sp,168
+8002bedc:	12800003 	beqz	s4,8002beec <SyS_sysctl+0x344>
+8002bee0:	00000000 	nop
+8002bee4:	16a00006 	bnez	s5,8002bf00 <SyS_sysctl+0x358>
+8002bee8:	24070001 	li	a3,1
+8002beec:	1220001a 	beqz	s1,8002bf58 <SyS_sysctl+0x3b0>
+8002bef0:	00001021 	move	v0,zero
+8002bef4:	12400018 	beqz	s2,8002bf58 <SyS_sysctl+0x3b0>
+8002bef8:	00001021 	move	v0,zero
+8002befc:	00003821 	move	a3,zero
+8002bf00:	8f840000 	lw	a0,0(gp)
+8002bf04:	0c00f4cd 	jal	8003d334 <task_active_pid_ns>
+8002bf08:	afa70078 	sw	a3,120(sp)
+8002bf0c:	8c450024 	lw	a1,36(v0)
+8002bf10:	8fa70078 	lw	a3,120(sp)
+8002bf14:	02603021 	move	a2,s3
+8002bf18:	0c024ac3 	jal	80092b0c <file_open_root>
+8002bf1c:	8ca40000 	lw	a0,0(a1)
+8002bf20:	2c43f001 	sltiu	v1,v0,-4095
+8002bf24:	1060000c 	beqz	v1,8002bf58 <SyS_sysctl+0x3b0>
+8002bf28:	0040b821 	move	s7,v0
+8002bf2c:	afb50010 	sw	s5,16(sp)
+
+--- 0x801626e4 <tty_port_init> sets value/bit 1 around +0x78 ---
+80162760:	0c01112c 	jal	800444b0 <__mutex_init>
+80162764:	24c60000 	addiu	a2,a2,0
+80162768:	3c058052 	lui	a1,0x8052
+8016276c:	3c06806a 	lui	a2,0x806a
+80162770:	26040064 	addiu	a0,s0,100
+80162774:	24a593dc 	addiu	a1,a1,-27684
+80162778:	0c01112c 	jal	800444b0 <__mutex_init>
+8016277c:	24c60000 	addiu	a2,a2,0
+80162780:	24020001 	li	v0,1
+80162784:	ae020080 	sw	v0,128(s0)
+80162788:	24020032 	li	v0,50
+8016278c:	ae020074 	sw	v0,116(s0)
+80162790:	24020bb8 	li	v0,3000
+80162794:	ae020078 	sw	v0,120(s0)
+80162798:	8fbf0014 	lw	ra,20(sp)
+8016279c:	8fb00010 	lw	s0,16(sp)
+801627a0:	03e00008 	jr	ra
+801627a4:	27bd0018 	addiu	sp,sp,24
+	...
+
+
+--- 0x80164d58 <uart_set_options> sets value/bit 2 around +0x78 ---
+80164e04:	28e20050 	slti	v0,a3,80
+80164e08:	1040001d 	beqz	v0,80164e80 <uart_set_options+0x128>
+80164e0c:	24020065 	li	v0,101
+80164e10:	24020045 	li	v0,69
+80164e14:	10e2002b 	beq	a3,v0,80164ec4 <uart_set_options+0x16c>
+80164e18:	8fa20018 	lw	v0,24(sp)
+80164e1c:	8fa30074 	lw	v1,116(sp)
+80164e20:	24020072 	li	v0,114
+80164e24:	10620022 	beq	v1,v0,80164eb0 <uart_set_options+0x158>
+80164e28:	8fa30018 	lw	v1,24(sp)
+80164e2c:	8e230078 	lw	v1,120(s1)
+80164e30:	8e220084 	lw	v0,132(s1)
+80164e34:	3c06806b 	lui	a2,0x806b
+80164e38:	34630002 	ori	v1,v1,0x2
+80164e3c:	ae230078 	sw	v1,120(s1)
+80164e40:	8c420038 	lw	v0,56(v0)
+80164e44:	02202021 	move	a0,s1
+80164e48:	02402821 	move	a1,s2
+80164e4c:	0040f809 	jalr	v0
+80164e50:	24c6fcd0 	addiu	a2,a2,-816
+80164e54:	12600002 	beqz	s3,80164e60 <uart_set_options+0x108>
+80164e58:	8fa20018 	lw	v0,24(sp)
+80164e5c:	ae62002c 	sw	v0,44(s3)
+80164e60:	8fbf005c 	lw	ra,92(sp)
+
+--- 0x80187b98 <mtdblock_writesect> sets value/bit 1 around +0x78 ---
+80187c4c:	afa30028 	sw	v1,40(sp)
+80187c50:	afb00010 	sw	s0,16(sp)
+80187c54:	0c05fc55 	jal	8017f154 <mtd_read>
+80187c58:	afa20014 	sw	v0,20(sp)
+80187c5c:	14400021 	bnez	v0,80187ce4 <mtdblock_writesect+0x14c>
+80187c60:	8fa30028 	lw	v1,40(sp)
+80187c64:	8fa20020 	lw	v0,32(sp)
+80187c68:	1602005a 	bne	s0,v0,80187dd4 <mtdblock_writesect+0x23c>
+80187c6c:	24020001 	li	v0,1
+80187c70:	ae230070 	sw	v1,112(s1)
+80187c74:	ae300074 	sw	s0,116(s1)
+80187c78:	ae220078 	sw	v0,120(s1)
+80187c7c:	8e24006c 	lw	a0,108(s1)
+80187c80:	02a02821 	move	a1,s5
+80187c84:	02403021 	move	a2,s2
+80187c88:	0c050420 	jal	80141080 <memcpy>
+80187c8c:	00962021 	addu	a0,a0,s6
+80187c90:	ae370078 	sw	s7,120(s1)
+80187c94:	0292a023 	subu	s4,s4,s2
+80187c98:	1a800028 	blez	s4,80187d3c <mtdblock_writesect+0x1a4>
+80187c9c:	02729821 	addu	s3,s3,s2
+
+--- 0x8019ab6c <interrupt_dsr_rx> sets value/bit 2 around +0x78 ---
+8019ae78:	8fa20010 	lw	v0,16(sp)
+8019ae7c:	8e630018 	lw	v1,24(s3)
+8019ae80:	ac430014 	sw	v1,20(v0)
+8019ae84:	8fa5003c 	lw	a1,60(sp)
+8019ae88:	10a00004 	beqz	a1,8019ae9c <interrupt_dsr_rx+0x330>
+8019ae8c:	24020008 	li	v0,8
+8019ae90:	8ca30000 	lw	v1,0(a1)
+8019ae94:	106200f4 	beq	v1,v0,8019b268 <interrupt_dsr_rx+0x6fc>
+8019ae98:	8fa20010 	lw	v0,16(sp)
+8019ae9c:	8fa20010 	lw	v0,16(sp)
+8019aea0:	8c430078 	lw	v1,120(v0)
+8019aea4:	34630002 	ori	v1,v1,0x2
+8019aea8:	ac430078 	sw	v1,120(v0)
+8019aeac:	3c028066 	lui	v0,0x8066
+8019aeb0:	8c426dc4 	lw	v0,28100(v0)
+8019aeb4:	104000ea 	beqz	v0,8019b260 <interrupt_dsr_rx+0x6f4>
+8019aeb8:	24030008 	li	v1,8
+8019aebc:	8fa40010 	lw	a0,16(sp)
+8019aec0:	8c8200cc 	lw	v0,204(a0)
+8019aec4:	9445000c 	lhu	a1,12(v0)
+8019aec8:	10a300d8 	beq	a1,v1,8019b22c <interrupt_dsr_rx+0x6c0>
+8019aecc:	00000000 	nop
+
+--- 0x801ed0d8 <rtk_filter_igrAcl_cfg_get> sets value/bit 1 around +0x78 ---
+801ed434:	0c07f09e 	jal	801fc278 <rtk_switch_portmask_P2L_get>
+801ed438:	26450088 	addiu	a1,s2,136
+801ed43c:	144000dc 	bnez	v0,801ed7b0 <rtk_filter_igrAcl_cfg_get+0x6d8>
+801ed440:	2403ffff 	li	v1,-1
+801ed444:	8fa20010 	lw	v0,16(sp)
+801ed448:	30420008 	andi	v0,v0,0x8
+801ed44c:	10400007 	beqz	v0,801ed46c <rtk_filter_igrAcl_cfg_get+0x394>
+801ed450:	8fa20010 	lw	v0,16(sp)
+801ed454:	24020001 	li	v0,1
+801ed458:	ae420020 	sw	v0,32(s2)
+801ed45c:	8fa20040 	lw	v0,64(sp)
+801ed460:	7c423480 	.word	0x7c423480
+801ed464:	ae420078 	sw	v0,120(s2)
+801ed468:	8fa20010 	lw	v0,16(sp)
+801ed46c:	30420004 	andi	v0,v0,0x4
+801ed470:	10400023 	beqz	v0,801ed500 <rtk_filter_igrAcl_cfg_get+0x428>
+801ed474:	8fa20010 	lw	v0,16(sp)
+801ed478:	97a20046 	lhu	v0,70(sp)
+801ed47c:	30420180 	andi	v0,v0,0x180
+801ed480:	14400007 	bnez	v0,801ed4a0 <rtk_filter_igrAcl_cfg_get+0x3c8>
+801ed484:	24030100 	li	v1,256
+801ed488:	24020001 	li	v0,1
+
+--- 0x80283168 <rtl_netif_rx> sets value/bit 2 around +0x78 ---
+802831bc:	240200ff 	li	v0,255
+802831c0:	10620106 	beq	v1,v0,802835dc <rtl_netif_rx+0x474>
+802831c4:	00000000 	nop
+802831c8:	8e030054 	lw	v1,84(s0)
+802831cc:	3c020001 	lui	v0,0x1
+802831d0:	00621021 	addu	v0,v1,v0
+802831d4:	9042d4c8 	lbu	v0,-11064(v0)
+802831d8:	144000ae 	bnez	v0,80283494 <rtl_netif_rx+0x32c>
+802831dc:	00000000 	nop
+802831e0:	8fa40044 	lw	a0,68(sp)
+802831e4:	8c820078 	lw	v0,120(a0)
+802831e8:	34420002 	ori	v0,v0,0x2
+802831ec:	ac820078 	sw	v0,120(a0)
+802831f0:	3c028066 	lui	v0,0x8066
+802831f4:	8c426dc4 	lw	v0,28100(v0)
+802831f8:	104000f5 	beqz	v0,802835d0 <rtl_netif_rx+0x468>
+802831fc:	8fa20044 	lw	v0,68(sp)
+80283200:	24030008 	li	v1,8
+80283204:	8c4400cc 	lw	a0,204(v0)
+80283208:	9485000c 	lhu	a1,12(a0)
+8028320c:	10a300e1 	beq	a1,v1,80283594 <rtl_netif_rx+0x42c>
+80283210:	00000000 	nop
+
+--- 0x802c8154 <skb_p80211_to_ether> sets value/bit 1 around +0x78 ---
+802c895c:	1040fe90 	beqz	v0,802c83a0 <skb_p80211_to_ether+0x24c>
+802c8960:	02802821 	move	a1,s4
+802c8964:	3c05805d 	lui	a1,0x805d
+802c8968:	24a592c4 	addiu	a1,a1,-27964
+802c896c:	02c02021 	move	a0,s6
+802c8970:	0c04f436 	jal	8013d0d8 <memcmp>
+802c8974:	24060003 	li	a2,3
+802c8978:	14400005 	bnez	v0,802c8990 <skb_p80211_to_ether+0x83c>
+802c897c:	24040001 	li	a0,1
+802c8980:	24020003 	li	v0,3
+802c8984:	afa40078 	sw	a0,120(sp)
+802c8988:	080b219b 	j	802c866c <skb_p80211_to_ether+0x518>
+802c898c:	afa20074 	sw	v0,116(sp)
+802c8990:	3c05805d 	lui	a1,0x805d
+802c8994:	24a592c8 	addiu	a1,a1,-27960
+802c8998:	02c02021 	move	a0,s6
+802c899c:	0c04f436 	jal	8013d0d8 <memcmp>
+802c89a0:	24060003 	li	a2,3
+802c89a4:	14400005 	bnez	v0,802c89bc <skb_p80211_to_ether+0x868>
+802c89a8:	24030004 	li	v1,4
+
+--- 0x803046dc <psk_init> sets value/bit 1 around +0x78 ---
+80304904:	10a8ffbb 	beq	a1,t0,803047f4 <psk_init+0x118>
+80304908:	24420001 	addiu	v0,v0,1
+8030490c:	2442ffff 	addiu	v0,v0,-1
+80304910:	ae050210 	sw	a1,528(s0)
+80304914:	080c1203 	j	8030480c <psk_init+0x130>
+80304918:	8e220020 	lw	v0,32(s1)
+8030491c:	ae030220 	sw	v1,544(s0)
+80304920:	24030020 	li	v1,32
+80304924:	24020001 	li	v0,1
+80304928:	ae030224 	sw	v1,548(s0)
+8030492c:	24030002 	li	v1,2
+80304930:	ae020078 	sw	v0,120(s0)
+80304934:	ae020070 	sw	v0,112(s0)
+80304938:	ae0202e8 	sw	v0,744(s0)
+8030493c:	ae0302ec 	sw	v1,748(s0)
+80304940:	26040304 	addiu	a0,s0,772
+80304944:	00002821 	move	a1,zero
+80304948:	00003021 	move	a2,zero
+8030494c:	0c00b976 	jal	8002e5d8 <init_timer_key>
+80304950:	00003821 	move	a3,zero
+80304954:	3c028030 	lui	v0,0x8030
+
+--- 0x803775f0 <sock_sendmsg_nosec> sets value/bit 1 around +0x78 ---
+80377618:	02002021 	move	a0,s0
+8037761c:	00002821 	move	a1,zero
+80377620:	24060060 	li	a2,96
+80377624:	8f930000 	lw	s3,0(gp)
+80377628:	0c0504f0 	jal	801413c0 <memset>
+8037762c:	afa700b0 	sw	a3,176(sp)
+80377630:	8fa700b0 	lw	a3,176(sp)
+80377634:	8e220018 	lw	v0,24(s1)
+80377638:	24030001 	li	v1,1
+8037763c:	afa30050 	sw	v1,80(sp)
+80377640:	27a30010 	addiu	v1,sp,16
+80377644:	afa30078 	sw	v1,120(sp)
+80377648:	afb30064 	sw	s3,100(sp)
+8037764c:	afb10020 	sw	s1,32(sp)
+80377650:	afa00028 	sw	zero,40(sp)
+80377654:	afb2002c 	sw	s2,44(sp)
+80377658:	afa7001c 	sw	a3,28(sp)
+8037765c:	8c420038 	lw	v0,56(v0)
+80377660:	02202821 	move	a1,s1
+80377664:	02403021 	move	a2,s2
+80377668:	0040f809 	jalr	v0
+
+--- 0x803777d4 <sock_sendmsg> sets value/bit 1 around +0x78 ---
+803777fc:	02002021 	move	a0,s0
+80377800:	00002821 	move	a1,zero
+80377804:	24060060 	li	a2,96
+80377808:	8f930000 	lw	s3,0(gp)
+8037780c:	0c0504f0 	jal	801413c0 <memset>
+80377810:	afa700b0 	sw	a3,176(sp)
+80377814:	8fa700b0 	lw	a3,176(sp)
+80377818:	8e220018 	lw	v0,24(s1)
+8037781c:	24030001 	li	v1,1
+80377820:	afa30050 	sw	v1,80(sp)
+80377824:	27a30010 	addiu	v1,sp,16
+80377828:	afa30078 	sw	v1,120(sp)
+8037782c:	afb30064 	sw	s3,100(sp)
+80377830:	afb10020 	sw	s1,32(sp)
+80377834:	afa00028 	sw	zero,40(sp)
+80377838:	afb2002c 	sw	s2,44(sp)
+8037783c:	afa7001c 	sw	a3,28(sp)
+80377840:	8c420038 	lw	v0,56(v0)
+80377844:	02202821 	move	a1,s1
+80377848:	02403021 	move	a2,s2
+8037784c:	0040f809 	jalr	v0
+
+--- 0x803ca66c <process_register_request> sets value/bit 3 around +0x78 ---
+803ca928:	aec20060 	sw	v0,96(s6)
+803ca92c:	8e020220 	lw	v0,544(s0)
+803ca930:	1040001c 	beqz	v0,803ca9a4 <process_register_request+0x338>
+803ca934:	00000000 	nop
+803ca938:	94430008 	lhu	v1,8(v0)
+803ca93c:	10600019 	beqz	v1,803ca9a4 <process_register_request+0x338>
+803ca940:	00431021 	addu	v0,v0,v1
+803ca944:	8c420000 	lw	v0,0(v0)
+803ca948:	24030003 	li	v1,3
+803ca94c:	aec30078 	sw	v1,120(s6)
+803ca950:	aec20050 	sw	v0,80(s6)
+803ca954:	3c028057 	lui	v0,0x8057
+803ca958:	8c42cf50 	lw	v0,-12464(v0)
+803ca95c:	10400005 	beqz	v0,803ca974 <process_register_request+0x308>
+803ca960:	02c02021 	move	a0,s6
+803ca964:	8e030064 	lw	v1,100(s0)
+803ca968:	30630030 	andi	v1,v1,0x30
+803ca96c:	14600016 	bnez	v1,803ca9c8 <process_register_request+0x35c>
+803ca970:	8fa3002c 	lw	v1,44(sp)
+
+--- 0x8044ea84 <pppol2tp_connect> sets value/bit 3 around +0x78 ---
+8044eb70:	8ab40019 	lwl	s4,25(s5)
+8044eb74:	8ab20015 	lwl	s2,21(s5)
+8044eb78:	8ab3001d 	lwl	s3,29(s5)
+8044eb7c:	9ab6000a 	lwr	s6,10(s5)
+8044eb80:	9aa7000e 	lwr	a3,14(s5)
+8044eb84:	9ab3001a 	lwr	s3,26(s5)
+8044eb88:	9ab40016 	lwr	s4,22(s5)
+8044eb8c:	9ab20012 	lwr	s2,18(s5)
+8044eb90:	24060003 	li	a2,3
+8044eb94:	10e0ffd5 	beqz	a3,8044eaec <pppol2tp_connect+0x68>
+8044eb98:	2402ffea 	li	v0,-22
+8044eb9c:	3c158066 	lui	s5,0x8066
+8044eba0:	00e02821 	move	a1,a3
+8044eba4:	26a41d88 	addiu	a0,s5,7560
+8044eba8:	afa60078 	sw	a2,120(sp)
+8044ebac:	0c1129ee 	jal	8044a7b8 <l2tp_tunnel_find>
+8044ebb0:	afa7007c 	sw	a3,124(sp)
+8044ebb4:	afa20020 	sw	v0,32(sp)
+8044ebb8:	8fa60078 	lw	a2,120(sp)
+8044ebbc:	16600083 	bnez	s3,8044edcc <pppol2tp_connect+0x348>
+8044ebc0:	8fa7007c 	lw	a3,124(sp)
+8044ebc4:	16400081 	bnez	s2,8044edcc <pppol2tp_connect+0x348>
+8044ebc8:	00000000 	nop
+8044ebcc:	10400018 	beqz	v0,8044ec30 <pppol2tp_connect+0x1ac>
+
+--- 0x80677ae4 <net_ns_init> sets value/bit 1 around +0x78 ---
+80677b10:	2484c330 	addiu	a0,a0,-15568
+80677b14:	3c118066 	lui	s1,0x8066
+80677b18:	26301d88 	addiu	s0,s1,7560
+80677b1c:	3c048066 	lui	a0,0x8066
+80677b20:	ae020388 	sw	v0,904(s0)
+80677b24:	0c11a1d6 	jal	80468758 <mutex_lock>
+80677b28:	24842120 	addiu	a0,a0,8480
+80677b2c:	3c058057 	lui	a1,0x8057
+80677b30:	24020001 	li	v0,1
+80677b34:	27a40010 	addiu	a0,sp,16
+80677b38:	3c038066 	lui	v1,0x8066
+80677b3c:	24a52000 	addiu	a1,a1,8192
+80677b40:	ae221d88 	sw	v0,7560(s1)
+80677b44:	ae020078 	sw	v0,120(s0)
+80677b48:	ae020004 	sw	v0,4(s0)
+80677b4c:	ae050020 	sw	a1,32(s0)
+80677b50:	afa40014 	sw	a0,20(sp)
+80677b54:	afa40010 	sw	a0,16(sp)
+80677b58:	24712130 	addiu	s1,v1,8496
+80677b5c:	8c702130 	lw	s0,8496(v1)
+80677b60:	0819dedf 	j	80677b7c <net_ns_init+0x98>
+80677b64:	00001021 	move	v0,zero
+80677b68:	0c0e20d3 	jal	8038834c <T.920>
+
+===== TOTAL EXACT CANDIDATES: 14 =====
