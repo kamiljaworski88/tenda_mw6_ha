@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–156.
+after Runs 37 and 123–157.
 
 ## 1. Local API surface
 
@@ -377,10 +377,10 @@ HostInfo.online + HostInfo.assoc_sn
 fill_host_lists_rate
 ```
 
-## 14. Wireless HostInfo identity source — Runs 152–156
+## 14. HostInfo identity source — Runs 152–157
 
-The identity side of the strict userspace matcher is also resolved for wireless
-clients.
+The identity side of the strict userspace matcher is now resolved for both
+wireless and wired clients.
 
 `get_all_wireless_client` resolves each station against the current ARP list
 using local helper `0x4087b8`, identified as
@@ -411,6 +411,16 @@ This also aligns with the kernel side:
 
 A short-lived race during DHCP/ARP change remains possible, but the steady
 state should produce identical IP+MAC on both sides.
+
+Run 157 resolves the wired path too. `0x408b3c` is
+`update_wire_client_from_sw_list` and it uses the same
+`0x4087b8 = find_if_arp_in_arp_list_by_mac` helper. Switch-L2 MAC identity
+is resolved against the current ARP list, and the returned IPv4/MAC is copied
+to the same raw-client `+0x50/+0x54` fields used by the wireless path.
+
+Thus both wireless and wired HostInfo identity normally converge on current
+ARP state. A persistent strict-match failure now requires a specific runtime
+discrepancy rather than a generic stale-cache mechanism.
 
 ## 15. Current zero-rate decision tree
 
