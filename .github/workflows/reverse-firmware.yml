@@ -18,130 +18,116 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
-          python3 -m pip install --break-system-packages vmlinux-to-elf
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
 
-      - name: Find online_ip counter writers
+      - name: Resolve GetHostList call targets
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/mw6kernel
-          img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
-          raw='/tmp/mw6kernel/kernel.raw'
-          elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run130-onlineip-counter-writers.txt'
+          mkdir -p docs/reverse-generated
+          bin='firmware-src/RootFS-unpacked/bin/confsrv'
+          out='docs/reverse-generated/run134-gethostlist-got-callmap.txt'
 
-          dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
-          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
-          test -s "$raw"
-          vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
-
-          python3 - "$elf" firmware-src "$out" <<'PY'
+          python3 - "$bin" "$out" <<'PY'
           import re, subprocess, sys
           from pathlib import Path
 
-          elf=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
+          binary=Path(sys.argv[1]); out=Path(sys.argv[2])
 
           def run(cmd):
-              return subprocess.run(cmd, text=True, errors='replace', stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+              return subprocess.run(cmd, text=True, errors='replace',
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
 
-          def funcs_for(path):
-              rows=[]
-              for line in run(["mipsel-linux-gnu-nm","-n",str(path)]).splitlines():
-                  p=line.split(maxsplit=2)
-                  if len(p)==3:
-                      try: a=int(p[0],16)
-                      except: continue
-                      if p[1].lower() in ('t','w'): rows.append((a,p[2]))
-              rows.sort()
-              return rows
+          dis=run(["mipsel-linux-gnu-objdump","-drwC",
+                   "--start-address=0x434f9c","--stop-address=0x435424",str(binary)])
+          attrs=run(["mipsel-linux-gnu-readelf","-A",str(binary)])
+          syms=run(["mipsel-linux-gnu-readelf","-Ws",str(binary)])
+          rels=run(["mipsel-linux-gnu-readelf","-r",str(binary)])
 
-          def dis(path, start=None, stop=None):
-              cmd=["mipsel-linux-gnu-objdump","-drwC"]
-              if start is not None: cmd.append(f"--start-address=0x{start:x}")
-              if stop is not None: cmd.append(f"--stop-address=0x{stop:x}")
-              cmd.append(str(path))
-              return run(cmd).splitlines()
+          # confctl_get_host_list prologue:
+          # gp = t9 + 0x621c4; t9 is the function address 0x434f9c.
+          gp=0x434f9c+0x621c4
+
+          # Parse readelf -A MIPS GOT global table. Typical lines contain:
+          # Address ... Sym.Val. Type Ndx Name
+          got_by_addr={}
+          for line in attrs.splitlines():
+              m=re.match(r'^\s*(0x[0-9a-fA-F]+)\s+.*?\s([A-Za-z_][A-Za-z0-9_@.]*)(?:\s*)$',line)
+              if m:
+                  got_by_addr[int(m.group(1),16)]=m.group(2)
+
+          # More robust symbol-name recovery: for every computed GOT address, search
+          # the readelf -A line containing that address and keep the final token.
+          lines=dis.splitlines()
+          calls=[]
+          for i,l in enumerate(lines):
+              m=re.search(r'\blw\s+([a-z0-9]+),(-?\d+)\(gp\)',l)
+              if not m:
+                  continue
+              reg=m.group(1); off=int(m.group(2))
+              # Only treat it as a function pointer when a jalr of that same register
+              # appears in the next handful of instructions.
+              window=lines[i+1:i+8]
+              if not any(re.search(rf'\bjalr\s+{re.escape(reg)}\b',x) for x in window):
+                  continue
+              addr=(gp+off)&0xffffffff
+              symbol=None
+              addr_forms={f"0x{addr:08x}",f"{addr:08x}"}
+              for a in attrs.splitlines():
+                  if any(x.lower() in a.lower() for x in addr_forms):
+                      toks=a.split()
+                      if toks:
+                          symbol=toks[-1]
+                          if symbol in ("UNDEF","UND","LOCAL","GLOBAL","DEFAULT"):
+                              symbol=None
+                      if symbol:
+                          break
+              calls.append((i,l,reg,off,addr,symbol,window))
 
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 130: online_ip current-counter writers =====\n")
-              o.write("Kernel current counters established by get_online_ip_info mapping:\n")
-              o.write("  +0x50/+0x54 = current upload bytes\n")
-              o.write("  +0x58/+0x5c = previous upload snapshot\n")
-              o.write("  +0x60/+0x64 = current download bytes\n")
-              o.write("  +0x68/+0x6c = previous download snapshot\n\n")
+              o.write("===== RUN 134: confctl_get_host_list GOT call map =====\n")
+              o.write(f"Computed gp = 0x{gp:08x}\n")
+              o.write("Function range: 0x434f9c..0x435420\n\n")
 
-              o.write("===== MODULES IMPORTING online_ip SYMBOLS =====\n")
-              kos=list(root.rglob("*.ko"))
-              importers=[]
-              for ko in kos:
-                  nm=run(["mipsel-linux-gnu-nm","-u",str(ko)])
-                  hits=[ln for ln in nm.splitlines() if re.search(r'online_ip|set_online_ip_flag|clear_online_ip_flag',ln,re.I)]
-                  if hits:
-                      importers.append(ko)
-                      o.write(f"\n--- {ko} ---\n")
-                      o.write("\n".join(hits)+"\n")
+              o.write("===== RESOLVED INDIRECT CALLS IN EXECUTION ORDER =====\n")
+              for n,(i,l,reg,off,addr,sym,window) in enumerate(calls,1):
+                  o.write(f"\n[{n}] GOT {off:+d}(gp) => 0x{addr:08x} => {sym or 'UNRESOLVED'}\n")
+                  o.write(l+"\n")
+                  o.write("\n".join(window)+"\n")
 
-              # For every importer, dump relocation neighborhoods and any RMW-looking
-              # accesses at offsets 0x50..0x6c.
-              mempat=re.compile(r'\b(lw|sw)\s+([a-z0-9]+),(80|84|88|92|96|100|104|108)\(([a-z0-9]+)\)')
-              for ko in importers:
-                  lines=dis(ko)
-                  o.write(f"\n===== DISASSEMBLY HITS {ko} =====\n")
-                  for i,l in enumerate(lines):
-                      if re.search(r'online_ip|set_online_ip_flag|clear_online_ip_flag',l,re.I) or mempat.search(l):
-                          o.write("\n".join(lines[max(0,i-8):min(len(lines),i+12)])+"\n---\n")
+              o.write("\n===== TARGETED KNOWN OFFSETS =====\n")
+              for off in (-31956,-31216,-30976,-30912,-32192,-30416,-30460,-31212,-30584,-30768):
+                  addr=(gp+off)&0xffffffff
+                  hits=[a for a in attrs.splitlines() if f"{addr:08x}" in a.lower() or f"0x{addr:08x}" in a.lower()]
+                  o.write(f"{off:+d}(gp) -> 0x{addr:08x}\n")
+                  for h in hits:
+                      o.write("  "+h+"\n")
 
-              o.write("\n===== BUILT-IN KERNEL RMW CANDIDATES +0x50/+0x60 =====\n")
-              funcs=funcs_for(elf)
-              ranges=[(0x803a0000,0x803e8000),(0x80450000,0x80470000)]
-              for lo,hi in ranges:
-                  lines=dis(elf,lo,hi)
-                  starts=[]
-                  for idx,l in enumerate(lines):
-                      m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-                      if m: starts.append((idx,int(m.group(1),16),m.group(2)))
-                  def owner(idx):
-                      b=None
-                      for row,a,n in starts:
-                          if row>idx: break
-                          b=(row,a,n)
-                      return b
-                  for i,l in enumerate(lines):
-                      m=mempat.search(l)
-                      if not m or m.group(1)!='sw' or int(m.group(3)) not in (80,84,96,100):
-                          continue
-                      fn=owner(i)
-                      # Require same function neighborhood to both load and store one
-                      # current-counter word, avoiding generic structure offsets.
-                      off=m.group(3); base=m.group(4)
-                      hood=lines[max(fn[0] if fn else 0,i-18):min(len(lines),i+19)]
-                      if any(re.search(rf'\blw\s+[^,]+,{off}\({base}\)',x) for x in hood):
-                          o.write(f"\n--- {fn} candidate offset +0x{int(off):x} ---\n")
-                          o.write("\n".join(hood)+"\n")
-
-              o.write("\n===== EXACT KERNEL FUNCTIONS THAT SERIALIZE/SNAPSHOT COUNTERS =====\n")
-              for name in ("get_online_ip_info","online_ip_seq_show","nf_conntrack_in"):
-                  f=[x for x in funcs if x[1]==name]
-                  if not f: continue
-                  idx=funcs.index(f[0]); start=f[0][0]; stop=funcs[idx+1][0] if idx+1<len(funcs) else start+0x2000
-                  o.write(f"\n--- {name} ---\n")
-                  o.write("\n".join(dis(elf,start,stop))+"\n")
+              o.write("\n===== GET HOST LIST DISASSEMBLY =====\n")
+              o.write(dis)
+              o.write("\n===== MIPS ABI / GOT TABLE =====\n")
+              o.write(attrs)
+              o.write("\n===== DYNAMIC SYMBOLS FILTERED =====\n")
+              for l in syms.splitlines():
+                  if re.search(r'host|statistic|netlink|feature|pack|malloc|free|sleep|usleep|rate|client|online|assoc|signal',l,re.I):
+                      o.write(l+"\n")
+              o.write("\n===== RELOCATIONS =====\n")
+              o.write(rels)
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run130-onlineip-counter-writers
-          path: docs/reverse-generated/run130-onlineip-counter-writers.txt
+          name: run134-gethostlist-got-callmap
+          path: docs/reverse-generated/run134-gethostlist-got-callmap.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run130-onlineip-counter-writers.txt
+          git add docs/reverse-generated/run134-gethostlist-got-callmap.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: locate online_ip counter writers'
+            git commit -m 'reverse: resolve GetHostList call targets'
             git push
           fi
