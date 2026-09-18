@@ -197,6 +197,16 @@ def request_clients(sock, tid):
     return request_hosts(sock, tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET)
 
 
+def _match_clients(clients, selector):
+    needle = selector.strip().lower()
+    return [
+        c for c in clients
+        if needle == (c["ip"] or "").lower()
+        or needle == (c["mac"] or "").lower()
+        or needle in (c["name"] or "").lower()
+    ]
+
+
 def watch_client_rates(sock, tid, selector, interval, count):
     print(f"\nWatching client {selector!r}; interval={interval:g}s; samples={count if count else 'continuous'}")
     print("TIME      IP               MAC                ONLINE  UP      DOWN    SIGNAL  NAME")
@@ -206,8 +216,7 @@ def watch_client_rates(sock, tid, selector, interval, count):
         fr = request_clients(sock, tid)
         status, clients = decode_mesh_hosts(fr["payload"])
         if status != 0: raise RuntimeError(f"MESH_HOSTS status={status}")
-        needle = selector.lower()
-        matches = [c for c in clients if needle in (c["name"] or "").lower() or needle == c["ip"].lower() or needle == c["mac"].lower()]
+        matches = _match_clients(clients, selector)
         stamp = time.strftime("%H:%M:%S")
         if not matches:
             print(f"{stamp}  client not found: {selector}")
@@ -215,6 +224,136 @@ def watch_client_rates(sock, tid, selector, interval, count):
             print(f"{stamp}  {c['ip']:<15}  {c['mac']:<17}  {str(c['online']):>6}  {str(c['uprate']):>6}  {str(c['downrate']):>6}  {str(c['signal']):>6}  {c['name']}")
         n += 1
         if not count or n < count: time.sleep(interval)
+    return tid
+
+
+def diagnose_client_rates(sock, tid, selector, interval, duration):
+    """Observe one HostInfo long enough to cross the 45 s inventory watchdog."""
+    print(
+        f"\nDiagnosing client {selector!r}; interval={interval:g}s; "
+        f"duration={duration:g}s (firmware inventory watchdog: 45s)"
+    )
+    print(
+        "TIME      ONLINE  COND_S    UP   DOWN  SIGNAL  "
+        "NODE_SN                           IP               MAC                NAME"
+    )
+
+    deadline = time.monotonic() + duration
+    selected_mac = None
+    samples = []
+    missing_samples = 0
+
+    while True:
+        tid = (tid + 1) & 0xff
+        fr = request_clients(sock, tid)
+        status, clients = decode_mesh_hosts(fr["payload"])
+        if status != 0:
+            raise RuntimeError(f"MESH_HOSTS status={status}")
+
+        if selected_mac:
+            matches = [c for c in clients if (c["mac"] or "").lower() == selected_mac]
+        else:
+            matches = _match_clients(clients, selector)
+            if len(matches) > 1:
+                exact = [
+                    c for c in matches
+                    if selector.strip().lower() in {
+                        (c["ip"] or "").lower(),
+                        (c["mac"] or "").lower(),
+                        (c["name"] or "").lower(),
+                    }
+                ]
+                if len(exact) == 1:
+                    matches = exact
+                else:
+                    choices = ", ".join(
+                        f"{c['name'] or '?'} [{c['ip'] or '?'} / {c['mac'] or '?'}]"
+                        for c in matches
+                    )
+                    raise RuntimeError(
+                        f"selector {selector!r} matches multiple clients: {choices}. "
+                        "Use exact IP or MAC."
+                    )
+
+        stamp = time.strftime("%H:%M:%S")
+        if not matches:
+            missing_samples += 1
+            print(f"{stamp}  MISSING  client not present in HostLists")
+        else:
+            c = matches[0]
+            if selected_mac is None:
+                selected_mac = (c["mac"] or "").lower()
+            sample = {
+                "online": int(c["online"] or 0),
+                "condition_time": c["condition_time"],
+                "uprate": int(c["uprate"] or 0),
+                "downrate": int(c["downrate"] or 0),
+                "signal": c["signal"],
+                "node_sn": c["node_sn"] or "",
+                "ip": c["ip"] or "",
+                "mac": c["mac"] or "",
+                "name": c["name"] or "",
+            }
+            samples.append(sample)
+            print(
+                f"{stamp}  {sample['online']:>6}  {str(sample['condition_time']):>6}  "
+                f"{sample['uprate']:>4}  {sample['downrate']:>5}  "
+                f"{str(sample['signal']):>6}  {sample['node_sn']:<32}  "
+                f"{sample['ip']:<15}  {sample['mac']:<17}  {sample['name']}"
+            )
+
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        time.sleep(min(interval, remaining))
+
+    print("\n=== DIAGNOSTIC SUMMARY ===")
+    print(f"selector: {selector}")
+    print(f"samples_present: {len(samples)}")
+    print(f"samples_missing: {missing_samples}")
+
+    if not samples:
+        print("classification: CLIENT_NOT_FOUND")
+        print("meaning: the selected client was not returned in HostLists during the observation window.")
+        return tid
+
+    online_values = [s["online"] for s in samples]
+    max_up = max(s["uprate"] for s in samples)
+    max_down = max(s["downrate"] for s in samples)
+    nodes = sorted({s["node_sn"] for s in samples if s["node_sn"]})
+    ips = sorted({s["ip"] for s in samples if s["ip"]})
+    cond_values = [s["condition_time"] for s in samples if isinstance(s["condition_time"], int)]
+
+    transitions = sum(
+        1 for prev, cur in zip(online_values, online_values[1:]) if prev != cur
+    )
+    print(f"online_values: {sorted(set(online_values))}")
+    print(f"online_transitions: {transitions}")
+    print(f"max_uprate_kib_s: {max_up}")
+    print(f"max_downrate_kib_s: {max_down}")
+    print(f"node_sn_values: {nodes}")
+    print(f"ip_values: {ips}")
+    if cond_values:
+        print(f"condition_time_range: {min(cond_values)}..{max(cond_values)}")
+
+    if any(v == 0 for v in online_values):
+        print("classification: INVENTORY_ONLINE_DROPPED")
+        print(
+            "meaning: HostInfo.online became/stayed 0. The rate helper skips such a client, "
+            "so investigate device_list reporting / the 45 s last_seen watchdog first."
+        )
+    elif max_up == 0 and max_down == 0:
+        print("classification: ONLINE_BUT_RATES_ZERO")
+        print(
+            "meaning: inventory stayed online for the observation window, but both firmware "
+            "rates stayed zero. Focus next on g_ip_info / strict IP+MAC matching / online_ip counters."
+        )
+    else:
+        print("classification: RATE_PIPELINE_ACTIVE")
+        print(
+            "meaning: at least one non-zero firmware per-client rate was observed. "
+            "The local GetHostList traffic pipeline is working for this client."
+        )
     return tid
 
 
@@ -228,11 +367,24 @@ def main():
     ap.add_argument("--clients", action="store_true", help="read-only M_MESH_HOSTS/CMD_MESH_HOSTS_GET")
     ap.add_argument("--raw-hex", action="store_true", help="also print full MESH_HOSTS payload as hex")
     ap.add_argument("--watch-client", metavar="NAME_IP_OR_MAC", help="poll one client and show firmware uprate/downrate")
+    ap.add_argument(
+        "--diagnose-rates",
+        metavar="NAME_IP_OR_MAC",
+        help="observe one client across the 45 s inventory watchdog and classify zero-rate cause",
+    )
     ap.add_argument("--interval", type=float, default=3.0, help="watch polling interval in seconds (default: 3)")
     ap.add_argument("--count", type=int, default=10, help="watch sample count; 0 = continuous (default: 10)")
+    ap.add_argument(
+        "--duration",
+        type=float,
+        default=65.0,
+        help="diagnostic observation window in seconds (default: 65; must be >= 45)",
+    )
     args = ap.parse_args()
     if args.interval < 1: ap.error("--interval must be >= 1 second")
     if args.count < 0: ap.error("--count must be >= 0")
+    if args.diagnose_rates and args.duration < 45:
+        ap.error("--duration must be >= 45 seconds with --diagnose-rates")
     login_payload = extract_successful_login_payload(args.pcap)
     print(f"Found successful LOGIN payload ({len(login_payload)} B); content is intentionally hidden.")
     with socket.create_connection((args.host, args.port), timeout=4) as s:
@@ -255,6 +407,8 @@ def main():
             except Exception as exc:
                 print(f"HostLists decode failed: {exc}")
             return
+        if args.diagnose_rates:
+            diagnose_client_rates(s, tid, args.diagnose_rates, args.interval, args.duration); return
         if args.watch_client:
             watch_client_rates(s, tid, args.watch_client, args.interval, args.count); return
         if args.clients:
