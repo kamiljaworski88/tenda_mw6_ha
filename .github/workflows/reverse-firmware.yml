@@ -18,45 +18,112 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
 
-      - name: Resolve wired client identity source
+      - name: Resolve exact rate arithmetic
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run157-wired-client-identity-source.txt'
+          conf='firmware-src/RootFS-unpacked/bin/confsrv'
+          out='docs/reverse-generated/run158-rate-arithmetic-exact.txt'
 
-          {
-            echo '===== RUN 157: wired client identity source ====='
-            echo
-            echo '===== DISASSEMBLY 0x408900..0x409900 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x408900 --stop-address=0x409900 "$dev"
+          python3 - "$conf" "$out" <<'PY'
+          import struct, subprocess, sys
+          from pathlib import Path
 
-            echo
-            echo '===== GOT ====='
-            mipsel-linux-gnu-readelf -A "$dev"
+          binary=Path(sys.argv[1]); out=Path(sys.argv[2])
 
-            echo
-            echo '===== SYMBOLS / STRINGS ====='
-            mipsel-linux-gnu-readelf -Ws "$dev" | grep -Ei 'wired|wire_client|client|arp|l2|switch|mac|eth' || true
-            strings -tx "$dev" | grep -Ei 'wired client|update_wire_client_from_sw_list|del_wire_client_not_in_sw_l2_list|find_if_arp_in_arp_list_by_mac|get_proc_arp_list|sw_l2|arp' || true
-          } > "$out"
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+
+          # In fill_host_lists_rate at 0x434258 the local data base reached through
+          # GOT -32212 is 0x470000. Constants are read at +0x335c/+0x3360.
+          const_addrs=[0x47335c,0x473360]
+
+          # Read ELF VAs with readelf section map.
+          secs=[]
+          sec_txt=run(["mipsel-linux-gnu-readelf","-SW",str(binary)])
+          import re
+          for l in sec_txt.splitlines():
+              m=re.match(r'\s*\[\s*\d+\]\s+\S+\s+\S+\s+([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+([0-9a-fA-F]+)',l)
+              if m:
+                  va=int(m.group(1),16); off=int(m.group(2),16); size=int(m.group(3),16)
+                  secs.append((va,off,size,l))
+          blob=binary.read_bytes()
+          def read_va(addr,n):
+              for va,off,size,l in secs:
+                  if va<=addr and addr+n<=va+size:
+                      p=off+(addr-va)
+                      return blob[p:p+n],l
+              raise RuntimeError(f"VA 0x{addr:x} not mapped")
+
+          nm=run(["mipsel-linux-gnu-nm","-n",str(binary)])
+          syms=[]
+          for l in nm.splitlines():
+              p=l.split(maxsplit=2)
+              if len(p)==3:
+                  try:a=int(p[0],16)
+                  except:continue
+                  syms.append((a,p[1],p[2]))
+          syms.sort()
+
+          helper_addrs=[0x461ee0,0x462880,0x462b90,0x4640a0,0x461d10]
+          helpers={}
+          for a in helper_addrs:
+              exact=[x for x in syms if x[0]==a]
+              prev=None
+              for x in syms:
+                  if x[0]>a: break
+                  prev=x
+              helpers[a]=(exact[0] if exact else prev)
+
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 158: exact GetHostList rate arithmetic =====\n\n")
+              o.write("===== CONSTANTS =====\n")
+              for a in const_addrs:
+                  b,sec=read_va(a,8)
+                  o.write(f"VA 0x{a:08x}: bytes={b.hex(' ')} section={sec}\n")
+                  if len(b)>=4:
+                      o.write(f"  u32_le={struct.unpack('<I',b[:4])[0]}\n")
+                      o.write(f"  float_le={struct.unpack('<f',b[:4])[0]!r}\n")
+                  if len(b)>=8:
+                      o.write(f"  double_le={struct.unpack('<d',b[:8])[0]!r}\n")
+
+              o.write("\n===== LIBGCC/ARITHMETIC HELPERS =====\n")
+              for a in helper_addrs:
+                  o.write(f"0x{a:08x}: {helpers[a]}\n")
+
+              o.write("\n===== SYMBOLS AROUND HELPERS =====\n")
+              for a,t,n in syms:
+                  if 0x461c00 <= a <= 0x464200:
+                      o.write(f"0x{a:08x} {t} {n}\n")
+
+              o.write("\n===== RATE HELPER DISASSEMBLY 0x434734..0x434950 =====\n")
+              o.write(run(["mipsel-linux-gnu-objdump","-drwC",
+                           "--start-address=0x434734","--stop-address=0x434950",str(binary)]))
+
+              o.write("\n===== RELEVANT STATIC STRINGS / CONSTANT CLUES =====\n")
+              st=run(["strings","-tx",str(binary)])
+              for l in st.splitlines():
+                  if any(k in l.lower() for k in ["rate","kib","kb/s","byte","speed"]):
+                      o.write(l+"\n")
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run157-wired-client-identity-source
-          path: docs/reverse-generated/run157-wired-client-identity-source.txt
+          name: run158-rate-arithmetic-exact
+          path: docs/reverse-generated/run158-rate-arithmetic-exact.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run157-wired-client-identity-source.txt
+          git add docs/reverse-generated/run158-rate-arithmetic-exact.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve wired client identity source'
+            git commit -m 'reverse: resolve exact rate arithmetic'
             git push
           fi
