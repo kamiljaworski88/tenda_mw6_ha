@@ -1,0 +1,1125 @@
+===== RUN 144: nos_tbq_enqueue pointer and callers =====
+ksymtab entry @ 0x80547fd8 section=.kernel
+exported variable address = 0x81a1b8b8
+export name pointer       = 0x80557e2b
+
+===== KERNEL REFERENCES TO EXPORTED CALLBACK POINTER =====
+
+--- 0x80389730 <fastpath_xmit_prerouting_hook> lw ref ---
+80389730 <fastpath_xmit_prerouting_hook>:
+80389730:	27bdffe8 	addiu	sp,sp,-24
+80389734:	afbf0014 	sw	ra,20(sp)
+80389738:	3c0281a2 	lui	v0,0x81a2
+8038973c:	8c42b8b8 	lw	v0,-18248(v0)
+80389740:	10400013 	beqz	v0,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389744:	24050010 	li	a1,16
+80389748:	80830047 	lb	v1,71(a0)
+8038974c:	10650010 	beq	v1,a1,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389750:	24050011 	li	a1,17
+80389754:	1065000f 	beq	v1,a1,80389794 <fastpath_xmit_prerouting_hook+0x64>
+80389758:	8fbf0014 	lw	ra,20(sp)
+8038975c:	0040f809 	jalr	v0
+80389760:	00000000 	nop
+80389764:	24420001 	addiu	v0,v0,1
+80389768:	2c430002 	sltiu	v1,v0,2
+8038976c:	10600008 	beqz	v1,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389770:	3c038049 	lui	v1,0x8049
+80389774:	2463c450 	addiu	v1,v1,-15280
+80389778:	00021080 	sll	v0,v0,0x2
+8038977c:	00431021 	addu	v0,v0,v1
+80389780:	8c420000 	lw	v0,0(v0)
+80389784:	8fbf0014 	lw	ra,20(sp)
+80389788:	03e00008 	jr	ra
+8038978c:	27bd0018 	addiu	sp,sp,24
+80389790:	8fbf0014 	lw	ra,20(sp)
+
+--- 0x8038e1dc <dev_queue_xmit> lw ref ---
+8038e1dc:	27bdffc8 	addiu	sp,sp,-56
+8038e1e0:	afbf0034 	sw	ra,52(sp)
+8038e1e4:	afb40030 	sw	s4,48(sp)
+8038e1e8:	afb3002c 	sw	s3,44(sp)
+8038e1ec:	afb20028 	sw	s2,40(sp)
+8038e1f0:	afb10024 	sw	s1,36(sp)
+8038e1f4:	afb00020 	sw	s0,32(sp)
+8038e1f8:	8c8200cc 	lw	v0,204(a0)
+8038e1fc:	8c930014 	lw	s3,20(a0)
+8038e200:	ac8200bc 	sw	v0,188(a0)
+8038e204:	3c0281a2 	lui	v0,0x81a2
+8038e208:	8c42b8b8 	lw	v0,-18248(v0)
+8038e20c:	1040000f 	beqz	v0,8038e24c <dev_queue_xmit+0x70>
+8038e210:	00809021 	move	s2,a0
+8038e214:	80830047 	lb	v1,71(a0)
+8038e218:	24050010 	li	a1,16
+8038e21c:	1065000b 	beq	v1,a1,8038e24c <dev_queue_xmit+0x70>
+8038e220:	24050011 	li	a1,17
+8038e224:	10650009 	beq	v1,a1,8038e24c <dev_queue_xmit+0x70>
+8038e228:	00000000 	nop
+8038e22c:	0040f809 	jalr	v0
+8038e230:	00000000 	nop
+8038e234:	00401821 	move	v1,v0
+8038e238:	2402ffff 	li	v0,-1
+8038e23c:	106200b4 	beq	v1,v0,8038e510 <dev_queue_xmit+0x334>
+8038e240:	00000000 	nop
+8038e244:	1060007d 	beqz	v1,8038e43c <dev_queue_xmit+0x260>
+8038e248:	00001021 	move	v0,zero
+8038e24c:	0c00a0d0 	jal	80028340 <local_bh_disable>
+8038e250:	00000000 	nop
+8038e254:	3c028066 	lui	v0,0x8066
+8038e258:	8c426dc0 	lw	v0,28096(v0)
+8038e25c:	144000dc 	bnez	v0,8038e5d0 <dev_queue_xmit+0x3f4>
+
+===== NOS CALLBACK INSTALLED AT .text+0x5e9c =====
+    5e9c:	27bdffd0 	addiu	sp,sp,-48
+    5ea0:	afbf002c 	sw	ra,44(sp)
+    5ea4:	afb30028 	sw	s3,40(sp)
+    5ea8:	afb20024 	sw	s2,36(sp)
+    5eac:	afb10020 	sw	s1,32(sp)
+    5eb0:	afb0001c 	sw	s0,28(sp)
+    5eb4:	8c92006c 	lw	s2,108(a0)
+    5eb8:	12400043 	beqz	s2,5fc8 <init_module+0x624>
+    5ebc:	00808021 	move	s0,a0
+    5ec0:	8e420064 	lw	v0,100(s2)
+    5ec4:	30421000 	andi	v0,v0,0x1000
+    5ec8:	14400040 	bnez	v0,5fcc <init_module+0x628>
+    5ecc:	24020010 	li	v0,16
+    5ed0:	8c820078 	lw	v0,120(a0)
+    5ed4:	30430002 	andi	v1,v0,0x2
+    5ed8:	10600045 	beqz	v1,5ff0 <init_module+0x64c>
+    5edc:	00009821 	move	s3,zero
+    5ee0:	00131880 	sll	v1,s3,0x2
+    5ee4:	00131100 	sll	v0,s3,0x4
+    5ee8:	00621021 	addu	v0,v1,v0
+    5eec:	02421021 	addu	v0,s2,v0
+    5ef0:	8e050050 	lw	a1,80(s0)
+    5ef4:	8c4301fc 	lw	v1,508(v0)
+    5ef8:	8c440200 	lw	a0,512(v0)
+    5efc:	00a31821 	addu	v1,a1,v1
+    5f00:	24840001 	addiu	a0,a0,1
+    5f04:	ac4301fc 	sw	v1,508(v0)
+    5f08:	ac440200 	sw	a0,512(v0)
+    5f0c:	824200b0 	lb	v0,176(s2)
+    5f10:	2403ffff 	li	v1,-1
+    5f14:	1043003d 	beq	v0,v1,600c <init_module+0x668>
+    5f18:	00000000 	nop
+    5f1c:	3c020000 	lui	v0,0x0	5f1c: R_MIPS_HI16	tbq_allow_privilege_flow
+    5f20:	02002021 	move	a0,s0
+    5f24:	24420000 	addiu	v0,v0,0	5f24: R_MIPS_LO16	tbq_allow_privilege_flow
+    5f28:	0040f809 	jalr	v0
+    5f2c:	02602821 	move	a1,s3
+    5f30:	10400047 	beqz	v0,6050 <init_module+0x6ac>
+    5f34:	00000000 	nop
+    5f38:	8e03006c 	lw	v1,108(s0)
+    5f3c:	10600023 	beqz	v1,5fcc <init_module+0x628>
+    5f40:	24020010 	li	v0,16
+    5f44:	8c62008c 	lw	v0,140(v1)
+    5f48:	1040001f 	beqz	v0,5fc8 <init_module+0x624>
+    5f4c:	00000000 	nop
+    5f50:	8e040078 	lw	a0,120(s0)
+    5f54:	30850002 	andi	a1,a0,0x2
+    5f58:	14a000a3 	bnez	a1,61e8 <init_module+0x844>
+    5f5c:	30840001 	andi	a0,a0,0x1
+    5f60:	10800019 	beqz	a0,5fc8 <init_module+0x624>
+    5f64:	3c040000 	lui	a0,0x0	5f64: R_MIPS_HI16	wan_rx_bytes
+    5f68:	8e050050 	lw	a1,80(s0)
+    5f6c:	8c460060 	lw	a2,96(v0)
+    5f70:	8c470064 	lw	a3,100(v0)
+    5f74:	00c52821 	addu	a1,a2,a1
+    5f78:	00a6302b 	sltu	a2,a1,a2
+    5f7c:	00c73021 	addu	a2,a2,a3
+    5f80:	ac460064 	sw	a2,100(v0)
+    5f84:	ac450060 	sw	a1,96(v0)
+    5f88:	8c62008c 	lw	v0,140(v1)
+    5f8c:	8c450078 	lw	a1,120(v0)
+    5f90:	8c46007c 	lw	a2,124(v0)
+    5f94:	24a30001 	addiu	v1,a1,1
+    5f98:	0065282b 	sltu	a1,v1,a1
+    5f9c:	00a62821 	addu	a1,a1,a2
+    5fa0:	ac45007c 	sw	a1,124(v0)
+    5fa4:	ac430078 	sw	v1,120(v0)
+    5fa8:	8e030050 	lw	v1,80(s0)
+    5fac:	8c820000 	lw	v0,0(a0)	5fac: R_MIPS_LO16	wan_rx_bytes
+    5fb0:	8c850004 	lw	a1,4(a0)	5fb0: R_MIPS_LO16	wan_rx_bytes
+    5fb4:	00621021 	addu	v0,v1,v0
+    5fb8:	0043182b 	sltu	v1,v0,v1
+    5fbc:	00651821 	addu	v1,v1,a1
+    5fc0:	ac830004 	sw	v1,4(a0)	5fc0: R_MIPS_LO16	wan_rx_bytes
+    5fc4:	ac820000 	sw	v0,0(a0)	5fc4: R_MIPS_LO16	wan_rx_bytes
+    5fc8:	24020010 	li	v0,16
+    5fcc:	a2020047 	sb	v0,71(s0)
+    5fd0:	24020001 	li	v0,1
+    5fd4:	8fbf002c 	lw	ra,44(sp)
+    5fd8:	8fb30028 	lw	s3,40(sp)
+    5fdc:	8fb20024 	lw	s2,36(sp)
+    5fe0:	8fb10020 	lw	s1,32(sp)
+    5fe4:	8fb0001c 	lw	s0,28(sp)
+    5fe8:	03e00008 	jr	ra
+    5fec:	27bd0030 	addiu	sp,sp,48
+    5ff0:	30420001 	andi	v0,v0,0x1
+    5ff4:	1440ffba 	bnez	v0,5ee0 <init_module+0x53c>
+    5ff8:	24130001 	li	s3,1
+    5ffc:	824200b0 	lb	v0,176(s2)
+    6000:	2403ffff 	li	v1,-1
+    6004:	1443ffc5 	bne	v0,v1,5f1c <init_module+0x578>
+    6008:	2413ffff 	li	s3,-1
+    600c:	1262ffc4 	beq	s3,v0,5f20 <init_module+0x57c>
+    6010:	3c020000 	lui	v0,0x0	6010: R_MIPS_HI16	tbq_allow_privilege_flow
+    6014:	8e030014 	lw	v1,20(s0)
+    6018:	10600005 	beqz	v1,6030 <init_module+0x68c>
+    601c:	2402ffff 	li	v0,-1
+    6020:	8e020078 	lw	v0,120(s0)
+    6024:	7c421080 	ext	v0,v0,0x2,0x3
+    6028:	2442ffff 	addiu	v0,v0,-1
+    602c:	7c021420 	seb	v0,v0
+    6030:	a24200b0 	sb	v0,176(s2)
+    6034:	3c020000 	lui	v0,0x0	6034: R_MIPS_HI16	tbq_allow_privilege_flow
+    6038:	02002021 	move	a0,s0
+    603c:	24420000 	addiu	v0,v0,0	603c: R_MIPS_LO16	tbq_allow_privilege_flow
+    6040:	0040f809 	jalr	v0
+    6044:	02602821 	move	a1,s3
+    6048:	1440ffbb 	bnez	v0,5f38 <init_module+0x594>
+    604c:	00000000 	nop
+    6050:	8e0200b8 	lw	v0,184(s0)
+    6054:	90430009 	lbu	v1,9(v0)
+    6058:	2c630012 	sltiu	v1,v1,18
+    605c:	1060ffda 	beqz	v1,5fc8 <init_module+0x624>
+    6060:	24110001 	li	s1,1
+    6064:	80430009 	lb	v1,9(v0)
+    6068:	3c020002 	lui	v0,0x2
+    606c:	00711804 	sllv	v1,s1,v1
+    6070:	34420042 	ori	v0,v0,0x42
+    6074:	00621024 	and	v0,v1,v0
+    6078:	1040ffd4 	beqz	v0,5fcc <init_module+0x628>
+    607c:	24020010 	li	v0,16
+    6080:	8e42008c 	lw	v0,140(s2)
+    6084:	1040ffd1 	beqz	v0,5fcc <init_module+0x628>
+    6088:	24020010 	li	v0,16
+    608c:	3c020000 	lui	v0,0x0	608c: R_MIPS_HI16	tbq
+    6090:	8c420e30 	lw	v0,3632(v0)	6090: R_MIPS_LO16	tbq
+    6094:	14400070 	bnez	v0,6258 <init_module+0x8b4>
+    6098:	2402ffff 	li	v0,-1
+    609c:	12620035 	beq	s3,v0,6174 <init_module+0x7d0>
+    60a0:	24020001 	li	v0,1
+    60a4:	3c020000 	lui	v0,0x0	60a4: R_MIPS_HI16	local_bh_disable
+    60a8:	24420000 	addiu	v0,v0,0	60a8: R_MIPS_LO16	local_bh_disable
+    60ac:	0040f809 	jalr	v0
+    60b0:	00000000 	nop
+    60b4:	3c020000 	lui	v0,0x0	60b4: R_MIPS_HI16	tbq_filter_packet_by_nf_conn
+    60b8:	02402821 	move	a1,s2
+    60bc:	02603021 	move	a2,s3
+    60c0:	24420000 	addiu	v0,v0,0	60c0: R_MIPS_LO16	tbq_filter_packet_by_nf_conn
+    60c4:	0040f809 	jalr	v0
+    60c8:	02002021 	move	a0,s0
+    60cc:	3c030000 	lui	v1,0x0	60cc: R_MIPS_HI16	local_bh_enable
+    60d0:	24630000 	addiu	v1,v1,0	60d0: R_MIPS_LO16	local_bh_enable
+    60d4:	0060f809 	jalr	v1
+    60d8:	afa20010 	sw	v0,16(sp)
+    60dc:	8fa20010 	lw	v0,16(sp)
+    60e0:	14510024 	bne	v0,s1,6174 <init_module+0x7d0>
+    60e4:	00000000 	nop
+    60e8:	8e04006c 	lw	a0,108(s0)
+    60ec:	10800021 	beqz	a0,6174 <init_module+0x7d0>
+    60f0:	00000000 	nop
+    60f4:	8c83008c 	lw	v1,140(a0)
+    60f8:	1060001e 	beqz	v1,6174 <init_module+0x7d0>
+    60fc:	00000000 	nop
+    6100:	8e050078 	lw	a1,120(s0)
+    6104:	30a60002 	andi	a2,a1,0x2
+    6108:	10c000a7 	beqz	a2,63a8 <init_module+0xa04>
+    610c:	30a50001 	andi	a1,a1,0x1
+    6110:	8e060050 	lw	a2,80(s0)
+    6114:	8c670050 	lw	a3,80(v1)
+    6118:	8c680054 	lw	t0,84(v1)
+    611c:	3c050000 	lui	a1,0x0	611c: R_MIPS_HI16	wan_tx_bytes
+    6120:	00e63021 	addu	a2,a3,a2
+    6124:	00c7382b 	sltu	a3,a2,a3
+    6128:	00e83821 	addu	a3,a3,t0
+    612c:	ac670054 	sw	a3,84(v1)
+    6130:	ac660050 	sw	a2,80(v1)
+    6134:	8c83008c 	lw	v1,140(a0)
+    6138:	8c660070 	lw	a2,112(v1)
+    613c:	8c670074 	lw	a3,116(v1)
+    6140:	24c40001 	addiu	a0,a2,1
+    6144:	0086302b 	sltu	a2,a0,a2
+    6148:	00c73021 	addu	a2,a2,a3
+    614c:	ac660074 	sw	a2,116(v1)
+    6150:	ac640070 	sw	a0,112(v1)
+    6154:	8e040050 	lw	a0,80(s0)
+    6158:	8ca30000 	lw	v1,0(a1)	6158: R_MIPS_LO16	wan_tx_bytes
+    615c:	8ca60004 	lw	a2,4(a1)	615c: R_MIPS_LO16	wan_tx_bytes
+    6160:	00831821 	addu	v1,a0,v1
+    6164:	0064202b 	sltu	a0,v1,a0
+    6168:	00862021 	addu	a0,a0,a2
+    616c:	aca40004 	sw	a0,4(a1)	616c: R_MIPS_LO16	wan_tx_bytes
+    6170:	aca30000 	sw	v1,0(a1)	6170: R_MIPS_LO16	wan_tx_bytes
+    6174:	10400088 	beqz	v0,6398 <init_module+0x9f4>
+    6178:	24030003 	li	v1,3
+    617c:	1443ff92 	bne	v0,v1,5fc8 <init_module+0x624>
+    6180:	3c020000 	lui	v0,0x0	6180: R_MIPS_HI16	kmalloc_caches
+    6184:	8c44001c 	lw	a0,28(v0)	6184: R_MIPS_LO16	kmalloc_caches
+    6188:	3c020000 	lui	v0,0x0	6188: R_MIPS_HI16	kmem_cache_alloc
+    618c:	24420000 	addiu	v0,v0,0	618c: R_MIPS_LO16	kmem_cache_alloc
+    6190:	0040f809 	jalr	v0
+    6194:	24050020 	li	a1,32
+    6198:	10400070 	beqz	v0,635c <init_module+0x9b8>
+    619c:	00408821 	move	s1,v0
+    61a0:	ac500008 	sw	s0,8(v0)
+    61a4:	00402021 	move	a0,v0
+    61a8:	3c020000 	lui	v0,0x0	61a8: R_MIPS_HI16	tbq_enqueue
+    61ac:	24420000 	addiu	v0,v0,0	61ac: R_MIPS_LO16	tbq_enqueue
+    61b0:	0040f809 	jalr	v0
+    61b4:	2405ffff 	li	a1,-1
+    61b8:	04400096 	bltz	v0,6414 <init_module+0xa70>
+    61bc:	3c020000 	lui	v0,0x0	61bc: R_MIPS_HI16	kfree
+    61c0:	24020010 	li	v0,16
+    61c4:	a2020047 	sb	v0,71(s0)
+    61c8:	8fbf002c 	lw	ra,44(sp)
+    61cc:	8fb30028 	lw	s3,40(sp)
+    61d0:	8fb20024 	lw	s2,36(sp)
+    61d4:	8fb10020 	lw	s1,32(sp)
+    61d8:	8fb0001c 	lw	s0,28(sp)
+    61dc:	00001021 	move	v0,zero
+    61e0:	03e00008 	jr	ra
+    61e4:	27bd0030 	addiu	sp,sp,48
+    61e8:	8e050050 	lw	a1,80(s0)
+    61ec:	8c460050 	lw	a2,80(v0)
+    61f0:	8c470054 	lw	a3,84(v0)
+    61f4:	3c040000 	lui	a0,0x0	61f4: R_MIPS_HI16	wan_tx_bytes
+    61f8:	00c52821 	addu	a1,a2,a1
+    61fc:	00a6302b 	sltu	a2,a1,a2
+    6200:	00c73021 	addu	a2,a2,a3
+    6204:	ac460054 	sw	a2,84(v0)
+    6208:	ac450050 	sw	a1,80(v0)
+    620c:	8c62008c 	lw	v0,140(v1)
+    6210:	8c450070 	lw	a1,112(v0)
+    6214:	8c460074 	lw	a2,116(v0)
+    6218:	24a30001 	addiu	v1,a1,1
+    621c:	0065282b 	sltu	a1,v1,a1
+    6220:	00a62821 	addu	a1,a1,a2
+    6224:	ac450074 	sw	a1,116(v0)
+    6228:	ac430070 	sw	v1,112(v0)
+    622c:	8e030050 	lw	v1,80(s0)
+    6230:	8c820000 	lw	v0,0(a0)	6230: R_MIPS_LO16	wan_tx_bytes
+    6234:	8c850004 	lw	a1,4(a0)	6234: R_MIPS_LO16	wan_tx_bytes
+    6238:	00621021 	addu	v0,v1,v0
+    623c:	0043182b 	sltu	v1,v0,v1
+    6240:	00651821 	addu	v1,v1,a1
+    6244:	ac830004 	sw	v1,4(a0)	6244: R_MIPS_LO16	wan_tx_bytes
+    6248:	080017f2 	j	5fc8 <init_module+0x624>	6248: R_MIPS_26	.text
+    624c:	ac820000 	sw	v0,0(a0)	624c: R_MIPS_LO16	wan_tx_bytes
+    6250:	0800185d 	j	6174 <init_module+0x7d0>	6250: R_MIPS_26	.text
+    6254:	24020001 	li	v0,1
+    6258:	8e03006c 	lw	v1,108(s0)
+    625c:	1060ffc5 	beqz	v1,6174 <init_module+0x7d0>
+    6260:	24020001 	li	v0,1
+    6264:	8c62008c 	lw	v0,140(v1)
+    6268:	1040fff9 	beqz	v0,6250 <init_module+0x8ac>
+    626c:	00000000 	nop
+    6270:	8e040078 	lw	a0,120(s0)
+    6274:	30850002 	andi	a1,a0,0x2
+    6278:	14a0001d 	bnez	a1,62f0 <init_module+0x94c>
+    627c:	30840001 	andi	a0,a0,0x1
+    6280:	1080fff3 	beqz	a0,6250 <init_module+0x8ac>
+    6284:	3c040000 	lui	a0,0x0	6284: R_MIPS_HI16	wan_rx_bytes
+    6288:	8c460060 	lw	a2,96(v0)
+    628c:	8e050050 	lw	a1,80(s0)
+    6290:	8c470064 	lw	a3,100(v0)
+    6294:	00c52821 	addu	a1,a2,a1
+    6298:	00a6302b 	sltu	a2,a1,a2
+    629c:	00c73021 	addu	a2,a2,a3
+    62a0:	ac450060 	sw	a1,96(v0)
+    62a4:	ac460064 	sw	a2,100(v0)
+    62a8:	8c63008c 	lw	v1,140(v1)
+    62ac:	24020001 	li	v0,1
+    62b0:	8c660078 	lw	a2,120(v1)
+    62b4:	8c67007c 	lw	a3,124(v1)
+    62b8:	24c50001 	addiu	a1,a2,1
+    62bc:	00a6302b 	sltu	a2,a1,a2
+    62c0:	00c73021 	addu	a2,a2,a3
+    62c4:	ac66007c 	sw	a2,124(v1)
+    62c8:	ac650078 	sw	a1,120(v1)
+    62cc:	8e050050 	lw	a1,80(s0)
+    62d0:	8c830000 	lw	v1,0(a0)	62d0: R_MIPS_LO16	wan_rx_bytes
+    62d4:	8c860004 	lw	a2,4(a0)	62d4: R_MIPS_LO16	wan_rx_bytes
+    62d8:	00a31821 	addu	v1,a1,v1
+    62dc:	0065282b 	sltu	a1,v1,a1
+    62e0:	00a62821 	addu	a1,a1,a2
+    62e4:	ac850004 	sw	a1,4(a0)	62e4: R_MIPS_LO16	wan_rx_bytes
+    62e8:	0800185d 	j	6174 <init_module+0x7d0>	62e8: R_MIPS_26	.text
+    62ec:	ac830000 	sw	v1,0(a0)	62ec: R_MIPS_LO16	wan_rx_bytes
+    62f0:	8c460050 	lw	a2,80(v0)
+    62f4:	8e050050 	lw	a1,80(s0)
+    62f8:	8c470054 	lw	a3,84(v0)
+    62fc:	3c040000 	lui	a0,0x0	62fc: R_MIPS_HI16	wan_tx_bytes
+    6300:	00c52821 	addu	a1,a2,a1
+    6304:	00a6302b 	sltu	a2,a1,a2
+    6308:	00c73021 	addu	a2,a2,a3
+    630c:	ac450050 	sw	a1,80(v0)
+    6310:	ac460054 	sw	a2,84(v0)
+    6314:	8c63008c 	lw	v1,140(v1)
+    6318:	24020001 	li	v0,1
+    631c:	8c660070 	lw	a2,112(v1)
+    6320:	8c670074 	lw	a3,116(v1)
+    6324:	24c50001 	addiu	a1,a2,1
+    6328:	00a6302b 	sltu	a2,a1,a2
+    632c:	00c73021 	addu	a2,a2,a3
+    6330:	ac660074 	sw	a2,116(v1)
+    6334:	ac650070 	sw	a1,112(v1)
+    6338:	8e050050 	lw	a1,80(s0)
+    633c:	8c830000 	lw	v1,0(a0)	633c: R_MIPS_LO16	wan_tx_bytes
+    6340:	8c860004 	lw	a2,4(a0)	6340: R_MIPS_LO16	wan_tx_bytes
+    6344:	00a31821 	addu	v1,a1,v1
+    6348:	0065282b 	sltu	a1,v1,a1
+    634c:	00a62821 	addu	a1,a1,a2
+    6350:	ac850004 	sw	a1,4(a0)	6350: R_MIPS_LO16	wan_tx_bytes
+    6354:	0800185d 	j	6174 <init_module+0x7d0>	6354: R_MIPS_26	.text
+    6358:	ac830000 	sw	v1,0(a0)	6358: R_MIPS_LO16	wan_tx_bytes
+    635c:	3c110000 	lui	s1,0x0	635c: R_MIPS_HI16	.rodata
+    6360:	3c040000 	lui	a0,0x0	6360: R_MIPS_HI16	.data
+    6364:	3c020000 	lui	v0,0x0	6364: R_MIPS_HI16	___ratelimit
+    6368:	248405a8 	addiu	a0,a0,1448	6368: R_MIPS_LO16	.data
+    636c:	24420000 	addiu	v0,v0,0	636c: R_MIPS_LO16	___ratelimit
+    6370:	0040f809 	jalr	v0
+    6374:	26250020 	addiu	a1,s1,32	6374: R_MIPS_LO16	.rodata
+    6378:	10400007 	beqz	v0,6398 <init_module+0x9f4>
+    637c:	3c040000 	lui	a0,0x0	637c: R_MIPS_HI16	$LC71
+    6380:	3c020000 	lui	v0,0x0	6380: R_MIPS_HI16	printk
+    6384:	24840000 	addiu	a0,a0,0	6384: R_MIPS_LO16	$LC71
+    6388:	26250020 	addiu	a1,s1,32	6388: R_MIPS_LO16	.rodata
+    638c:	24420000 	addiu	v0,v0,0	638c: R_MIPS_LO16	printk
+    6390:	0040f809 	jalr	v0
+    6394:	240609a2 	li	a2,2466
+    6398:	24020010 	li	v0,16
+    639c:	a2020047 	sb	v0,71(s0)
+    63a0:	080017f5 	j	5fd4 <init_module+0x630>	63a0: R_MIPS_26	.text
+    63a4:	2402ffff 	li	v0,-1
+    63a8:	10a0ff72 	beqz	a1,6174 <init_module+0x7d0>
+    63ac:	3c050000 	lui	a1,0x0	63ac: R_MIPS_HI16	wan_rx_bytes
+    63b0:	8e060050 	lw	a2,80(s0)
+    63b4:	8c670060 	lw	a3,96(v1)
+    63b8:	8c680064 	lw	t0,100(v1)
+    63bc:	00e63021 	addu	a2,a3,a2
+    63c0:	00c7382b 	sltu	a3,a2,a3
+    63c4:	00e83821 	addu	a3,a3,t0
+    63c8:	ac670064 	sw	a3,100(v1)
+    63cc:	ac660060 	sw	a2,96(v1)
+    63d0:	8c83008c 	lw	v1,140(a0)
+    63d4:	8c660078 	lw	a2,120(v1)
+    63d8:	8c67007c 	lw	a3,124(v1)
+    63dc:	24c40001 	addiu	a0,a2,1
+    63e0:	0086302b 	sltu	a2,a0,a2
+    63e4:	00c73021 	addu	a2,a2,a3
+    63e8:	ac66007c 	sw	a2,124(v1)
+    63ec:	ac640078 	sw	a0,120(v1)
+    63f0:	8e040050 	lw	a0,80(s0)
+    63f4:	8ca30000 	lw	v1,0(a1)	63f4: R_MIPS_LO16	wan_rx_bytes
+    63f8:	8ca60004 	lw	a2,4(a1)	63f8: R_MIPS_LO16	wan_rx_bytes
+    63fc:	00831821 	addu	v1,a0,v1
+    6400:	0064202b 	sltu	a0,v1,a0
+    6404:	00862021 	addu	a0,a0,a2
+    6408:	aca40004 	sw	a0,4(a1)	6408: R_MIPS_LO16	wan_rx_bytes
+    640c:	0800185d 	j	6174 <init_module+0x7d0>	640c: R_MIPS_26	.text
+    6410:	aca30000 	sw	v1,0(a1)	6410: R_MIPS_LO16	wan_rx_bytes
+    6414:	24420000 	addiu	v0,v0,0	6414: R_MIPS_LO16	kfree
+    6418:	0040f809 	jalr	v0
+    641c:	02202021 	move	a0,s1
+    6420:	080018e7 	j	639c <init_module+0x9f8>	6420: R_MIPS_26	.text
+    6424:	24020010 	li	v0,16
+	...
+
+00006430 <tbq_app_match>:
+    6430:	14a00003 	bnez	a1,6440 <tbq_app_match+0x10>
+    6434:	3084ffff 	andi	a0,a0,0xffff
+    6438:	03e00008 	jr	ra
+    643c:	00001021 	move	v0,zero
+    6440:	00051023 	negu	v0,a1
+    6444:	2409001f 	li	t1,31
+    6448:	00451024 	and	v0,v0,a1
+    644c:	70421020 	clz	v0,v0
+    6450:	01224823 	subu	t1,t1,v0
+    6454:	2402ffff 	li	v0,-1
+    6458:	1122fff7 	beq	t1,v0,6438 <tbq_app_match+0x8>
+    645c:	240a0001 	li	t2,1
+    6460:	3c020000 	lui	v0,0x0	6460: R_MIPS_HI16	tbq
+    6464:	8c4b0000 	lw	t3,0(v0)	6464: R_MIPS_LO16	tbq
+    6468:	00001021 	move	v0,zero
+    646c:	240e00ff 	li	t6,255
+    6470:	240d001f 	li	t5,31
+    6474:	240cffff 	li	t4,-1
+    6478:	00091880 	sll	v1,t1,0x2
+    647c:	00093100 	sll	a2,t1,0x4
+    6480:	00c33023 	subu	a2,a2,v1
+    6484:	00c93021 	addu	a2,a2,t1
+    6488:	00063080 	sll	a2,a2,0x2
+    648c:	01663021 	addu	a2,t3,a2
+    6490:	8cc80020 	lw	t0,32(a2)
+    6494:	1100001d 	beqz	t0,650c <tbq_app_match+0xdc>
+    6498:	012a1804 	sllv	v1,t2,t1
+    649c:	108e0010 	beq	a0,t6,64e0 <tbq_app_match+0xb0>
+    64a0:	00031827 	nor	v1,zero,v1
+    64a4:	8cc6001c 	lw	a2,28(a2)
+    64a8:	94c30000 	lhu	v1,0(a2)
+    64ac:	10640016 	beq	v1,a0,6508 <tbq_app_match+0xd8>
+    64b0:	00000000 	nop
+    64b4:	08001932 	j	64c8 <tbq_app_match+0x98>	64b4: R_MIPS_26	.text
+    64b8:	00001821 	move	v1,zero
+    64bc:	94c70002 	lhu	a3,2(a2)
+    64c0:	10870011 	beq	a0,a3,6508 <tbq_app_match+0xd8>
+    64c4:	24c60002 	addiu	a2,a2,2
+    64c8:	24630001 	addiu	v1,v1,1
+    64cc:	0068382b 	sltu	a3,v1,t0
+    64d0:	14e0fffa 	bnez	a3,64bc <tbq_app_match+0x8c>
+    64d4:	00000000 	nop
+    64d8:	012a1804 	sllv	v1,t2,t1
+    64dc:	00031827 	nor	v1,zero,v1
+    64e0:	00a32824 	and	a1,a1,v1
+    64e4:	10a00006 	beqz	a1,6500 <tbq_app_match+0xd0>
+    64e8:	00054823 	negu	t1,a1
+    64ec:	01254824 	and	t1,t1,a1
+    64f0:	71294820 	clz	t1,t1
+    64f4:	01a94823 	subu	t1,t5,t1
+    64f8:	152cffe0 	bne	t1,t4,647c <tbq_app_match+0x4c>
+    64fc:	00091880 	sll	v1,t1,0x2
+    6500:	03e00008 	jr	ra
+    6504:	00000000 	nop
+    6508:	012a1804 	sllv	v1,t2,t1
+    650c:	08001937 	j	64dc <tbq_app_match+0xac>	650c: R_MIPS_26	.text
+    6510:	00431025 	or	v0,v0,v1
+    6514:	03e00008 	jr	ra
+    6518:	00001021 	move	v0,zero
+    651c:	8cb9000c 	lw	t9,12(a1)
+    6520:	00802821 	move	a1,a0
+    6524:	00002021 	move	a0,zero
+    6528:	03200008 	jr	t9
+    652c:	00000000 	nop
+    6530:	27bdffc0 	addiu	sp,sp,-64
+    6534:	afbf003c 	sw	ra,60(sp)
+    6538:	afb00038 	sw	s0,56(sp)
+    653c:	27a2002c 	addiu	v0,sp,44
+    6540:	afa20010 	sw	v0,16(sp)
+    6544:	27a20030 	addiu	v0,sp,48
+    6548:	afa20014 	sw	v0,20(sp)
+    654c:	27a20020 	addiu	v0,sp,32
+    6550:	afa20018 	sw	v0,24(sp)
+    6554:	00a08021 	move	s0,a1
+    6558:	3c020000 	lui	v0,0x0	6558: R_MIPS_HI16	sscanf
+    655c:	3c050000 	lui	a1,0x0	655c: R_MIPS_HI16	$LC0
+    6560:	24a50000 	addiu	a1,a1,0	6560: R_MIPS_LO16	$LC0
+    6564:	27a60024 	addiu	a2,sp,36
+    6568:	24420000 	addiu	v0,v0,0	6568: R_MIPS_LO16	sscanf
+    656c:	0040f809 	jalr	v0
+    6570:	27a70028 	addiu	a3,sp,40
+    6574:	24030004 	li	v1,4
+    6578:	14430018 	bne	v0,v1,65dc <tbq_app_match+0x1ac>
+    657c:	8fa20024 	lw	v0,36(sp)
+    6580:	2c430100 	sltiu	v1,v0,256
+    6584:	10600015 	beqz	v1,65dc <tbq_app_match+0x1ac>
+    6588:	8fa30028 	lw	v1,40(sp)
+    658c:	2c640100 	sltiu	a0,v1,256
+    6590:	10800012 	beqz	a0,65dc <tbq_app_match+0x1ac>
+    6594:	8fa4002c 	lw	a0,44(sp)
+    6598:	2c850100 	sltiu	a1,a0,256
+    659c:	10a0000f 	beqz	a1,65dc <tbq_app_match+0x1ac>
+    65a0:	8fa50030 	lw	a1,48(sp)
+    65a4:	2ca60100 	sltiu	a2,a1,256
+    65a8:	10c0000c 	beqz	a2,65dc <tbq_app_match+0x1ac>
+    65ac:	00031c00 	sll	v1,v1,0x10
+    65b0:	00021600 	sll	v0,v0,0x18
+    65b4:	00431025 	or	v0,v0,v1
+    65b8:	00452825 	or	a1,v0,a1
+    65bc:	00042200 	sll	a0,a0,0x8
+    65c0:	00a42025 	or	a0,a1,a0
+    65c4:	ae040000 	sw	a0,0(s0)
+    65c8:	8fbf003c 	lw	ra,60(sp)
+    65cc:	8fb00038 	lw	s0,56(sp)
+    65d0:	00001021 	move	v0,zero
+    65d4:	03e00008 	jr	ra
+    65d8:	27bd0040 	addiu	sp,sp,64
+    65dc:	ae000000 	sw	zero,0(s0)
+    65e0:	8fbf003c 	lw	ra,60(sp)
+    65e4:	8fb00038 	lw	s0,56(sp)
+    65e8:	2402ffff 	li	v0,-1
+    65ec:	03e00008 	jr	ra
+    65f0:	27bd0040 	addiu	sp,sp,64
+    65f4:	27bdffd8 	addiu	sp,sp,-40
+    65f8:	afbf0024 	sw	ra,36(sp)
+    65fc:	afb10020 	sw	s1,32(sp)
+    6600:	afb0001c 	sw	s0,28(sp)
+    6604:	3c020000 	lui	v0,0x0	6604: R_MIPS_HI16	sscanf
+    6608:	8cb0000c 	lw	s0,12(a1)
+    660c:	3c050000 	lui	a1,0x0	660c: R_MIPS_HI16	$LC1
+    6610:	24a50000 	addiu	a1,a1,0	6610: R_MIPS_LO16	$LC1
+    6614:	27a60014 	addiu	a2,sp,20
+    6618:	27a70010 	addiu	a3,sp,16
+    661c:	24420000 	addiu	v0,v0,0	661c: R_MIPS_LO16	sscanf
+    6620:	0040f809 	jalr	v0
+    6624:	00808821 	move	s1,a0
+    6628:	24030001 	li	v1,1
+    662c:	1443000a 	bne	v0,v1,6658 <tbq_app_match+0x228>
+    6630:	8fa40014 	lw	a0,20(sp)
+    6634:	0200f809 	jalr	s0
+    6638:	00002821 	move	a1,zero
+    663c:	00401821 	move	v1,v0
+    6640:	8fbf0024 	lw	ra,36(sp)
+    6644:	8fb10020 	lw	s1,32(sp)
+    6648:	8fb0001c 	lw	s0,28(sp)
+    664c:	00601021 	move	v0,v1
+    6650:	03e00008 	jr	ra
+    6654:	27bd0028 	addiu	sp,sp,40
+    6658:	3c020000 	lui	v0,0x0	6658: R_MIPS_HI16	strrchr
+    665c:	02202021 	move	a0,s1
+    6660:	24420000 	addiu	v0,v0,0	6660: R_MIPS_LO16	strrchr
+    6664:	0040f809 	jalr	v0
+    6668:	2405000a 	li	a1,10
+    666c:	10400013 	beqz	v0,66bc <tbq_app_match+0x28c>
+    6670:	00518023 	subu	s0,v0,s1
+    6674:	3c040000 	lui	a0,0x0	6674: R_MIPS_HI16	.data
+    6678:	3c050000 	lui	a1,0x0	6678: R_MIPS_HI16	.rodata
+    667c:	3c020000 	lui	v0,0x0	667c: R_MIPS_HI16	___ratelimit
+    6680:	24840678 	addiu	a0,a0,1656	6680: R_MIPS_LO16	.data
+    6684:	24420000 	addiu	v0,v0,0	6684: R_MIPS_LO16	___ratelimit
+    6688:	0040f809 	jalr	v0
+    668c:	24a50090 	addiu	a1,a1,144	668c: R_MIPS_LO16	.rodata
+    6690:	1040ffeb 	beqz	v0,6640 <tbq_app_match+0x210>
+    6694:	2403ffea 	li	v1,-22
+    6698:	3c040000 	lui	a0,0x0	6698: R_MIPS_HI16	$LC2
+    669c:	3c020000 	lui	v0,0x0	669c: R_MIPS_HI16	printk
+    66a0:	24840000 	addiu	a0,a0,0	66a0: R_MIPS_LO16	$LC2
+    66a4:	02002821 	move	a1,s0
+    66a8:	24420000 	addiu	v0,v0,0	66a8: R_MIPS_LO16	printk
+    66ac:	0040f809 	jalr	v0
+    66b0:	02203021 	move	a2,s1
+    66b4:	08001990 	j	6640 <tbq_app_match+0x210>	66b4: R_MIPS_26	.text
+    66b8:	2403ffea 	li	v1,-22
+    66bc:	3c020000 	lui	v0,0x0	66bc: R_MIPS_HI16	strlen
+    66c0:	24420000 	addiu	v0,v0,0	66c0: R_MIPS_LO16	strlen
+    66c4:	0040f809 	jalr	v0
+    66c8:	02202021 	move	a0,s1
+    66cc:	0800199d 	j	6674 <tbq_app_match+0x244>	66cc: R_MIPS_26	.text
+    66d0:	00408021 	move	s0,v0
+    66d4:	27bdffd0 	addiu	sp,sp,-48
+    66d8:	afbf002c 	sw	ra,44(sp)
+    66dc:	afb00028 	sw	s0,40(sp)
+    66e0:	27a20019 	addiu	v0,sp,25
+    66e4:	afa20010 	sw	v0,16(sp)
+    66e8:	3c050000 	lui	a1,0x0	66e8: R_MIPS_HI16	$LC3
+    66ec:	3c020000 	lui	v0,0x0	66ec: R_MIPS_HI16	sscanf
+    66f0:	24a50000 	addiu	a1,a1,0	66f0: R_MIPS_LO16	$LC3
+    66f4:	27a60020 	addiu	a2,sp,32
+    66f8:	27a70018 	addiu	a3,sp,24
+    66fc:	24420000 	addiu	v0,v0,0	66fc: R_MIPS_LO16	sscanf
+    6700:	0040f809 	jalr	v0
+    6704:	00808021 	move	s0,a0
+    6708:	24030002 	li	v1,2
+    670c:	14430066 	bne	v0,v1,68a8 <tbq_app_match+0x478>
+    6710:	83a20018 	lb	v0,24(sp)
+    6714:	2403004b 	li	v1,75
+    6718:	10430054 	beq	v0,v1,686c <tbq_app_match+0x43c>
+    671c:	2403004d 	li	v1,77
+    6720:	10430032 	beq	v0,v1,67ec <tbq_app_match+0x3bc>
+    6724:	24030047 	li	v1,71
+    6728:	10430010 	beq	v0,v1,676c <tbq_app_match+0x33c>
+    672c:	3c040000 	lui	a0,0x0	672c: R_MIPS_HI16	.data
+    6730:	3c050000 	lui	a1,0x0	6730: R_MIPS_HI16	.rodata
+    6734:	3c020000 	lui	v0,0x0	6734: R_MIPS_HI16	___ratelimit
+    6738:	24840c0c 	addiu	a0,a0,3084	6738: R_MIPS_LO16	.data
+    673c:	24420000 	addiu	v0,v0,0	673c: R_MIPS_LO16	___ratelimit
+    6740:	0040f809 	jalr	v0
+    6744:	24a50254 	addiu	a1,a1,596	6744: R_MIPS_LO16	.rodata
+    6748:	2404ffff 	li	a0,-1
+    674c:	1440005f 	bnez	v0,68cc <tbq_app_match+0x49c>
+    6750:	2405ffff 	li	a1,-1
+    6754:	8fbf002c 	lw	ra,44(sp)
+    6758:	8fb00028 	lw	s0,40(sp)
+    675c:	00801021 	move	v0,a0
+    6760:	00a01821 	move	v1,a1
+    6764:	03e00008 	jr	ra
+    6768:	27bd0030 	addiu	sp,sp,48
+    676c:	8fa20020 	lw	v0,32(sp)
+    6770:	8fa60024 	lw	a2,36(sp)
+    6774:	00022782 	srl	a0,v0,0x1e
+    6778:	00061880 	sll	v1,a2,0x2
+    677c:	00831825 	or	v1,a0,v1
+    6780:	00022080 	sll	a0,v0,0x2
+    6784:	000239c0 	sll	a3,v0,0x7
+    6788:	000446c2 	srl	t0,a0,0x1b
+    678c:	00032940 	sll	a1,v1,0x5
+    6790:	00e42023 	subu	a0,a3,a0
+    6794:	01052825 	or	a1,t0,a1
+    6798:	00e4382b 	sltu	a3,a3,a0
+    679c:	00a31823 	subu	v1,a1,v1
+    67a0:	00821021 	addu	v0,a0,v0
+    67a4:	00671823 	subu	v1,v1,a3
+    67a8:	0044202b 	sltu	a0,v0,a0
+    67ac:	00663021 	addu	a2,v1,a2
+    67b0:	00862021 	addu	a0,a0,a2
+    67b4:	00024742 	srl	t0,v0,0x1d
+    67b8:	000420c0 	sll	a0,a0,0x3
+    67bc:	01044025 	or	t0,t0,a0
+    67c0:	11000032 	beqz	t0,688c <tbq_app_match+0x45c>
+    67c4:	000210c0 	sll	v0,v0,0x3
+    67c8:	3c047735 	lui	a0,0x7735
+    67cc:	8fbf002c 	lw	ra,44(sp)
+    67d0:	8fb00028 	lw	s0,40(sp)
+    67d4:	34849400 	ori	a0,a0,0x9400
+    67d8:	00002821 	move	a1,zero
+    67dc:	00801021 	move	v0,a0
+    67e0:	00a01821 	move	v1,a1
+    67e4:	03e00008 	jr	ra
+    67e8:	27bd0030 	addiu	sp,sp,48
+    67ec:	8fa20020 	lw	v0,32(sp)
+    67f0:	8fa80024 	lw	t0,36(sp)
+    67f4:	00023782 	srl	a2,v0,0x1e
+    67f8:	00081880 	sll	v1,t0,0x2
+    67fc:	00c31825 	or	v1,a2,v1
+    6800:	00023080 	sll	a2,v0,0x2
+    6804:	000249c0 	sll	t1,v0,0x7
+    6808:	000656c2 	srl	t2,a2,0x1b
+    680c:	00033940 	sll	a3,v1,0x5
+    6810:	01263023 	subu	a2,t1,a2
+    6814:	01473825 	or	a3,t2,a3
+    6818:	0126482b 	sltu	t1,t1,a2
+    681c:	00e31823 	subu	v1,a3,v1
+    6820:	00c21021 	addu	v0,a2,v0
+    6824:	00691823 	subu	v1,v1,t1
+    6828:	0046302b 	sltu	a2,v0,a2
+    682c:	00684021 	addu	t0,v1,t0
+    6830:	00c83021 	addu	a2,a2,t0
+    6834:	000250c0 	sll	t2,v0,0x3
+    6838:	000630c0 	sll	a2,a2,0x3
+    683c:	00021742 	srl	v0,v0,0x1d
+    6840:	00461025 	or	v0,v0,a2
+    6844:	01402021 	move	a0,t2
+    6848:	1440ffdf 	bnez	v0,67c8 <tbq_app_match+0x398>
+    684c:	00402821 	move	a1,v0
+    6850:	3c027735 	lui	v0,0x7735
+    6854:	34429401 	ori	v0,v0,0x9401
+    6858:	0142102b 	sltu	v0,t2,v0
+    685c:	1440ffbe 	bnez	v0,6758 <tbq_app_match+0x328>
+    6860:	8fbf002c 	lw	ra,44(sp)
+    6864:	080019f4 	j	67d0 <tbq_app_match+0x3a0>	6864: R_MIPS_26	.text
+    6868:	3c047735 	lui	a0,0x7735
+    686c:	8fa40020 	lw	a0,32(sp)
+    6870:	8fa50024 	lw	a1,36(sp)
+    6874:	8fbf002c 	lw	ra,44(sp)
+    6878:	8fb00028 	lw	s0,40(sp)
+    687c:	00801021 	move	v0,a0
+    6880:	00a01821 	move	v1,a1
+    6884:	03e00008 	jr	ra
+    6888:	27bd0030 	addiu	sp,sp,48
+    688c:	3c037735 	lui	v1,0x7735
+    6890:	34639401 	ori	v1,v1,0x9401
+    6894:	0043182b 	sltu	v1,v0,v1
+    6898:	1460ffd7 	bnez	v1,67f8 <tbq_app_match+0x3c8>
+    689c:	00023782 	srl	a2,v0,0x1e
+    68a0:	080019f3 	j	67cc <tbq_app_match+0x39c>	68a0: R_MIPS_26	.text
+    68a4:	3c047735 	lui	a0,0x7735
+    68a8:	3c040000 	lui	a0,0x0	68a8: R_MIPS_HI16	$LC4
+    68ac:	24840000 	addiu	a0,a0,0	68ac: R_MIPS_LO16	$LC4
+    68b0:	3c020000 	lui	v0,0x0	68b0: R_MIPS_HI16	printk
+    68b4:	24420000 	addiu	v0,v0,0	68b4: R_MIPS_LO16	printk
+    68b8:	0040f809 	jalr	v0
+    68bc:	02002821 	move	a1,s0
+
+===== NOS RELOCS/CALLS INSIDE 0x5e9c..0x6428 =====
+    5f1c:	3c020000 	lui	v0,0x0	5f1c: R_MIPS_HI16	tbq_allow_privilege_flow
+    5f24:	24420000 	addiu	v0,v0,0	5f24: R_MIPS_LO16	tbq_allow_privilege_flow
+    5f28:	0040f809 	jalr	v0
+    5f64:	3c040000 	lui	a0,0x0	5f64: R_MIPS_HI16	wan_rx_bytes
+    5fac:	8c820000 	lw	v0,0(a0)	5fac: R_MIPS_LO16	wan_rx_bytes
+    5fb0:	8c850004 	lw	a1,4(a0)	5fb0: R_MIPS_LO16	wan_rx_bytes
+    5fc0:	ac830004 	sw	v1,4(a0)	5fc0: R_MIPS_LO16	wan_rx_bytes
+    5fc4:	ac820000 	sw	v0,0(a0)	5fc4: R_MIPS_LO16	wan_rx_bytes
+    6010:	3c020000 	lui	v0,0x0	6010: R_MIPS_HI16	tbq_allow_privilege_flow
+    6034:	3c020000 	lui	v0,0x0	6034: R_MIPS_HI16	tbq_allow_privilege_flow
+    603c:	24420000 	addiu	v0,v0,0	603c: R_MIPS_LO16	tbq_allow_privilege_flow
+    6040:	0040f809 	jalr	v0
+    608c:	3c020000 	lui	v0,0x0	608c: R_MIPS_HI16	tbq
+    6090:	8c420e30 	lw	v0,3632(v0)	6090: R_MIPS_LO16	tbq
+    60a4:	3c020000 	lui	v0,0x0	60a4: R_MIPS_HI16	local_bh_disable
+    60a8:	24420000 	addiu	v0,v0,0	60a8: R_MIPS_LO16	local_bh_disable
+    60ac:	0040f809 	jalr	v0
+    60b4:	3c020000 	lui	v0,0x0	60b4: R_MIPS_HI16	tbq_filter_packet_by_nf_conn
+    60c0:	24420000 	addiu	v0,v0,0	60c0: R_MIPS_LO16	tbq_filter_packet_by_nf_conn
+    60c4:	0040f809 	jalr	v0
+    60cc:	3c030000 	lui	v1,0x0	60cc: R_MIPS_HI16	local_bh_enable
+    60d0:	24630000 	addiu	v1,v1,0	60d0: R_MIPS_LO16	local_bh_enable
+    60d4:	0060f809 	jalr	v1
+    611c:	3c050000 	lui	a1,0x0	611c: R_MIPS_HI16	wan_tx_bytes
+    6158:	8ca30000 	lw	v1,0(a1)	6158: R_MIPS_LO16	wan_tx_bytes
+    615c:	8ca60004 	lw	a2,4(a1)	615c: R_MIPS_LO16	wan_tx_bytes
+    616c:	aca40004 	sw	a0,4(a1)	616c: R_MIPS_LO16	wan_tx_bytes
+    6170:	aca30000 	sw	v1,0(a1)	6170: R_MIPS_LO16	wan_tx_bytes
+    6180:	3c020000 	lui	v0,0x0	6180: R_MIPS_HI16	kmalloc_caches
+    6184:	8c44001c 	lw	a0,28(v0)	6184: R_MIPS_LO16	kmalloc_caches
+    6188:	3c020000 	lui	v0,0x0	6188: R_MIPS_HI16	kmem_cache_alloc
+    618c:	24420000 	addiu	v0,v0,0	618c: R_MIPS_LO16	kmem_cache_alloc
+    6190:	0040f809 	jalr	v0
+    61a8:	3c020000 	lui	v0,0x0	61a8: R_MIPS_HI16	tbq_enqueue
+    61ac:	24420000 	addiu	v0,v0,0	61ac: R_MIPS_LO16	tbq_enqueue
+    61b0:	0040f809 	jalr	v0
+    61bc:	3c020000 	lui	v0,0x0	61bc: R_MIPS_HI16	kfree
+    61f4:	3c040000 	lui	a0,0x0	61f4: R_MIPS_HI16	wan_tx_bytes
+    6230:	8c820000 	lw	v0,0(a0)	6230: R_MIPS_LO16	wan_tx_bytes
+    6234:	8c850004 	lw	a1,4(a0)	6234: R_MIPS_LO16	wan_tx_bytes
+    6244:	ac830004 	sw	v1,4(a0)	6244: R_MIPS_LO16	wan_tx_bytes
+    6248:	080017f2 	j	5fc8 <init_module+0x624>	6248: R_MIPS_26	.text
+    624c:	ac820000 	sw	v0,0(a0)	624c: R_MIPS_LO16	wan_tx_bytes
+    6250:	0800185d 	j	6174 <init_module+0x7d0>	6250: R_MIPS_26	.text
+    6284:	3c040000 	lui	a0,0x0	6284: R_MIPS_HI16	wan_rx_bytes
+    62d0:	8c830000 	lw	v1,0(a0)	62d0: R_MIPS_LO16	wan_rx_bytes
+    62d4:	8c860004 	lw	a2,4(a0)	62d4: R_MIPS_LO16	wan_rx_bytes
+    62e4:	ac850004 	sw	a1,4(a0)	62e4: R_MIPS_LO16	wan_rx_bytes
+    62e8:	0800185d 	j	6174 <init_module+0x7d0>	62e8: R_MIPS_26	.text
+    62ec:	ac830000 	sw	v1,0(a0)	62ec: R_MIPS_LO16	wan_rx_bytes
+    62fc:	3c040000 	lui	a0,0x0	62fc: R_MIPS_HI16	wan_tx_bytes
+    633c:	8c830000 	lw	v1,0(a0)	633c: R_MIPS_LO16	wan_tx_bytes
+    6340:	8c860004 	lw	a2,4(a0)	6340: R_MIPS_LO16	wan_tx_bytes
+    6350:	ac850004 	sw	a1,4(a0)	6350: R_MIPS_LO16	wan_tx_bytes
+    6354:	0800185d 	j	6174 <init_module+0x7d0>	6354: R_MIPS_26	.text
+    6358:	ac830000 	sw	v1,0(a0)	6358: R_MIPS_LO16	wan_tx_bytes
+    635c:	3c110000 	lui	s1,0x0	635c: R_MIPS_HI16	.rodata
+    6360:	3c040000 	lui	a0,0x0	6360: R_MIPS_HI16	.data
+    6364:	3c020000 	lui	v0,0x0	6364: R_MIPS_HI16	___ratelimit
+    6368:	248405a8 	addiu	a0,a0,1448	6368: R_MIPS_LO16	.data
+    636c:	24420000 	addiu	v0,v0,0	636c: R_MIPS_LO16	___ratelimit
+    6370:	0040f809 	jalr	v0
+    6374:	26250020 	addiu	a1,s1,32	6374: R_MIPS_LO16	.rodata
+    637c:	3c040000 	lui	a0,0x0	637c: R_MIPS_HI16	$LC71
+    6380:	3c020000 	lui	v0,0x0	6380: R_MIPS_HI16	printk
+    6384:	24840000 	addiu	a0,a0,0	6384: R_MIPS_LO16	$LC71
+    6388:	26250020 	addiu	a1,s1,32	6388: R_MIPS_LO16	.rodata
+    638c:	24420000 	addiu	v0,v0,0	638c: R_MIPS_LO16	printk
+    6390:	0040f809 	jalr	v0
+    63a0:	080017f5 	j	5fd4 <init_module+0x630>	63a0: R_MIPS_26	.text
+    63ac:	3c050000 	lui	a1,0x0	63ac: R_MIPS_HI16	wan_rx_bytes
+    63f4:	8ca30000 	lw	v1,0(a1)	63f4: R_MIPS_LO16	wan_rx_bytes
+    63f8:	8ca60004 	lw	a2,4(a1)	63f8: R_MIPS_LO16	wan_rx_bytes
+    6408:	aca40004 	sw	a0,4(a1)	6408: R_MIPS_LO16	wan_rx_bytes
+    640c:	0800185d 	j	6174 <init_module+0x7d0>	640c: R_MIPS_26	.text
+    6410:	aca30000 	sw	v1,0(a1)	6410: R_MIPS_LO16	wan_rx_bytes
+    6414:	24420000 	addiu	v0,v0,0	6414: R_MIPS_LO16	kfree
+    6418:	0040f809 	jalr	v0
+    6420:	080018e7 	j	639c <init_module+0x9f8>	6420: R_MIPS_26	.text
+
+===== DIRECT FASTPATH SYMBOL RANGES =====
+
+--- FULL 0x80389730 <fastpath_xmit_prerouting_hook> ---
+80389730 <fastpath_xmit_prerouting_hook>:
+80389730:	27bdffe8 	addiu	sp,sp,-24
+80389734:	afbf0014 	sw	ra,20(sp)
+80389738:	3c0281a2 	lui	v0,0x81a2
+8038973c:	8c42b8b8 	lw	v0,-18248(v0)
+80389740:	10400013 	beqz	v0,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389744:	24050010 	li	a1,16
+80389748:	80830047 	lb	v1,71(a0)
+8038974c:	10650010 	beq	v1,a1,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389750:	24050011 	li	a1,17
+80389754:	1065000f 	beq	v1,a1,80389794 <fastpath_xmit_prerouting_hook+0x64>
+80389758:	8fbf0014 	lw	ra,20(sp)
+8038975c:	0040f809 	jalr	v0
+80389760:	00000000 	nop
+80389764:	24420001 	addiu	v0,v0,1
+80389768:	2c430002 	sltiu	v1,v0,2
+8038976c:	10600008 	beqz	v1,80389790 <fastpath_xmit_prerouting_hook+0x60>
+80389770:	3c038049 	lui	v1,0x8049
+80389774:	2463c450 	addiu	v1,v1,-15280
+80389778:	00021080 	sll	v0,v0,0x2
+8038977c:	00431021 	addu	v0,v0,v1
+80389780:	8c420000 	lw	v0,0(v0)
+80389784:	8fbf0014 	lw	ra,20(sp)
+80389788:	03e00008 	jr	ra
+8038978c:	27bd0018 	addiu	sp,sp,24
+80389790:	8fbf0014 	lw	ra,20(sp)
+80389794:	24020001 	li	v0,1
+80389798:	03e00008 	jr	ra
+8038979c:	27bd0018 	addiu	sp,sp,24
+
+
+--- FULL 0x8038e1dc <dev_queue_xmit> ---
+8038e1dc <dev_queue_xmit>:
+8038e1dc:	27bdffc8 	addiu	sp,sp,-56
+8038e1e0:	afbf0034 	sw	ra,52(sp)
+8038e1e4:	afb40030 	sw	s4,48(sp)
+8038e1e8:	afb3002c 	sw	s3,44(sp)
+8038e1ec:	afb20028 	sw	s2,40(sp)
+8038e1f0:	afb10024 	sw	s1,36(sp)
+8038e1f4:	afb00020 	sw	s0,32(sp)
+8038e1f8:	8c8200cc 	lw	v0,204(a0)
+8038e1fc:	8c930014 	lw	s3,20(a0)
+8038e200:	ac8200bc 	sw	v0,188(a0)
+8038e204:	3c0281a2 	lui	v0,0x81a2
+8038e208:	8c42b8b8 	lw	v0,-18248(v0)
+8038e20c:	1040000f 	beqz	v0,8038e24c <dev_queue_xmit+0x70>
+8038e210:	00809021 	move	s2,a0
+8038e214:	80830047 	lb	v1,71(a0)
+8038e218:	24050010 	li	a1,16
+8038e21c:	1065000b 	beq	v1,a1,8038e24c <dev_queue_xmit+0x70>
+8038e220:	24050011 	li	a1,17
+8038e224:	10650009 	beq	v1,a1,8038e24c <dev_queue_xmit+0x70>
+8038e228:	00000000 	nop
+8038e22c:	0040f809 	jalr	v0
+8038e230:	00000000 	nop
+8038e234:	00401821 	move	v1,v0
+8038e238:	2402ffff 	li	v0,-1
+8038e23c:	106200b4 	beq	v1,v0,8038e510 <dev_queue_xmit+0x334>
+8038e240:	00000000 	nop
+8038e244:	1060007d 	beqz	v1,8038e43c <dev_queue_xmit+0x260>
+8038e248:	00001021 	move	v0,zero
+8038e24c:	0c00a0d0 	jal	80028340 <local_bh_disable>
+8038e250:	00000000 	nop
+8038e254:	3c028066 	lui	v0,0x8066
+8038e258:	8c426dc0 	lw	v0,28096(v0)
+8038e25c:	144000dc 	bnez	v0,8038e5d0 <dev_queue_xmit+0x3f4>
+8038e260:	02402021 	move	a0,s2
+8038e264:	02602021 	move	a0,s3
+8038e268:	0c0e2291 	jal	80388a44 <netdev_pick_tx>
+8038e26c:	02402821 	move	a1,s2
+8038e270:	8c500004 	lw	s0,4(v0)
+8038e274:	0040a021 	move	s4,v0
+8038e278:	8e020000 	lw	v0,0(s0)
+8038e27c:	104000af 	beqz	v0,8038e53c <dev_queue_xmit+0x360>
+8038e280:	00000000 	nop
+8038e284:	8e420050 	lw	v0,80(s2)
+8038e288:	8e4300c4 	lw	v1,196(s2)
+8038e28c:	ae420018 	sw	v0,24(s2)
+8038e290:	94650002 	lhu	a1,2(v1)
+8038e294:	10a0001a 	beqz	a1,8038e300 <dev_queue_xmit+0x124>
+8038e298:	00000000 	nop
+8038e29c:	94660006 	lhu	a2,6(v1)
+8038e2a0:	8e4800b4 	lw	t0,180(s2)
+8038e2a4:	8e4700bc 	lw	a3,188(s2)
+8038e2a8:	30c90011 	andi	t1,a2,0x11
+8038e2ac:	94640004 	lhu	a0,4(v1)
+8038e2b0:	01073823 	subu	a3,t0,a3
+8038e2b4:	11200005 	beqz	t1,8038e2cc <dev_queue_xmit+0xf0>
+8038e2b8:	24e30008 	addiu	v1,a3,8
+8038e2bc:	8d03000c 	lw	v1,12(t0)
+8038e2c0:	7c631900 	.word	0x7c631900
+8038e2c4:	00031880 	sll	v1,v1,0x2
+8038e2c8:	00671821 	addu	v1,v1,a3
+8038e2cc:	30c60004 	andi	a2,a2,0x4
+8038e2d0:	10c00008 	beqz	a2,8038e2f4 <dev_queue_xmit+0x118>
+8038e2d4:	2484ffff 	addiu	a0,a0,-1
+8038e2d8:	2444ffff 	addiu	a0,v0,-1
+8038e2dc:	00852021 	addu	a0,a0,a1
+8038e2e0:	00832023 	subu	a0,a0,v1
+8038e2e4:	0085001b 	divu	zero,a0,a1
+8038e2e8:	00002812 	mflo	a1
+8038e2ec:	30a4ffff 	andi	a0,a1,0xffff
+8038e2f0:	2484ffff 	addiu	a0,a0,-1
+8038e2f4:	70832802 	.word	0x70832802
+8038e2f8:	00a21021 	addu	v0,a1,v0
+8038e2fc:	ae420018 	sw	v0,24(s2)
+8038e300:	8e050014 	lw	a1,20(s0)
+8038e304:	10a00003 	beqz	a1,8038e314 <dev_queue_xmit+0x138>
+8038e308:	00000000 	nop
+8038e30c:	0c0ea71a 	jal	803a9c68 <__qdisc_calculate_pkt_len>
+8038e310:	02402021 	move	a0,s2
+8038e314:	8e110068 	lw	s1,104(s0)
+8038e318:	32310001 	andi	s1,s1,0x1
+8038e31c:	162000c6 	bnez	s1,8038e638 <dev_queue_xmit+0x45c>
+8038e320:	00000000 	nop
+8038e324:	8e02004c 	lw	v0,76(s0)
+8038e328:	30420002 	andi	v0,v0,0x2
+8038e32c:	144000be 	bnez	v0,8038e628 <dev_queue_xmit+0x44c>
+8038e330:	00000000 	nop
+8038e334:	8e020008 	lw	v0,8(s0)
+8038e338:	30420004 	andi	v0,v0,0x4
+8038e33c:	10400047 	beqz	v0,8038e45c <dev_queue_xmit+0x280>
+8038e340:	00000000 	nop
+8038e344:	8e020058 	lw	v0,88(s0)
+8038e348:	14400044 	bnez	v0,8038e45c <dev_queue_xmit+0x280>
+8038e34c:	00000000 	nop
+8038e350:	8e020068 	lw	v0,104(s0)
+8038e354:	30430001 	andi	v1,v0,0x1
+8038e358:	14600040 	bnez	v1,8038e45c <dev_queue_xmit+0x280>
+8038e35c:	34420001 	ori	v0,v0,0x1
+8038e360:	ae020068 	sw	v0,104(s0)
+8038e364:	8e6200f8 	lw	v0,248(s3)
+8038e368:	30420400 	andi	v0,v0,0x400
+8038e36c:	1440000f 	bnez	v0,8038e3ac <dev_queue_xmit+0x1d0>
+8038e370:	00000000 	nop
+8038e374:	8e42004c 	lw	v0,76(s2)
+8038e378:	30430001 	andi	v1,v0,0x1
+8038e37c:	1060000b 	beqz	v1,8038e3ac <dev_queue_xmit+0x1d0>
+8038e380:	2403fffe 	li	v1,-2
+8038e384:	00431024 	and	v0,v0,v1
+8038e388:	10400008 	beqz	v0,8038e3ac <dev_queue_xmit+0x1d0>
+8038e38c:	00000000 	nop
+8038e390:	ae42004c 	sw	v0,76(s2)
+8038e394:	24420040 	addiu	v0,v0,64
+8038e398:	c0430000 	lwc0	$3,0(v0)
+8038e39c:	24630001 	addiu	v1,v1,1
+8038e3a0:	e0430000 	swc0	$3,0(v0)
+8038e3a4:	1060fffc 	beqz	v1,8038e398 <dev_queue_xmit+0x1bc>
+8038e3a8:	00000000 	nop
+8038e3ac:	8e430018 	lw	v1,24(s2)
+8038e3b0:	8e02005c 	lw	v0,92(s0)
+8038e3b4:	8e050060 	lw	a1,96(s0)
+8038e3b8:	8e040064 	lw	a0,100(s0)
+8038e3bc:	00621021 	addu	v0,v1,v0
+8038e3c0:	0043182b 	sltu	v1,v0,v1
+8038e3c4:	00651821 	addu	v1,v1,a1
+8038e3c8:	ae02005c 	sw	v0,92(s0)
+8038e3cc:	ae030060 	sw	v1,96(s0)
+8038e3d0:	8e4300c4 	lw	v1,196(s2)
+8038e3d4:	94650002 	lhu	a1,2(v1)
+8038e3d8:	10a00002 	beqz	a1,8038e3e4 <dev_queue_xmit+0x208>
+8038e3dc:	24020001 	li	v0,1
+8038e3e0:	94620004 	lhu	v0,4(v1)
+8038e3e4:	00441021 	addu	v0,v0,a0
+8038e3e8:	ae020064 	sw	v0,100(s0)
+8038e3ec:	02402021 	move	a0,s2
+8038e3f0:	2602005c 	addiu	v0,s0,92
+8038e3f4:	02603021 	move	a2,s3
+8038e3f8:	02803821 	move	a3,s4
+8038e3fc:	02002821 	move	a1,s0
+8038e400:	0c0ea1c2 	jal	803a8708 <sch_direct_xmit>
+8038e404:	afa20010 	sw	v0,16(sp)
+8038e408:	10400077 	beqz	v0,8038e5e8 <dev_queue_xmit+0x40c>
+8038e40c:	2403fffe 	li	v1,-2
+8038e410:	1620008d 	bnez	s1,8038e648 <dev_queue_xmit+0x46c>
+8038e414:	00000000 	nop
+8038e418:	0c0ea23f 	jal	803a88fc <__qdisc_run>
+8038e41c:	02002021 	move	a0,s0
+8038e420:	00008821 	move	s1,zero
+8038e424:	00001021 	move	v0,zero
+8038e428:	16200067 	bnez	s1,8038e5c8 <dev_queue_xmit+0x3ec>
+8038e42c:	00000000 	nop
+8038e430:	0c00a1e6 	jal	80028798 <local_bh_enable>
+8038e434:	afa20018 	sw	v0,24(sp)
+8038e438:	8fa20018 	lw	v0,24(sp)
+8038e43c:	8fbf0034 	lw	ra,52(sp)
+8038e440:	8fb40030 	lw	s4,48(sp)
+8038e444:	8fb3002c 	lw	s3,44(sp)
+8038e448:	8fb20028 	lw	s2,40(sp)
+8038e44c:	8fb10024 	lw	s1,36(sp)
+8038e450:	8fb00020 	lw	s0,32(sp)
+8038e454:	03e00008 	jr	ra
+8038e458:	27bd0038 	addiu	sp,sp,56
+8038e45c:	8e42004c 	lw	v0,76(s2)
+8038e460:	30430001 	andi	v1,v0,0x1
+8038e464:	1060000b 	beqz	v1,8038e494 <dev_queue_xmit+0x2b8>
+8038e468:	2403fffe 	li	v1,-2
+8038e46c:	00431024 	and	v0,v0,v1
+8038e470:	10400008 	beqz	v0,8038e494 <dev_queue_xmit+0x2b8>
+8038e474:	00000000 	nop
+8038e478:	ae42004c 	sw	v0,76(s2)
+8038e47c:	24420040 	addiu	v0,v0,64
+8038e480:	c0430000 	lwc0	$3,0(v0)
+8038e484:	24630001 	addiu	v1,v1,1
+8038e488:	e0430000 	swc0	$3,0(v0)
+8038e48c:	1060fffc 	beqz	v1,8038e480 <dev_queue_xmit+0x2a4>
+8038e490:	00000000 	nop
+8038e494:	8e020000 	lw	v0,0(s0)
+8038e498:	02402021 	move	a0,s2
+8038e49c:	0040f809 	jalr	v0
+8038e4a0:	02002821 	move	a1,s0
+8038e4a4:	8e030068 	lw	v1,104(s0)
+8038e4a8:	30640001 	andi	a0,v1,0x1
+8038e4ac:	1480ffde 	bnez	a0,8038e428 <dev_queue_xmit+0x24c>
+8038e4b0:	3042000f 	andi	v0,v0,0xf
+8038e4b4:	34630001 	ori	v1,v1,0x1
+8038e4b8:	16200061 	bnez	s1,8038e640 <dev_queue_xmit+0x464>
+8038e4bc:	ae030068 	sw	v1,104(s0)
+8038e4c0:	02002021 	move	a0,s0
+8038e4c4:	afa20018 	sw	v0,24(sp)
+8038e4c8:	0c0ea23f 	jal	803a88fc <__qdisc_run>
+8038e4cc:	00008821 	move	s1,zero
+8038e4d0:	080e390a 	j	8038e428 <dev_queue_xmit+0x24c>
+8038e4d4:	8fa20018 	lw	v0,24(sp)
+8038e4d8:	8e620050 	lw	v0,80(s3)
+8038e4dc:	30421000 	andi	v0,v0,0x1000
+8038e4e0:	14400002 	bnez	v0,8038e4ec <dev_queue_xmit+0x310>
+8038e4e4:	2402ffff 	li	v0,-1
+8038e4e8:	ae820030 	sw	v0,48(s4)
+8038e4ec:	0c0e8029 	jal	803a00a4 <net_ratelimit>
+8038e4f0:	00000000 	nop
+8038e4f4:	10400004 	beqz	v0,8038e508 <dev_queue_xmit+0x32c>
+8038e4f8:	3c048054 	lui	a0,0x8054
+8038e4fc:	2484c728 	addiu	a0,a0,-14552
+8038e500:	0c119fd8 	jal	80467f60 <printk>
+8038e504:	02602821 	move	a1,s3
+8038e508:	0c00a1e6 	jal	80028798 <local_bh_enable>
+8038e50c:	00000000 	nop
+8038e510:	0c0e0ad6 	jal	80382b58 <kfree_skb>
+8038e514:	02402021 	move	a0,s2
+8038e518:	8fbf0034 	lw	ra,52(sp)
+8038e51c:	8fb40030 	lw	s4,48(sp)
+8038e520:	8fb3002c 	lw	s3,44(sp)
+8038e524:	8fb20028 	lw	s2,40(sp)
+8038e528:	8fb10024 	lw	s1,36(sp)
+8038e52c:	8fb00020 	lw	s0,32(sp)
+8038e530:	2402ff81 	li	v0,-127
+8038e534:	03e00008 	jr	ra
+8038e538:	27bd0038 	addiu	sp,sp,56
+8038e53c:	8e6200f4 	lw	v0,244(s3)
+8038e540:	30420001 	andi	v0,v0,0x1
+8038e544:	1040fff0 	beqz	v0,8038e508 <dev_queue_xmit+0x32c>
+8038e548:	00000000 	nop
+8038e54c:	8e820030 	lw	v0,48(s4)
+8038e550:	1040002a 	beqz	v0,8038e5fc <dev_queue_xmit+0x420>
+8038e554:	3c108066 	lui	s0,0x8066
+8038e558:	8e02237c 	lw	v0,9084(s0)
+8038e55c:	2842000b 	slti	v0,v0,11
+8038e560:	10400026 	beqz	v0,8038e5fc <dev_queue_xmit+0x420>
+8038e564:	00000000 	nop
+8038e568:	8e620050 	lw	v0,80(s3)
+8038e56c:	30421000 	andi	v0,v0,0x1000
+8038e570:	1040001b 	beqz	v0,8038e5e0 <dev_queue_xmit+0x404>
+8038e574:	00000000 	nop
+8038e578:	8e82003c 	lw	v0,60(s4)
+8038e57c:	30420003 	andi	v0,v0,0x3
+8038e580:	1440ffd5 	bnez	v0,8038e4d8 <dev_queue_xmit+0x2fc>
+8038e584:	8e02237c 	lw	v0,9084(s0)
+8038e588:	02402021 	move	a0,s2
+8038e58c:	02602821 	move	a1,s3
+8038e590:	24420001 	addiu	v0,v0,1
+8038e594:	02803021 	move	a2,s4
+8038e598:	0c0e3730 	jal	8038dcc0 <dev_hard_start_xmit>
+8038e59c:	ae02237c 	sw	v0,9084(s0)
+8038e5a0:	8e04237c 	lw	a0,9084(s0)
+8038e5a4:	2843000f 	slti	v1,v0,15
+8038e5a8:	2484ffff 	addiu	a0,a0,-1
+8038e5ac:	1060ffca 	beqz	v1,8038e4d8 <dev_queue_xmit+0x2fc>
+8038e5b0:	ae04237c 	sw	a0,9084(s0)
+8038e5b4:	8e630050 	lw	v1,80(s3)
+8038e5b8:	30631000 	andi	v1,v1,0x1000
+8038e5bc:	1460ff9c 	bnez	v1,8038e430 <dev_queue_xmit+0x254>
+8038e5c0:	2403ffff 	li	v1,-1
+8038e5c4:	ae830030 	sw	v1,48(s4)
+8038e5c8:	080e390c 	j	8038e430 <dev_queue_xmit+0x254>
+8038e5cc:	00000000 	nop
+8038e5d0:	0c1194f6 	jal	804653d8 <rtl_dev_queue_xmit_hooks>
+8038e5d4:	02602821 	move	a1,s3
+8038e5d8:	080e389a 	j	8038e268 <dev_queue_xmit+0x8c>
+8038e5dc:	02602021 	move	a0,s3
+8038e5e0:	080e395e 	j	8038e578 <dev_queue_xmit+0x39c>
+8038e5e4:	ae800030 	sw	zero,48(s4)
+8038e5e8:	8e040068 	lw	a0,104(s0)
+8038e5ec:	00001021 	move	v0,zero
+8038e5f0:	00831824 	and	v1,a0,v1
+8038e5f4:	080e390a 	j	8038e428 <dev_queue_xmit+0x24c>
+8038e5f8:	ae030068 	sw	v1,104(s0)
+8038e5fc:	0c0e8029 	jal	803a00a4 <net_ratelimit>
+8038e600:	00000000 	nop
+8038e604:	1040ffc0 	beqz	v0,8038e508 <dev_queue_xmit+0x32c>
+8038e608:	3c048054 	lui	a0,0x8054
+8038e60c:	2484c754 	addiu	a0,a0,-14508
+8038e610:	0c119fd8 	jal	80467f60 <printk>
+8038e614:	02602821 	move	a1,s3
+8038e618:	0c00a1e6 	jal	80028798 <local_bh_enable>
+8038e61c:	00000000 	nop
+8038e620:	080e3944 	j	8038e510 <dev_queue_xmit+0x334>
+8038e624:	00000000 	nop
+8038e628:	0c0e0ad6 	jal	80382b58 <kfree_skb>
+8038e62c:	02402021 	move	a0,s2
+8038e630:	080e390a 	j	8038e428 <dev_queue_xmit+0x24c>
+8038e634:	24020001 	li	v0,1
+8038e638:	080e38c9 	j	8038e324 <dev_queue_xmit+0x148>
+8038e63c:	00000000 	nop
+8038e640:	080e3931 	j	8038e4c4 <dev_queue_xmit+0x2e8>
+8038e644:	02002021 	move	a0,s0
+8038e648:	080e3906 	j	8038e418 <dev_queue_xmit+0x23c>
+8038e64c:	00000000 	nop
+
