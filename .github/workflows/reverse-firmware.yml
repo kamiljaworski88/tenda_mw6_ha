@@ -19,9 +19,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
-          python3 -m pip install --break-system-packages vmlinux-to-elf
+          python3 -m pip install --break-system-packages vmlinux-to-elf pyelftools
 
-      - name: Trace NOS/TBQ packet hooks versus FastPath
+      - name: Resolve nos_tbq_enqueue kernel call sites
         shell: bash
         run: |
           set -euo pipefail
@@ -31,133 +31,149 @@ jobs:
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
           nos='firmware-src/RootFS-unpacked/lib/modules/nos.ko'
-          out='docs/reverse-generated/run143-nos-fastpath-hooks.txt'
+          out='docs/reverse-generated/run144-nos-tbq-callback-callers.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          python3 - "$elf" "$nos" "$out" <<'PY'
-          import re, subprocess, sys
+          mipsel-linux-gnu-objdump -drwC "$elf" > /tmp/mw6kernel/kernel.dis
+          mipsel-linux-gnu-objdump -drwC "$nos" > /tmp/mw6kernel/nos.dis
+
+          python3 - "$elf" /tmp/mw6kernel/kernel.dis /tmp/mw6kernel/nos.dis "$out" <<'PY'
+          import re, struct, sys
           from pathlib import Path
+          from elftools.elf.elffile import ELFFile
 
-          kernel=Path(sys.argv[1]); nos=Path(sys.argv[2]); out=Path(sys.argv[3])
+          elf_path=Path(sys.argv[1])
+          kdis=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          ndis=Path(sys.argv[3]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[4])
 
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+          KSYMTAB=0x80547fd8
 
-          def syms(path, dynamic=False):
-              args=["mipsel-linux-gnu-nm"]
-              if dynamic: args.append("-D")
-              args += ["-n",str(path)]
-              arr=[]
-              for l in run(args).splitlines():
-                  p=l.split(maxsplit=2)
-                  if len(p)==3:
-                      try:a=int(p[0],16)
-                      except:continue
-                      arr.append((a,p[1],p[2]))
-              return sorted(arr)
+          with elf_path.open('rb') as f:
+              ef=ELFFile(f)
+              raw=None
+              secname=None
+              for sec in ef.iter_sections():
+                  a=sec['sh_addr']; z=sec['sh_size']
+                  if a <= KSYMTAB and KSYMTAB+8 <= a+z:
+                      off=KSYMTAB-a
+                      raw=sec.data()[off:off+8]
+                      secname=sec.name
+                      break
+              if raw is None:
+                  raise SystemExit('ksymtab entry not mapped')
+              value,nameptr=struct.unpack('<II',raw)
 
-          def dump_named(path, table, name, maxspan=0x2400):
-              ms=[x for x in table if x[2]==name]
-              if not ms:
-                  return f"===== {name}: NOT FOUND in {path.name} =====\n"
-              a,t,n=ms[0]; stop=a+maxspan
-              for aa,tt,nn in table:
-                  if aa>a:
-                      stop=min(stop,aa); break
-              return f"===== {path.name}:{name} @ 0x{a:x} =====\n"+run([
-                  "mipsel-linux-gnu-objdump","-drwC",
-                  f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(path)])
+          # Function ownership map.
+          funcs=[]
+          for i,l in enumerate(kdis):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+          def owner(idx):
+              lo,hi=0,len(funcs)
+              while lo<hi:
+                  mid=(lo+hi)//2
+                  if funcs[mid][0] <= idx: lo=mid+1
+                  else: hi=mid
+              return funcs[lo-1] if lo else None
 
-          ksyms=syms(kernel)
-          nsyms=syms(nos)
+          # Parse MIPS absolute references of form:
+          # lui r, HI ; ... lw/sw x, LO(r)
+          # Account for sign-extended LO by using (hi<<16)+signed(lo).
+          refs=[]
+          for i,l in enumerate(kdis):
+              lm=re.search(r'\blui\s+([a-z0-9]+),(0x[0-9a-fA-F]+|\d+)',l)
+              if not lm: continue
+              base=lm.group(1); hi=int(lm.group(2),0)
+              for j in range(i+1,min(len(kdis),i+14)):
+                  # Stop on next function boundary.
+                  if re.match(r'^[0-9a-fA-F]+ <[^>]+>:',kdis[j]): break
+                  mm=re.search(rf'\b(lw|sw)\s+([a-z0-9]+),(-?\d+)\({base}\)',kdis[j])
+                  if not mm: continue
+                  op,reg,lo=mm.group(1),mm.group(2),int(mm.group(3))
+                  addr=((hi<<16)+lo)&0xffffffff
+                  if addr==value:
+                      fn=owner(i)
+                      ctx=kdis[max(fn[0] if fn else 0,i-10):min(len(kdis),j+22)]
+                      refs.append((fn,op,reg,i,j,ctx))
 
-          kdis=run(["mipsel-linux-gnu-objdump","-drwC",str(kernel)])
-          ndis=run(["mipsel-linux-gnu-objdump","-drwC",str(nos)])
-          nrel=run(["mipsel-linux-gnu-objdump","-r",str(nos)])
+          # Find callback function in nos.ko at 0x5e9c and end at next symbol/function.
+          nfuncs=[]
+          for i,l in enumerate(ndis):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m:nfuncs.append((i,int(m.group(1),16),m.group(2)))
+          cb_start=None; cb_end=None
+          for idx,(li,a,n) in enumerate(nfuncs):
+              if a==0x5e9c:
+                  cb_start=li
+                  cb_end=nfuncs[idx+1][0] if idx+1<len(nfuncs) else len(ndis)
+                  break
+          if cb_start is None:
+              # 0x5e9c can be an unnamed local target inside init_module;
+              # dump by address with objdump output line search.
+              for i,l in enumerate(ndis):
+                  if re.match(r'^\s*5e9c:',l):
+                      cb_start=i; cb_end=min(len(ndis),i+650); break
 
-          with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 143: NOS/TBQ hooks vs Realtek FastPath =====\n\n")
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 144: nos_tbq_enqueue pointer and callers =====\n')
+              o.write(f'ksymtab entry @ 0x{KSYMTAB:08x} section={secname}\n')
+              o.write(f'exported variable address = 0x{value:08x}\n')
+              o.write(f'export name pointer       = 0x{nameptr:08x}\n\n')
 
-              o.write("===== KERNEL NOS-RELATED SYMBOLS =====\n")
-              for a,t,n in ksyms:
-                  if re.search(r'nos|tbq|track_event|online_ip|fastpath|FastPath|hwnat|hw_nat',n,re.I):
-                      o.write(f"0x{a:08x} {t} {n}\n")
+              o.write('===== KERNEL REFERENCES TO EXPORTED CALLBACK POINTER =====\n')
+              if not refs:
+                  o.write('NO REFERENCES FOUND BY LUI+LW/SW SCAN\n')
+              for fn,op,reg,i,j,ctx in refs:
+                  if fn:
+                      o.write(f'\n--- 0x{fn[1]:08x} <{fn[2]}> {op} ref ---\n')
+                  else:
+                      o.write('\n--- unknown owner ---\n')
+                  o.write('\n'.join(ctx)+'\n')
 
-              o.write("\n===== NOS MODULE SYMBOLS 0x5600..0x6600 =====\n")
-              for a,t,n in nsyms:
-                  if 0x5600 <= a <= 0x6600:
-                      o.write(f"0x{a:08x} {t} {n}\n")
+              o.write('\n===== NOS CALLBACK INSTALLED AT .text+0x5e9c =====\n')
+              if cb_start is not None:
+                  o.write('\n'.join(ndis[cb_start:cb_end])+'\n')
+              else:
+                  o.write('CALLBACK START NOT FOUND\n')
 
-              for n in [
-                  "nos_tbq_init","nos_tbq_fini",
-                  "tbq_global_init","tbq_global_cleanup",
-                  "tbq_timer_init","tbq_timer_cleanup",
-                  "tbq_enqueue","tbq_filter_packet_by_nf_conn",
-                  "tbq_timer_func"
-              ]:
-                  o.write("\n"+dump_named(nos,nsyms,n))
+              o.write('\n===== NOS RELOCS/CALLS INSIDE 0x5e9c..0x6428 =====\n')
+              for l in ndis:
+                  am=re.match(r'^\s*([0-9a-fA-F]+):',l)
+                  if not am: continue
+                  a=int(am.group(1),16)
+                  if 0x5e9c <= a < 0x6428 and re.search(
+                    r'R_MIPS_|jal|jalr|online_ip|tbq_|wan_(?:rx|tx)|nf_|conn',l,re.I):
+                      o.write(l+'\n')
 
-              for n in [
-                  "nos_tbq_enqueue",
-                  "nos_track_event_register",
-                  "nos_track_event_unregister",
-                  "FastPath_Enter",
-                  "enter_fast_path",
-                  "fastpath_xmit_prerouting_hook",
-                  "rtl_nf_conntrack_in_hooks",
-                  "nf_conntrack_in"
-              ]:
-                  o.write("\n"+dump_named(kernel,ksyms,n))
-
-              o.write("\n===== NOS RELOCATIONS TO KERNEL HOOKS =====\n")
-              for l in nrel.splitlines():
-                  if re.search(r'nos_|track_event|tbq|online_ip|netfilter|hook|conntrack',l,re.I):
-                      o.write(l+"\n")
-
-              o.write("\n===== NOS DISASSEMBLY AROUND EXTERNAL nos_tbq_enqueue REFERENCES =====\n")
-              nlines=ndis.splitlines()
-              for i,l in enumerate(nlines):
-                  if "nos_tbq_enqueue" in l:
-                      o.write("\n".join(nlines[max(0,i-24):min(len(nlines),i+36)])+"\n---\n")
-
-              o.write("\n===== KERNEL DISASSEMBLY AROUND NOS/TBQ SYMBOL REFERENCES =====\n")
-              klines=kdis.splitlines()
-              for i,l in enumerate(klines):
-                  if re.search(r'<(?:nos_tbq_enqueue|nos_track_event_register|nos_track_event_unregister)>',l):
-                      o.write("\n".join(klines[max(0,i-28):min(len(klines),i+50)])+"\n---\n")
-
-              o.write("\n===== FASTPATH FUNCTIONS WITH CALLS/HOOKS =====\n")
-              # High-value full-ish functions and any lines mentioning hook-style globals.
-              for marker in ["FastPath_Enter","enter_fast_path","rtl_netif_receive_skb_hooks"]:
-                  ms=[x for x in ksyms if x[2]==marker]
-                  if ms:
-                      a=ms[0][0]
-                      o.write(dump_named(kernel,ksyms,marker,0x5000)+"\n")
-
-              o.write("\n===== KERNEL STRINGS CONTAINING NOS/TBQ/FASTPATH =====\n")
-              st=run(["strings","-tx",str(kernel)])
-              for l in st.splitlines():
-                  if re.search(r'nos|tbq|fastpath|fast path|hw_nat|hwnat',l,re.I):
-                      o.write(l+"\n")
+              o.write('\n===== DIRECT FASTPATH SYMBOL RANGES =====\n')
+              # Dump caller functions from kernel refs in full enough context.
+              emitted=set()
+              for fn,op,reg,i,j,ctx in refs:
+                  if not fn or fn[1] in emitted: continue
+                  emitted.add(fn[1])
+                  st=fn[0]
+                  en=next((x[0] for x in funcs if x[0]>st),min(len(kdis),st+1200))
+                  o.write(f'\n--- FULL 0x{fn[1]:08x} <{fn[2]}> ---\n')
+                  o.write('\n'.join(kdis[st:en])+'\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run143-nos-fastpath-hooks
-          path: docs/reverse-generated/run143-nos-fastpath-hooks.txt
+          name: run144-nos-tbq-callback-callers
+          path: docs/reverse-generated/run144-nos-tbq-callback-callers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run143-nos-fastpath-hooks.txt
+          git add docs/reverse-generated/run144-nos-tbq-callback-callers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace NOS hooks through FastPath'
+            git commit -m 'reverse: resolve NOS callback callers'
             git push
           fi
