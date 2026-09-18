@@ -8,7 +8,7 @@ Recovered wire transport:
   LZ4 block(RESP bytes + magic f7 c6 89 be)
 
 This utility intentionally exposes only Redis-side read/observe operations:
-  ping, get, subscribe
+  ping, get, subscribe, monitor-device-list
 
 Client discovery is NOT implemented here. Static analysis of confsrv shows that
 its GetHostList handler returns an out-buffer to the in-process dispatcher and
@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import socket
 import struct
+import time
 from pathlib import Path
 from typing import Any
 
@@ -225,6 +226,112 @@ def show(data: bytes, index: int, capture_dir: Path | None) -> None:
         print("saved:", path)
 
 
+def _display_text(value: Any) -> str:
+    if isinstance(value, bytes):
+        return value.decode("utf-8", "replace")
+    return str(value)
+
+
+def monitor_device_list(sock: socket.socket, channel: str, duration: float) -> None:
+    """Passively classify device_list publications without printing payloads."""
+    deadline = time.monotonic() + duration
+    subscription_ack = False
+    pubsub_messages = 0
+    device_list_messages = 0
+    other_messages = 0
+    undecodable_frames = 0
+
+    print(
+        f"\nMonitoring read-only Redis channel {channel!r} for {duration:g}s. "
+        "Payload contents are intentionally hidden."
+    )
+    print("TIME      EVENT                 PAYLOAD_B  DEVICE_LIST_UPLOAD")
+
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        sock.settimeout(remaining)
+        try:
+            data = recv_frame(sock)
+        except socket.timeout:
+            break
+
+        stamp = time.strftime("%H:%M:%S")
+        try:
+            value = parse_resp(data)
+        except Exception:
+            undecodable_frames += 1
+            print(f"{stamp}  UNDECODABLE_FRAME      {len(data):>9}  hidden")
+            continue
+
+        if not isinstance(value, list) or not value:
+            other_messages += 1
+            print(f"{stamp}  OTHER_RESP             {len(data):>9}  no")
+            continue
+
+        event = _display_text(value[0]).lower()
+        if event in {"subscribe", "psubscribe"}:
+            subscription_ack = True
+            print(f"{stamp}  SUBSCRIPTION_ACK       {0:>9}  no")
+            continue
+
+        payload_index = 3 if event == "pmessage" else 2
+        if event not in {"message", "pmessage"} or len(value) <= payload_index:
+            other_messages += 1
+            print(f"{stamp}  OTHER_PUBSUB           {len(data):>9}  no")
+            continue
+
+        payload = value[payload_index]
+        if not isinstance(payload, bytes):
+            payload = _display_text(payload).encode("utf-8", "replace")
+        contains_device_list = b"device_list_upload" in payload
+        pubsub_messages += 1
+        if contains_device_list:
+            device_list_messages += 1
+        else:
+            other_messages += 1
+        print(
+            f"{stamp}  PUBSUB_MESSAGE         {len(payload):>9}  "
+            f"{'yes' if contains_device_list else 'no'}"
+        )
+
+    print("\n=== DEVICE_LIST CHANNEL SUMMARY ===")
+    print(f"channel: {channel}")
+    print(f"duration_s: {duration:g}")
+    print(f"subscription_ack: {'yes' if subscription_ack else 'no'}")
+    print(f"pubsub_messages: {pubsub_messages}")
+    print(f"device_list_upload_messages: {device_list_messages}")
+    print(f"other_messages: {other_messages}")
+    print(f"undecodable_frames: {undecodable_frames}")
+
+    if not subscription_ack:
+        print("classification: SUBSCRIPTION_NOT_CONFIRMED")
+        print(
+            "meaning: cmdsrv did not confirm the read-only subscription; do not infer "
+            "publisher state from this run."
+        )
+    elif device_list_messages:
+        print("classification: DEVICE_LIST_PUBLISHED_LOCALLY")
+        print(
+            "meaning: the gateway observed device_list_upload publications on "
+            "confctl_srv_key. Focus next on confsrv consumption/merge or mesh relay."
+        )
+    elif pubsub_messages:
+        print("classification: CONFCTL_ACTIVE_NO_DEVICE_LIST")
+        print(
+            "meaning: confctl_srv_key carried other traffic but no device_list_upload. "
+            "Focus on the device_list producer/timer/list-count path."
+        )
+    else:
+        print("classification: NO_CONFCTL_PUBLICATIONS")
+        print(
+            "meaning: the subscription was active but no publication reached this local "
+            "channel during the observation window. Focus on the local publisher, timer "
+            "worker, or cmd_pub path."
+        )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="192.168.5.1")
@@ -239,6 +346,12 @@ def main() -> None:
     sub_parser.add_argument("--count", type=int, default=0, help="0 = listen until Ctrl+C")
     sub_parser.add_argument("--timeout", type=float, default=0, help="0 = no read timeout")
     sub_parser.add_argument("--capture-dir", default="mw6_capture")
+    monitor_parser = sub.add_parser(
+        "monitor-device-list",
+        help="passively count device_list_upload publications without dumping payloads",
+    )
+    monitor_parser.add_argument("--channel", default="confctl_srv_key")
+    monitor_parser.add_argument("--duration", type=float, default=65.0)
 
     args = parser.parse_args()
     if args.cmd == "ping":
@@ -251,15 +364,25 @@ def main() -> None:
         limit = 1
         timeout = 10
         capture = None
-    else:
+    elif args.cmd == "subscribe":
         command = ("SUBSCRIBE", args.channel)
         limit = args.count
         timeout = args.timeout or None
         capture = Path(args.capture_dir)
+    else:
+        if args.duration < 25:
+            parser.error("monitor-device-list --duration must be >= 25 seconds")
+        command = ("SUBSCRIBE", args.channel)
+        limit = 0
+        timeout = None
+        capture = None
 
     with socket.create_connection((args.host, args.port), 3) as sock:
         sock.settimeout(timeout)
         sock.sendall(frame(resp_bytes(*command)))
+        if args.cmd == "monitor-device-list":
+            monitor_device_list(sock, args.channel, args.duration)
+            return
         count = 0
         try:
             while limit == 0 or count < limit:
