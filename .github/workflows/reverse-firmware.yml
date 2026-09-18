@@ -20,51 +20,46 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Identify wireless ARP lookup helper
+      - name: Identify helper 0x4087b8
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run155-wireless-arp-lookup.txt'
+          out='docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt'
 
           {
-            echo '===== RUN 155: identify device_list helper 0x404580 ====='
+            echo '===== RUN 156: identify get_all_wireless_client helper 0x4087b8 ====='
             echo
-            echo '===== TARGET FUNCTION 0x404580 ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404580 --stop-address=0x404900 "$dev"
+            echo '===== TARGET 0x4087b8 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x408700 --stop-address=0x408b20 "$dev"
 
             echo
-            echo '===== NEIGHBOR FUNCTIONS ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404000 --stop-address=0x404b00 "$dev"
+            echo '===== NEARBY SYMBOLS ====='
+            mipsel-linux-gnu-nm -n "$dev" | awk '$1 >= "00408600" && $1 <= "00408c00" {print}' || true
 
             echo
-            echo '===== STRINGS ====='
-            strings -tx "$dev" | grep -Ei 'find_if_arp_in_arp_list_by_mac|arp_receive|/proc/net/arp|arp|mac' || true
+            echo '===== STRING TABLE CLUES ====='
+            strings -tx "$dev" | grep -Ei 'find_if_arp_in_arp_list_by_mac|get_proc_arp_list|arp_receive|/proc/net/arp|wifi_list|mac =|ip =' || true
 
             echo
             echo '===== GOT ====='
             mipsel-linux-gnu-readelf -A "$dev"
-
-            echo
-            echo '===== XREF-STYLE IMM/STRING CLUES ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x404000 --stop-address=0x404b00 "$dev" |
-              grep -B12 -A24 -E 'faa0|f644|ffa4|f2e4|df44|cc24|e9a4' || true
           } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run155-wireless-arp-lookup
-          path: docs/reverse-generated/run155-wireless-arp-lookup.txt
+          name: run156-wireless-arp-helper
+          path: docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run155-wireless-arp-lookup.txt
+          git add docs/reverse-generated/run156-wireless-arp-helper-4087b8.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: identify wireless ARP lookup'
+            git commit -m 'reverse: identify wireless ARP helper'
             git push
           fi
