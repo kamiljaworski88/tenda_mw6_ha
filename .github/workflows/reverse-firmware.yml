@@ -18,206 +18,176 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Resolve HostInfo descriptor and online writers
+      - name: Resolve client online refresh pipeline
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run149
-          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
+          mkdir -p docs/reverse-generated /tmp/run150
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          out='docs/reverse-generated/run149-hostinfo-online-exact.txt'
-          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/run149/confsrv.dis
+          out='docs/reverse-generated/run150-client-online-refresh-pipeline.txt'
+          mipsel-linux-gnu-objdump -drwC "$conf" > /tmp/run150/confsrv.dis
+          mipsel-linux-gnu-readelf -Ws "$conf" > /tmp/run150/confsrv.sym
 
-          python3 - "$pb" "$conf" /tmp/run149/confsrv.dis "$out" <<'PY'
-          import re, struct, subprocess, sys
+          python3 - /tmp/run150/confsrv.dis /tmp/run150/confsrv.sym "$out" <<'PY'
+          import re, sys
           from pathlib import Path
-          from elftools.elf.elffile import ELFFile
 
-          pb=Path(sys.argv[1]); conf=Path(sys.argv[2])
-          dis=Path(sys.argv[3]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[4])
+          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
+          symtxt=Path(sys.argv[2]).read_text(errors='replace')
+          out=Path(sys.argv[3])
 
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+          # Function-name strings are based at the rodata object reached as 0x470000 + imm.
+          fn_strings={
+              0x3040:"fill_host_info_from_client_status",
+              0x3120:"device_client_offline_check",
+              0x317c:"update_client_info_to_hash_table",
+              0x31a0:"add_new_client_to_hash_table",
+              0x31c0:"upload_client_online_status_change",
+          }
 
-          def find_sym(path, name):
-              txt=run(["mipsel-linux-gnu-readelf","-Ws",str(path)])
-              for l in txt.splitlines():
-                  p=l.split()
-                  if len(p)>=8 and p[-1]==name:
-                      return int(p[1],16), int(p[2])
-              return None,None
-
-          class ELFReader:
-              def __init__(self,path):
-                  self.f=path.open('rb'); self.ef=ELFFile(self.f)
-              def read(self,addr,n):
-                  for sec in self.ef.iter_sections():
-                      a=int(sec['sh_addr']); z=int(sec['sh_size'])
-                      if a <= addr and addr+n <= a+z:
-                          off=addr-a
-                          return sec.data()[off:off+n]
-                  raise KeyError(f'VA 0x{addr:x}+{n} not mapped')
-              def u32(self,addr):
-                  return struct.unpack('<I',self.read(addr,4))[0]
-              def cstr(self,addr,maxn=256):
-                  if not addr:return ''
-                  b=bytearray()
-                  for i in range(maxn):
-                      x=self.read(addr+i,1)[0]
-                      if x==0:break
-                      b.append(x)
-                  return b.decode('utf-8','replace')
-              def close(self): self.f.close()
-
-          r=ELFReader(pb)
-          desc_addr,desc_size=find_sym(pb,'host_info__descriptor')
-          if desc_addr is None:
-              raise SystemExit('host_info__descriptor not found')
-
-          # protobuf-c 1.1.x, 32-bit:
-          # MessageDescriptor: magic,name,short_name,c_name,package_name,
-          # sizeof_message,n_fields,fields,...
-          words=[r.u32(desc_addr+4*i) for i in range(14)]
-          sizeof_message=words[5]
-          n_fields=words[6]
-          fields_addr=words[7]
-
-          # ProtobufCFieldDescriptor 32-bit is 48 bytes:
-          # name,id,label,type,quantifier_offset,offset,descriptor,default,
-          # flags,reserved_flags,reserved2,reserved3
-          fields=[]
-          for i in range(n_fields):
-              a=fields_addr+i*48
-              w=[r.u32(a+4*j) for j in range(12)]
-              fields.append({
-                'index':i,'addr':a,'name':r.cstr(w[0]),'id':w[1],
-                'label':w[2],'type':w[3],'quantifier_offset':w[4],
-                'offset':w[5],'flags':w[8]
-              })
-
-          # host_info__init copies a 56-byte static template. Find pointer from
-          # disassembly of host_info__init and dump all words for cross-check.
-          init_addr,_=find_sym(pb,'host_info__init')
-          pbdis=run(["mipsel-linux-gnu-objdump","-drwC",
-                     f"--start-address=0x{init_addr:x}",
-                     f"--stop-address=0x{init_addr+0x80:x}",str(pb)])
-
-          # Parse confsrv functions by prologue heuristic because local symbols
-          # are stripped. This is enough to group +132 writes.
+          # Discover stripped local function starts from the standard PIC prologue:
+          #   lui gp,...
+          #   addiu gp,...
+          #   addu gp,gp,t9
+          # followed shortly by stack allocation.
           starts=[]
-          for i,l in enumerate(dis):
-              m=re.match(r'^\s*([0-9a-fA-F]+):',l)
+          for i,l in enumerate(lines):
+              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
               if not m: continue
-              if 'lui\tgp,' in l or re.search(r'\blui\s+gp,',l):
-                  # Typical PIC function starts with lui gp.
-                  addr=int(m.group(1),16)
-                  starts.append((i,addr))
-          starts=sorted(set(starts))
+              a=int(m.group(1),16)
+              nxt="\n".join(lines[i:min(len(lines),i+8)])
+              if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
+                  starts.append((i,a))
+          starts=sorted(starts)
+
+          def block_for_addr(addr):
+              for k,(i,a) in enumerate(starts):
+                  if a==addr:
+                      e=starts[k+1][0] if k+1<len(starts) else len(lines)
+                      return i,e
+              return None,None
 
           def owner(idx):
               prev=None
-              for st,a in starts:
-                  if st>idx:break
-                  prev=(st,a)
+              for i,a in starts:
+                  if i>idx: break
+                  prev=(i,a)
               return prev
 
-          writes=[]
-          for i,l in enumerate(dis):
-              # Byte/word writes to offset 132, the source field copied into HostInfo.
-              if re.search(r'\b(?:sb|sh|sw)\s+[^,]+,132\([^)]+\)',l,re.I):
-                  ow=owner(i)
-                  lo=max(0,i-24); hi=min(len(dis),i+34)
-                  writes.append((ow,i,dis[lo:hi]))
+          # Restrict to the client-management area.
+          focus=[(i,a) for i,a in starts if 0x431500 <= a < 0x432b80]
+          named=[]
+          for k,(i,a) in enumerate(focus):
+              # end by next global discovered start, not only focus end
+              allidx=next(x for x,(ii,aa) in enumerate(starts) if ii==i and aa==a)
+              e=starts[allidx+1][0] if allidx+1<len(starts) else len(lines)
+              b=lines[i:e]
+              names=[]
+              for imm,name in fn_strings.items():
+                  # __FUNCTION__ pointer is built from rodata-base pointer + immediate.
+                  # Match both decimal and canonical hex immediates.
+                  dec=str(imm)
+                  hx=f"0x{imm:x}"
+                  if any(re.search(rf'\baddiu\s+[a-z0-9]+,[a-z0-9]+,(?:{re.escape(dec)}|{re.escape(hx)})\b',x,re.I) for x in b):
+                      names.append(name)
+              named.append((a,names,b))
 
-          # Also collect reads at +132 near the exact mapper.
-          mapper=[]
-          inmap=False
-          for i,l in enumerate(dis):
-              if re.match(r'^\s*433ab4:',l): inmap=True
-              if inmap: mapper.append(l)
-              if inmap and re.match(r'^\s*433e3c:',l):
-                  mapper.pop(); break
+          # Exact important writes/reads to online +0x84 and last_seen +0x88.
+          state_sites=[]
+          for i,l in enumerate(lines):
+              if not (re.search(r'\b(?:lbu|sb|lw|sw)\s+[^,]+,(132|136)\([^)]+\)',l,re.I)):
+                  continue
+              o=owner(i)
+              if not o or not (0x431500 <= o[1] < 0x432b80):
+                  continue
+              state_sites.append((o[1],i,lines[max(o[0],i-15):min(len(lines),i+25)]))
 
-          # Search string VAs and xref clues for offline/status function names.
-          raw=conf.read_bytes()
-          names=[
-              b'fill_host_info_from_client_status',
-              b'device_client_offline_check',
-              b'update_client_info_to_hash_table',
-              b'add_new_client_to_hash_table',
-              b'upload_client_online_status_change'
-          ]
-          str_hits=[]
-          with conf.open('rb') as f:
-              ef=ELFFile(f)
-              for name in names:
-                  off=raw.find(name)
-                  va=None
-                  if off>=0:
-                      for sec in ef.iter_sections():
-                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
-                          if so<=off<so+sz:
-                              va=int(sec['sh_addr'])+(off-so); break
-                  str_hits.append((name.decode(),off,va))
+          # Direct calls/branches to the three named local function starts.
+          targets={0x431744:"candidate_add_new_client",0x431b04:"update_client_info_to_hash_table",
+                   0x432780:"device_client_offline_check"}
+          callers=[]
+          for i,l in enumerate(lines):
+              for addr,name in targets.items():
+                  if re.search(rf'\b(?:jal|bal|j)\s+0*{addr:x}\b',l,re.I):
+                      o=owner(i)
+                      callers.append((addr,name,o,i,lines[max(o[0] if o else 0,i-18):min(len(lines),i+28)]))
 
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 149: exact HostInfo layout and online source =====\n\n')
-              o.write(f'host_info__descriptor = 0x{desc_addr:x} size={desc_size}\n')
-              o.write(f'sizeof_message = {sizeof_message} bytes\n')
-              o.write(f'n_fields = {n_fields}\n')
-              o.write(f'fields descriptor = 0x{fields_addr:x}\n\n')
+          # Dynamic symbols around exported upload/init routines.
+          dyn=[]
+          for l in symtxt.splitlines():
+              if re.search(r'confctl_device_list|client|offline|online',l,re.I):
+                  dyn.append(l)
 
-              o.write('===== HOSTINFO FIELD DESCRIPTOR OFFSETS =====\n')
-              for f in fields:
-                  o.write(
-                    f"id={f['id']:2d} name={f['name']:<16} "
-                    f"offset=0x{f['offset']:02x} quantifier=0x{f['quantifier_offset']:02x} "
-                    f"label={f['label']} type={f['type']} flags=0x{f['flags']:x}\n"
-                  )
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 150: client online refresh pipeline =====\n")
+              o.write("Resolved before this run: HostInfo.online = client_status[+0x84]; last_seen candidate = +0x88; offline threshold = 45 s.\n\n")
 
-              o.write('\n===== host_info__init =====\n')
-              o.write(pbdis+'\n')
+              o.write("===== DYNAMIC SYMBOLS =====\n")
+              o.write("\n".join(dyn)+"\n\n")
 
-              o.write('\n===== EXACT 0x433ab4 MAPPER =====\n')
-              o.write('\n'.join(mapper)+'\n')
+              o.write("===== STRIPPED LOCAL FUNCTIONS 0x431500..0x432b80 =====\n")
+              for a,names,b in named:
+                  o.write(f"\n--- 0x{a:08x} names={','.join(names) if names else '?'} ---\n")
+                  # Full dump only for relevant/named functions or those touching online/last_seen.
+                  joined="\n".join(b)
+                  if names or re.search(r'\b(?:lbu|sb|lw|sw)\s+[^,]+,(132|136)\([^)]+\)',joined,re.I):
+                      o.write(joined+"\n")
 
-              o.write('\n===== WRITES TO CLIENT STATUS OFFSET +0x84 (132) =====\n')
-              if not writes:o.write('NO WRITES FOUND\n')
-              for ow,i,ctx in writes:
-                  if ow:o.write(f"\n--- candidate function start 0x{ow[1]:08x} ---\n")
-                  else:o.write('\n--- owner unknown ---\n')
-                  o.write('\n'.join(ctx)+'\n')
+              o.write("\n===== ONLINE/LAST_SEEN ACCESS SITES =====\n")
+              seen=set()
+              for a,i,ctx in state_sites:
+                  key=(a,i)
+                  if key in seen: continue
+                  seen.add(key)
+                  o.write(f"\n--- owner 0x{a:08x} ---\n")
+                  o.write("\n".join(ctx)+"\n")
 
-              o.write('\n===== FUNCTION-NAME STRING ADDRESSES =====\n')
-              for n,off,va in str_hits:
-                  o.write(f'{n}: file_off={off:#x} va={("0x%x"%va) if va else "?"}\n')
+              o.write("\n===== DIRECT CALLERS OF KEY LOCAL FUNCTIONS =====\n")
+              if not callers:
+                  o.write("No direct jal/bal/j references; calls may use PIC GOT/jalr.\n")
+              for addr,name,ow,i,ctx in callers:
+                  o.write(f"\n--- target 0x{addr:08x} {name}; caller={('0x%08x'%ow[1]) if ow else '?'} ---\n")
+                  o.write("\n".join(ctx)+"\n")
 
-              o.write('\n===== CONCLUSION INPUTS =====\n')
-              online=[f for f in fields if f['name']=='online']
-              if online:
-                  o.write(f"descriptor online offset = 0x{online[0]['offset']:x}\n")
-              o.write('mapper source byte candidate = client_status+0x84\n')
-          r.close()
+              o.write("\n===== EXPORTED confctl_device_list_upload BODY =====\n")
+              m=re.search(r'\b([0-9a-fA-F]+)\s+\d+\s+FUNC\s+GLOBAL\s+DEFAULT\s+\d+\s+confctl_device_list_upload(?:@@Base)?',symtxt)
+              if m:
+                  a=int(m.group(1),16)
+                  st,en=block_for_addr(a)
+                  o.write(f"symbol address=0x{a:x}\n")
+                  if st is not None:o.write("\n".join(lines[st:en])+"\n")
+              else:
+                  # readelf formatting varies; report matching line(s) above and raw
+                  # disassembly around known 0x4324c8..0x432b00.
+                  o.write("symbol parser did not resolve address; dumping known containing region\n")
+                  for l in lines:
+                      mm=re.match(r'^\s*([0-9a-fA-F]+):',l)
+                      if mm and 0x432400 <= int(mm.group(1),16) < 0x432b80:
+                          o.write(l+"\n")
+
+              o.write("\n===== STATIC CONCLUSIONS =====\n")
+              o.write("Expected identities to verify from __FUNCTION__ xrefs:\n")
+              o.write("  0x431b04 -> update_client_info_to_hash_table\n")
+              o.write("  0x432780 -> device_client_offline_check\n")
+              o.write("  0x431744 -> likely add_new_client_to_hash_table if 0x31a0 xref is present\n")
+              o.write("Both add/update paths should set online=1 and last_seen=now; watchdog clears online after >=45 s without refresh.\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run149-hostinfo-online-exact
-          path: docs/reverse-generated/run149-hostinfo-online-exact.txt
+          name: run150-client-online-refresh-pipeline
+          path: docs/reverse-generated/run150-client-online-refresh-pipeline.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run149-hostinfo-online-exact.txt
+          git add docs/reverse-generated/run150-client-online-refresh-pipeline.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve exact HostInfo online source'
+            git commit -m 'reverse: resolve client online refresh pipeline'
             git push
           fi
