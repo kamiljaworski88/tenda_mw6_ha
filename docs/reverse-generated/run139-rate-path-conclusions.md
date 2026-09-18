@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–167.
+after Runs 37 and 123–168.
 
 ## 1. Local API surface
 
@@ -482,7 +482,7 @@ The rate helper is behaving as recovered: it skips clients whose inventory
 flag is offline. Runtime `g_ip_info` / `online_ip` is not the primary target
 until inventory refresh is restored or independently proven active.
 
-## 17. Device-list scheduler and publication — Runs 163–167
+## 17. Device-list scheduler and publication — Runs 163–168
 
 The `device_list` process has two self-rearming timer events:
 
@@ -491,9 +491,11 @@ The `device_list` process has two self-rearming timer events:
 | 3 | 10,000 ms | client timeout/maintenance path |
 | 4 | 20,000 ms | `do_upload_client_list` publication path |
 
-The timer-event dispatcher explicitly handles IDs 3 and 4. For ID 4 it calls
-the local upload routine with the process-wide client-list pointer and client
-count, then rearms timer 4 for another 20 seconds.
+The timer-event dispatcher explicitly handles IDs 3 and 4. Run 168 resolves
+the ID-4 GOT targets directly as `g_client_hs_list`,
+`g_client_hs_list_num`, and `do_upload_client_list`. It calls that upload
+routine with the process-wide list pointer and count, then rearms timer 4 for
+another 20 seconds.
 
 `do_upload_client_list` serializes the 32-byte reporting-node identity followed
 by 124-byte client records and publishes the result through `cmd_pub` under
