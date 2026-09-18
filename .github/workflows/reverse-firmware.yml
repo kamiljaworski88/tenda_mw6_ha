@@ -18,112 +18,153 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
+          python3 -m pip install --break-system-packages pyelftools
 
-      - name: Resolve exact rate arithmetic
+      - name: Resolve WAN traffic protobuf and handler
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
+          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
           conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          out='docs/reverse-generated/run158-rate-arithmetic-exact.txt'
+          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
+          out='docs/reverse-generated/run159-wan-traffic-schema.txt'
 
-          python3 - "$conf" "$out" <<'PY'
-          import struct, subprocess, sys
+          python3 - "$pb" "$conf" "$uc" "$out" <<'PY'
+          import re, struct, subprocess, sys
           from pathlib import Path
+          from elftools.elf.elffile import ELFFile
 
-          binary=Path(sys.argv[1]); out=Path(sys.argv[2])
+          pb,conf,uc,out=map(Path,sys.argv[1:5])
 
           def run(cmd):
               return subprocess.run(cmd,text=True,errors='replace',
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-          # In fill_host_lists_rate at 0x434258 the local data base reached through
-          # GOT -32212 is 0x470000. Constants are read at +0x335c/+0x3360.
-          const_addrs=[0x47335c,0x473360]
+          def sym(path,name):
+              txt=run(["mipsel-linux-gnu-readelf","-Ws",str(path)])
+              for l in txt.splitlines():
+                  p=l.split()
+                  if len(p)>=8 and p[-1].split("@")[0]==name:
+                      try:return int(p[1],16),int(p[2])
+                      except:return None,None
+              return None,None
 
-          # Read ELF VAs with readelf section map.
-          secs=[]
-          sec_txt=run(["mipsel-linux-gnu-readelf","-SW",str(binary)])
-          import re
-          for l in sec_txt.splitlines():
-              m=re.match(r'\s*\[\s*\d+\]\s+\S+\s+\S+\s+([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+([0-9a-fA-F]+)',l)
-              if m:
-                  va=int(m.group(1),16); off=int(m.group(2),16); size=int(m.group(3),16)
-                  secs.append((va,off,size,l))
-          blob=binary.read_bytes()
-          def read_va(addr,n):
-              for va,off,size,l in secs:
-                  if va<=addr and addr+n<=va+size:
-                      p=off+(addr-va)
-                      return blob[p:p+n],l
-              raise RuntimeError(f"VA 0x{addr:x} not mapped")
+          class Reader:
+              def __init__(self,path):
+                  self.f=path.open('rb'); self.e=ELFFile(self.f)
+              def read(self,a,n):
+                  for sec in self.e.iter_sections():
+                      va=int(sec['sh_addr']); sz=int(sec['sh_size'])
+                      if va<=a and a+n<=va+sz:
+                          return sec.data()[a-va:a-va+n]
+                  raise KeyError(hex(a))
+              def u32(self,a): return struct.unpack("<I",self.read(a,4))[0]
+              def cstr(self,a,n=128):
+                  if not a:return ""
+                  b=bytearray()
+                  for i in range(n):
+                      x=self.read(a+i,1)[0]
+                      if not x:break
+                      b.append(x)
+                  return b.decode(errors="replace")
+              def close(self):self.f.close()
 
-          nm=run(["mipsel-linux-gnu-nm","-n",str(binary)])
-          syms=[]
-          for l in nm.splitlines():
-              p=l.split(maxsplit=2)
-              if len(p)==3:
-                  try:a=int(p[0],16)
-                  except:continue
-                  syms.append((a,p[1],p[2]))
-          syms.sort()
+          r=Reader(pb)
+          desc,size=sym(pb,"wan_rate__descriptor")
+          fields=[]
+          if desc:
+              words=[r.u32(desc+4*i) for i in range(12)]
+              sizeof_msg=words[5]; nfields=words[6]; fa=words[7]
+              for i in range(nfields):
+                  a=fa+i*48
+                  w=[r.u32(a+4*j) for j in range(12)]
+                  fields.append({
+                    "id":w[1],"name":r.cstr(w[0]),"label":w[2],"type":w[3],
+                    "quant":w[4],"offset":w[5],"flags":w[8]
+                  })
+          else:
+              sizeof_msg=nfields=fa=None
 
-          helper_addrs=[0x461ee0,0x462880,0x462b90,0x4640a0,0x461d10]
-          helpers={}
-          for a in helper_addrs:
-              exact=[x for x in syms if x[0]==a]
-              prev=None
-              for x in syms:
-                  if x[0]>a: break
-                  prev=x
-              helpers[a]=(exact[0] if exact else prev)
+          # Strings and nearby disassembly for known rate routines.
+          conf_strings=run(["strings","-tx",str(conf)])
+          rate_strs=[l for l in conf_strings.splitlines()
+                     if re.search(r'fill_router_wan_rate|get_router_wan_rate|fill_bridge_wan_rate|print_wan_rate|wan1\.(?:up|down)rate|GetTrafficInfo|TRAFFIC',l,re.I)]
+
+          # Find __FUNCTION__ string VAs for local rate helpers and xrefs by low16.
+          raw=conf.read_bytes()
+          vas=[]
+          with conf.open("rb") as f:
+              ef=ELFFile(f)
+              for lit in [b'fill_router_wan_rate',b'get_router_wan_rate',b'fill_bridge_wan_rate',b'print_wan_rate']:
+                  pos=0
+                  while True:
+                      off=raw.find(lit,pos)
+                      if off<0:break
+                      va=None
+                      for sec in ef.iter_sections():
+                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
+                          if so<=off<so+sz:
+                              va=int(sec['sh_addr'])+(off-so);break
+                      vas.append((lit.decode(),off,va))
+                      pos=off+1
+
+          dis=run(["mipsel-linux-gnu-objdump","-drwC",str(conf)]).splitlines()
+          xrefs=[]
+          for name,off,va in vas:
+              if not va:continue
+              lo=va&0xffff; signed=lo if lo<0x8000 else lo-0x10000
+              for i,l in enumerate(dis):
+                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
+                      xrefs.append((name,va,i,dis[max(0,i-35):min(len(dis),i+90)]))
+
+          ucstrings=run(["strings","-tx",str(uc)])
+          uc_rate=[l for l in ucstrings.splitlines()
+                   if re.search(r'MESH_WAN|TRAFFIC|GetTrafficInfo|WAN_TRAFFIC|CMD_MESH_WAN',l,re.I)]
 
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 158: exact GetHostList rate arithmetic =====\n\n")
-              o.write("===== CONSTANTS =====\n")
-              for a in const_addrs:
-                  b,sec=read_va(a,8)
-                  o.write(f"VA 0x{a:08x}: bytes={b.hex(' ')} section={sec}\n")
-                  if len(b)>=4:
-                      o.write(f"  u32_le={struct.unpack('<I',b[:4])[0]}\n")
-                      o.write(f"  float_le={struct.unpack('<f',b[:4])[0]!r}\n")
-                  if len(b)>=8:
-                      o.write(f"  double_le={struct.unpack('<d',b[:8])[0]!r}\n")
+              o.write("===== RUN 159: WAN GetTrafficInfo schema / handler =====\n\n")
+              o.write(f"wan_rate__descriptor={hex(desc) if desc else 'NOT FOUND'} size={size}\n")
+              o.write(f"sizeof_message={sizeof_msg} n_fields={nfields} fields={hex(fa) if fa else '?'}\n")
+              o.write("\n===== WANRATE FIELD DESCRIPTORS =====\n")
+              for f in fields:
+                  o.write(f"id={f['id']} name={f['name']} offset=0x{f['offset']:x} quant=0x{f['quant']:x} type={f['type']} label={f['label']} flags=0x{f['flags']:x}\n")
 
-              o.write("\n===== LIBGCC/ARITHMETIC HELPERS =====\n")
-              for a in helper_addrs:
-                  o.write(f"0x{a:08x}: {helpers[a]}\n")
+              o.write("\n===== CONFSRV RATE STRINGS =====\n")
+              o.write("\n".join(rate_strs)+"\n")
 
-              o.write("\n===== SYMBOLS AROUND HELPERS =====\n")
-              for a,t,n in syms:
-                  if 0x461c00 <= a <= 0x464200:
-                      o.write(f"0x{a:08x} {t} {n}\n")
+              o.write("\n===== RATE STRING XREFS =====\n")
+              for name,va,i,ctx in xrefs:
+                  o.write(f"\n--- {name} VA=0x{va:x} ---\n")
+                  o.write("\n".join(ctx)+"\n")
 
-              o.write("\n===== RATE HELPER DISASSEMBLY 0x434734..0x434950 =====\n")
-              o.write(run(["mipsel-linux-gnu-objdump","-drwC",
-                           "--start-address=0x434734","--stop-address=0x434950",str(binary)]))
+              o.write("\n===== LIBUCAPI WAN/TRAFFIC STRINGS =====\n")
+              o.write("\n".join(uc_rate)+"\n")
 
-              o.write("\n===== RELEVANT STATIC STRINGS / CONSTANT CLUES =====\n")
-              st=run(["strings","-tx",str(binary)])
-              for l in st.splitlines():
-                  if any(k in l.lower() for k in ["rate","kib","kb/s","byte","speed"]):
-                      o.write(l+"\n")
+              o.write("\n===== WAN_RATE INIT/PACK SYMBOLS =====\n")
+              for path in [pb,conf,uc]:
+                  o.write(f"\n--- {path} ---\n")
+                  sy=run(["mipsel-linux-gnu-readelf","-Ws",str(path)])
+                  for l in sy.splitlines():
+                      if re.search(r'wan_rate|traffic|get.*rate|interface_statistics|wan_statistics',l,re.I):
+                          o.write(l+"\n")
+          r.close()
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run158-rate-arithmetic-exact
-          path: docs/reverse-generated/run158-rate-arithmetic-exact.txt
+          name: run159-wan-traffic-schema
+          path: docs/reverse-generated/run159-wan-traffic-schema.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run158-rate-arithmetic-exact.txt
+          git config user.email '41898218+github-actions[bot]@users.noreply.github.com'
+          git add docs/reverse-generated/run159-wan-traffic-schema.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve exact rate arithmetic'
+            git commit -m 'reverse: resolve WAN traffic schema'
             git push
           fi
