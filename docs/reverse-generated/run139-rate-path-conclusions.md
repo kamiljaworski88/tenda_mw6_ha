@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–151.
+after Runs 37 and 123–156.
 
 ## 1. Local API surface
 
@@ -377,10 +377,45 @@ HostInfo.online + HostInfo.assoc_sn
 fill_host_lists_rate
 ```
 
-## 14. Current zero-rate decision tree
+## 14. Wireless HostInfo identity source — Runs 152–156
 
-Static reverse engineering has now resolved both the kernel accounting path
-and the userspace inventory gate.
+The identity side of the strict userspace matcher is also resolved for wireless
+clients.
+
+`get_all_wireless_client` resolves each station against the current ARP list
+using local helper `0x4087b8`, identified as
+`find_if_arp_in_arp_list_by_mac`.
+
+The matching ARP record supplies:
+
+- IPv4 from record `+0x00`,
+- MAC from record `+0x04` (6 bytes).
+
+Those values become:
+
+```text
+raw_client+0x50/+0x54
+→ client_status+0x4c/+0x50
+→ HostInfo.ipaddr / HostInfo.ethaddr
+```
+
+Existing-client updates refresh the IPv4 field on each accepted report; MAC is
+the client hash key. Therefore a permanently stale cached HostInfo identity is
+not a leading explanation for zero rates on a stable wireless client.
+
+This also aligns with the kernel side:
+
+- kernel online_ip IPv4 is derived from the packet source,
+- kernel online_ip MAC is copied from the reconstructed Ethernet source MAC,
+- mesh receive processing reconstructs the original client Ethernet source.
+
+A short-lived race during DHCP/ARP change remains possible, but the steady
+state should produce identical IP+MAC on both sides.
+
+## 15. Current zero-rate decision tree
+
+Static reverse engineering has now resolved the kernel accounting path,
+userspace inventory gate, and the normal wireless identity source.
 
 The remaining live distinction is:
 
