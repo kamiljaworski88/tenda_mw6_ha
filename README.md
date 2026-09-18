@@ -163,6 +163,23 @@ Its classifications are `TARGET_INVENTORY_REFRESHED`, `TARGET_ONLY_STALE`,
 `NODE_REPORTING_STALE`, `STALE_TARGET_NODE_INCONCLUSIVE`, and
 `TARGET_NOT_FOUND`.
 
+The live node/peer run returned 0 online clients out of 9 on the selected node
+and 0 out of 30 across the complete HostLists in every snapshot. This is a
+global central-inventory failure, not an isolated client or satellite issue.
+
+The next boundary test passively monitors the confirmed local pub/sub channel
+without printing or saving any payload contents:
+
+```powershell
+python .\tools\mw6_cmd_client.py `
+  --host 192.168.5.1 `
+  monitor-device-list `
+  --duration 65
+```
+
+The summary distinguishes local `device_list_upload` publication from producer
+silence or an unconfirmed subscription.
+
 The successful LOGIN payload is extracted from the capture and intentionally
 never printed.
 
@@ -202,19 +219,20 @@ Runs 149–151 prove:
 - the reporting MW6 identity becomes `HostInfo.assoc_sn`,
 - each device-list upload is merged by client MAC into the central client hash.
 
-The current live result is `INVENTORY_ONLINE_DROPPED`. Runs 163–168 further
-prove that the reporting node's normal upload timer fires every 20 seconds and
-publishes `device_list_upload`. The next blocker is therefore this distinction:
+The current live result is stronger than `INVENTORY_ONLINE_DROPPED`: all 30
+central records remained offline for the entire 65-second run. Runs 163–170
+prove that the normal producer path should fire every 20 seconds and publish
+`device_list_upload`. The next blocker is therefore this distinction:
 
 ```text
-same-node peers stale -> node-wide reporting failure
+device_list visible on confctl_srv_key -> consumption/merge or relay failure
         vs
-same-node peer fresh -> target enumeration / stale assoc_sn
+channel active without device_list -> producer/list path failure
         vs
-no same-node peer -> inconclusive control set
+confirmed subscription but silent channel -> timer/cmd_pub failure
 ```
 
-Use `--diagnose-inventory` before returning to rate accounting or enabling
+Use `monitor-device-list` before returning to rate accounting or enabling
 production upload/download and daily/monthly transfer entities in Home
 Assistant.
 
