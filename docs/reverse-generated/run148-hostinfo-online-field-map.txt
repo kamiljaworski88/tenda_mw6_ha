@@ -1,0 +1,1611 @@
+===== RUN 148: HostInfo online field map =====
+Known call targets from confctl_get_host_list:
+  0x433e3c = fill_host_lists_info candidate (HostLists*, client_array, count)
+  0x434258 = fill_host_lists_rate
+
+===== DISASSEMBLY 0x433700..0x434258 =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00433700 <confctl_device_list_status_init@@Base+0xc58>:
+  433700:	00602021 	move	a0,v1
+  433704:	8fc50024 	lw	a1,36(s8)
+  433708:	00403021 	move	a2,v0
+  43370c:	8f8289dc 	lw	v0,-30244(gp)
+  433710:	0040c821 	move	t9,v0
+  433714:	0320f809 	jalr	t9
+  433718:	00000000 	nop
+  43371c:	8fdc0010 	lw	gp,16(s8)
+  433720:	8fc40024 	lw	a0,36(s8)
+  433724:	8f828614 	lw	v0,-31212(gp)
+  433728:	0040c821 	move	t9,v0
+  43372c:	0320f809 	jalr	t9
+  433730:	00000000 	nop
+  433734:	8fdc0010 	lw	gp,16(s8)
+  433738:	afc00024 	sw	zero,36(s8)
+  43373c:	00000000 	nop
+  433740:	03c0e821 	move	sp,s8
+  433744:	8fbf0084 	lw	ra,132(sp)
+  433748:	8fbe0080 	lw	s8,128(sp)
+  43374c:	8fb0007c 	lw	s0,124(sp)
+  433750:	27bd0088 	addiu	sp,sp,136
+  433754:	03e00008 	jr	ra
+  433758:	00000000 	nop
+
+0043375c <confctl_rqst_client_hostname@@Base>:
+  43375c:	3c1c0006 	lui	gp,0x6
+  433760:	279c3a04 	addiu	gp,gp,14852
+  433764:	0399e021 	addu	gp,gp,t9
+  433768:	27bdffc8 	addiu	sp,sp,-56
+  43376c:	afbf0034 	sw	ra,52(sp)
+  433770:	afbe0030 	sw	s8,48(sp)
+  433774:	03a0f021 	move	s8,sp
+  433778:	afbc0010 	sw	gp,16(sp)
+  43377c:	afc40038 	sw	a0,56(s8)
+  433780:	afc5003c 	sw	a1,60(s8)
+  433784:	afc60040 	sw	a2,64(s8)
+  433788:	afc70044 	sw	a3,68(s8)
+  43378c:	8fc2003c 	lw	v0,60(s8)
+  433790:	1440000f 	bnez	v0,4337d0 <confctl_rqst_client_hostname@@Base+0x74>
+  433794:	00000000 	nop
+  433798:	8f82822c 	lw	v0,-32212(gp)
+  43379c:	2442237c 	addiu	v0,v0,9084
+  4337a0:	00402021 	move	a0,v0
+  4337a4:	8f82822c 	lw	v0,-32212(gp)
+  4337a8:	24453064 	addiu	a1,v0,12388
+  4337ac:	24060575 	li	a2,1397
+  4337b0:	8f8287c8 	lw	v0,-30776(gp)
+  4337b4:	0040c821 	move	t9,v0
+  4337b8:	0320f809 	jalr	t9
+  4337bc:	00000000 	nop
+  4337c0:	8fdc0010 	lw	gp,16(s8)
+  4337c4:	2402ffff 	li	v0,-1
+  4337c8:	10000030 	b	43388c <confctl_rqst_client_hostname@@Base+0x130>
+  4337cc:	00000000 	nop
+  4337d0:	afc00020 	sw	zero,32(s8)
+  4337d4:	8fc2003c 	lw	v0,60(s8)
+  4337d8:	afc2001c 	sw	v0,28(s8)
+  4337dc:	8fc20040 	lw	v0,64(s8)
+  4337e0:	2442ffe0 	addiu	v0,v0,-32
+  4337e4:	00021102 	srl	v0,v0,0x4
+  4337e8:	afc20018 	sw	v0,24(s8)
+  4337ec:	afc00024 	sw	zero,36(s8)
+  4337f0:	27c30028 	addiu	v1,s8,40
+  4337f4:	27c20028 	addiu	v0,s8,40
+  4337f8:	afc30028 	sw	v1,40(s8)
+  4337fc:	afc2002c 	sw	v0,44(s8)
+  433800:	8fc2001c 	lw	v0,28(s8)
+  433804:	24420020 	addiu	v0,v0,32
+  433808:	afc20020 	sw	v0,32(s8)
+  43380c:	27c30028 	addiu	v1,s8,40
+  433810:	27c20024 	addiu	v0,s8,36
+  433814:	00602021 	move	a0,v1
+  433818:	00402821 	move	a1,v0
+  43381c:	8fc60020 	lw	a2,32(s8)
+  433820:	8fc70018 	lw	a3,24(s8)
+  433824:	8f82832c 	lw	v0,-31956(gp)
+  433828:	24423254 	addiu	v0,v0,12884
+  43382c:	0040c821 	move	t9,v0
+  433830:	0320f809 	jalr	t9
+  433834:	00000000 	nop
+  433838:	8fdc0010 	lw	gp,16(s8)
+  43383c:	8fc30024 	lw	v1,36(s8)
+  433840:	8fc2001c 	lw	v0,28(s8)
+  433844:	27c40028 	addiu	a0,s8,40
+  433848:	00602821 	move	a1,v1
+  43384c:	00403021 	move	a2,v0
+  433850:	8f82832c 	lw	v0,-31956(gp)
+  433854:	244233e0 	addiu	v0,v0,13280
+  433858:	0040c821 	move	t9,v0
+  43385c:	0320f809 	jalr	t9
+  433860:	00000000 	nop
+  433864:	8fdc0010 	lw	gp,16(s8)
+  433868:	27c20028 	addiu	v0,s8,40
+  43386c:	00402021 	move	a0,v0
+  433870:	8f82832c 	lw	v0,-31956(gp)
+  433874:	24422c88 	addiu	v0,v0,11400
+  433878:	0040c821 	move	t9,v0
+  43387c:	0320f809 	jalr	t9
+  433880:	00000000 	nop
+  433884:	8fdc0010 	lw	gp,16(s8)
+  433888:	00001021 	move	v0,zero
+  43388c:	03c0e821 	move	sp,s8
+  433890:	8fbf0034 	lw	ra,52(sp)
+  433894:	8fbe0030 	lw	s8,48(sp)
+  433898:	27bd0038 	addiu	sp,sp,56
+  43389c:	03e00008 	jr	ra
+  4338a0:	00000000 	nop
+  4338a4:	3c1c0006 	lui	gp,0x6
+  4338a8:	279c38bc 	addiu	gp,gp,14524
+  4338ac:	0399e021 	addu	gp,gp,t9
+  4338b0:	27bdffe0 	addiu	sp,sp,-32
+  4338b4:	afbf001c 	sw	ra,28(sp)
+  4338b8:	afbe0018 	sw	s8,24(sp)
+  4338bc:	03a0f021 	move	s8,sp
+  4338c0:	afbc0010 	sw	gp,16(sp)
+  4338c4:	afc40020 	sw	a0,32(s8)
+  4338c8:	8fc20020 	lw	v0,32(s8)
+  4338cc:	1040003b 	beqz	v0,4339bc <confctl_rqst_client_hostname@@Base+0x260>
+  4338d0:	00000000 	nop
+  4338d4:	8fc20020 	lw	v0,32(s8)
+  4338d8:	8c42000c 	lw	v0,12(v0)
+  4338dc:	1040000b 	beqz	v0,43390c <confctl_rqst_client_hostname@@Base+0x1b0>
+  4338e0:	00000000 	nop
+  4338e4:	8fc20020 	lw	v0,32(s8)
+  4338e8:	8c42000c 	lw	v0,12(v0)
+  4338ec:	00402021 	move	a0,v0
+  4338f0:	8f828614 	lw	v0,-31212(gp)
+  4338f4:	0040c821 	move	t9,v0
+  4338f8:	0320f809 	jalr	t9
+  4338fc:	00000000 	nop
+  433900:	8fdc0010 	lw	gp,16(s8)
+  433904:	8fc20020 	lw	v0,32(s8)
+  433908:	ac40000c 	sw	zero,12(v0)
+  43390c:	8fc20020 	lw	v0,32(s8)
+  433910:	8c420010 	lw	v0,16(v0)
+  433914:	1040000b 	beqz	v0,433944 <confctl_rqst_client_hostname@@Base+0x1e8>
+  433918:	00000000 	nop
+  43391c:	8fc20020 	lw	v0,32(s8)
+  433920:	8c420010 	lw	v0,16(v0)
+  433924:	00402021 	move	a0,v0
+  433928:	8f828614 	lw	v0,-31212(gp)
+  43392c:	0040c821 	move	t9,v0
+  433930:	0320f809 	jalr	t9
+  433934:	00000000 	nop
+  433938:	8fdc0010 	lw	gp,16(s8)
+  43393c:	8fc20020 	lw	v0,32(s8)
+  433940:	ac400010 	sw	zero,16(v0)
+  433944:	8fc20020 	lw	v0,32(s8)
+  433948:	8c420018 	lw	v0,24(v0)
+  43394c:	1040000b 	beqz	v0,43397c <confctl_rqst_client_hostname@@Base+0x220>
+  433950:	00000000 	nop
+  433954:	8fc20020 	lw	v0,32(s8)
+  433958:	8c420018 	lw	v0,24(v0)
+  43395c:	00402021 	move	a0,v0
+  433960:	8f828614 	lw	v0,-31212(gp)
+  433964:	0040c821 	move	t9,v0
+  433968:	0320f809 	jalr	t9
+  43396c:	00000000 	nop
+  433970:	8fdc0010 	lw	gp,16(s8)
+  433974:	8fc20020 	lw	v0,32(s8)
+  433978:	ac400018 	sw	zero,24(v0)
+  43397c:	8fc20020 	lw	v0,32(s8)
+  433980:	8c420034 	lw	v0,52(v0)
+  433984:	10400010 	beqz	v0,4339c8 <confctl_rqst_client_hostname@@Base+0x26c>
+  433988:	00000000 	nop
+  43398c:	8fc20020 	lw	v0,32(s8)
+  433990:	8c420034 	lw	v0,52(v0)
+  433994:	00402021 	move	a0,v0
+  433998:	8f828614 	lw	v0,-31212(gp)
+  43399c:	0040c821 	move	t9,v0
+  4339a0:	0320f809 	jalr	t9
+  4339a4:	00000000 	nop
+  4339a8:	8fdc0010 	lw	gp,16(s8)
+  4339ac:	8fc20020 	lw	v0,32(s8)
+  4339b0:	ac400034 	sw	zero,52(v0)
+  4339b4:	10000005 	b	4339cc <confctl_rqst_client_hostname@@Base+0x270>
+  4339b8:	00000000 	nop
+  4339bc:	00000000 	nop
+  4339c0:	10000002 	b	4339cc <confctl_rqst_client_hostname@@Base+0x270>
+  4339c4:	00000000 	nop
+  4339c8:	00000000 	nop
+  4339cc:	03c0e821 	move	sp,s8
+  4339d0:	8fbf001c 	lw	ra,28(sp)
+  4339d4:	8fbe0018 	lw	s8,24(sp)
+  4339d8:	27bd0020 	addiu	sp,sp,32
+  4339dc:	03e00008 	jr	ra
+  4339e0:	00000000 	nop
+  4339e4:	3c1c0006 	lui	gp,0x6
+  4339e8:	279c377c 	addiu	gp,gp,14204
+  4339ec:	0399e021 	addu	gp,gp,t9
+  4339f0:	27bdffd8 	addiu	sp,sp,-40
+  4339f4:	afbf0024 	sw	ra,36(sp)
+  4339f8:	afbe0020 	sw	s8,32(sp)
+  4339fc:	03a0f021 	move	s8,sp
+  433a00:	afbc0010 	sw	gp,16(sp)
+  433a04:	afc40028 	sw	a0,40(s8)
+  433a08:	8fc20028 	lw	v0,40(s8)
+  433a0c:	10400022 	beqz	v0,433a98 <confctl_rqst_client_hostname@@Base+0x33c>
+  433a10:	00000000 	nop
+  433a14:	afc00018 	sw	zero,24(s8)
+  433a18:	10000017 	b	433a78 <confctl_rqst_client_hostname@@Base+0x31c>
+  433a1c:	00000000 	nop
+  433a20:	8fc20028 	lw	v0,40(s8)
+  433a24:	8c430010 	lw	v1,16(v0)
+  433a28:	8fc20018 	lw	v0,24(s8)
+  433a2c:	00021080 	sll	v0,v0,0x2
+  433a30:	00621021 	addu	v0,v1,v0
+  433a34:	8c420000 	lw	v0,0(v0)
+  433a38:	00402021 	move	a0,v0
+  433a3c:	8f82832c 	lw	v0,-31956(gp)
+  433a40:	244238a4 	addiu	v0,v0,14500
+  433a44:	0040c821 	move	t9,v0
+  433a48:	0320f809 	jalr	t9
+  433a4c:	00000000 	nop
+  433a50:	8fdc0010 	lw	gp,16(s8)
+  433a54:	8fc20028 	lw	v0,40(s8)
+  433a58:	8c430010 	lw	v1,16(v0)
+  433a5c:	8fc20018 	lw	v0,24(s8)
+  433a60:	00021080 	sll	v0,v0,0x2
+  433a64:	00621021 	addu	v0,v1,v0
+  433a68:	ac400000 	sw	zero,0(v0)
+  433a6c:	8fc20018 	lw	v0,24(s8)
+  433a70:	24420001 	addiu	v0,v0,1
+  433a74:	afc20018 	sw	v0,24(s8)
+  433a78:	8fc30018 	lw	v1,24(s8)
+  433a7c:	8fc20028 	lw	v0,40(s8)
+  433a80:	8c42000c 	lw	v0,12(v0)
+  433a84:	0062102b 	sltu	v0,v1,v0
+  433a88:	1440ffe5 	bnez	v0,433a20 <confctl_rqst_client_hostname@@Base+0x2c4>
+  433a8c:	00000000 	nop
+  433a90:	10000002 	b	433a9c <confctl_rqst_client_hostname@@Base+0x340>
+  433a94:	00000000 	nop
+  433a98:	00000000 	nop
+  433a9c:	03c0e821 	move	sp,s8
+  433aa0:	8fbf0024 	lw	ra,36(sp)
+  433aa4:	8fbe0020 	lw	s8,32(sp)
+  433aa8:	27bd0028 	addiu	sp,sp,40
+  433aac:	03e00008 	jr	ra
+  433ab0:	00000000 	nop
+  433ab4:	3c1c0006 	lui	gp,0x6
+  433ab8:	279c36ac 	addiu	gp,gp,13996
+  433abc:	0399e021 	addu	gp,gp,t9
+  433ac0:	27bdffc0 	addiu	sp,sp,-64
+  433ac4:	afbf003c 	sw	ra,60(sp)
+  433ac8:	afbe0038 	sw	s8,56(sp)
+  433acc:	03a0f021 	move	s8,sp
+  433ad0:	afbc0010 	sw	gp,16(sp)
+  433ad4:	afc40040 	sw	a0,64(s8)
+  433ad8:	afc50044 	sw	a1,68(s8)
+  433adc:	8fc20040 	lw	v0,64(s8)
+  433ae0:	10400004 	beqz	v0,433af4 <confctl_rqst_client_hostname@@Base+0x398>
+  433ae4:	00000000 	nop
+  433ae8:	8fc20044 	lw	v0,68(s8)
+  433aec:	1440000f 	bnez	v0,433b2c <confctl_rqst_client_hostname@@Base+0x3d0>
+  433af0:	00000000 	nop
+  433af4:	8f82822c 	lw	v0,-32212(gp)
+  433af8:	2442237c 	addiu	v0,v0,9084
+  433afc:	00402021 	move	a0,v0
+  433b00:	8f82822c 	lw	v0,-32212(gp)
+  433b04:	24453040 	addiu	a1,v0,12352
+  433b08:	240605e2 	li	a2,1506
+  433b0c:	8f8287c8 	lw	v0,-30776(gp)
+  433b10:	0040c821 	move	t9,v0
+  433b14:	0320f809 	jalr	t9
+  433b18:	00000000 	nop
+  433b1c:	8fdc0010 	lw	gp,16(s8)
+  433b20:	2402ffff 	li	v0,-1
+  433b24:	100000bf 	b	433e24 <confctl_rqst_client_hostname@@Base+0x6c8>
+  433b28:	00000000 	nop
+  433b2c:	afc0001c 	sw	zero,28(s8)
+  433b30:	afc00020 	sw	zero,32(s8)
+  433b34:	afc00024 	sw	zero,36(s8)
+  433b38:	afc00028 	sw	zero,40(s8)
+  433b3c:	a7c0002c 	sh	zero,44(s8)
+  433b40:	afc00030 	sw	zero,48(s8)
+  433b44:	8fc20044 	lw	v0,68(s8)
+  433b48:	2442004c 	addiu	v0,v0,76
+  433b4c:	27c30030 	addiu	v1,s8,48
+  433b50:	00602021 	move	a0,v1
+  433b54:	00402821 	move	a1,v0
+  433b58:	24060004 	li	a2,4
+  433b5c:	8f828574 	lw	v0,-31372(gp)
+  433b60:	0040c821 	move	t9,v0
+  433b64:	0320f809 	jalr	t9
+  433b68:	00000000 	nop
+  433b6c:	8fdc0010 	lw	gp,16(s8)
+  433b70:	8fc40030 	lw	a0,48(s8)
+  433b74:	8f8285d8 	lw	v0,-31272(gp)
+  433b78:	0040c821 	move	t9,v0
+  433b7c:	0320f809 	jalr	t9
+  433b80:	00000000 	nop
+  433b84:	8fdc0010 	lw	gp,16(s8)
+  433b88:	00402021 	move	a0,v0
+  433b8c:	8f828894 	lw	v0,-30572(gp)
+  433b90:	0040c821 	move	t9,v0
+  433b94:	0320f809 	jalr	t9
+  433b98:	00000000 	nop
+  433b9c:	8fdc0010 	lw	gp,16(s8)
+  433ba0:	00401821 	move	v1,v0
+  433ba4:	8fc20040 	lw	v0,64(s8)
+  433ba8:	ac43000c 	sw	v1,12(v0)
+  433bac:	8fc20040 	lw	v0,64(s8)
+  433bb0:	8c42000c 	lw	v0,12(v0)
+  433bb4:	1440000f 	bnez	v0,433bf4 <confctl_rqst_client_hostname@@Base+0x498>
+  433bb8:	00000000 	nop
+  433bbc:	8f82822c 	lw	v0,-32212(gp)
+  433bc0:	2442270c 	addiu	v0,v0,9996
+  433bc4:	00402021 	move	a0,v0
+  433bc8:	8f82822c 	lw	v0,-32212(gp)
+  433bcc:	24453040 	addiu	a1,v0,12352
+  433bd0:	240605ef 	li	a2,1519
+  433bd4:	8f8287c8 	lw	v0,-30776(gp)
+  433bd8:	0040c821 	move	t9,v0
+  433bdc:	0320f809 	jalr	t9
+  433be0:	00000000 	nop
+  433be4:	8fdc0010 	lw	gp,16(s8)
+  433be8:	2402ffff 	li	v0,-1
+  433bec:	1000008d 	b	433e24 <confctl_rqst_client_hostname@@Base+0x6c8>
+  433bf0:	00000000 	nop
+  433bf4:	8fc20044 	lw	v0,68(s8)
+  433bf8:	24430050 	addiu	v1,v0,80
+  433bfc:	27c2001c 	addiu	v0,s8,28
+  433c00:	00602021 	move	a0,v1
+  433c04:	00402821 	move	a1,v0
+  433c08:	8f8289ec 	lw	v0,-30228(gp)
+  433c0c:	0040c821 	move	t9,v0
+  433c10:	0320f809 	jalr	t9
+  433c14:	00000000 	nop
+  433c18:	8fdc0010 	lw	gp,16(s8)
+  433c1c:	27c2001c 	addiu	v0,s8,28
+  433c20:	00402021 	move	a0,v0
+  433c24:	8f828894 	lw	v0,-30572(gp)
+  433c28:	0040c821 	move	t9,v0
+  433c2c:	0320f809 	jalr	t9
+  433c30:	00000000 	nop
+  433c34:	8fdc0010 	lw	gp,16(s8)
+  433c38:	00401821 	move	v1,v0
+  433c3c:	8fc20040 	lw	v0,64(s8)
+  433c40:	ac430010 	sw	v1,16(v0)
+  433c44:	8fc20040 	lw	v0,64(s8)
+  433c48:	8c420010 	lw	v0,16(v0)
+  433c4c:	1440000f 	bnez	v0,433c8c <confctl_rqst_client_hostname@@Base+0x530>
+  433c50:	00000000 	nop
+  433c54:	8f82822c 	lw	v0,-32212(gp)
+  433c58:	2442270c 	addiu	v0,v0,9996
+  433c5c:	00402021 	move	a0,v0
+  433c60:	8f82822c 	lw	v0,-32212(gp)
+  433c64:	24453040 	addiu	a1,v0,12352
+  433c68:	240605f7 	li	a2,1527
+  433c6c:	8f8287c8 	lw	v0,-30776(gp)
+  433c70:	0040c821 	move	t9,v0
+  433c74:	0320f809 	jalr	t9
+  433c78:	00000000 	nop
+  433c7c:	8fdc0010 	lw	gp,16(s8)
+  433c80:	2402ffff 	li	v0,-1
+  433c84:	10000067 	b	433e24 <confctl_rqst_client_hostname@@Base+0x6c8>
+  433c88:	00000000 	nop
+  433c8c:	8fc20044 	lw	v0,68(s8)
+  433c90:	8c420058 	lw	v0,88(v0)
+  433c94:	00401821 	move	v1,v0
+  433c98:	8fc20040 	lw	v0,64(s8)
+  433c9c:	ac430014 	sw	v1,20(v0)
+  433ca0:	8fc20044 	lw	v0,68(s8)
+  433ca4:	24420060 	addiu	v0,v0,96
+  433ca8:	00402021 	move	a0,v0
+  433cac:	8f828894 	lw	v0,-30572(gp)
+  433cb0:	0040c821 	move	t9,v0
+  433cb4:	0320f809 	jalr	t9
+  433cb8:	00000000 	nop
+  433cbc:	8fdc0010 	lw	gp,16(s8)
+  433cc0:	00401821 	move	v1,v0
+  433cc4:	8fc20040 	lw	v0,64(s8)
+  433cc8:	ac430018 	sw	v1,24(v0)
+  433ccc:	8fc20040 	lw	v0,64(s8)
+  433cd0:	8c420018 	lw	v0,24(v0)
+  433cd4:	1440000f 	bnez	v0,433d14 <confctl_rqst_client_hostname@@Base+0x5b8>
+  433cd8:	00000000 	nop
+  433cdc:	8f82822c 	lw	v0,-32212(gp)
+  433ce0:	2442270c 	addiu	v0,v0,9996
+  433ce4:	00402021 	move	a0,v0
+  433ce8:	8f82822c 	lw	v0,-32212(gp)
+  433cec:	24453040 	addiu	a1,v0,12352
+  433cf0:	24060600 	li	a2,1536
+  433cf4:	8f8287c8 	lw	v0,-30776(gp)
+  433cf8:	0040c821 	move	t9,v0
+  433cfc:	0320f809 	jalr	t9
+  433d00:	00000000 	nop
+  433d04:	8fdc0010 	lw	gp,16(s8)
+  433d08:	2402ffff 	li	v0,-1
+  433d0c:	10000045 	b	433e24 <confctl_rqst_client_hostname@@Base+0x6c8>
+  433d10:	00000000 	nop
+  433d14:	8f828750 	lw	v0,-30896(gp)
+  433d18:	0040c821 	move	t9,v0
+  433d1c:	0320f809 	jalr	t9
+  433d20:	00000000 	nop
+  433d24:	8fdc0010 	lw	gp,16(s8)
+  433d28:	afc20018 	sw	v0,24(s8)
+  433d2c:	8fc20044 	lw	v0,68(s8)
+  433d30:	8c42005c 	lw	v0,92(v0)
+  433d34:	8fc30018 	lw	v1,24(s8)
+  433d38:	00621823 	subu	v1,v1,v0
+  433d3c:	8fc20040 	lw	v0,64(s8)
+  433d40:	ac43001c 	sw	v1,28(v0)
+  433d44:	8fc20044 	lw	v0,68(s8)
+  433d48:	90420084 	lbu	v0,132(v0)
+  433d4c:	00401821 	move	v1,v0
+  433d50:	8fc20040 	lw	v0,64(s8)
+  433d54:	ac430020 	sw	v1,32(v0)
+  433d58:	8fc20040 	lw	v0,64(s8)
+  433d5c:	ac400024 	sw	zero,36(v0)
+  433d60:	8fc20040 	lw	v0,64(s8)
+  433d64:	ac400028 	sw	zero,40(v0)
+  433d68:	8fc20040 	lw	v0,64(s8)
+  433d6c:	8c420014 	lw	v0,20(v0)
+  433d70:	14400007 	bnez	v0,433d90 <confctl_rqst_client_hostname@@Base+0x634>
+  433d74:	00000000 	nop
+  433d78:	8fc20040 	lw	v0,64(s8)
+  433d7c:	ac40002c 	sw	zero,44(v0)
+  433d80:	8fc20040 	lw	v0,64(s8)
+  433d84:	ac400030 	sw	zero,48(v0)
+  433d88:	10000008 	b	433dac <confctl_rqst_client_hostname@@Base+0x650>
+  433d8c:	00000000 	nop
+  433d90:	8fc20040 	lw	v0,64(s8)
+  433d94:	24030001 	li	v1,1
+  433d98:	ac43002c 	sw	v1,44(v0)
+  433d9c:	8fc20044 	lw	v0,68(s8)
+  433da0:	8c430080 	lw	v1,128(v0)
+  433da4:	8fc20040 	lw	v0,64(s8)
+  433da8:	ac430030 	sw	v1,48(v0)
+  433dac:	8fc20044 	lw	v0,68(s8)
+  433db0:	2442000c 	addiu	v0,v0,12
+  433db4:	00402021 	move	a0,v0
+  433db8:	8f828894 	lw	v0,-30572(gp)
+  433dbc:	0040c821 	move	t9,v0
+  433dc0:	0320f809 	jalr	t9
+  433dc4:	00000000 	nop
+  433dc8:	8fdc0010 	lw	gp,16(s8)
+  433dcc:	00401821 	move	v1,v0
+  433dd0:	8fc20040 	lw	v0,64(s8)
+  433dd4:	ac430034 	sw	v1,52(v0)
+  433dd8:	8fc20040 	lw	v0,64(s8)
+  433ddc:	8c420034 	lw	v0,52(v0)
+  433de0:	1440000f 	bnez	v0,433e20 <confctl_rqst_client_hostname@@Base+0x6c4>
+  433de4:	00000000 	nop
+  433de8:	8f82822c 	lw	v0,-32212(gp)
+  433dec:	2442270c 	addiu	v0,v0,9996
+  433df0:	00402021 	move	a0,v0
+  433df4:	8f82822c 	lw	v0,-32212(gp)
+  433df8:	24453040 	addiu	a1,v0,12352
+  433dfc:	2406061a 	li	a2,1562
+  433e00:	8f8287c8 	lw	v0,-30776(gp)
+  433e04:	0040c821 	move	t9,v0
+  433e08:	0320f809 	jalr	t9
+  433e0c:	00000000 	nop
+  433e10:	8fdc0010 	lw	gp,16(s8)
+  433e14:	2402ffff 	li	v0,-1
+  433e18:	10000002 	b	433e24 <confctl_rqst_client_hostname@@Base+0x6c8>
+  433e1c:	00000000 	nop
+  433e20:	00001021 	move	v0,zero
+  433e24:	03c0e821 	move	sp,s8
+  433e28:	8fbf003c 	lw	ra,60(sp)
+  433e2c:	8fbe0038 	lw	s8,56(sp)
+  433e30:	27bd0040 	addiu	sp,sp,64
+  433e34:	03e00008 	jr	ra
+  433e38:	00000000 	nop
+  433e3c:	3c1c0006 	lui	gp,0x6
+  433e40:	279c3324 	addiu	gp,gp,13092
+  433e44:	0399e021 	addu	gp,gp,t9
+  433e48:	27bdffd0 	addiu	sp,sp,-48
+  433e4c:	afbf002c 	sw	ra,44(sp)
+  433e50:	afbe0028 	sw	s8,40(sp)
+  433e54:	03a0f021 	move	s8,sp
+  433e58:	afbc0010 	sw	gp,16(sp)
+  433e5c:	afc40030 	sw	a0,48(s8)
+  433e60:	afc50034 	sw	a1,52(s8)
+  433e64:	afc60038 	sw	a2,56(s8)
+  433e68:	8fc20030 	lw	v0,48(s8)
+  433e6c:	10400004 	beqz	v0,433e80 <confctl_rqst_client_hostname@@Base+0x724>
+  433e70:	00000000 	nop
+  433e74:	8fc20034 	lw	v0,52(s8)
+  433e78:	1440000f 	bnez	v0,433eb8 <confctl_rqst_client_hostname@@Base+0x75c>
+  433e7c:	00000000 	nop
+  433e80:	8f82822c 	lw	v0,-32212(gp)
+  433e84:	2442237c 	addiu	v0,v0,9084
+  433e88:	00402021 	move	a0,v0
+  433e8c:	8f82822c 	lw	v0,-32212(gp)
+  433e90:	24453028 	addiu	a1,v0,12328
+  433e94:	24060635 	li	a2,1589
+  433e98:	8f8287c8 	lw	v0,-30776(gp)
+  433e9c:	0040c821 	move	t9,v0
+  433ea0:	0320f809 	jalr	t9
+  433ea4:	00000000 	nop
+  433ea8:	8fdc0010 	lw	gp,16(s8)
+  433eac:	2402ffff 	li	v0,-1
+  433eb0:	10000080 	b	4340b4 <confctl_rqst_client_hostname@@Base+0x958>
+  433eb4:	00000000 	nop
+  433eb8:	afc00020 	sw	zero,32(s8)
+  433ebc:	afc0001c 	sw	zero,28(s8)
+  433ec0:	27c20024 	addiu	v0,s8,36
+  433ec4:	8f83802c 	lw	v1,-32724(gp)
+  433ec8:	2464fdf0 	addiu	a0,v1,-528
+  433ecc:	00402821 	move	a1,v0
+  433ed0:	8f8280a8 	lw	v0,-32600(gp)
+  433ed4:	0040c821 	move	t9,v0
+  433ed8:	0320f809 	jalr	t9
+  433edc:	00000000 	nop
+  433ee0:	8fdc0010 	lw	gp,16(s8)
+  433ee4:	afc20018 	sw	v0,24(s8)
+  433ee8:	8fc20018 	lw	v0,24(s8)
+  433eec:	10400070 	beqz	v0,4340b0 <confctl_rqst_client_hostname@@Base+0x954>
+  433ef0:	00000000 	nop
+  433ef4:	8fc20020 	lw	v0,32(s8)
+  433ef8:	000210c0 	sll	v0,v0,0x3
+  433efc:	000218c0 	sll	v1,v0,0x3
+  433f00:	00621023 	subu	v0,v1,v0
+  433f04:	8fc30034 	lw	v1,52(s8)
+  433f08:	00621021 	addu	v0,v1,v0
+  433f0c:	00402021 	move	a0,v0
+  433f10:	8f828570 	lw	v0,-31376(gp)
+  433f14:	0040c821 	move	t9,v0
+  433f18:	0320f809 	jalr	t9
+  433f1c:	00000000 	nop
+  433f20:	8fdc0010 	lw	gp,16(s8)
+  433f24:	8fc20020 	lw	v0,32(s8)
+  433f28:	000210c0 	sll	v0,v0,0x3
+  433f2c:	000218c0 	sll	v1,v0,0x3
+  433f30:	00621023 	subu	v0,v1,v0
+  433f34:	8fc30034 	lw	v1,52(s8)
+  433f38:	00621021 	addu	v0,v1,v0
+  433f3c:	00402021 	move	a0,v0
+  433f40:	8fc50018 	lw	a1,24(s8)
+  433f44:	8f82832c 	lw	v0,-31956(gp)
+  433f48:	24423ab4 	addiu	v0,v0,15028
+  433f4c:	0040c821 	move	t9,v0
+  433f50:	0320f809 	jalr	t9
+  433f54:	00000000 	nop
+  433f58:	8fdc0010 	lw	gp,16(s8)
+  433f5c:	afc2001c 	sw	v0,28(s8)
+  433f60:	8fc20030 	lw	v0,48(s8)
+  433f64:	8c430010 	lw	v1,16(v0)
+  433f68:	8fc20020 	lw	v0,32(s8)
+  433f6c:	00021080 	sll	v0,v0,0x2
+  433f70:	00621821 	addu	v1,v1,v0
+  433f74:	8fc20020 	lw	v0,32(s8)
+  433f78:	000210c0 	sll	v0,v0,0x3
+  433f7c:	000220c0 	sll	a0,v0,0x3
+  433f80:	00821023 	subu	v0,a0,v0
+  433f84:	8fc40034 	lw	a0,52(s8)
+  433f88:	00821021 	addu	v0,a0,v0
+  433f8c:	ac620000 	sw	v0,0(v1)
+  433f90:	8fc2001c 	lw	v0,28(s8)
+  433f94:	14400042 	bnez	v0,4340a0 <confctl_rqst_client_hostname@@Base+0x944>
+  433f98:	00000000 	nop
+  433f9c:	8fc20020 	lw	v0,32(s8)
+  433fa0:	24420001 	addiu	v0,v0,1
+  433fa4:	afc20020 	sw	v0,32(s8)
+  433fa8:	1000002e 	b	434064 <confctl_rqst_client_hostname@@Base+0x908>
+  433fac:	00000000 	nop
+  433fb0:	8fc20020 	lw	v0,32(s8)
+  433fb4:	000210c0 	sll	v0,v0,0x3
+  433fb8:	000218c0 	sll	v1,v0,0x3
+  433fbc:	00621023 	subu	v0,v1,v0
+  433fc0:	8fc30034 	lw	v1,52(s8)
+  433fc4:	00621021 	addu	v0,v1,v0
+  433fc8:	00402021 	move	a0,v0
+  433fcc:	8f828570 	lw	v0,-31376(gp)
+  433fd0:	0040c821 	move	t9,v0
+  433fd4:	0320f809 	jalr	t9
+  433fd8:	00000000 	nop
+  433fdc:	8fdc0010 	lw	gp,16(s8)
+  433fe0:	8fc20020 	lw	v0,32(s8)
+  433fe4:	000210c0 	sll	v0,v0,0x3
+  433fe8:	000218c0 	sll	v1,v0,0x3
+  433fec:	00621023 	subu	v0,v1,v0
+  433ff0:	8fc30034 	lw	v1,52(s8)
+  433ff4:	00621021 	addu	v0,v1,v0
+  433ff8:	00402021 	move	a0,v0
+  433ffc:	8fc50018 	lw	a1,24(s8)
+  434000:	8f82832c 	lw	v0,-31956(gp)
+  434004:	24423ab4 	addiu	v0,v0,15028
+  434008:	0040c821 	move	t9,v0
+  43400c:	0320f809 	jalr	t9
+  434010:	00000000 	nop
+  434014:	8fdc0010 	lw	gp,16(s8)
+  434018:	afc2001c 	sw	v0,28(s8)
+  43401c:	8fc20030 	lw	v0,48(s8)
+  434020:	8c430010 	lw	v1,16(v0)
+  434024:	8fc20020 	lw	v0,32(s8)
+  434028:	00021080 	sll	v0,v0,0x2
+  43402c:	00621821 	addu	v1,v1,v0
+  434030:	8fc20020 	lw	v0,32(s8)
+  434034:	000210c0 	sll	v0,v0,0x3
+  434038:	000220c0 	sll	a0,v0,0x3
+  43403c:	00821023 	subu	v0,a0,v0
+  434040:	8fc40034 	lw	a0,52(s8)
+  434044:	00821021 	addu	v0,a0,v0
+  434048:	ac620000 	sw	v0,0(v1)
+  43404c:	8fc2001c 	lw	v0,28(s8)
+  434050:	14400016 	bnez	v0,4340ac <confctl_rqst_client_hostname@@Base+0x950>
+  434054:	00000000 	nop
+  434058:	8fc20020 	lw	v0,32(s8)
+  43405c:	24420001 	addiu	v0,v0,1
+  434060:	afc20020 	sw	v0,32(s8)
+  434064:	27c20024 	addiu	v0,s8,36
+  434068:	8f83802c 	lw	v1,-32724(gp)
+  43406c:	2464fdf0 	addiu	a0,v1,-528
+  434070:	00402821 	move	a1,v0
+  434074:	8f8280ac 	lw	v0,-32596(gp)
+  434078:	0040c821 	move	t9,v0
+  43407c:	0320f809 	jalr	t9
+  434080:	00000000 	nop
+  434084:	8fdc0010 	lw	gp,16(s8)
+  434088:	afc20018 	sw	v0,24(s8)
+  43408c:	8fc20018 	lw	v0,24(s8)
+  434090:	1440ffc7 	bnez	v0,433fb0 <confctl_rqst_client_hostname@@Base+0x854>
+  434094:	00000000 	nop
+  434098:	10000005 	b	4340b0 <confctl_rqst_client_hostname@@Base+0x954>
+  43409c:	00000000 	nop
+  4340a0:	00000000 	nop
+  4340a4:	10000002 	b	4340b0 <confctl_rqst_client_hostname@@Base+0x954>
+  4340a8:	00000000 	nop
+  4340ac:	00000000 	nop
+  4340b0:	8fc2001c 	lw	v0,28(s8)
+  4340b4:	03c0e821 	move	sp,s8
+  4340b8:	8fbf002c 	lw	ra,44(sp)
+  4340bc:	8fbe0028 	lw	s8,40(sp)
+  4340c0:	27bd0030 	addiu	sp,sp,48
+  4340c4:	03e00008 	jr	ra
+  4340c8:	00000000 	nop
+  4340cc:	3c1c0006 	lui	gp,0x6
+  4340d0:	279c3094 	addiu	gp,gp,12436
+  4340d4:	0399e021 	addu	gp,gp,t9
+  4340d8:	27bdffd8 	addiu	sp,sp,-40
+  4340dc:	afbf0024 	sw	ra,36(sp)
+  4340e0:	afbe0020 	sw	s8,32(sp)
+  4340e4:	03a0f021 	move	s8,sp
+  4340e8:	afbc0010 	sw	gp,16(sp)
+  4340ec:	afc40028 	sw	a0,40(s8)
+  4340f0:	afc5002c 	sw	a1,44(s8)
+  4340f4:	afc60030 	sw	a2,48(s8)
+  4340f8:	afc70034 	sw	a3,52(s8)
+  4340fc:	8fc2002c 	lw	v0,44(s8)
+  434100:	10400004 	beqz	v0,434114 <confctl_rqst_client_hostname@@Base+0x9b8>
+  434104:	00000000 	nop
+  434108:	8fc20030 	lw	v0,48(s8)
+  43410c:	1440000f 	bnez	v0,43414c <confctl_rqst_client_hostname@@Base+0x9f0>
+  434110:	00000000 	nop
+  434114:	8f82822c 	lw	v0,-32212(gp)
+  434118:	2442237c 	addiu	v0,v0,9084
+  43411c:	00402021 	move	a0,v0
+  434120:	8f82822c 	lw	v0,-32212(gp)
+  434124:	24453008 	addiu	a1,v0,12296
+  434128:	24060669 	li	a2,1641
+  43412c:	8f8287c8 	lw	v0,-30776(gp)
+  434130:	0040c821 	move	t9,v0
+  434134:	0320f809 	jalr	t9
+  434138:	00000000 	nop
+  43413c:	8fdc0010 	lw	gp,16(s8)
+  434140:	00001021 	move	v0,zero
+  434144:	1000003e 	b	434240 <confctl_rqst_client_hostname@@Base+0xae4>
+  434148:	00000000 	nop
+  43414c:	afc0001c 	sw	zero,28(s8)
+  434150:	afc00018 	sw	zero,24(s8)
+  434154:	10000034 	b	434228 <confctl_rqst_client_hostname@@Base+0xacc>
+  434158:	00000000 	nop
+  43415c:	8fc40018 	lw	a0,24(s8)
+  434160:	00801821 	move	v1,a0
+  434164:	00031080 	sll	v0,v1,0x2
+  434168:	00401821 	move	v1,v0
+  43416c:	000310c0 	sll	v0,v1,0x3
+  434170:	00431023 	subu	v0,v0,v1
+  434174:	00441021 	addu	v0,v0,a0
+  434178:	000210c0 	sll	v0,v0,0x3
+  43417c:	8fc30030 	lw	v1,48(s8)
+  434180:	00621021 	addu	v0,v1,v0
+  434184:	24420004 	addiu	v0,v0,4
+  434188:	8fc4002c 	lw	a0,44(s8)
+  43418c:	00402821 	move	a1,v0
+  434190:	24060006 	li	a2,6
+  434194:	8f828a20 	lw	v0,-30176(gp)
+  434198:	0040c821 	move	t9,v0
+  43419c:	0320f809 	jalr	t9
+  4341a0:	00000000 	nop
+  4341a4:	8fdc0010 	lw	gp,16(s8)
+  4341a8:	1440001c 	bnez	v0,43421c <confctl_rqst_client_hostname@@Base+0xac0>
+  4341ac:	00000000 	nop
+  4341b0:	8fc40018 	lw	a0,24(s8)
+  4341b4:	00801821 	move	v1,a0
+  4341b8:	00031080 	sll	v0,v1,0x2
+  4341bc:	00401821 	move	v1,v0
+  4341c0:	000310c0 	sll	v0,v1,0x3
+  4341c4:	00431023 	subu	v0,v0,v1
+  4341c8:	00441021 	addu	v0,v0,a0
+  4341cc:	000210c0 	sll	v0,v0,0x3
+  4341d0:	8fc30030 	lw	v1,48(s8)
+  4341d4:	00621021 	addu	v0,v1,v0
+  4341d8:	8c430000 	lw	v1,0(v0)
+  4341dc:	8fc20028 	lw	v0,40(s8)
+  4341e0:	1462000e 	bne	v1,v0,43421c <confctl_rqst_client_hostname@@Base+0xac0>
+  4341e4:	00000000 	nop
+  4341e8:	8fc40018 	lw	a0,24(s8)
+  4341ec:	00801821 	move	v1,a0
+  4341f0:	00031080 	sll	v0,v1,0x2
+  4341f4:	00401821 	move	v1,v0
+  4341f8:	000310c0 	sll	v0,v1,0x3
+  4341fc:	00431023 	subu	v0,v0,v1
+  434200:	00441021 	addu	v0,v0,a0
+  434204:	000210c0 	sll	v0,v0,0x3
+  434208:	8fc30030 	lw	v1,48(s8)
+  43420c:	00621021 	addu	v0,v1,v0
+  434210:	afc2001c 	sw	v0,28(s8)
+  434214:	10000009 	b	43423c <confctl_rqst_client_hostname@@Base+0xae0>
+  434218:	00000000 	nop
+  43421c:	8fc20018 	lw	v0,24(s8)
+  434220:	24420001 	addiu	v0,v0,1
+  434224:	afc20018 	sw	v0,24(s8)
+  434228:	8fc30018 	lw	v1,24(s8)
+  43422c:	8fc20034 	lw	v0,52(s8)
+  434230:	0062102b 	sltu	v0,v1,v0
+  434234:	1440ffc9 	bnez	v0,43415c <confctl_rqst_client_hostname@@Base+0xa00>
+  434238:	00000000 	nop
+  43423c:	8fc2001c 	lw	v0,28(s8)
+  434240:	03c0e821 	move	sp,s8
+  434244:	8fbf0024 	lw	ra,36(sp)
+  434248:	8fbe0020 	lw	s8,32(sp)
+  43424c:	27bd0028 	addiu	sp,sp,40
+  434250:	03e00008 	jr	ra
+  434254:	00000000 	nop
+
+===== RATE HELPER HEAD 0x434258..0x434380 =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00434258 <confctl_rqst_client_hostname@@Base+0xafc>:
+  434258:	3c1c0006 	lui	gp,0x6
+  43425c:	279c2f08 	addiu	gp,gp,12040
+  434260:	0399e021 	addu	gp,gp,t9
+  434264:	27bdff68 	addiu	sp,sp,-152
+  434268:	afbf0094 	sw	ra,148(sp)
+  43426c:	afbe0090 	sw	s8,144(sp)
+  434270:	afb4008c 	sw	s4,140(sp)
+  434274:	afb30088 	sw	s3,136(sp)
+  434278:	afb20084 	sw	s2,132(sp)
+  43427c:	afb10080 	sw	s1,128(sp)
+  434280:	afb0007c 	sw	s0,124(sp)
+  434284:	03a0f021 	move	s8,sp
+  434288:	afbc0028 	sw	gp,40(sp)
+  43428c:	afc40098 	sw	a0,152(s8)
+  434290:	8fc20098 	lw	v0,152(s8)
+  434294:	1440000e 	bnez	v0,4342d0 <confctl_rqst_client_hostname@@Base+0xb74>
+  434298:	00000000 	nop
+  43429c:	8f82822c 	lw	v0,-32212(gp)
+  4342a0:	2442237c 	addiu	v0,v0,9084
+  4342a4:	00402021 	move	a0,v0
+  4342a8:	8f82822c 	lw	v0,-32212(gp)
+  4342ac:	24452ff0 	addiu	a1,v0,12272
+  4342b0:	2406068d 	li	a2,1677
+  4342b4:	8f8287c8 	lw	v0,-30776(gp)
+  4342b8:	0040c821 	move	t9,v0
+  4342bc:	0320f809 	jalr	t9
+  4342c0:	00000000 	nop
+  4342c4:	8fdc0028 	lw	gp,40(s8)
+  4342c8:	100001bd 	b	4349c0 <confctl_rqst_client_hostname@@Base+0x1264>
+  4342cc:	00000000 	nop
+  4342d0:	00001021 	move	v0,zero
+  4342d4:	00001821 	move	v1,zero
+  4342d8:	afc20048 	sw	v0,72(s8)
+  4342dc:	afc3004c 	sw	v1,76(s8)
+  4342e0:	00001021 	move	v0,zero
+  4342e4:	00001821 	move	v1,zero
+  4342e8:	afc20040 	sw	v0,64(s8)
+  4342ec:	afc30044 	sw	v1,68(s8)
+  4342f0:	8f82822c 	lw	v0,-32212(gp)
+  4342f4:	8c423358 	lw	v0,13144(v0)
+  4342f8:	afc2003c 	sw	v0,60(s8)
+  4342fc:	afc0006c 	sw	zero,108(s8)
+  434300:	a7c00070 	sh	zero,112(s8)
+  434304:	27c40058 	addiu	a0,s8,88
+  434308:	27c30060 	addiu	v1,s8,96
+  43430c:	27c20068 	addiu	v0,s8,104
+  434310:	00602821 	move	a1,v1
+  434314:	00403021 	move	a2,v0
+  434318:	8f828610 	lw	v0,-31216(gp)
+  43431c:	0040c821 	move	t9,v0
+  434320:	0320f809 	jalr	t9
+  434324:	00000000 	nop
+  434328:	8fdc0028 	lw	gp,40(s8)
+  43432c:	8fc40060 	lw	a0,96(s8)
+  434330:	8fc50064 	lw	a1,100(s8)
+  434334:	8fc60058 	lw	a2,88(s8)
+  434338:	8fc7005c 	lw	a3,92(s8)
+  43433c:	00861023 	subu	v0,a0,a2
+  434340:	0082402b 	sltu	t0,a0,v0
+  434344:	00a71823 	subu	v1,a1,a3
+  434348:	00682023 	subu	a0,v1,t0
+  43434c:	00801821 	move	v1,a0
+  434350:	1460003a 	bnez	v1,43443c <confctl_rqst_client_hostname@@Base+0xce0>
+  434354:	00000000 	nop
+  434358:	14600006 	bnez	v1,434374 <confctl_rqst_client_hostname@@Base+0xc18>
+  43435c:	00000000 	nop
+  434360:	3c040007 	lui	a0,0x7
+  434364:	3484a120 	ori	a0,a0,0xa120
+  434368:	0044102b 	sltu	v0,v0,a0
+  43436c:	10400033 	beqz	v0,43443c <confctl_rqst_client_hostname@@Base+0xce0>
+  434370:	00000000 	nop
+  434374:	2404000e 	li	a0,14
+  434378:	8f828240 	lw	v0,-32192(gp)
+  43437c:	0040c821 	move	t9,v0
+
+===== GOT =====
+Attribute Section: gnu
+File Attributes
+  Tag_GNU_MIPS_ABI_FP: Soft float
+
+Primary GOT:
+ Canonical gp value: 00497160
+
+ Reserved entries:
+   Address     Access  Initial Purpose
+  0048f170 -32752(gp) 00000000 Lazy resolver
+  0048f174 -32748(gp) 80000000 Module pointer (GNU extension)
+
+ Local entries:
+   Address     Access  Initial
+  0048f178 -32744(gp) 004090f4
+  0048f17c -32740(gp) 00407738
+  0048f180 -32736(gp) 00465f40
+  0048f184 -32732(gp) 00460000
+  0048f188 -32728(gp) 00400000
+  0048f18c -32724(gp) 00490000
+  0048f190 -32720(gp) 00410000
+  0048f194 -32716(gp) 004593bc
+  0048f198 -32712(gp) 004900f0
+  0048f19c -32708(gp) 0048fde0
+  0048f1a0 -32704(gp) 00407930
+  0048f1a4 -32700(gp) 0042299c
+  0048f1a8 -32696(gp) 0040b13c
+  0048f1ac -32692(gp) 00422c00
+  0048f1b0 -32688(gp) 0042761c
+  0048f1b4 -32684(gp) 0045719c
+  0048f1b8 -32680(gp) 0044d574
+  0048f1bc -32676(gp) 004086d8
+  0048f1c0 -32672(gp) 0040a2f8
+  0048f1c4 -32668(gp) 0040b360
+  0048f1c8 -32664(gp) 00407d70
+  0048f1cc -32660(gp) 00407e9c
+  0048f1d0 -32656(gp) 0040acd4
+  0048f1d4 -32652(gp) 0040a9ec
+  0048f1d8 -32648(gp) 0040a218
+  0048f1dc -32644(gp) 0045a448
+  0048f1e0 -32640(gp) 0045c530
+  0048f1e4 -32636(gp) 0044e294
+  0048f1e8 -32632(gp) 00409ee0
+  0048f1ec -32628(gp) 00457cfc
+  0048f1f0 -32624(gp) 0040a68c
+  0048f1f4 -32620(gp) 0040a748
+  0048f1f8 -32616(gp) 00408c1c
+  0048f1fc -32612(gp) 00408e7c
+  0048f200 -32608(gp) 00408a90
+  0048f204 -32604(gp) 004098dc
+  0048f208 -32600(gp) 00409a6c
+  0048f20c -32596(gp) 00409b68
+  0048f210 -32592(gp) 00409690
+  0048f214 -32588(gp) 00409810
+  0048f218 -32584(gp) 00409728
+  0048f21c -32580(gp) 0048fbc0
+  0048f220 -32576(gp) 0048fbc4
+  0048f224 -32572(gp) 00420c20
+  0048f228 -32568(gp) 00420b70
+  0048f22c -32564(gp) 0040a614
+  0048f230 -32560(gp) 0048f070
+  0048f234 -32556(gp) 004239ec
+  0048f238 -32552(gp) 00422764
+  0048f23c -32548(gp) 0040a028
+  0048f240 -32544(gp) 00424888
+  0048f244 -32540(gp) 0042e48c
+  0048f248 -32536(gp) 0042e66c
+  0048f24c -32532(gp) 004324c8
+  0048f250 -32528(gp) 00432aa8
+  0048f254 -32524(gp) 0043375c
+  0048f258 -32520(gp) 00434f9c
+  0048f25c -32516(gp) 00410be0
+  0048f260 -32512(gp) 00435424
+  0048f264 -32508(gp) 00436bc8
+  0048f268 -32504(gp) 0043ab40
+  0048f26c -32500(gp) 0043b278
+  0048f270 -32496(gp) 004258e4
+  0048f274 -32492(gp) 004263e4
+  0048f278 -32488(gp) 004597c0
+  0048f27c -32484(gp) 00426a04
+  0048f280 -32480(gp) 00426ff8
+  0048f284 -32476(gp) 004272fc
+  0048f288 -32472(gp) 00446458
+  0048f28c -32468(gp) 00446580
+  0048f290 -32464(gp) 004473d0
+  0048f294 -32460(gp) 00447534
+  0048f298 -32456(gp) 00447754
+  0048f29c -32452(gp) 0045270c
+  0048f2a0 -32448(gp) 00451af0
+  0048f2a4 -32444(gp) 00452b48
+  0048f2a8 -32440(gp) 00453130
+  0048f2ac -32436(gp) 004403fc
+  0048f2b0 -32432(gp) 004439f0
+  0048f2b4 -32428(gp) 0044407c
+  0048f2b8 -32424(gp) 0044545c
+  0048f2bc -32420(gp) 00444d20
+  0048f2c0 -32416(gp) 00444b4c
+  0048f2c4 -32412(gp) 00444598
+  0048f2c8 -32408(gp) 00444ab4
+  0048f2cc -32404(gp) 00456ef0
+  0048f2d0 -32400(gp) 004572dc
+  0048f2d4 -32396(gp) 00458714
+  0048f2d8 -32392(gp) 00458f98
+  0048f2dc -32388(gp) 004590cc
+  0048f2e0 -32384(gp) 00413d70
+  0048f2e4 -32380(gp) 004141f8
+  0048f2e8 -32376(gp) 004147bc
+  0048f2ec -32372(gp) 00414bec
+  0048f2f0 -32368(gp) 00414f40
+  0048f2f4 -32364(gp) 0045a580
+  0048f2f8 -32360(gp) 0045a6dc
+  0048f2fc -32356(gp) 00412108
+  0048f300 -32352(gp) 00412250
+  0048f304 -32348(gp) 004139a0
+  0048f308 -32344(gp) 00413ae4
+  0048f30c -32340(gp) 0045c2a8
+  0048f310 -32336(gp) 0045bfb0
+  0048f314 -32332(gp) 0045f800
+  0048f318 -32328(gp) 0044d9b8
+  0048f31c -32324(gp) 004608b0
+  0048f320 -32320(gp) 004609c0
+  0048f324 -32316(gp) 00460a88
+  0048f328 -32312(gp) 00460b0c
+  0048f32c -32308(gp) 0044e760
+  0048f330 -32304(gp) 004191f8
+  0048f334 -32300(gp) 004194f8
+  0048f338 -32296(gp) 0041c20c
+  0048f33c -32292(gp) 0041c5a0
+  0048f340 -32288(gp) 0041e9f0
+  0048f344 -32284(gp) 0041ec5c
+  0048f348 -32280(gp) 00454440
+  0048f34c -32276(gp) 00460c00
+  0048f350 -32272(gp) 00460d5c
+  0048f354 -32268(gp) 00449e7c
+  0048f358 -32264(gp) 0044a370
+  0048f35c -32260(gp) 00449944
+  0048f360 -32256(gp) 004495bc
+  0048f364 -32252(gp) 00449808
+  0048f368 -32248(gp) 00461200
+  0048f36c -32244(gp) 004614e4
+  0048f370 -32240(gp) 00438124
+  0048f374 -32236(gp) 00438eb8
+  0048f378 -32232(gp) 00439798
+  0048f37c -32228(gp) 004266d8
+  0048f380 -32224(gp) 004557ac
+  0048f384 -32220(gp) 00455964
+  0048f388 -32216(gp) 00455b94
+  0048f38c -32212(gp) 00470000
+  0048f390 -32208(gp) 0040f0bc
+  0048f394 -32204(gp) 0040feb8
+  0048f398 -32200(gp) 0040fc78
+  0048f39c -32196(gp) 00410034
+  0048f3a0 -32192(gp) 0040af24
+  0048f3a4 -32188(gp) 00410a30
+  0048f3a8 -32184(gp) 004102b4
+  0048f3ac -32180(gp) 0040fa34
+  0048f3b0 -32176(gp) 00411664
+  0048f3b4 -32172(gp) 004113fc
+  0048f3b8 -32168(gp) 00411888
+  0048f3bc -32164(gp) 004111b0
+  0048f3c0 -32160(gp) 00411b8c
+  0048f3c4 -32156(gp) 004124c0
+  0048f3c8 -32152(gp) 00412ea4
+  0048f3cc -32148(gp) 0041311c
+  0048f3d0 -32144(gp) 00413664
+  0048f3d4 -32140(gp) 00412690
+  0048f3d8 -32136(gp) 00412920
+  0048f3dc -32132(gp) 00461fb0
+  0048f3e0 -32128(gp) 004158fc
+  0048f3e4 -32124(gp) 00415be4
+  0048f3e8 -32120(gp) 00416858
+  0048f3ec -32116(gp) 00416b58
+  0048f3f0 -32112(gp) 00415874
+  0048f3f4 -32108(gp) 00415f30
+  0048f3f8 -32104(gp) 004176a4
+  0048f3fc -32100(gp) 004167d0
+  0048f400 -32096(gp) 004173b8
+  0048f404 -32092(gp) 00417880
+  0048f408 -32088(gp) 004185f0
+  0048f40c -32084(gp) 00418280
+  0048f410 -32080(gp) 00417f54
+  0048f414 -32076(gp) 0041893c
+  0048f418 -32072(gp) 00420000
+  0048f41c -32068(gp) 00417da0
+  0048f420 -32064(gp) 00418d58
+  0048f424 -32060(gp) 00419940
+  0048f428 -32056(gp) 0041e0dc
+  0048f42c -32052(gp) 0041dc14
+  0048f430 -32048(gp) 0041aa4c
+  0048f434 -32044(gp) 00419bfc
+  0048f438 -32040(gp) 0041b12c
+  0048f43c -32036(gp) 0041b5a0
+  0048f440 -32032(gp) 0041b96c
+  0048f444 -32028(gp) 0041a900
+  0048f448 -32024(gp) 0041af9c
+  0048f44c -32020(gp) 0041cba0
+  0048f450 -32016(gp) 00419820
+  0048f454 -32012(gp) 0041e594
+  0048f458 -32008(gp) 0041ca18
+  0048f45c -32004(gp) 0041d8a8
+  0048f460 -32000(gp) 0041fa1c
+  0048f464 -31996(gp) 0042046c
+  0048f468 -31992(gp) 0041f230
+  0048f46c -31988(gp) 00420170
+  0048f470 -31984(gp) 0041f760
+  0048f474 -31980(gp) 0041f690
+  0048f478 -31976(gp) 00420cd0
+  0048f47c -31972(gp) 00421ddc
+  0048f480 -31968(gp) 004210b8
+  0048f484 -31964(gp) 004216f0
+  0048f488 -31960(gp) 004221d8
+  0048f48c -31956(gp) 00430000
+  0048f490 -31952(gp) 00424750
+  0048f494 -31948(gp) 0042362c
+  0048f498 -31944(gp) 0045da68
+  0048f49c -31940(gp) 004245e0
+  0048f4a0 -31936(gp) 004250a4
+  0048f4a4 -31932(gp) 00490100
+  0048f4a8 -31928(gp) 00425384
+  0048f4ac -31924(gp) 0042579c
+  0048f4b0 -31920(gp) 00416d2c
+  0048f4b4 -31916(gp) 00415684
+  0048f4b8 -31912(gp) 00416fec
+  0048f4bc -31908(gp) 00417b04
+  0048f4c0 -31904(gp) 0041640c
+  0048f4c4 -31900(gp) 004161f4
+  0048f4c8 -31896(gp) 00416544
+  0048f4cc -31892(gp) 0042e12c
+  0048f4d0 -31888(gp) 00461ee0
+  0048f4d4 -31884(gp) 00462880
+  0048f4d8 -31880(gp) 00462b90
+  0048f4dc -31876(gp) 004640a0
+  0048f4e0 -31872(gp) 00461d10
+  0048f4e4 -31868(gp) 004105a4
+  0048f4e8 -31864(gp) 004108e8
+  0048f4ec -31860(gp) 00437ae0
+  0048f4f0 -31856(gp) 00438c70
+  0048f4f4 -31852(gp) 00438984
+  0048f4f8 -31848(gp) 00438dc4
+  0048f4fc -31844(gp) 004396fc
+  0048f500 -31840(gp) 00439e04
+  0048f504 -31836(gp) 00439c50
+  0048f508 -31832(gp) 0043a28c
+  0048f50c -31828(gp) 0043a0d8
+  0048f510 -31824(gp) 00440000
+  0048f514 -31820(gp) 00439ed0
+  0048f518 -31816(gp) 0043a348
+  0048f51c -31812(gp) 0040eefc
+  0048f520 -31808(gp) 004424d0
+  0048f524 -31804(gp) 00442660
+  0048f528 -31800(gp) 0040e638
+  0048f52c -31796(gp) 0045b298
+  0048f530 -31792(gp) 0040bfd0
+  0048f534 -31788(gp) 0040c824
+  0048f538 -31784(gp) 0040ce24
+  0048f53c -31780(gp) 0040d384
+  0048f540 -31776(gp) 0040d858
+  0048f544 -31772(gp) 0040dde8
+  0048f548 -31768(gp) 0040e210
+  0048f54c -31764(gp) 0040c4e8
+  0048f550 -31760(gp) 0040c8cc
+  0048f554 -31756(gp) 00446320
+  0048f558 -31752(gp) 004464c0
+  0048f55c -31748(gp) 00450840
+  0048f560 -31744(gp) 0044704c
+  0048f564 -31740(gp) 0044718c
+  0048f568 -31736(gp) 0044725c
+  0048f56c -31732(gp) 00448bd8
+  0048f570 -31728(gp) 00450000
+  0048f574 -31724(gp) 0044a1e8
+  0048f578 -31720(gp) 0044a194
+  0048f57c -31716(gp) 00448a50
+  0048f580 -31712(gp) 00448d64
+  0048f584 -31708(gp) 00449eb0
+  0048f588 -31704(gp) 0044803c
+  0048f58c -31700(gp) 004484a0
+  0048f590 -31696(gp) 00448244
+  0048f594 -31692(gp) 00449b24
+  0048f598 -31688(gp) 00490440
+  0048f59c -31684(gp) 00463fc0
+  0048f5a0 -31680(gp) 00463b00
+  0048f5a4 -31676(gp) 004634a0
+  0048f5a8 -31672(gp) 00463f40
+  0048f5ac -31668(gp) 0044b0cc
+  0048f5b0 -31664(gp) 0044ae8c
+  0048f5b4 -31660(gp) 00462450
+  0048f5b8 -31656(gp) 0044b1a0
+  0048f5bc -31652(gp) 0044bc30
+  0048f5c0 -31648(gp) 0044c2cc
+  0048f5c4 -31644(gp) 0044c1dc
+  0048f5c8 -31640(gp) 00446c30
+  0048f5cc -31636(gp) 0044be1c
+  0048f5d0 -31632(gp) 0044bfc4
+  0048f5d4 -31628(gp) 0044bcb0
+  0048f5d8 -31624(gp) 0044d1c4
+  0048f5dc -31620(gp) 0044dc50
+  0048f5e0 -31616(gp) 0044e340
+  0048f5e4 -31612(gp) 0044e3e8
+  0048f5e8 -31608(gp) 00450500
+  0048f5ec -31604(gp) 00450484
+  0048f5f0 -31600(gp) 004506f8
+  0048f5f4 -31596(gp) 00480000
+  0048f5f8 -31592(gp) 004900f4
+  0048f5fc -31588(gp) 00460254
+  0048f600 -31584(gp) 00454aa4
+  0048f604 -31580(gp) 00454c70
+  0048f608 -31576(gp) 00454894
+  0048f60c -31572(gp) 00455214
+  0048f610 -31568(gp) 00455558
+  0048f614 -31564(gp) 00456ff4
+  0048f618 -31560(gp) 00457370
+  0048f61c -31556(gp) 004574d4
+  0048f620 -31552(gp) 0045782c
+  0048f624 -31548(gp) 00490310
+  0048f628 -31544(gp) 00490318
+  0048f62c -31540(gp) 00458614
+  0048f630 -31536(gp) 004592fc
+  0048f634 -31532(gp) 00490314
+  0048f638 -31528(gp) 00421220
+  0048f63c -31524(gp) 00416a00
+  0048f640 -31520(gp) 004377e0
+  0048f644 -31516(gp) 00436544
+  0048f648 -31512(gp) 004294cc
+  0048f64c -31508(gp) 0042d260
+  0048f650 -31504(gp) 004603f8
+  0048f654 -31500(gp) 004606d4
+  0048f658 -31496(gp) 00490488
+  0048f65c -31492(gp) 00490430
+  0048f660 -31488(gp) 0045af84
+  0048f664 -31484(gp) 0045b058
+  0048f668 -31480(gp) 0045b3bc
+  0048f66c -31476(gp) 0045bf30
+  0048f670 -31472(gp) 0045a970
+  0048f674 -31468(gp) 00461e00
+  0048f678 -31464(gp) 004642f0
+  0048f67c -31460(gp) 00464040
+  0048f680 -31456(gp) 00462c50
+  0048f684 -31452(gp) 00464150
+  0048f688 -31448(gp) 004643a0
+  0048f68c -31444(gp) 004644b0
+  0048f690 -31440(gp) 00000000
+  0048f694 -31436(gp) 00000000
+
+ Global entries:
+   Address     Access  Initial Sym.Val. Type    Ndx Name
+  0048f698 -31432(gp) 00465f20 00465f20 FUNC    UND mxp_info__free_unpacked
+  0048f69c -31428(gp) 00465f10 00465f10 FUNC    UND strsep
+  0048f6a0 -31424(gp) 00465f00 00465f00 FUNC    UND qos_rule__init
+  0048f6a4 -31420(gp) 00000000 00000000 OBJECT  UND wlan_roaming__descriptor
+  0048f6a8 -31416(gp) 00465ef0 00465ef0 FUNC    UND assign_set_cfg_fn
+  0048f6ac -31412(gp) 00465ee0 00465ee0 FUNC    UND wan_rate__get_packed_size
+  0048f6b0 -31408(gp) 00465ed0 00465ed0 FUNC    UND usleep
+  0048f6b4 -31404(gp) 00465ec0 00465ec0 FUNC    UND adsl_cfg__init
+  0048f6b8 -31400(gp) 00465eb0 00465eb0 FUNC    UND uc_api_lib_init
+  0048f6bc -31396(gp) 00465ea0 00465ea0 FUNC    UND port_fwd_list__get_pac[...]
+  0048f6c0 -31392(gp) 00465e90 00465e90 FUNC    UND mesh_time_zone__get_pa[...]
+  0048f6c4 -31388(gp) 00465e80 00465e80 FUNC    UND strlen
+  0048f6c8 -31384(gp) 00465e70 00465e70 FUNC    UND check_mesh_has_old_ver_map
+  0048f6cc -31380(gp) 00465e60 00465e60 FUNC    UND wan_cfg__pack
+  0048f6d0 -31376(gp) 00465e50 00465e50 FUNC    UND host_info__init
+  0048f6d4 -31372(gp) 00465e40 00465e40 FUNC    UND memcpy
+  0048f6d8 -31368(gp) 00465e30 00465e30 FUNC    UND doSystemCmd
+  0048f6dc -31364(gp) 00465e20 00465e20 FUNC    UND sprintf
+  0048f6e0 -31360(gp) 00465e10 00465e10 FUNC    UND time_group__pack
+  0048f6e4 -31356(gp) 00465e00 00465e00 FUNC    UND fw_download_info_t__init
+  0048f6e8 -31352(gp) 00465df0 00465df0 FUNC    UND assoc_node_info__init
+  0048f6ec -31348(gp) 00465de0 00465de0 FUNC    UND proto_supt_mod_cmd__init
+  0048f6f0 -31344(gp) 00465dd0 00465dd0 FUNC    UND strtok
+  0048f6f4 -31340(gp) 00000000 00000000 OBJECT  UND router_cfg__descriptor
+  0048f6f8 -31336(gp) 00465dc0 00465dc0 FUNC    UND ntohl
+  0048f6fc -31332(gp) 00465db0 00465db0 FUNC    UND uc_api_m_cloud_info_se[...]
+  0048f700 -31328(gp) 00465da0 00465da0 FUNC    UND cm_init
+  0048f704 -31324(gp) 00465d90 00465d90 FUNC    UND enable_device_id_hdl
+  0048f708 -31320(gp) 00465d80 00465d80 FUNC    UND upn_pcfg__pack
+  0048f70c -31316(gp) 00465d70 00465d70 FUNC    UND mesh_id_info__pack
+  0048f710 -31312(gp) 00465d60 00465d60 FUNC    UND fopen
+  0048f714 -31308(gp) 00465d50 00465d50 FUNC    UND fw_multi_upgrade_info_[...]
+  0048f718 -31304(gp) 00465d40 00465d40 FUNC    UND mf_lists__pack
+  0048f71c -31300(gp) 00465d30 00465d30 FUNC    UND mesh_node_list__unpack
+  0048f720 -31296(gp) 00465d20 00465d20 FUNC    UND puts
+  0048f724 -31292(gp) 00465d10 00465d10 FUNC    UND wlan_roaming__unpack
+  0048f728 -31288(gp) 00465d00 00465d00 FUNC    UND wlan_roaming__free_unpacked
+  0048f72c -31284(gp) 00465cf0 00465cf0 FUNC    UND wlan_time_choice__init
+  0048f730 -31280(gp) 00465ce0 00465ce0 FUNC    UND set_env
+  0048f734 -31276(gp) 00465cd0 00465cd0 FUNC    UND wan_conn_type__get_pac[...]
+  0048f738 -31272(gp) 00465cc0 00465cc0 FUNC    UND inet_ntoa
+  0048f73c -31268(gp) 00465cb0 00465cb0 FUNC    UND check_product_is_nova
+  0048f740 -31264(gp) 00465ca0 00465ca0 FUNC    UND check_product_is_simgl[...]
+  0048f744 -31260(gp) 00465c90 00465c90 FUNC    UND router_cfg__pack
+  0048f748 -31256(gp) 00465c80 00465c80 FUNC    UND wlan_cfg_all__pack
+  0048f74c -31252(gp) 00465c70 00465c70 FUNC    UND prod_check_change_lani[...]
+  0048f750 -31248(gp) 00465c60 00465c60 FUNC    UND flash_upgradefw
+  0048f754 -31244(gp) 00465c50 00465c50 FUNC    UND high_device_config__init
+  0048f758 -31240(gp) 00465c40 00465c40 FUNC    UND dhcp_cfg__pack
+  0048f75c -31236(gp) 00465c30 00465c30 FUNC    UND ether_ntoa_r
+  0048f760 -31232(gp) 00465c20 00465c20 FUNC    UND stat
+  0048f764 -31228(gp) 00465c10 00465c10 FUNC    UND atoi
+  0048f768 -31224(gp) 00465c00 00465c00 FUNC    UND assign_get_cfg_fn
+  0048f76c -31220(gp) 00465bf0 00465bf0 FUNC    UND mesh_node_list__get_pa[...]
+  0048f770 -31216(gp) 00465be0 00465be0 FUNC    UND netlink_get_statistic_info
+  0048f774 -31212(gp) 00465bd0 00465bd0 FUNC    UND free
+  0048f778 -31208(gp) 00465bc0 00465bc0 FUNC    UND mf_lists__free_unpacked
+  0048f77c -31204(gp) 00465bb0 00465bb0 FUNC    UND set_extdns_by_lang
+  0048f780 -31200(gp) 00465ba0 00465ba0 FUNC    UND mesh_id_info__get_pack[...]
+  0048f784 -31196(gp) 00465b90 00465b90 FUNC    UND CommitCfm
+  0048f788 -31192(gp) 00465b80 00465b80 FUNC    UND wan_port_cfg__init
+  0048f78c -31188(gp) 00465b70 00465b70 FUNC    UND wan_port_power__pack
+  0048f790 -31184(gp) 00465b60 00465b60 FUNC    UND wan_port_status__init
+  0048f794 -31180(gp) 00000000 00000000 OBJECT  UND is_suit__descriptor
+  0048f798 -31176(gp) 00465b50 00465b50 FUNC    UND GetValue
+  0048f79c -31172(gp) 00465b40 00465b40 FUNC    UND systool_upfile_handle_new
+  0048f7a0 -31168(gp) 00465b30 00465b30 FUNC    UND dhcp_cfg__free_unpacked
+  0048f7a4 -31164(gp) 00465b20 00465b20 FUNC    UND wlan_cfg_all__unpack
+  0048f7a8 -31160(gp) 00465b10 00465b10 FUNC    UND getWanConnType
+  0048f7ac -31156(gp) 00465b00 00465b00 FUNC    UND localtime
+  0048f7b0 -31152(gp) 00465af0 00465af0 FUNC    UND time_group__unpack
+  0048f7b4 -31148(gp) 00465ae0 00465ae0 FUNC    UND node_led_status__unpack
+  0048f7b8 -31144(gp) 00465ad0 00465ad0 FUNC    UND qos_rule__get_packed_size
+  0048f7bc -31140(gp) 00465ac0 00465ac0 FUNC    UND vsnprintf
+  0048f7c0 -31136(gp) 00465ab0 00465ab0 FUNC    UND enable_conn_innernet
+  0048f7c4 -31132(gp) 00465aa0 00465aa0 FUNC    UND __assert
+  0048f7c8 -31128(gp) 00465a90 00465a90 FUNC    UND family_group__free_unpacked
+  0048f7cc -31124(gp) 00465a80 00465a80 FUNC    UND ugw_accept_client
+  0048f7d0 -31120(gp) 00465a70 00465a70 FUNC    UND cmd_sub
+  0048f7d4 -31116(gp) 00465a60 00465a60 FUNC    UND redis_option_new
+  0048f7d8 -31112(gp) 00465a50 00465a50 FUNC    UND fw_multi_upgrade_info_[...]
+  0048f7dc -31108(gp) 00000000 00000000 OBJECT  UND port_fwd_list__descriptor
+  0048f7e0 -31104(gp) 00465a40 00465a40 FUNC    UND qos_rule__unpack
+  0048f7e4 -31100(gp) 00465a30 00465a30 FUNC    UND __errno_location
+  0048f7e8 -31096(gp) 00465a20 00465a20 FUNC    UND env_init
+  0048f7ec -31092(gp) 00000000 00000000 OBJECT  UND proto_product_info__de[...]
+  0048f7f0 -31088(gp) 00465a10 00465a10 FUNC    UND static_cfg__init
+  0048f7f4 -31084(gp) 00000000 00000000 OBJECT  UND wan_conn_type__descriptor
+  0048f7f8 -31080(gp) 00465a00 00465a00 FUNC    UND cmd_init
+  0048f7fc -31076(gp) 004659f0 004659f0 FUNC    UND systool_handle_restore_zero
+  0048f800 -31072(gp) 004659e0 004659e0 FUNC    UND uc_api_m_cloud_info_se[...]
+  0048f804 -31068(gp) 004659d0 004659d0 FUNC    UND mf_lists__unpack
+  0048f808 -31064(gp) 004659c0 004659c0 FUNC    UND mxp_manage_list__free_[...]
+  0048f80c -31060(gp) 00000000 00000000 OBJECT  UND time_group__descriptor
+  0048f810 -31056(gp) 004659b0 004659b0 FUNC    UND hal_get_port_link_status
+  0048f814 -31052(gp) 004659a0 004659a0 FUNC    UND mesh_node_list__free_u[...]
+  0048f818 -31048(gp) 00465990 00465990 FUNC    UND family_group__pack
+  0048f81c -31044(gp) 00000000 00000000 OBJECT  UND login_sta__descriptor
+  0048f820 -31040(gp) 00465980 00465980 FUNC    UND get_eth_name
+  0048f824 -31036(gp) 00465970 00465970 FUNC    UND system_wan_get_link_status
+  0048f828 -31032(gp) 00465960 00465960 FUNC    UND wan_cfg__unpack
+  0048f82c -31028(gp) 00465950 00465950 FUNC    UND cm_timeout
+  0048f830 -31024(gp) 00465940 00465940 FUNC    UND proto_sys_common_ack__[...]
+  0048f834 -31020(gp) 00465930 00465930 FUNC    UND user_group__unpack
+  0048f838 -31016(gp) 00000000 00000000 OBJECT  UND stdout
+  0048f83c -31012(gp) 00000000 00000000 OBJECT  UND wlan_cfg_all__descriptor
+  0048f840 -31008(gp) 00465920 00465920 FUNC    UND init_unix_socket_server
+  0048f844 -31004(gp) 00465910 00465910 FUNC    UND device_assistant__free[...]
+  0048f848 -31000(gp) 00465900 00465900 FUNC    UND wan_status__get_packed_size
+  0048f84c -30996(gp) 004658f0 004658f0 FUNC    UND wan_dns_cfg__init
+  0048f850 -30992(gp) 004658e0 004658e0 FUNC    UND devic_marks__init
+  0048f854 -30988(gp) 004658d0 004658d0 FUNC    UND mesh_time_zone__unpack
+  0048f858 -30984(gp) 004658c0 004658c0 FUNC    UND get_env
+  0048f85c -30980(gp) 00000000 00000000 OBJECT  UND dhcp_cfg__descriptor
+  0048f860 -30976(gp) 004658b0 004658b0 FUNC    UND host_lists__get_packed_size
+  0048f864 -30972(gp) 004658a0 004658a0 FUNC    UND device_mark_list__unpack
+  0048f868 -30968(gp) 00465890 00465890 FUNC    UND bzero
+  0048f86c -30964(gp) 00465880 00465880 FUNC    UND fread
+  0048f870 -30960(gp) 00465870 00465870 FUNC    UND strtoul
+  0048f874 -30956(gp) 00465860 00465860 FUNC    UND mesh_time_zone__free_u[...]
+  0048f878 -30952(gp) 00465850 00465850 FUNC    UND family_rule__init
+  0048f87c -30948(gp) 00465840 00465840 FUNC    UND mxp_manage_list__unpack
+  0048f880 -30944(gp) 00465830 00465830 FUNC    UND upn_pcfg__get_packed_size
+  0048f884 -30940(gp) 00465820 00465820 FUNC    UND fgets
+  0048f888 -30936(gp) 00465810 00465810 FUNC    UND atoll
+  0048f88c -30932(gp) 00465800 00465800 FUNC    UND UnSetValue
+  0048f890 -30928(gp) 004657f0 004657f0 FUNC    UND change_IGI_by_highdevi[...]
+  0048f894 -30924(gp) 004657e0 004657e0 FUNC    UND wan_status__pack
+  0048f898 -30920(gp) 004657d0 004657d0 FUNC    UND settimeofday
+  0048f89c -30916(gp) 004657c0 004657c0 FUNC    UND router_cfg__get_packed_size
+  0048f8a0 -30912(gp) 004657b0 004657b0 FUNC    UND host_lists__pack
+  0048f8a4 -30908(gp) 004657a0 004657a0 FUNC    UND family_group__unpack
+  0048f8a8 -30904(gp) 00465790 00465790 FUNC    UND fprintf
+  0048f8ac -30900(gp) 00465780 00465780 FUNC    UND wlan_roaming__get_pack[...]
+  0048f8b0 -30896(gp) 00465770 00465770 FUNC    UND system_get_uptime
+  0048f8b4 -30892(gp) 00465760 00465760 FUNC    UND port_fwd_list__pack
+  0048f8b8 -30888(gp) 00465750 00465750 FUNC    UND ApmibGetValue
+  0048f8bc -30884(gp) 00465740 00465740 FUNC    UND high_device_config__ge[...]
+  0048f8c0 -30880(gp) 00465730 00465730 FUNC    UND wlan_cfg_all__get_pack[...]
+  0048f8c4 -30876(gp) 00465720 00465720 FUNC    UND string_lower_mac
+  0048f8c8 -30872(gp) 00465710 00465710 FUNC    UND set_mem_config
+  0048f8cc -30868(gp) 00465700 00465700 FUNC    UND russia_l2tp_cfg__init
+  0048f8d0 -30864(gp) 004656f0 004656f0 FUNC    UND port_fwd_list__unpack
+  0048f8d4 -30860(gp) 004656e0 004656e0 FUNC    UND putchar
+  0048f8d8 -30856(gp) 004656d0 004656d0 FUNC    UND applang__free_unpacked
+  0048f8dc -30852(gp) 004656c0 004656c0 FUNC    UND assign_poll_stop
+  0048f8e0 -30848(gp) 004656b0 004656b0 FUNC    UND port_fwd_list__free_un[...]
+  0048f8e4 -30844(gp) 004656a0 004656a0 FUNC    UND upn_pcfg__free_unpacked
+  0048f8e8 -30840(gp) 00465690 00465690 FUNC    UND file_get_value_from_ini
+  0048f8ec -30836(gp) 00000000 00000000 OBJECT  UND proto_init_setup_info_[...]
+  0048f8f0 -30832(gp) 00465680 00465680 FUNC    UND ifaddrs_get_lan_ifname
+  0048f8f4 -30828(gp) 00465670 00465670 FUNC    UND strncpy
+  0048f8f8 -30824(gp) 00465660 00465660 FUNC    UND uc_api_m_cloud_info_se[...]
+  0048f8fc -30820(gp) 00465650 00465650 FUNC    UND monitor_start
+  0048f900 -30816(gp) 00000000 00000000 OBJECT  UND proto_sys_common_ack__[...]
+  0048f904 -30812(gp) 00000000 00000000 OBJECT  UND wan_status__descriptor
+  0048f908 -30808(gp) 00465640 00465640 FUNC    UND port_fwd_cfg__init
+  0048f90c -30804(gp) 00465630 00465630 FUNC    UND uc_api_enable_m_cloud_info
+  0048f910 -30800(gp) 00465620 00465620 FUNC    UND monitor_stop
+  0048f914 -30796(gp) 00465610 00465610 FUNC    UND ifaddrs_get_ifip
+  0048f918 -30792(gp) 00465600 00465600 FUNC    UND send_msg_to_netctrl
+  0048f91c -30788(gp) 004655f0 004655f0 FUNC    UND qos_rule__free_unpacked
+  0048f920 -30784(gp) 004655e0 004655e0 FUNC    UND wan_cfg__get_packed_size
+  0048f924 -30780(gp) 004655d0 004655d0 FUNC    UND wan_diag__init
+  0048f928 -30776(gp) 004655c0 004655c0 FUNC    UND printf
+  0048f92c -30772(gp) 004655b0 004655b0 FUNC    UND dhcp_cfg__get_packed_size
+  0048f930 -30768(gp) 004655a0 004655a0 FUNC    UND ifaddrs_ethaddr_aton
+  0048f934 -30764(gp) 00465590 00465590 FUNC    UND family_group__get_pack[...]
+  0048f938 -30760(gp) 00465580 00465580 FUNC    UND enable_upgrade_hdl
+  0048f93c -30756(gp) 00465570 00465570 FUNC    UND is_suit__pack
+  0048f940 -30752(gp) 00465560 00465560 FUNC    UND device_mark_list__pack
+  0048f944 -30748(gp) 00000000 00000000 OBJECT  UND family_group__descriptor
+  0048f948 -30744(gp) 00465550 00465550 FUNC    UND proto_sys_common_ack__pack
+  0048f94c -30740(gp) 00465540 00465540 FUNC    UND log_debug_print
+  0048f950 -30736(gp) 00465530 00465530 FUNC    UND set_if_changed
+  0048f954 -30732(gp) 00465520 00465520 FUNC    UND wlan_roaming__pack
+  0048f958 -30728(gp) 00000000 00000000 OBJECT  UND n_wan_diag__descriptor
+  0048f95c -30724(gp) 00465510 00465510 FUNC    UND strchr
+  0048f960 -30720(gp) 00465500 00465500 FUNC    UND mxp_info__unpack
+  0048f964 -30716(gp) 004654f0 004654f0 FUNC    UND n_wan_diag__get_packed_size
+  0048f968 -30712(gp) 004654e0 004654e0 FUNC    UND qos_rule__pack
+  0048f96c -30708(gp) 004654d0 004654d0 FUNC    UND getWanIfName
+  0048f970 -30704(gp) 004654c0 004654c0 FUNC    UND uc_api_m_cloud_info_me[...]
+  0048f974 -30700(gp) 004654b0 004654b0 FUNC    UND upn_pcfg__unpack
+  0048f978 -30696(gp) 004654a0 004654a0 FUNC    UND SetValue
+  0048f97c -30692(gp) 00465490 00465490 FUNC    UND perror
+  0048f980 -30688(gp) 00000000 00000000 OBJECT  UND upn_pcfg__descriptor
+  0048f984 -30684(gp) 00465480 00465480 FUNC    UND fscanf
+  0048f988 -30680(gp) 00465470 00465470 FUNC    UND cm_run
+  0048f98c -30676(gp) 00465460 00465460 FUNC    UND applang__unpack
+  0048f990 -30672(gp) 00465450 00465450 FUNC    UND auto_maint__get_packed_size
+  0048f994 -30668(gp) 00465440 00465440 FUNC    UND login_sta__get_packed_size
+  0048f998 -30664(gp) 00465430 00465430 FUNC    UND ifaddrs_get_if_netmac
+  0048f99c -30660(gp) 00465420 00465420 FUNC    UND strtok_r
+  0048f9a0 -30656(gp) 00465410 00465410 FUNC    UND node_location__unpack
+  0048f9a4 -30652(gp) 00000000 00000000 OBJECT  UND mf_lists__descriptor
+  0048f9a8 -30648(gp) 00465400 00465400 FUNC    UND user_group__free_unpacked
+  0048f9ac -30644(gp) 004653f0 004653f0 FUNC    UND eanble_inter_chk_request
+  0048f9b0 -30640(gp) 004653e0 004653e0 FUNC    UND ifaddrs_get_network_ad[...]
+  0048f9b4 -30636(gp) 004653d0 004653d0 FUNC    UND wlan_cfg_all__free_unpacked
+  0048f9b8 -30632(gp) 004653c0 004653c0 FUNC    UND dhcp_cfg__unpack
+  0048f9bc -30628(gp) 004653b0 004653b0 FUNC    UND uc_api_m_cloud_info_se[...]
+  0048f9c0 -30624(gp) 004653a0 004653a0 FUNC    UND wan_conn_type__pack
+  0048f9c4 -30620(gp) 00000000 00000000 OBJECT  UND mesh_time_zone__descriptor
+  0048f9c8 -30616(gp) 00465390 00465390 FUNC    UND device_assistant__get_[...]
+  0048f9cc -30612(gp) 00465380 00465380 FUNC    UND strstr
+  0048f9d0 -30608(gp) 00465370 00465370 FUNC    UND auto_maint__unpack
+  0048f9d4 -30604(gp) 00465360 00465360 FUNC    UND node_location__free_un[...]
+  0048f9d8 -30600(gp) 00465350 00465350 FUNC    UND router_cfg__unpack
+  0048f9dc -30596(gp) 00465340 00465340 FUNC    UND save_env
+  0048f9e0 -30592(gp) 00000000 00000000 OBJECT  UND wan_cfg__descriptor
+  0048f9e4 -30588(gp) 00465330 00465330 FUNC    UND sleep
+  0048f9e8 -30584(gp) 00465320 00465320 FUNC    UND inet_addr
+  0048f9ec -30580(gp) 00465310 00465310 FUNC    UND mf_lists__get_packed_size
+  0048f9f0 -30576(gp) 00465300 00465300 FUNC    UND strtold
+  0048f9f4 -30572(gp) 004652f0 004652f0 FUNC    UND strdup
+  0048f9f8 -30568(gp) 004652e0 004652e0 FUNC    UND n_wan_diag__pack
+  0048f9fc -30564(gp) 004652d0 004652d0 FUNC    UND fclose
+  0048fa00 -30560(gp) 004652c0 004652c0 FUNC    UND high_device_config__pack
+  0048fa04 -30556(gp) 004652b0 004652b0 FUNC    UND is_suit__get_packed_size
+  0048fa08 -30552(gp) 004652a0 004652a0 FUNC    UND pthread_create
+  0048fa0c -30548(gp) 00465290 00465290 FUNC    UND closedir
+  0048fa10 -30544(gp) 00465280 00465280 FUNC    UND get_interface_statistics
+  0048fa14 -30540(gp) 00465270 00465270 FUNC    UND user_group__get_packed_size
+  0048fa18 -30536(gp) 00000000 00000000 OBJECT  UND fw_multi_upgrade_info_[...]
+  0048fa1c -30532(gp) 00465260 00465260 FUNC    UND time_group__free_unpacked
+  0048fa20 -30528(gp) 00465250 00465250 FUNC    UND fw_multi_upgrade_info_[...]
+  0048fa24 -30524(gp) 00465240 00465240 FUNC    UND wan_rate__pack
+  0048fa28 -30520(gp) 00465230 00465230 FUNC    UND time_group__get_packed_size
+  0048fa2c -30516(gp) 00465220 00465220 FUNC    UND strcpy
+  0048fa30 -30512(gp) 00000000 00000000 OBJECT  UND host_lists__descriptor
+  0048fa34 -30508(gp) 00465210 00465210 FUNC    UND auto_maint__pack
+  0048fa38 -30504(gp) 00465200 00465200 FUNC    UND wan_cfg__free_unpacked
+  0048fa3c -30500(gp) 004651f0 004651f0 FUNC    UND wan_port_rate__init
+  0048fa40 -30496(gp) 004651e0 004651e0 FUNC    UND string_upper_mac
+  0048fa44 -30492(gp) 004651d0 004651d0 FUNC    UND device_assistant__pack
+  0048fa48 -30488(gp) 004651c0 004651c0 FUNC    UND device_mark_list__get_[...]
+  0048fa4c -30484(gp) 004651b0 004651b0 FUNC    UND strncmp
+  0048fa50 -30480(gp) 004651a0 004651a0 FUNC    UND get_sys_mode
+  0048fa54 -30476(gp) 00465190 00465190 FUNC    UND rand
+  0048fa58 -30472(gp) 00465180 00465180 FUNC    UND strcat
+  0048fa5c -30468(gp) 00465170 00465170 FUNC    UND prod_check_ip_conflict
+  0048fa60 -30464(gp) 00465160 00465160 FUNC    UND assign_poll_start
+  0048fa64 -30460(gp) 00465150 00465150 FUNC    UND malloc
+  0048fa68 -30456(gp) 00465140 00465140 FUNC    UND russia_adsl_cfg__init
+  0048fa6c -30452(gp) 00465130 00465130 FUNC    UND russia_pptpcfg__init
+  0048fa70 -30448(gp) 00465120 00465120 FUNC    UND device_mark_list__free[...]
+  0048fa74 -30444(gp) 00000000 00000000 OBJECT  UND device_mark_list__desc[...]
+  0048fa78 -30440(gp) 00465110 00465110 FUNC    UND file_wan_ip_info_get
+  0048fa7c -30436(gp) 00465100 00465100 FUNC    UND get_mem_config
+  0048fa80 -30432(gp) 004650f0 004650f0 FUNC    UND high_device_config__unpack
+  0048fa84 -30428(gp) 004650e0 004650e0 FUNC    UND unlink
+  0048fa88 -30424(gp) 004650d0 004650d0 FUNC    UND cm_abort
+  0048fa8c -30420(gp) 004650c0 004650c0 FUNC    UND wlan_cfg__init
+  0048fa90 -30416(gp) 004650b0 004650b0 FUNC    UND memset
+  0048fa94 -30412(gp) 004650a0 004650a0 FUNC    UND hal_get_mac
+  0048fa98 -30408(gp) 00465090 00465090 FUNC    UND time_rule__init
+  0048fa9c -30404(gp) 00465080 00465080 FUNC    UND system_init_core_dump
+  0048faa0 -30400(gp) 00000000 00000000 OBJECT  UND wan_rate__descriptor
+  0048faa4 -30396(gp) 00465070 00465070 FUNC    UND login_sta__pack
+  0048faa8 -30392(gp) 00465060 00465060 FUNC    UND time
+  0048faac -30388(gp) 00465050 00465050 FUNC    UND readdir
+  0048fab0 -30384(gp) 00465040 00465040 FUNC    UND time_info__unpack
+  0048fab4 -30380(gp) 00000000 00000000 OBJECT  UND mesh_id_info__descriptor
+  0048fab8 -30376(gp) 00465030 00465030 FUNC    UND strcmp
+  0048fabc -30372(gp) 00000000 00000000 OBJECT  UND device_assistant__desc[...]
+  0048fac0 -30368(gp) 00465020 00465020 FUNC    UND freopen
+  0048fac4 -30364(gp) 00465010 00465010 FUNC    UND is_rst_some_status
+  0048fac8 -30360(gp) 00465000 00465000 FUNC    UND check_get_new_ipaddr_b[...]
+  0048facc -30356(gp) 00464ff0 00464ff0 FUNC    UND signal
+  0048fad0 -30352(gp) 00464fe0 00464fe0 FUNC    UND fw_multi_upgrade_info_[...]
+  0048fad4 -30348(gp) 00464fd0 00464fd0 FUNC    UND mesh_time_zone__pack
+  0048fad8 -30344(gp) 00464fc0 00464fc0 FUNC    UND manual_node_info__unpack
+  0048fadc -30340(gp) 00464fb0 00464fb0 FUNC    UND get_wan_statistics
+  0048fae0 -30336(gp) 00000000 00000000 OBJECT  UND user_group__descriptor
+  0048fae4 -30332(gp) 00000000 00000000 OBJECT  UND mesh_node_list__descriptor
+  0048fae8 -30328(gp) 00464fa0 00464fa0 FUNC    UND prod_change_root_passwd
+  0048faec -30324(gp) 00464f90 00464f90 FUNC    UND snprintf
+  0048faf0 -30320(gp) 00464f80 00464f80 FUNC    UND check_modify_item_in_rule
+  0048faf4 -30316(gp) 00464f70 00464f70 FUNC    UND manual_node_info__free[...]
+  0048faf8 -30312(gp) 00464f60 00464f60 FUNC    UND login_msg__unpack
+  0048fafc -30308(gp) 00464f50 00464f50 FUNC    UND mf_rule__init
+  0048fb00 -30304(gp) 00464f40 00464f40 FUNC    UND access
+  0048fb04 -30300(gp) 00464f30 00464f30 FUNC    UND mxp_info__init
+  0048fb08 -30296(gp) 00464f20 00464f20 FUNC    UND apmib_init
+  0048fb0c -30292(gp) 00464f10 00464f10 FUNC    UND router_cfg__free_unpacked
+  0048fb10 -30288(gp) 00000000 00000000 FUNC    UND send_force_upgrade
+  0048fb14 -30284(gp) 00464f00 00464f00 FUNC    UND mesh_node_list__pack
+  0048fb18 -30280(gp) 00464ef0 00464ef0 FUNC    UND gettimeofday
+  0048fb1c -30276(gp) 00000000 00000000 OBJECT  UND wan_port_power__descriptor
+  0048fb20 -30272(gp) 00464ee0 00464ee0 FUNC    UND uc_api_m_cloud_info_se[...]
+  0048fb24 -30268(gp) 00464ed0 00464ed0 FUNC    UND sscanf
+  0048fb28 -30264(gp) 00464ec0 00464ec0 FUNC    UND wan_port_power__get_pa[...]
+  0048fb2c -30260(gp) 00000000 00000000 OBJECT  UND g_ip_info
+  0048fb30 -30256(gp) 00464eb0 00464eb0 FUNC    UND user_group__pack
+  0048fb34 -30252(gp) 00464ea0 00464ea0 FUNC    UND time_info__free_unpacked
+  0048fb38 -30248(gp) 00000000 00000000 OBJECT  UND auto_maint__descriptor
+  0048fb3c -30244(gp) 00464e90 00464e90 FUNC    UND cmd_pub
+  0048fb40 -30240(gp) 00464e80 00464e80 FUNC    UND auto_maint__free_unpacked
+  0048fb44 -30236(gp) 00464e70 00464e70 FUNC    UND high_device_config__fr[...]
+  0048fb48 -30232(gp) 00464e60 00464e60 FUNC    UND ugw_proc_recv_msg
+  0048fb4c -30228(gp) 00464e50 00464e50 FUNC    UND ifaddrs_ethaddr_ntoa
+  0048fb50 -30224(gp) 00464e40 00464e40 FUNC    UND device_assistant__unpack
+  0048fb54 -30220(gp) 00000000 00000000 OBJECT  UND proto_sys_basic_info__[...]
+  0048fb58 -30216(gp) 00464e30 00464e30 FUNC    UND __uClibc_main
+  0048fb5c -30212(gp) 00464e20 00464e20 FUNC    UND register_conn_esta_not[...]
+  0048fb60 -30208(gp) 00464e10 00464e10 FUNC    UND device_info__init
+  0048fb64 -30204(gp) 00464e00 00464e00 FUNC    UND ugw_socket_shut_down
+  0048fb68 -30200(gp) 00464df0 00464df0 FUNC    UND ipnet_cfg__init
+  0048fb6c -30196(gp) 00464de0 00464de0 FUNC    UND node_led_status__free_[...]
+  0048fb70 -30192(gp) 00464dd0 00464dd0 FUNC    UND get_wan_internet_result
+  0048fb74 -30188(gp) 00464dc0 00464dc0 FUNC    UND cm_poll_start
+  0048fb78 -30184(gp) 00000000 00000000 OBJECT  UND stderr
+  0048fb7c -30180(gp) 00464db0 00464db0 FUNC    UND dynamic_cfg__init
+  0048fb80 -30176(gp) 00464da0 00464da0 FUNC    UND memcmp
+  0048fb84 -30172(gp) 00000000 00000000 FUNC    UND send_self_upgrade
+  0048fb88 -30168(gp) 00464d90 00464d90 FUNC    UND cm_poll_stop
+  0048fb8c -30164(gp) 00464d80 00464d80 FUNC    UND ifaddrs_ipmask_to_numeric
+  0048fb90 -30160(gp) 00464d70 00464d70 FUNC    UND opendir
+
+
+PLT GOT:
+
+ Reserved entries:
+   Address  Initial Purpose
+  0048f154 00000000 PLT lazy resolver
+  0048f158 00000000 Module pointer
+
+ Entries:
+   Address  Initial Sym.Val. Type    Ndx Name
+  0048f15c 00407780 004077a0 FUNC    UND __register_frame_info
+  0048f160 00407780 004077b0 FUNC    UND __deregister_frame_info
+
+
+===== IMPORTED HOST/PROTOBUF SYMBOLS =====
+   232: 00457370   356 FUNC    GLOBAL DEFAULT   12 rtl_ethaddr_ntoa
+   344: 00465e80     0 FUNC    GLOBAL DEFAULT  UND strlen
+   347: 00465e50     0 FUNC    GLOBAL DEFAULT  UND host_info__init
+   348: 00465e40     0 FUNC    GLOBAL DEFAULT  UND memcpy
+   373: 00465cc0     0 FUNC    GLOBAL DEFAULT  UND inet_ntoa
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   499: 004655a0     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_aton
+   545: 00465320     0 FUNC    GLOBAL DEFAULT  UND inet_addr
+   548: 004652f0     0 FUNC    GLOBAL DEFAULT  UND strdup
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   576: 00465150     0 FUNC    GLOBAL DEFAULT  UND malloc
+   597: 00465030     0 FUNC    GLOBAL DEFAULT  UND strcmp
+   634: 00464e50     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+
+===== LOCAL FUNCTION PROLOGUE CANDIDATES 0x433700..0x434258 =====
+
+0043375c <confctl_rqst_client_hostname@@Base>:
+  43375c:	3c1c0006 	lui	gp,0x6
+  433760:	279c3a04 	addiu	gp,gp,14852
+  433764:	0399e021 	addu	gp,gp,t9
+  433768:	27bdffc8 	addiu	sp,sp,-56
+  43376c:	afbf0034 	sw	ra,52(sp)
+  433770:	afbe0030 	sw	s8,48(sp)
+  433774:	03a0f021 	move	s8,sp
+  433778:	afbc0010 	sw	gp,16(sp)
+  43377c:	afc40038 	sw	a0,56(s8)
+  433780:	afc5003c 	sw	a1,60(s8)
+  433784:	afc60040 	sw	a2,64(s8)
+  433788:	afc70044 	sw	a3,68(s8)
+--
+  43389c:	03e00008 	jr	ra
+  4338a0:	00000000 	nop
+  4338a4:	3c1c0006 	lui	gp,0x6
+  4338a8:	279c38bc 	addiu	gp,gp,14524
+  4338ac:	0399e021 	addu	gp,gp,t9
+  4338b0:	27bdffe0 	addiu	sp,sp,-32
+  4338b4:	afbf001c 	sw	ra,28(sp)
+  4338b8:	afbe0018 	sw	s8,24(sp)
+  4338bc:	03a0f021 	move	s8,sp
+  4338c0:	afbc0010 	sw	gp,16(sp)
+  4338c4:	afc40020 	sw	a0,32(s8)
+  4338c8:	8fc20020 	lw	v0,32(s8)
+  4338cc:	1040003b 	beqz	v0,4339bc <confctl_rqst_client_hostname@@Base+0x260>
+  4338d0:	00000000 	nop
+--
+  4339dc:	03e00008 	jr	ra
+  4339e0:	00000000 	nop
+  4339e4:	3c1c0006 	lui	gp,0x6
+  4339e8:	279c377c 	addiu	gp,gp,14204
+  4339ec:	0399e021 	addu	gp,gp,t9
+  4339f0:	27bdffd8 	addiu	sp,sp,-40
+  4339f4:	afbf0024 	sw	ra,36(sp)
+  4339f8:	afbe0020 	sw	s8,32(sp)
+  4339fc:	03a0f021 	move	s8,sp
+  433a00:	afbc0010 	sw	gp,16(sp)
+  433a04:	afc40028 	sw	a0,40(s8)
+  433a08:	8fc20028 	lw	v0,40(s8)
+  433a0c:	10400022 	beqz	v0,433a98 <confctl_rqst_client_hostname@@Base+0x33c>
+  433a10:	00000000 	nop
+--
+  433aac:	03e00008 	jr	ra
+  433ab0:	00000000 	nop
+  433ab4:	3c1c0006 	lui	gp,0x6
+  433ab8:	279c36ac 	addiu	gp,gp,13996
+  433abc:	0399e021 	addu	gp,gp,t9
+  433ac0:	27bdffc0 	addiu	sp,sp,-64
+  433ac4:	afbf003c 	sw	ra,60(sp)
+  433ac8:	afbe0038 	sw	s8,56(sp)
+  433acc:	03a0f021 	move	s8,sp
+  433ad0:	afbc0010 	sw	gp,16(sp)
+  433ad4:	afc40040 	sw	a0,64(s8)
+  433ad8:	afc50044 	sw	a1,68(s8)
+  433adc:	8fc20040 	lw	v0,64(s8)
+  433ae0:	10400004 	beqz	v0,433af4 <confctl_rqst_client_hostname@@Base+0x398>
+--
+  433e34:	03e00008 	jr	ra
+  433e38:	00000000 	nop
+  433e3c:	3c1c0006 	lui	gp,0x6
+  433e40:	279c3324 	addiu	gp,gp,13092
+  433e44:	0399e021 	addu	gp,gp,t9
+  433e48:	27bdffd0 	addiu	sp,sp,-48
+  433e4c:	afbf002c 	sw	ra,44(sp)
+  433e50:	afbe0028 	sw	s8,40(sp)
+  433e54:	03a0f021 	move	s8,sp
+  433e58:	afbc0010 	sw	gp,16(sp)
+  433e5c:	afc40030 	sw	a0,48(s8)
+  433e60:	afc50034 	sw	a1,52(s8)
+  433e64:	afc60038 	sw	a2,56(s8)
+  433e68:	8fc20030 	lw	v0,48(s8)
+--
+  4340c4:	03e00008 	jr	ra
+  4340c8:	00000000 	nop
+  4340cc:	3c1c0006 	lui	gp,0x6
+  4340d0:	279c3094 	addiu	gp,gp,12436
+  4340d4:	0399e021 	addu	gp,gp,t9
+  4340d8:	27bdffd8 	addiu	sp,sp,-40
+  4340dc:	afbf0024 	sw	ra,36(sp)
+  4340e0:	afbe0020 	sw	s8,32(sp)
+  4340e4:	03a0f021 	move	s8,sp
+  4340e8:	afbc0010 	sw	gp,16(sp)
+  4340ec:	afc40028 	sw	a0,40(s8)
+  4340f0:	afc5002c 	sw	a1,44(s8)
+  4340f4:	afc60030 	sw	a2,48(s8)
+  4340f8:	afc70034 	sw	a3,52(s8)
