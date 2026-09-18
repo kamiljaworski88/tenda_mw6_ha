@@ -1,169 +1,58 @@
 name: Reverse MW6 firmware
-
 on:
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/reverse-firmware.yml
-
 permissions:
   contents: write
-
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
-
-      - name: Resolve device_list timer configuration
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+      - name: Resolve timer_start semantics
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run164
+          mkdir -p docs/reverse-generated
+          lib='firmware-src/RootFS-unpacked/lib/libcommon.so'
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run164-device-list-timer-config.txt'
-          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run164/dis.txt
-
-          python3 - "$dev" /tmp/run164/dis.txt "$out" <<'PY'
-          import re, subprocess, sys
-          from pathlib import Path
-          from elftools.elf.elffile import ELFFile
-
-          dev=Path(sys.argv[1])
-          lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[3])
-
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-
-          funcs=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-          starts=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if m:
-                  nxt='\n'.join(lines[i:min(len(lines),i+8)])
-                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                      starts.append((i,int(m.group(1),16)))
-          starts=sorted(starts)
-
-          def owner(idx):
-              best=None
-              for st,a,n in funcs:
-                  if st>idx:break
-                  best=(st,a,n)
-              for st,a in starts:
-                  if st>idx:break
-                  if best is None or st>best[0]:
-                      best=(st,a,f'sub_{a:08x}')
-              return best
-
-          raw=dev.read_bytes()
-          vas={}
-          with dev.open('rb') as f:
-              ef=ELFFile(f)
-              for lit in [b'start_device_list_timer',b'stop_device_list_timer',
-                          b'do_upload_client_list',b'do_client_timeout_check',
-                          b'start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed',
-                          b'start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed']:
-                  off=raw.find(lit)
-                  va=None
-                  if off>=0:
-                      for sec in ef.iter_sections():
-                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
-                          if so<=off<so+sz:
-                              va=int(sec['sh_addr'])+(off-so);break
-                  vas[lit.decode()]=(off,va)
-
-          # Find xrefs to each string by low16 addiu and dump owner.
-          xrefs=[]
-          for name,(off,va) in vas.items():
-              if va is None:continue
-              lo=va&0xffff
-              signed=lo if lo<0x8000 else lo-0x10000
-              for i,l in enumerate(lines):
-                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
-                      fn=owner(i)
-                      xrefs.append((name,va,fn,i,lines[max(fn[0] if fn else 0,i-35):min(len(lines),i+100)]))
-
-          # Resolve timer_start GOT slot and owner library definition if present.
-          sym=run(["mipsel-linux-gnu-readelf","-Ws",str(dev)])
-          timer_import=[l for l in sym.splitlines() if re.search(r'\btimer_start\b',l)]
-
-          # Gather every jalr context that uses the known PLT/GOT import slot for timer_start.
-          # mipsel objdump often emits no symbolic name on jalr, so identify the GOT slot
-          # from the PLT stub address 0x40c620 and then find direct jal timer_start@plt
-          # or contexts inside the string-xref owner functions.
-          timer_contexts=[]
-          for i,l in enumerate(lines):
-              if re.search(r'\b40c620\b|<timer_start@plt>|timer_start',l):
-                  fn=owner(i)
-                  timer_contexts.append((fn,i,lines[max(fn[0] if fn else 0,i-40):min(len(lines),i+90)]))
-
-          # Find function/libraries defining timer_start.
-          defs=[]
-          root=Path('firmware-src/RootFS-unpacked')
-          for p in root.rglob('*'):
-              if not p.is_file():continue
-              try:
-                  nm=run(["mipsel-linux-gnu-nm","-D",str(p)])
-              except:continue
-              for l in nm.splitlines():
-                  if re.search(r'\btimer_start$',l):
-                      defs.append((str(p),l))
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 164: device_list timer configuration =====\n\n')
-              o.write('===== STRING VAs =====\n')
-              for k,v in vas.items():o.write(f'{k}: file_off={v[0]:#x} va={("0x%x"%v[1]) if v[1] else "?"}\n')
-
-              o.write('\n===== STRING XREF OWNER FUNCTIONS =====\n')
-              seen=set()
-              for name,va,fn,i,ctx in xrefs:
-                  key=(name,fn[1] if fn else 0)
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- {name} -> {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== timer_start IMPORT =====\n')
-              o.write('\n'.join(timer_import)+'\n')
-
-              o.write('\n===== timer_start CONTEXTS =====\n')
-              seen=set()
-              for fn,i,ctx in timer_contexts:
-                  key=(fn[1] if fn else 0,i)
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== timer_start DEFINITIONS IN ROOTFS =====\n')
-              for p,l in defs:o.write(f'{p}: {l}\n')
-          PY
-
+          out='docs/reverse-generated/run165-timer-start-semantics.txt'
+          {
+            echo '===== RUN 165: libcommon timer_start semantics ====='
+            echo
+            echo '===== timer_start / timer_stop / timer worker symbols ====='
+            mipsel-linux-gnu-nm -D -n "$lib" | grep -Ei 'timer_(start|stop|check|init|process|add|del)|timer' || true
+            echo
+            echo '===== timer_start body ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x39b00 --stop-address=0x3a500 "$lib"
+            echo
+            echo '===== device_list timer start/restart area ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x403900 --stop-address=0x403d00 "$dev"
+            echo
+            echo '===== device_list callback table tail ====='
+            mipsel-linux-gnu-objdump -s --start-address=0x420000 --stop-address=0x420900 "$dev" || true
+            echo
+            echo '===== timer strings ====='
+            strings -tx "$lib" | grep -Ei 'timer|interval|timeout|repeat|period' || true
+          } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: run164-device-list-timer-config
-          path: docs/reverse-generated/run164-device-list-timer-config.txt
+          name: run165-timer-start-semantics
+          path: docs/reverse-generated/run165-timer-start-semantics.txt
           retention-days: 7
-
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run164-device-list-timer-config.txt
+          git add docs/reverse-generated/run165-timer-start-semantics.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve device-list timer config'
+            git commit -m 'reverse: resolve timer_start semantics'
             git push
           fi
