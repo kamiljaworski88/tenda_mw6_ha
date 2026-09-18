@@ -262,19 +262,20 @@ def watch_client_rates(sock, tid, selector, interval, count):
 
 
 def diagnose_client_rates(sock, tid, selector, interval, duration):
-    """Observe one HostInfo long enough to cross the 45 s inventory watchdog."""
+    """Observe one HostInfo across the 45 s inventory watchdog with WAN control."""
     print(
         f"\nDiagnosing client {selector!r}; interval={interval:g}s; "
         f"duration={duration:g}s (firmware inventory watchdog: 45s)"
     )
     print(
-        "TIME      ONLINE  COND_S    UP   DOWN  SIGNAL  "
+        "TIME      ONLINE  COND_S    UP   DOWN  WAN_UP WAN_DN  SIGNAL  "
         "NODE_SN                           IP               MAC                NAME"
     )
 
     deadline = time.monotonic() + duration
     selected_mac = None
     samples = []
+    wan_samples = []
     missing_samples = 0
 
     while True:
@@ -283,6 +284,18 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
         status, clients = decode_mesh_hosts(fr["payload"])
         if status != 0:
             raise RuntimeError(f"MESH_HOSTS status={status}")
+
+        # Independent control: router-wide GetTrafficInfo is a separate,
+        # firmware-confirmed read-only API. It proves whether WAN traffic was
+        # visible to the router in the same observation window.
+        tid = (tid + 1) & 0xff
+        wan_fr = request_wan_traffic(sock, tid)
+        wan_status, wan_ports = decode_wan_traffic(wan_fr["payload"])
+        if wan_status != 0:
+            raise RuntimeError(f"MESH_WAN_TRAFFIC status={wan_status}")
+        wan_up = sum(int(p.get("uprate") or 0) for p in wan_ports)
+        wan_down = sum(int(p.get("downrate") or 0) for p in wan_ports)
+        wan_samples.append((wan_up, wan_down))
 
         if selected_mac:
             matches = [c for c in clients if (c["mac"] or "").lower() == selected_mac]
@@ -312,26 +325,30 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
         stamp = time.strftime("%H:%M:%S")
         if not matches:
             missing_samples += 1
-            print(f"{stamp}  MISSING  client not present in HostLists")
+            print(
+                f"{stamp}  MISSING  WAN_UP={wan_up} WAN_DN={wan_down}  "
+                "client not present in HostLists"
+            )
         else:
-            c = matches[0]
+            client = matches[0]
             if selected_mac is None:
-                selected_mac = (c["mac"] or "").lower()
+                selected_mac = (client["mac"] or "").lower()
             sample = {
-                "online": int(c["online"] or 0),
-                "condition_time": c["condition_time"],
-                "uprate": int(c["uprate"] or 0),
-                "downrate": int(c["downrate"] or 0),
-                "signal": c["signal"],
-                "node_sn": c["node_sn"] or "",
-                "ip": c["ip"] or "",
-                "mac": c["mac"] or "",
-                "name": c["name"] or "",
+                "online": int(client["online"] or 0),
+                "condition_time": client["condition_time"],
+                "uprate": int(client["uprate"] or 0),
+                "downrate": int(client["downrate"] or 0),
+                "signal": client["signal"],
+                "node_sn": client["node_sn"] or "",
+                "ip": client["ip"] or "",
+                "mac": client["mac"] or "",
+                "name": client["name"] or "",
             }
             samples.append(sample)
             print(
                 f"{stamp}  {sample['online']:>6}  {str(sample['condition_time']):>6}  "
                 f"{sample['uprate']:>4}  {sample['downrate']:>5}  "
+                f"{wan_up:>6} {wan_down:>6}  "
                 f"{str(sample['signal']):>6}  {sample['node_sn']:<32}  "
                 f"{sample['ip']:<15}  {sample['mac']:<17}  {sample['name']}"
             )
@@ -346,6 +363,13 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
     print(f"samples_present: {len(samples)}")
     print(f"samples_missing: {missing_samples}")
 
+    max_wan_up = max((u for u, d in wan_samples), default=0)
+    max_wan_down = max((d for u, d in wan_samples), default=0)
+    wan_nonzero = sum(1 for u, d in wan_samples if u > 0 or d > 0)
+    print(f"max_wan_uprate_raw: {max_wan_up}")
+    print(f"max_wan_downrate_raw: {max_wan_down}")
+    print(f"wan_nonzero_samples: {wan_nonzero}")
+
     if not samples:
         print("classification: CLIENT_NOT_FOUND")
         print("meaning: the selected client was not returned in HostLists during the observation window.")
@@ -356,7 +380,11 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
     max_down = max(s["downrate"] for s in samples)
     nodes = sorted({s["node_sn"] for s in samples if s["node_sn"]})
     ips = sorted({s["ip"] for s in samples if s["ip"]})
-    cond_values = [s["condition_time"] for s in samples if isinstance(s["condition_time"], int)]
+    cond_values = [
+        s["condition_time"]
+        for s in samples
+        if isinstance(s["condition_time"], int)
+    ]
 
     transitions = sum(
         1 for prev, cur in zip(online_values, online_values[1:]) if prev != cur
@@ -376,11 +404,18 @@ def diagnose_client_rates(sock, tid, selector, interval, duration):
             "meaning: HostInfo.online became/stayed 0. The rate helper skips such a client, "
             "so investigate device_list reporting / the 45 s last_seen watchdog first."
         )
-    elif max_up == 0 and max_down == 0:
-        print("classification: ONLINE_BUT_RATES_ZERO")
+    elif max_up == 0 and max_down == 0 and wan_nonzero:
+        print("classification: ONLINE_CLIENT_ZERO_WITH_WAN_TRAFFIC")
         print(
-            "meaning: inventory stayed online for the observation window, but both firmware "
-            "rates stayed zero. Focus next on g_ip_info / strict IP+MAC matching / online_ip counters."
+            "meaning: inventory stayed online and the router independently reported WAN traffic, "
+            "but this client's firmware rates stayed zero. Focus directly on per-client "
+            "g_ip_info / online_ip matching or counters."
+        )
+    elif max_up == 0 and max_down == 0:
+        print("classification: ONLINE_BUT_NO_RATE_EVIDENCE")
+        print(
+            "meaning: inventory stayed online, but neither client nor WAN control showed a "
+            "non-zero rate. This run did not prove sustained forwarded traffic."
         )
     else:
         print("classification: RATE_PIPELINE_ACTIVE")
