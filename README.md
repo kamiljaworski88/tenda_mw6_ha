@@ -63,7 +63,10 @@ Confirmed details:
 - matching against `g_ip_info` requires both IPv4 and MAC,
 - kernel online-ip records carry upload/download byte counters,
 - userspace takes two samples and computes byte deltas,
-- `uprate` / `downrate` are integer KiB/s.
+- exact formula is
+  `trunc(delta_bytes / (elapsed_us / 1_000_000) / 1024)`,
+- `uprate` / `downrate` are integer KiB/s; sub-1-KiB/s traffic truncates to
+  zero.
 
 Packet direction metadata is also resolved:
 
@@ -126,11 +129,17 @@ python .\tools\mw6_probe.py `
   --duration 65
 ```
 
+Each diagnostic sample now shows the selected client's rate and the independent
+router-wide WAN control (`WAN_UP/WAN_DN`) from `GetTrafficInfo`.
+
 The summary classifies the result as:
 
 - `INVENTORY_ONLINE_DROPPED` — HostInfo inventory state is stale/offline,
-- `ONLINE_BUT_RATES_ZERO` — inventory stayed valid; continue at
-  `g_ip_info` / strict IP+MAC / kernel counters,
+- `ONLINE_CLIENT_ZERO_WITH_WAN_TRAFFIC` — inventory stayed online and the
+  router independently saw WAN traffic, but this client remained at 0/0;
+  continue directly at per-client `g_ip_info` / `online_ip`,
+- `ONLINE_BUT_NO_RATE_EVIDENCE` — neither client nor WAN control proved
+  active forwarded traffic,
 - `RATE_PIPELINE_ACTIVE` — non-zero per-client firmware rate was observed.
 
 The successful LOGIN payload is extracted from the capture and intentionally
