@@ -97,20 +97,19 @@ once TBQ/WAN setup settles.
 
 ## Runtime probe
 
-The current read-only per-client test uses TCP/9000:
+The current read-only per-client test uses TCP/9000. On Windows, locate the
+known capture by wildcard so its directory and extension do not need to be
+guessed:
 
 ```powershell
-python .\tools\mw6_probe.py `
-  --pcap .\PCAPdroid_16_wrz_11_20_35.pcap `
-  --host 192.168.5.1 `
-  --clients
+$pcap = Get-ChildItem -Path C:\Users\Dell -Recurse -File -Filter 'PCAPdroid_16_wrz_10_31_43*' -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName; if (-not $pcap) { throw 'Capture PCAPdroid_16_wrz_10_31_43* not found under C:\Users\Dell' }; python .\tools\mw6_probe.py --pcap $pcap --host 192.168.5.1 --clients
 ```
 
 To watch one client while generating traffic:
 
 ```powershell
 python .\tools\mw6_probe.py `
-  --pcap .\PCAPdroid_16_wrz_11_20_35.pcap `
+  --pcap $pcap `
   --host 192.168.5.1 `
   --watch-client "CLIENT_NAME_IP_OR_MAC" `
   --interval 2 `
@@ -122,7 +121,7 @@ intentionally crosses the firmware's 45-second inventory watchdog:
 
 ```powershell
 python .\tools\mw6_probe.py `
-  --pcap .\PCAPdroid_16_wrz_11_20_35.pcap `
+  --pcap $pcap `
   --host 192.168.5.1 `
   --diagnose-rates "CLIENT_NAME_IP_OR_MAC" `
   --interval 5 `
@@ -141,6 +140,26 @@ The summary classifies the result as:
 - `ONLINE_BUT_NO_RATE_EVIDENCE` — neither client nor WAN control proved
   active forwarded traffic,
 - `RATE_PIPELINE_ACTIVE` — non-zero per-client firmware rate was observed.
+
+Run 162 produced `INVENTORY_ONLINE_DROPPED` for `192.168.5.47`. Static
+analysis then confirmed that the reporting process publishes its local client
+list every 20 seconds, which should beat the 45-second central watchdog.
+
+Use the node/peer diagnostic to distinguish a node-wide reporting failure from
+a target-only enumeration problem:
+
+```powershell
+python .\tools\mw6_probe.py `
+  --pcap $pcap `
+  --host 192.168.5.1 `
+  --diagnose-inventory "192.168.5.47" `
+  --interval 5 `
+  --duration 65
+```
+
+Its classifications are `TARGET_INVENTORY_REFRESHED`, `TARGET_ONLY_STALE`,
+`NODE_REPORTING_STALE`, `STALE_TARGET_NODE_INCONCLUSIVE`, and
+`TARGET_NOT_FOUND`.
 
 The successful LOGIN payload is extracted from the capture and intentionally
 never printed.
@@ -181,19 +200,21 @@ Runs 149–151 prove:
 - the reporting MW6 identity becomes `HostInfo.assoc_sn`,
 - each device-list upload is merged by client MAC into the central client hash.
 
-The next blocker is therefore a single runtime distinction:
+The current live result is `INVENTORY_ONLINE_DROPPED`. Runs 163–167 further
+prove that the reporting node's normal upload timer fires every 20 seconds and
+publishes `device_list_upload`. The next blocker is therefore this distinction:
 
 ```text
-inventory watchdog
+same-node peers stale -> node-wide reporting failure
         vs
-online HostInfo + zero g_ip_info/rate
+same-node peer fresh -> target enumeration / stale assoc_sn
         vs
-working non-zero firmware rate
+no same-node peer -> inconclusive control set
 ```
 
-Use `--diagnose-rates` under real traffic to make that distinction before
-enabling production upload/download and daily/monthly transfer entities in
-Home Assistant.
+Use `--diagnose-inventory` before returning to rate accounting or enabling
+production upload/download and daily/monthly transfer entities in Home
+Assistant.
 
 ## Safety rule
 
