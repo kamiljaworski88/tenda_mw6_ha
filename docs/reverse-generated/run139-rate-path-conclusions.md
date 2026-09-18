@@ -538,7 +538,40 @@ split is now:
 - `STALE_TARGET_NODE_INCONCLUSIVE`,
 - `TARGET_NOT_FOUND`.
 
-## 18. Current decision tree
+## 18. Live all-client result — Run 171
+
+The follow-up `--diagnose-inventory` run observed 14 snapshots over 65 seconds:
+
+- selected client present in every snapshot;
+- selected client's node: 0 online out of 9 records;
+- complete HostLists: 0 online out of 30 records in every snapshot;
+- every same-node peer remained offline.
+
+The tool's local classification was `NODE_REPORTING_STALE`, but the complete
+0/30 result is stronger: this is not isolated to one satellite. The gateway's
+central inventory is not being refreshed by any reporting node.
+
+The next read-only boundary test is a passive subscription to
+`confctl_srv_key` on cmdsrv/TCP 12598 for 65 seconds. The dedicated
+`monitor-device-list` mode counts `device_list_upload` messages without
+printing or saving their payloads:
+
+```text
+python tools/mw6_cmd_client.py --host 192.168.5.1 monitor-device-list --duration 65
+```
+
+Interpretation:
+
+- `DEVICE_LIST_PUBLISHED_LOCALLY` — publication reaches the gateway's local
+  channel; focus next on confsrv consumption/merge or mesh relay;
+- `CONFCTL_ACTIVE_NO_DEVICE_LIST` — the channel works, but the device-list
+  producer is not publishing;
+- `NO_CONFCTL_PUBLICATIONS` — the subscription is active but the local channel
+  is silent; focus on the timer worker, publisher, or cmd_pub path;
+- `SUBSCRIPTION_NOT_CONFIRMED` — the run cannot be used to infer publisher
+  state.
+
+## 19. Current decision tree
 
 Static reverse engineering has resolved the kernel accounting path, userspace
 inventory gate, normal wired/wireless identity source, exact per-client
@@ -546,8 +579,9 @@ arithmetic, WAN traffic control, and the device-list publish cadence.
 
 The next live distinction is now:
 
-1. **HostInfo.online is 0**: use `--diagnose-inventory` to separate node-wide
-   reporting failure from a target-only enumeration problem.
+1. **All HostInfo.online values are 0**: monitor `confctl_srv_key` for
+   `device_list_upload` to separate producer silence from downstream
+   consumption/merge failure.
 2. **HostInfo.online stays 1, WAN traffic is independently non-zero, but the
    selected client remains 0/0**: this is strong evidence to focus directly on
    the live per-client `g_ip_info` / `online_ip` record or match.
