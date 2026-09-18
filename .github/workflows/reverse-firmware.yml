@@ -18,233 +18,152 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
-          python3 -m pip install --break-system-packages vmlinux-to-elf
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
 
-      - name: Trace corrected online_ip counters
+      - name: Trace NOS/TBQ online-ip accounting
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/mw6kernel
-          img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
-          raw='/tmp/mw6kernel/kernel.raw'
-          elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run129-onlineip-correct-counter-offsets.txt'
+          mkdir -p docs/reverse-generated /tmp/mw6
+          moddir='firmware-src/RootFS-unpacked/lib/modules'
+          out='docs/reverse-generated/run130-nos-tbq-accounting.txt'
 
-          dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
-          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
-          test -s "$raw"
-          vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
-          mipsel-linux-gnu-nm -n "$elf" > /tmp/mw6kernel/kernel.syms
-
-          python3 - "$elf" "$out" <<'PY'
-          import re
-          import subprocess
-          import sys
+          python3 - "$moddir" "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
 
-          elf = Path(sys.argv[1])
-          out = Path(sys.argv[2])
-          nm = subprocess.check_output(
-              ["mipsel-linux-gnu-nm", "-n", str(elf)],
-              text=True,
-              errors="replace",
-          ).splitlines()
+          moddir=Path(sys.argv[1]); out=Path(sys.argv[2])
 
-          funcs = []
-          all_syms = {}
-          for line in nm:
-              p = line.split(maxsplit=2)
-              if len(p) != 3:
-                  continue
-              try:
-                  addr = int(p[0], 16)
-              except ValueError:
-                  continue
-              typ, name = p[1], p[2]
-              all_syms[name] = addr
-              if typ.lower() in ("t", "w"):
-                  funcs.append((addr, typ, name))
-          funcs.sort()
+          def sh(args):
+              return subprocess.check_output(args,text=True,errors='replace')
 
-          bounds = {}
-          for i, (addr, typ, name) in enumerate(funcs):
-              nxt = funcs[i + 1][0] if i + 1 < len(funcs) else addr + 0x1000
-              bounds[name] = (addr, nxt)
+          def nm(path):
+              return sh(['mipsel-linux-gnu-nm','-n',str(path)]).splitlines()
 
-          def disasm(start, stop):
-              return subprocess.check_output(
-                  [
-                      "mipsel-linux-gnu-objdump", "-drwC",
-                      f"--start-address=0x{start:x}",
-                      f"--stop-address=0x{stop:x}",
-                      str(elf),
-                  ],
-                  text=True,
-                  errors="replace",
-              ).splitlines()
+          def dis(path):
+              return sh(['mipsel-linux-gnu-objdump','-drwC',str(path)]).splitlines()
 
-          def dump_function(handle, name, cap=0x10000):
-              if name not in bounds:
-                  handle.write(f"\n===== {name}: NOT FOUND =====\n")
-                  return []
-              start, stop = bounds[name]
-              stop = min(stop, start + cap)
-              lines = disasm(start, stop)
-              handle.write(f"\n===== FUNCTION {name} 0x{start:08x}..0x{stop:08x} =====\n")
-              handle.write("\n".join(lines) + "\n")
-              return lines
+          def funcs_from_dis(lines):
+              fs=[]
+              for i,l in enumerate(lines):
+                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                  if m: fs.append((i,int(m.group(1),16),m.group(2)))
+              return fs
 
-          # Correct record layout from the already recovered libcommon rate code:
-          # two 64-bit snapshot pairs occupy 0x18..0x34.
-          # +0x40 is the activity flag set by nf_conntrack_in.
-          target_offsets = {0x18,0x1c,0x20,0x24,0x28,0x2c,0x30,0x34,0x40}
+          def owner(funcs, idx):
+              best=None
+              for row,addr,name in funcs:
+                  if row>idx: break
+                  best=(row,addr,name)
+              return best
 
-          candidate_re = re.compile(
-              r"(conntrack|fastpath|hwnat|hw_nat|online_ip|statistic|rtl865x_handle_nat|rtl_fptimer|fast_nat)",
-              re.I,
-          )
+          modules=[]
+          for p in sorted(moddir.glob('*.ko')):
+              sy='\n'.join(nm(p))
+              st=sh(['strings','-a',str(p)])
+              if any(k in sy or k in st for k in (
+                  'tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
+                  'online_ip_hash','nos_track_event_register'
+              )):
+                  modules.append((p,sy,st))
 
-          mem_re = re.compile(
-              r"\b(lw|sw|lbu|sb|lhu|sh)\s+([a-z0-9]+),(-?(?:0x[0-9a-f]+|[0-9]+))\(([a-z0-9]+)\)"
-          )
-          move_re = re.compile(r"\bmove\s+([a-z0-9]+),([a-z0-9]+)")
-          addiu_re = re.compile(
-              r"\baddiu\s+([a-z0-9]+),([a-z0-9]+),(-?(?:0x[0-9a-f]+|[0-9]+))"
-          )
-          addu_re = re.compile(r"\baddu\s+([a-z0-9]+),([a-z0-9]+),([a-z0-9]+)")
-          ins_re = re.compile(r"^\s*([0-9a-fA-F]+):\s+[0-9a-fA-F]+\s+([a-z0-9.]+)\s*(.*)$")
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 130: NOS/TBQ and online_ip accounting =====\n')
+              o.write('\n===== MODULE IDENTIFICATION =====\n')
+              for p,sy,st in modules:
+                  tags=[]
+                  for k in ('tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
+                            'online_ip_hash','online_ip_hash_size','nos_track_event_register',
+                            'nos_track_event_unregister','clear_online_ip_flag'):
+                      if k in sy or k in st: tags.append(k)
+                  o.write(f'{p}: {", ".join(tags)}\n')
 
-          def imm(s):
-              return int(s, 0)
-
-          interesting = []
-          for start, typ, name in funcs:
-              if not candidate_re.search(name):
-                  continue
-              stop = bounds[name][1]
-              if stop <= start or stop - start > 0x18000:
-                  continue
-              lines = disasm(start, stop)
-              taint = {}
-              for idx, line in enumerate(lines):
-                  im = ins_re.match(line)
-                  if not im:
+              for p,sy,st in modules:
+                  if not any(k in sy or k in st for k in (
+                      'tbq_online_ip_track_alloc','online_ip_hash','nos_track_event_register'
+                  )):
                       continue
-                  mnemonic = im.group(2)
-                  operands = im.group(3)
+                  lines=dis(p); funcs=funcs_from_dis(lines)
+                  o.write(f'\n\n===== MODULE {p.name} =====\n')
+                  o.write('\n--- RELEVANT SYMBOLS ---\n')
+                  for l in sy.splitlines():
+                      if re.search(r'(tbq|wan_(rx|tx)_bytes|online_ip|nos_track|hook|qos|rate)',l,re.I):
+                          o.write(l+'\n')
 
-                  mm = mem_re.search(mnemonic + " " + operands)
-                  if mm:
-                      op, reg, off_s, base = mm.groups()
-                      off = imm(off_s)
-                      if op == "lw" and off == 140:
-                          # ct->online_ip
-                          taint[reg] = 0
-                      elif base in taint:
-                          eff = taint[base] + off
-                          if eff in target_offsets:
-                              interesting.append((name, start, idx, eff, lines))
-                      if op in ("lw", "lbu", "lhu") and not (op == "lw" and off == 140):
-                          taint.pop(reg, None)
-                      continue
-
-                  mm = move_re.search(mnemonic + " " + operands)
-                  if mm:
-                      dst, src = mm.groups()
-                      if src in taint:
-                          taint[dst] = taint[src]
-                      else:
-                          taint.pop(dst, None)
-                      continue
-
-                  mm = addiu_re.search(mnemonic + " " + operands)
-                  if mm:
-                      dst, src, off_s = mm.groups()
-                      if src in taint:
-                          taint[dst] = taint[src] + imm(off_s)
-                      else:
-                          taint.pop(dst, None)
-                      continue
-
-                  mm = addu_re.search(mnemonic + " " + operands)
-                  if mm:
-                      dst, s1, s2 = mm.groups()
-                      if s1 in taint and s2 == "zero":
-                          taint[dst] = taint[s1]
-                      elif s2 in taint and s1 == "zero":
-                          taint[dst] = taint[s2]
-                      else:
-                          taint.pop(dst, None)
-                      continue
-
-                  # Conservative kill for common instructions writing first operand.
-                  parts = [p.strip() for p in operands.split(",")]
-                  if parts and re.match(r"^[a-z0-9]+$", parts[0]) and mnemonic not in (
-                      "sw","sb","sh","beq","bne","beqz","bnez","jr","jal","jalr","j"
-                  ):
-                      taint.pop(parts[0], None)
-
-          with out.open("w", encoding="utf-8") as o:
-              o.write("===== RUN 129: corrected online_ip counter offsets =====\n")
-              o.write("Correct target words: +0x18,+0x1c,+0x20,+0x24,+0x28,+0x2c,+0x30,+0x34; activity flag +0x40.\n")
-              o.write("Previous +0x50..+0x6c scan was based on a wrong offset assumption.\n")
-
-              dump_function(o, "online_ip_seq_show")
-              dump_function(o, "rtl_hwnat_timer_update")
-              dump_function(o, "rtl_fpTimer_update")
-              dump_function(o, "rtl865x_handle_nat")
-              dump_function(o, "FastPath_Enter")
-              dump_function(o, "nf_conntrack_in")
-
-              o.write("\n===== TAINTED ct->online_ip ACCESSES TO CORRECT OFFSETS =====\n")
-              seen = set()
-              for name, start, idx, eff, lines in interesting:
-                  key = (name, idx, eff)
-                  if key in seen:
-                      continue
-                  seen.add(key)
-                  o.write(f"\n--- {name} @ 0x{start:08x}; online_ip+0x{eff:02x} ---\n")
-                  lo = max(0, idx - 10)
-                  hi = min(len(lines), idx + 14)
-                  o.write("\n".join(lines[lo:hi]) + "\n")
-
-              # Find direct callers of the flag helpers; these reveal which paths
-              # explicitly participate in online_ip lifecycle/accounting.
-              for helper in ("set_online_ip_flag", "clear_online_ip_flag"):
-                  addr = all_syms.get(helper)
-                  o.write(f"\n===== CALLERS OF {helper} {addr and hex(addr)} =====\n")
-                  if addr is None:
-                      continue
-                  jal = 0x0c000000 | ((addr >> 2) & 0x03ffffff)
-                  needle = f"{jal:08x}"
-                  for start, typ, name in funcs:
-                      if not candidate_re.search(name):
+                  needles=[
+                      'tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
+                      'online_ip_hash','online_ip_hash_size',
+                      'nos_track_event_register','nos_track_event_unregister',
+                      'clear_online_ip_flag','nf_register_hooks'
+                  ]
+                  seen=set()
+                  for idx,l in enumerate(lines):
+                      if not any(n in l for n in needles):
                           continue
-                      stop = bounds[name][1]
-                      if stop <= start or stop - start > 0x18000:
-                          continue
-                      lines = disasm(start, stop)
-                      for idx, line in enumerate(lines):
-                          # objdump prints both raw opcode and resolved symbol.
-                          if f"<{helper}>" in line:
-                              o.write(f"{name}: {line}\n")
-                              o.write("\n".join(lines[max(0,idx-8):min(len(lines),idx+10)]) + "\n")
+                      own=owner(funcs,idx)
+                      key=(own[1],own[2]) if own else ('none',idx)
+                      if key in seen: continue
+                      seen.add(key)
+                      start=max(0,(own[0] if own else idx)-2)
+                      end=len(lines)
+                      if own:
+                          for row,addr,name in funcs:
+                              if row>own[0]:
+                                  end=row; break
+                      block=lines[start:end]
+                      o.write(f'\n--- FUNCTION/OWNER {own} triggered by: {l.strip()} ---\n')
+                      # For very large functions keep useful neighborhoods only.
+                      if len(block) <= 420:
+                          o.write('\n'.join(block)+'\n')
+                      else:
+                          hits=[j for j,x in enumerate(block) if any(n in x for n in needles)]
+                          emitted=[]
+                          for h in hits:
+                              lo=max(0,h-28); hi=min(len(block),h+55)
+                              if emitted and lo<=emitted[-1][1]:
+                                  emitted[-1]=(emitted[-1][0],max(emitted[-1][1],hi))
+                              else:
+                                  emitted.append((lo,hi))
+                          for lo,hi in emitted:
+                              o.write('\n'.join(block[lo:hi])+'\n...\n')
+
+                  # Show exact tbq allocator function even if no relocation line triggered.
+                  wanted={'tbq_online_ip_track_alloc','tbq_track_set_weight','tbq_user_track_free'}
+                  for row,addr,name in funcs:
+                      if name not in wanted: continue
+                      end=len(lines)
+                      for rr,aa,nn in funcs:
+                          if rr>row:
+                              end=rr; break
+                      o.write(f'\n--- EXACT FUNCTION {name} @ 0x{addr:x} ---\n')
+                      o.write('\n'.join(lines[row:end])+'\n')
+
+                  # Relocations often reveal callback registration more clearly than disassembly.
+                  rel=sh(['mipsel-linux-gnu-readelf','-rW',str(p)])
+                  o.write('\n--- RELOCATIONS RELEVANT TO TRACKING ---\n')
+                  for l in rel.splitlines():
+                      if re.search(r'(tbq|wan_rx_bytes|wan_tx_bytes|online_ip|nos_track|nf_register_hooks)',l,re.I):
+                          o.write(l+'\n')
+
+                  o.write('\n--- RELEVANT STRINGS ---\n')
+                  for l in st.splitlines():
+                      if re.search(r'(TBQ|wan_rx|wan_tx|bytes per|up_limit|down_limit|online_ip|track event)',l,re.I):
+                          o.write(l+'\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run129-onlineip-correct-counter-offsets
-          path: docs/reverse-generated/run129-onlineip-correct-counter-offsets.txt
+          name: run130-nos-tbq-accounting
+          path: docs/reverse-generated/run130-nos-tbq-accounting.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run129-onlineip-correct-counter-offsets.txt
+          git add docs/reverse-generated/run130-nos-tbq-accounting.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: correct online_ip counter offset scan'
+            git commit -m 'reverse: trace NOS TBQ online-ip accounting'
             git push
           fi
