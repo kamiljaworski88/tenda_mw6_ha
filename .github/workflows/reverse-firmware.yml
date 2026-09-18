@@ -18,131 +18,152 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
+          python3 -m pip install --break-system-packages pyelftools
 
-      - name: Trace device_list upload scheduler
+      - name: Resolve device_list timer configuration
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run163
+          mkdir -p docs/reverse-generated /tmp/run164
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run163-device-list-upload-scheduler.txt'
+          out='docs/reverse-generated/run164-device-list-timer-config.txt'
+          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run164/dis.txt
 
-          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run163/device_list.dis
-          mipsel-linux-gnu-readelf -Ws "$dev" > /tmp/run163/device_list.sym
-          mipsel-linux-gnu-nm -n "$dev" > /tmp/run163/device_list.nm
-          strings -tx "$dev" > /tmp/run163/device_list.strings
-
-          python3 - /tmp/run163/device_list.dis /tmp/run163/device_list.sym /tmp/run163/device_list.nm /tmp/run163/device_list.strings "$out" <<'PY'
-          import re,sys
+          python3 - "$dev" /tmp/run164/dis.txt "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
-          dis=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          sym=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          nm=Path(sys.argv[3]).read_text(errors='replace').splitlines()
-          strings=Path(sys.argv[4]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[5])
+          from elftools.elf.elffile import ELFFile
+
+          dev=Path(sys.argv[1])
+          lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[3])
+
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
           funcs=[]
-          for i,l in enumerate(dis):
+          for i,l in enumerate(lines):
               m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
               if m: funcs.append((i,int(m.group(1),16),m.group(2)))
           starts=[]
-          for i,l in enumerate(dis):
+          for i,l in enumerate(lines):
               m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
               if m:
-                  nxt='\n'.join(dis[i:min(len(dis),i+8)])
+                  nxt='\n'.join(lines[i:min(len(lines),i+8)])
                   if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
                       starts.append((i,int(m.group(1),16)))
           starts=sorted(starts)
 
-          def owner(i):
+          def owner(idx):
               best=None
               for st,a,n in funcs:
-                  if st>i:break
+                  if st>idx:break
                   best=(st,a,n)
               for st,a in starts:
-                  if st>i:break
+                  if st>idx:break
                   if best is None or st>best[0]:
                       best=(st,a,f'sub_{a:08x}')
               return best
 
-          relsyms=[]
-          for l in sym:
-              if re.search(r'cmd_|timer|sleep|usleep|select|poll|epoll|pthread|event|publish|upload|client|redis|queue|timeout|alarm',l,re.I):
-                  relsyms.append(l)
+          raw=dev.read_bytes()
+          vas={}
+          with dev.open('rb') as f:
+              ef=ELFFile(f)
+              for lit in [b'start_device_list_timer',b'stop_device_list_timer',
+                          b'do_upload_client_list',b'do_client_timeout_check',
+                          b'start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed',
+                          b'start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed']:
+                  off=raw.find(lit)
+                  va=None
+                  if off>=0:
+                      for sec in ef.iter_sections():
+                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
+                          if so<=off<so+sz:
+                              va=int(sec['sh_addr'])+(off-so);break
+                  vas[lit.decode()]=(off,va)
 
-          relstr=[]
-          keys=re.compile(r'device_list_upload|upload.*client|client.*upload|send_all_client_status|client status|timer|interval|period|sleep|timeout|publish|cmd_pub|cmd_sub|hostname|rqst_client_hostname',re.I)
-          for l in strings:
-              if keys.search(l):relstr.append(l)
+          # Find xrefs to each string by low16 addiu and dump owner.
+          xrefs=[]
+          for name,(off,va) in vas.items():
+              if va is None:continue
+              lo=va&0xffff
+              signed=lo if lo<0x8000 else lo-0x10000
+              for i,l in enumerate(lines):
+                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
+                      fn=owner(i)
+                      xrefs.append((name,va,fn,i,lines[max(fn[0] if fn else 0,i-35):min(len(lines),i+100)]))
 
-          # Locate probable string VAs from section offset mapping via readelf -S is
-          # cumbersome here; instead use low16 immediates near candidate funcs and
-          # report all funcs containing calls to scheduling/publish imports.
-          interesting=[]
-          import_names=[]
-          for l in sym:
-              m=re.search(r'\s([A-Za-z_][A-Za-z0-9_@.]*)$',l)
-              if m and re.search(r'cmd_|timer|sleep|usleep|select|poll|epoll|pthread|event|publish|upload|timeout|alarm',m.group(1),re.I):
-                  import_names.append(m.group(1).split('@')[0])
+          # Resolve timer_start GOT slot and owner library definition if present.
+          sym=run(["mipsel-linux-gnu-readelf","-Ws",str(dev)])
+          timer_import=[l for l in sym.splitlines() if re.search(r'\btimer_start\b',l)]
 
-          # objdump -drwC names imported symbols on relocation lines/calls in some
-          # cases. Keep function contexts containing any strong keyword.
-          for i,l in enumerate(dis):
-              if re.search(r'cmd_pub|cmd_sub|cmd_init|usleep|sleep|timer|pthread|select|poll|epoll|device_list_upload|upload|timeout',l,re.I):
+          # Gather every jalr context that uses the known PLT/GOT import slot for timer_start.
+          # mipsel objdump often emits no symbolic name on jalr, so identify the GOT slot
+          # from the PLT stub address 0x40c620 and then find direct jal timer_start@plt
+          # or contexts inside the string-xref owner functions.
+          timer_contexts=[]
+          for i,l in enumerate(lines):
+              if re.search(r'\b40c620\b|<timer_start@plt>|timer_start',l):
                   fn=owner(i)
-                  interesting.append((fn,i,dis[max(fn[0] if fn else 0,i-28):min(len(dis),i+55)]))
+                  timer_contexts.append((fn,i,lines[max(fn[0] if fn else 0,i-40):min(len(lines),i+90)]))
 
-          # Candidate integer timing constants in functions that also call a
-          # scheduler/sleep/timer-ish import.
-          timing=[]
-          for fn,i,ctx in interesting:
-              joined='\n'.join(ctx)
-              vals=[]
-              for m in re.finditer(r'\b(?:li|addiu)\s+[a-z0-9]+,(?:zero,)?(-?\d+|0x[0-9a-f]+)',joined,re.I):
-                  try:v=int(m.group(1),0)
-                  except:continue
-                  if v in (1,2,3,5,10,15,20,30,45,60,100,200,500,1000,3000,5000,10000,30000,45000,60000):
-                      vals.append(v)
-              if vals: timing.append((fn,vals,ctx))
+          # Find function/libraries defining timer_start.
+          defs=[]
+          root=Path('firmware-src/RootFS-unpacked')
+          for p in root.rglob('*'):
+              if not p.is_file():continue
+              try:
+                  nm=run(["mipsel-linux-gnu-nm","-D",str(p)])
+              except:continue
+              for l in nm.splitlines():
+                  if re.search(r'\btimer_start$',l):
+                      defs.append((str(p),l))
 
           with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 163: device_list upload scheduler / trigger =====\n\n')
-              o.write('===== RELEVANT IMPORT/DYNAMIC SYMBOLS =====\n')
-              o.write('\n'.join(relsyms)+'\n\n')
-              o.write('===== RELEVANT STRINGS =====\n')
-              o.write('\n'.join(relstr)+'\n\n')
-              o.write('===== CODE CONTEXTS AROUND SCHEDULER/PUBLISH REFERENCES =====\n')
+              o.write('===== RUN 164: device_list timer configuration =====\n\n')
+              o.write('===== STRING VAs =====\n')
+              for k,v in vas.items():o.write(f'{k}: file_off={v[0]:#x} va={("0x%x"%v[1]) if v[1] else "?"}\n')
+
+              o.write('\n===== STRING XREF OWNER FUNCTIONS =====\n')
               seen=set()
-              for fn,i,ctx in interesting:
+              for name,va,fn,i,ctx in xrefs:
+                  key=(name,fn[1] if fn else 0)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- {name} -> {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
+
+              o.write('\n===== timer_start IMPORT =====\n')
+              o.write('\n'.join(timer_import)+'\n')
+
+              o.write('\n===== timer_start CONTEXTS =====\n')
+              seen=set()
+              for fn,i,ctx in timer_contexts:
                   key=(fn[1] if fn else 0,i)
                   if key in seen:continue
                   seen.add(key)
-                  o.write(f"\n--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
+                  o.write(f"\n--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
                   o.write('\n'.join(ctx)+'\n')
-              o.write('\n===== TIMING CONSTANT CANDIDATES =====\n')
-              seen=set()
-              for fn,vals,ctx in timing:
-                  key=(fn[1] if fn else 0,tuple(vals))
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} values={vals} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
+
+              o.write('\n===== timer_start DEFINITIONS IN ROOTFS =====\n')
+              for p,l in defs:o.write(f'{p}: {l}\n')
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run163-device-list-upload-scheduler
-          path: docs/reverse-generated/run163-device-list-upload-scheduler.txt
+          name: run164-device-list-timer-config
+          path: docs/reverse-generated/run164-device-list-timer-config.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run163-device-list-upload-scheduler.txt
+          git add docs/reverse-generated/run164-device-list-timer-config.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace device-list upload scheduler'
+            git commit -m 'reverse: resolve device-list timer config'
             git push
           fi
