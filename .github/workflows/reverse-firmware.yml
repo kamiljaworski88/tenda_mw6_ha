@@ -1,66 +1,148 @@
 name: Reverse MW6 firmware
+
 on:
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/reverse-firmware.yml
+
 permissions:
   contents: write
+
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
-      - name: Read wan_port_rate descriptor
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+
+      - name: Trace device_list upload scheduler
+        shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated
-          python3 - <<'PY' > docs/reverse-generated/run161-wan-port-rate-schema.txt
-          import struct
+          mkdir -p docs/reverse-generated /tmp/run163
+          dev='firmware-src/RootFS-unpacked/bin/device_list'
+          out='docs/reverse-generated/run163-device-list-upload-scheduler.txt'
+
+          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run163/device_list.dis
+          mipsel-linux-gnu-readelf -Ws "$dev" > /tmp/run163/device_list.sym
+          mipsel-linux-gnu-nm -n "$dev" > /tmp/run163/device_list.nm
+          strings -tx "$dev" > /tmp/run163/device_list.strings
+
+          python3 - /tmp/run163/device_list.dis /tmp/run163/device_list.sym /tmp/run163/device_list.nm /tmp/run163/device_list.strings "$out" <<'PY'
+          import re,sys
           from pathlib import Path
-          from elftools.elf.elffile import ELFFile
-          p=Path('firmware-src/RootFS-unpacked/lib/libpb.so')
-          f=p.open('rb'); e=ELFFile(f)
-          def read(a,n):
-              for s in e.iter_sections():
-                  va=int(s['sh_addr']); z=int(s['sh_size'])
-                  if va<=a and a+n<=va+z:return s.data()[a-va:a-va+n]
-              raise KeyError(hex(a))
-          def u32(a):return struct.unpack('<I',read(a,4))[0]
-          def cstr(a):
-              b=bytearray()
-              for i in range(128):
-                  x=read(a+i,1)[0]
-                  if not x:break
-                  b.append(x)
-              return b.decode(errors='replace')
-          desc=0x3fd84
-          w=[u32(desc+4*i) for i in range(12)]
-          print('===== RUN 161: wan_port_rate schema =====')
-          print('descriptor',hex(desc),'name',cstr(w[1]),'sizeof',w[5],'n_fields',w[6],'fields',hex(w[7]))
-          for i in range(w[6]):
-              a=w[7]+i*48
-              q=[u32(a+4*j) for j in range(12)]
-              print(f"id={q[1]} name={cstr(q[0])} label={q[2]} type={q[3]} quant=0x{q[4]:x} offset=0x{q[5]:x} descriptor=0x{q[6]:x} flags=0x{q[8]:x}")
-          f.close()
+          dis=Path(sys.argv[1]).read_text(errors='replace').splitlines()
+          sym=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          nm=Path(sys.argv[3]).read_text(errors='replace').splitlines()
+          strings=Path(sys.argv[4]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[5])
+
+          funcs=[]
+          for i,l in enumerate(dis):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+          starts=[]
+          for i,l in enumerate(dis):
+              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
+              if m:
+                  nxt='\n'.join(dis[i:min(len(dis),i+8)])
+                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
+                      starts.append((i,int(m.group(1),16)))
+          starts=sorted(starts)
+
+          def owner(i):
+              best=None
+              for st,a,n in funcs:
+                  if st>i:break
+                  best=(st,a,n)
+              for st,a in starts:
+                  if st>i:break
+                  if best is None or st>best[0]:
+                      best=(st,a,f'sub_{a:08x}')
+              return best
+
+          relsyms=[]
+          for l in sym:
+              if re.search(r'cmd_|timer|sleep|usleep|select|poll|epoll|pthread|event|publish|upload|client|redis|queue|timeout|alarm',l,re.I):
+                  relsyms.append(l)
+
+          relstr=[]
+          keys=re.compile(r'device_list_upload|upload.*client|client.*upload|send_all_client_status|client status|timer|interval|period|sleep|timeout|publish|cmd_pub|cmd_sub|hostname|rqst_client_hostname',re.I)
+          for l in strings:
+              if keys.search(l):relstr.append(l)
+
+          # Locate probable string VAs from section offset mapping via readelf -S is
+          # cumbersome here; instead use low16 immediates near candidate funcs and
+          # report all funcs containing calls to scheduling/publish imports.
+          interesting=[]
+          import_names=[]
+          for l in sym:
+              m=re.search(r'\s([A-Za-z_][A-Za-z0-9_@.]*)$',l)
+              if m and re.search(r'cmd_|timer|sleep|usleep|select|poll|epoll|pthread|event|publish|upload|timeout|alarm',m.group(1),re.I):
+                  import_names.append(m.group(1).split('@')[0])
+
+          # objdump -drwC names imported symbols on relocation lines/calls in some
+          # cases. Keep function contexts containing any strong keyword.
+          for i,l in enumerate(dis):
+              if re.search(r'cmd_pub|cmd_sub|cmd_init|usleep|sleep|timer|pthread|select|poll|epoll|device_list_upload|upload|timeout',l,re.I):
+                  fn=owner(i)
+                  interesting.append((fn,i,dis[max(fn[0] if fn else 0,i-28):min(len(dis),i+55)]))
+
+          # Candidate integer timing constants in functions that also call a
+          # scheduler/sleep/timer-ish import.
+          timing=[]
+          for fn,i,ctx in interesting:
+              joined='\n'.join(ctx)
+              vals=[]
+              for m in re.finditer(r'\b(?:li|addiu)\s+[a-z0-9]+,(?:zero,)?(-?\d+|0x[0-9a-f]+)',joined,re.I):
+                  try:v=int(m.group(1),0)
+                  except:continue
+                  if v in (1,2,3,5,10,15,20,30,45,60,100,200,500,1000,3000,5000,10000,30000,45000,60000):
+                      vals.append(v)
+              if vals: timing.append((fn,vals,ctx))
+
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 163: device_list upload scheduler / trigger =====\n\n')
+              o.write('===== RELEVANT IMPORT/DYNAMIC SYMBOLS =====\n')
+              o.write('\n'.join(relsyms)+'\n\n')
+              o.write('===== RELEVANT STRINGS =====\n')
+              o.write('\n'.join(relstr)+'\n\n')
+              o.write('===== CODE CONTEXTS AROUND SCHEDULER/PUBLISH REFERENCES =====\n')
+              seen=set()
+              for fn,i,ctx in interesting:
+                  key=(fn[1] if fn else 0,i)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
+              o.write('\n===== TIMING CONSTANT CANDIDATES =====\n')
+              seen=set()
+              for fn,vals,ctx in timing:
+                  key=(fn[1] if fn else 0,tuple(vals))
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} values={vals} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
           PY
+
       - uses: actions/upload-artifact@v4
         with:
-          name: run161-wan-port-rate-schema
-          path: docs/reverse-generated/run161-wan-port-rate-schema.txt
+          name: run163-device-list-upload-scheduler
+          path: docs/reverse-generated/run163-device-list-upload-scheduler.txt
           retention-days: 7
+
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run161-wan-port-rate-schema.txt
+          git add docs/reverse-generated/run163-device-list-upload-scheduler.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve WAN port rate schema'
+            git commit -m 'reverse: trace device-list upload scheduler'
             git push
           fi
