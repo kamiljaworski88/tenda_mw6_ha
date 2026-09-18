@@ -20,130 +20,54 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
 
-      - name: Trace raw device_list MAC source
+      - name: Resolve wireless client IP/MAC source
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run153
+          mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run153-device-list-mac-source.txt'
-          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run153/device_list.dis
-          mipsel-linux-gnu-nm -n "$dev" > /tmp/run153/device_list.nm
+          out='docs/reverse-generated/run154-wireless-client-identity-source.txt'
 
-          python3 - /tmp/run153/device_list.dis /tmp/run153/device_list.nm "$out" <<'PY'
-          import re, sys
-          from pathlib import Path
+          {
+            echo '===== RUN 154: get_all_wireless_client identity source ====='
+            echo
+            echo '===== SYMBOLS ====='
+            mipsel-linux-gnu-nm -n "$dev" | grep -Ei 'get_all_wireless_client|wireless|client|arp|ip_info|mac|station|assoc|ifaddrs' || true
 
-          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          nm=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[3])
+            echo
+            echo '===== DYNAMIC SYMBOLS ====='
+            mipsel-linux-gnu-readelf -Ws "$dev" | grep -Ei 'wireless|client|arp|ip_info|mac|station|assoc|ifaddrs|memcpy|strcmp|ioctl' || true
 
-          funcs=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m:
-                  funcs.append((i,int(m.group(1),16),m.group(2)))
+            echo
+            echo '===== GOT ====='
+            mipsel-linux-gnu-readelf -A "$dev"
 
-          starts=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if not m:
-                  continue
-              nxt='\n'.join(lines[i:min(len(lines),i+8)])
-              if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                  starts.append((i,int(m.group(1),16)))
-          starts=sorted(starts)
+            echo
+            echo '===== get_all_wireless_client / helper region ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x40a010 --stop-address=0x40a820 "$dev"
 
-          def owner(idx):
-              named=None
-              for st,a,n in funcs:
-                  if st>idx:
-                      break
-                  named=(st,a,n)
-              inferred=None
-              for st,a in starts:
-                  if st>idx:
-                      break
-                  inferred=(st,a,f"sub_{a:08x}")
-              if named and (not inferred or named[0]>=inferred[0]):
-                  return named
-              return inferred
+            echo
+            echo '===== CALLERS / REFERENCES TO 0x40a46c ====='
+            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B30 -A40 -E '40a46c|a46c' || true
 
-          candidates=[]
-          for i,l in enumerate(lines):
-              m=re.search(r'\baddiu\s+([a-z0-9]+),([a-z0-9]+),(?:84|0x54)\b',l,re.I)
-              if not m:
-                  continue
-              dreg,base=m.group(1),m.group(2)
-              for j in range(i+1,min(len(lines),i+20)):
-                  if re.match(r'^[0-9a-fA-F]+ <[^>]+>:',lines[j]):
-                      break
-                  if re.search(rf'\bmove\s+a0,{dreg}\b',lines[j]) or re.search(rf'\baddu\s+a0,{dreg},zero\b',lines[j]):
-                      window=lines[j:min(len(lines),j+12)]
-                      if any(re.search(r'\bli\s+a2,6\b|\baddiu\s+a2,zero,6\b',x) for x in window):
-                          fn=owner(i)
-                          candidates.append((fn,i,j,lines[max(fn[0] if fn else 0,i-18):min(len(lines),j+28)]))
-
-          direct=[]
-          for i,l in enumerate(lines):
-              if re.search(r'\b(?:sb|sh|sw)\s+[^,]+,(?:84|85|86|87|88|89)\([^)]+\)',l):
-                  fn=owner(i)
-                  direct.append((fn,i,lines[max(fn[0] if fn else 0,i-18):min(len(lines),i+24)]))
-
-          relevant_nm=[x for x in nm if re.search(r'client|station|sta|wlan|eth|mac|upload|list|assoc',x,re.I)]
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 153: raw device_list client MAC source =====\n')
-              o.write('Target field: raw 124-byte client record +0x54..+0x59, later copied into client_status+0x50 and HostInfo.ethaddr.\n\n')
-
-              o.write('===== RELEVANT SYMBOLS =====\n')
-              o.write('\n'.join(relevant_nm)+'\n\n')
-
-              o.write('===== MEMCPY-6 CANDIDATES INTO RECORD+0x54 =====\n')
-              if not candidates:
-                  o.write('NO SIMPLE PATTERN FOUND\n')
-              seen=set()
-              for fn,i,j,ctx in candidates:
-                  key=(fn[1] if fn else 0,i,j)
-                  if key in seen:
-                      continue
-                  seen.add(key)
-                  o.write(f"\n--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== DIRECT STORES TO +0x54..+0x59 =====\n')
-              if not direct:
-                  o.write('NO DIRECT STORES FOUND\n')
-              seen=set()
-              for fn,i,ctx in direct:
-                  key=(fn[1] if fn else 0,i)
-                  if key in seen:
-                      continue
-                  seen.add(key)
-                  o.write(f"\n--- owner {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                  o.write('\n'.join(ctx)+'\n')
-
-              o.write('\n===== ALL FUNCTIONS TOUCHING 124-BYTE STRIDE =====\n')
-              for i,l in enumerate(lines):
-                  if re.search(r'\b(?:li|addiu)\s+[a-z0-9]+,(?:zero,)?124\b',l,re.I):
-                      fn=owner(i)
-                      o.write(f"\n--- {('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
-                      o.write('\n'.join(lines[max(fn[0] if fn else 0,i-12):min(len(lines),i+22)])+'\n')
-          PY
+            echo
+            echo '===== STRINGS AROUND WIRELESS/ARP/CLIENT ====='
+            strings -tx "$dev" | grep -Ei 'wireless|wlan|client|station|assoc|arp|ip_info|mac|ethaddr' || true
+          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run153-device-list-mac-source
-          path: docs/reverse-generated/run153-device-list-mac-source.txt
+          name: run154-wireless-client-identity-source
+          path: docs/reverse-generated/run154-wireless-client-identity-source.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run153-device-list-mac-source.txt
+          git add docs/reverse-generated/run154-wireless-client-identity-source.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace device-list client MAC source'
+            git commit -m 'reverse: resolve wireless client identity source'
             git push
           fi
