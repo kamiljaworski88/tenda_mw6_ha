@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace skb direction-bit writers
+      - name: Trace NOS/TBQ packet hooks versus FastPath
         shell: bash
         run: |
           set -euo pipefail
@@ -30,157 +30,134 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run142-skb-direction-bit-writers.txt'
+          nos='firmware-src/RootFS-unpacked/lib/modules/nos.ko'
+          out='docs/reverse-generated/run143-nos-fastpath-hooks.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          python3 - "$elf" firmware-src "$out" <<'PY'
+          python3 - "$elf" "$nos" "$out" <<'PY'
           import re, subprocess, sys
           from pathlib import Path
 
-          kernel=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
+          kernel=Path(sys.argv[1]); nos=Path(sys.argv[2]); out=Path(sys.argv[3])
 
           def run(cmd):
               return subprocess.run(cmd,text=True,errors='replace',
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-          def parse_funcs(text):
-              lines=text.splitlines()
-              funcs=[]
-              for i,l in enumerate(lines):
-                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-                  if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-              return lines, funcs
+          def syms(path, dynamic=False):
+              args=["mipsel-linux-gnu-nm"]
+              if dynamic: args.append("-D")
+              args += ["-n",str(path)]
+              arr=[]
+              for l in run(args).splitlines():
+                  p=l.split(maxsplit=2)
+                  if len(p)==3:
+                      try:a=int(p[0],16)
+                      except:continue
+                      arr.append((a,p[1],p[2]))
+              return sorted(arr)
 
-          def owner(funcs, idx):
-              lo,hi=0,len(funcs)
-              while lo<hi:
-                  mid=(lo+hi)//2
-                  if funcs[mid][0]<=idx: lo=mid+1
-                  else: hi=mid
-              return funcs[lo-1] if lo else None
-
-          def interesting_writes(text,label):
-              lines,funcs=parse_funcs(text)
-              found=[]
-              for i,l in enumerate(lines):
-                  sm=re.search(r'\bsw\s+([a-z0-9]+),120\(([a-z0-9]+)\)',l,re.I)
-                  if not sm: continue
-                  src,base=sm.group(1),sm.group(2)
-                  fn=owner(funcs,i)
-                  if not fn: continue
-
-                  # Backward slice over a short basic-block-like window.
-                  tags=[]
-                  for j in range(max(fn[0],i-32),i):
-                      x=lines[j]
-                      if re.search(rf'\bori\s+{src},{src},(0x[0-9a-f]+|\d+)\b',x,re.I):
-                          val=int(re.search(r'(0x[0-9a-f]+|\d+)\s*$',x,re.I).group(1),0)
-                          if val & 1: tags.append(f"ORI_BIT1:{val:#x}")
-                          if val & 2: tags.append(f"ORI_BIT2:{val:#x}")
-                      m=re.search(rf'\b(?:li|addiu)\s+{src},(?:zero,)?(0x[0-9a-f]+|\d+)\b',x,re.I)
-                      if m:
-                          try: val=int(m.group(1),0)
-                          except: val=-1
-                          if val in (1,2,3): tags.append(f"CONST:{val}")
-                      # Track classic load field -> OR -> store even if register changes via move.
-                      if re.search(rf'\blw\s+{src},120\({base}\)',x,re.I):
-                          tags.append("RMW_LOAD_SAME_FIELD")
-                  # Include every true skb-offset write in high-value network functions,
-                  # and all writers whose short slice contains bit 1/2 evidence.
-                  networkish=bool(re.search(
-                    r'rtl|netif|eth|wlan|conntrack|fast|nat|bridge|br_|ip_|packet|skb|xmit|rx|tx|forward|hook',
-                    fn[2],re.I))
-                  if tags or networkish:
-                      ctx=lines[max(fn[0],i-28):min(len(lines),i+18)]
-                      found.append((label,fn[1],fn[2],i,l,tags,ctx))
-              return found
-
-          kdis=run(["mipsel-linux-gnu-objdump","-drwC",str(kernel)])
-          all_found=interesting_writes(kdis,"kernel")
-
-          module_dumps={}
-          for ko in root.rglob("*.ko"):
-              d=run(["mipsel-linux-gnu-objdump","-drwC",str(ko)])
-              module_dumps[str(ko.relative_to(root))]=d
-              all_found += interesting_writes(d,str(ko.relative_to(root)))
-
-          knm=run(["mipsel-linux-gnu-nm","-n",str(kernel)])
-          syms=[]
-          for l in knm.splitlines():
-              p=l.split(maxsplit=2)
-              if len(p)==3:
-                  try:a=int(p[0],16)
-                  except:continue
-                  syms.append((a,p[1],p[2]))
-          syms.sort()
-
-          def dump_named(name, span=0x1800):
-              ms=[x for x in syms if x[2]==name]
-              if not ms: return f"===== {name}: NOT FOUND =====\n"
-              a,t,n=ms[0]; stop=a+span
-              for aa,tt,nn in syms:
+          def dump_named(path, table, name, maxspan=0x2400):
+              ms=[x for x in table if x[2]==name]
+              if not ms:
+                  return f"===== {name}: NOT FOUND in {path.name} =====\n"
+              a,t,n=ms[0]; stop=a+maxspan
+              for aa,tt,nn in table:
                   if aa>a:
                       stop=min(stop,aa); break
-              return f"===== {name} @ 0x{a:x} =====\n"+run([
-                "mipsel-linux-gnu-objdump","-drwC",
-                f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(kernel)])
+              return f"===== {path.name}:{name} @ 0x{a:x} =====\n"+run([
+                  "mipsel-linux-gnu-objdump","-drwC",
+                  f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(path)])
+
+          ksyms=syms(kernel)
+          nsyms=syms(nos)
+
+          kdis=run(["mipsel-linux-gnu-objdump","-drwC",str(kernel)])
+          ndis=run(["mipsel-linux-gnu-objdump","-drwC",str(nos)])
+          nrel=run(["mipsel-linux-gnu-objdump","-r",str(nos)])
 
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 142: MW6 skb+0x78 direction-bit writers =====\n")
-              o.write("Proven semantics from nos.ko tbq_timer_func:\n")
-              o.write("  bit 0x2 = WAN TX / client upload / LAN->WAN\n")
-              o.write("  bit 0x1 = WAN RX / client download / WAN->LAN\n\n")
+              o.write("===== RUN 143: NOS/TBQ hooks vs Realtek FastPath =====\n\n")
+
+              o.write("===== KERNEL NOS-RELATED SYMBOLS =====\n")
+              for a,t,n in ksyms:
+                  if re.search(r'nos|tbq|track_event|online_ip|fastpath|FastPath|hwnat|hw_nat',n,re.I):
+                      o.write(f"0x{a:08x} {t} {n}\n")
+
+              o.write("\n===== NOS MODULE SYMBOLS 0x5600..0x6600 =====\n")
+              for a,t,n in nsyms:
+                  if 0x5600 <= a <= 0x6600:
+                      o.write(f"0x{a:08x} {t} {n}\n")
 
               for n in [
-                "interrupt_dsr_rx",
-                "rtl_netif_rx",
-                "nf_conntrack_in",
-                "fastpath_xmit_prerouting_hook",
-                "FastPath_Enter",
-                "rtl865x_handle_nat",
-                "rtl_netif_receive_skb_hooks"
+                  "nos_tbq_init","nos_tbq_fini",
+                  "tbq_global_init","tbq_global_cleanup",
+                  "tbq_timer_init","tbq_timer_cleanup",
+                  "tbq_enqueue","tbq_filter_packet_by_nf_conn",
+                  "tbq_timer_func"
               ]:
-                  o.write(dump_named(n))
-                  o.write("\n")
+                  o.write("\n"+dump_named(nos,nsyms,n))
 
-              o.write("===== CANDIDATE WRITES TO OFFSET +0x78 =====\n")
-              seen=set()
-              for label,addr,name,i,l,tags,ctx in all_found:
-                  key=(label,addr,i)
-                  if key in seen: continue
-                  seen.add(key)
-                  o.write(f"\n--- {label}: 0x{addr:x} <{name}> ---\n")
-                  o.write("tags: "+(", ".join(tags) if tags else "network-function write") + "\n")
-                  o.write("\n".join(ctx)+"\n")
+              for n in [
+                  "nos_tbq_enqueue",
+                  "nos_track_event_register",
+                  "nos_track_event_unregister",
+                  "FastPath_Enter",
+                  "enter_fast_path",
+                  "fastpath_xmit_prerouting_hook",
+                  "rtl_nf_conntrack_in_hooks",
+                  "nf_conntrack_in"
+              ]:
+                  o.write("\n"+dump_named(kernel,ksyms,n))
 
-              o.write("\n===== MODULE SYMBOLS / RELOCS RELEVANT TO DIRECTION OR ACCOUNTING =====\n")
-              for label,d in module_dumps.items():
-                  if not re.search(r'nos|fast|nat|rtl|bm|portal|filter',label,re.I):
-                      continue
-                  rel=run(["mipsel-linux-gnu-objdump","-r",str(root/label)])
-                  hits=[x for x in rel.splitlines() if re.search(
-                    r'online_ip|wan_(?:tx|rx)_bytes|conntrack|fastpath|tbq|hook|hw_nat',x,re.I)]
-                  if hits:
-                      o.write(f"\n--- {label} ---\n")
-                      o.write("\n".join(hits)+"\n")
+              o.write("\n===== NOS RELOCATIONS TO KERNEL HOOKS =====\n")
+              for l in nrel.splitlines():
+                  if re.search(r'nos_|track_event|tbq|online_ip|netfilter|hook|conntrack',l,re.I):
+                      o.write(l+"\n")
+
+              o.write("\n===== NOS DISASSEMBLY AROUND EXTERNAL nos_tbq_enqueue REFERENCES =====\n")
+              nlines=ndis.splitlines()
+              for i,l in enumerate(nlines):
+                  if "nos_tbq_enqueue" in l:
+                      o.write("\n".join(nlines[max(0,i-24):min(len(nlines),i+36)])+"\n---\n")
+
+              o.write("\n===== KERNEL DISASSEMBLY AROUND NOS/TBQ SYMBOL REFERENCES =====\n")
+              klines=kdis.splitlines()
+              for i,l in enumerate(klines):
+                  if re.search(r'<(?:nos_tbq_enqueue|nos_track_event_register|nos_track_event_unregister)>',l):
+                      o.write("\n".join(klines[max(0,i-28):min(len(klines),i+50)])+"\n---\n")
+
+              o.write("\n===== FASTPATH FUNCTIONS WITH CALLS/HOOKS =====\n")
+              # High-value full-ish functions and any lines mentioning hook-style globals.
+              for marker in ["FastPath_Enter","enter_fast_path","rtl_netif_receive_skb_hooks"]:
+                  ms=[x for x in ksyms if x[2]==marker]
+                  if ms:
+                      a=ms[0][0]
+                      o.write(dump_named(kernel,ksyms,marker,0x5000)+"\n")
+
+              o.write("\n===== KERNEL STRINGS CONTAINING NOS/TBQ/FASTPATH =====\n")
+              st=run(["strings","-tx",str(kernel)])
+              for l in st.splitlines():
+                  if re.search(r'nos|tbq|fastpath|fast path|hw_nat|hwnat',l,re.I):
+                      o.write(l+"\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run142-skb-direction-bit-writers
-          path: docs/reverse-generated/run142-skb-direction-bit-writers.txt
+          name: run143-nos-fastpath-hooks
+          path: docs/reverse-generated/run143-nos-fastpath-hooks.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run142-skb-direction-bit-writers.txt
+          git add docs/reverse-generated/run143-nos-fastpath-hooks.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace skb direction bit writers'
+            git commit -m 'reverse: trace NOS hooks through FastPath'
             git push
           fi
