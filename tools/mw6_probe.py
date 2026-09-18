@@ -27,6 +27,10 @@ OL_HOSTS_GET = 0x00
 # M_MESH_HOSTS[20] == TCP/9000 module 0x14 and CMD_MESH_HOSTS_GET[0] == 0x00.
 MESH_HOSTS_MODULE = 0x14
 MESH_HOSTS_GET = 0x00
+# Firmware + protobuf descriptors confirm GetTrafficInfo:
+# M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8] -> WanRate{repeated WanPortRate}.
+MESH_WAN_MODULE = 0x12
+MESH_WAN_TRAFFIC = 0x08
 
 
 def pcap_tcp_payloads(path, port=9000):
@@ -158,6 +162,32 @@ def decode_mesh_hosts(payload):
     return status, records
 
 
+def decode_wan_traffic(payload):
+    """Decode WanRate / WanPortRate.
+
+    WanPortRate schema recovered from libpb.so:
+      1 idx, 2 uprate, 3 downrate, 4 total_up, 5 total_down.
+    The diagnostic only needs non-zero WAN rate as an independent traffic
+    control; it deliberately does not assign a display unit here.
+    """
+    if len(payload) < 4:
+        raise ValueError("WAN traffic response too short")
+    status = int.from_bytes(payload[:4], "little", signed=True)
+    ports = []
+    for field, wire, value in _protobuf_fields(payload[4:]):
+        if field != 1 or wire != 2:
+            continue
+        raw = {f: v for f, w, v in _protobuf_fields(value) if w == 0}
+        ports.append({
+            "idx": raw.get(1),
+            "uprate": int(raw.get(2, 0)),
+            "downrate": int(raw.get(3, 0)),
+            "total_up": raw.get(4),
+            "total_down": raw.get(5),
+        })
+    return status, ports
+
+
 def show_clients(fr):
     status, clients = decode_mesh_hosts(fr["payload"])
     print(f"Status={status}; hosts={len(clients)}")
@@ -195,6 +225,10 @@ def request_hosts(sock, tid, module, command, diagnostic=False):
 
 def request_clients(sock, tid):
     return request_hosts(sock, tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET)
+
+
+def request_wan_traffic(sock, tid):
+    return request_hosts(sock, tid, MESH_WAN_MODULE, MESH_WAN_TRAFFIC)
 
 
 def _match_clients(clients, selector):
