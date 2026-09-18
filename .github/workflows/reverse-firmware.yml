@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace conntrack to online_ip attachment
+      - name: Trace online_ip detach and lifetime
         shell: bash
         run: |
           set -euo pipefail
@@ -30,7 +30,7 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run145-conntrack-onlineip-attachment.txt'
+          out='docs/reverse-generated/run146-onlineip-lifetime.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
@@ -46,145 +46,76 @@ jobs:
           lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
           out=Path(sys.argv[3])
 
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-
-          nm=run(["mipsel-linux-gnu-nm","-n",str(elf)])
-          syms=[]
-          for l in nm.splitlines():
-              p=l.split(maxsplit=2)
-              if len(p)==3:
-                  try:a=int(p[0],16)
-                  except:continue
-                  syms.append((a,p[1],p[2]))
-          syms.sort()
-
           funcs=[]
           for i,l in enumerate(lines):
               m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
               if m: funcs.append((i,int(m.group(1),16),m.group(2)))
 
-          def owner(idx):
-              lo,hi=0,len(funcs)
-              while lo<hi:
-                  mid=(lo+hi)//2
-                  if funcs[mid][0] <= idx: lo=mid+1
-                  else: hi=mid
-              return funcs[lo-1] if lo else None
+          def block(name):
+              for idx,(st,a,n) in enumerate(funcs):
+                  if n==name:
+                      en=funcs[idx+1][0] if idx+1<len(funcs) else len(lines)
+                      return a, lines[st:en]
+              return None, []
 
-          def range_for(name):
-              ms=[x for x in funcs if x[2]==name]
-              if not ms:return None
-              st,a,n=ms[0]
-              nxt=next((x[0] for x in funcs if x[0]>st),len(lines))
-              return st,nxt,a,n
-
-          def dump(name):
-              r=range_for(name)
-              if not r:return f"===== {name}: NOT FOUND =====\n"
-              st,en,a,n=r
-              return f"===== {name} @ 0x{a:x} =====\n"+"\n".join(lines[st:en])+"\n"
-
-          targets=[
-              "nf_conntrack_in","add_online_ip","find_online_ip",
-              "online_ip_get_idx","online_ip_timeout",
-              "get_online_ip_info","clear_online_ip_flag","set_online_ip_flag",
-              "init_online_ip"
+          names=[
+              "destroy_conntrack",
+              "nf_conntrack_free",
+              "nf_conntrack_destroy",
+              "nf_ct_delete_from_lists",
+              "nf_ct_dying_timeout",
+              "rtl_nf_conntrack_destroy_hooks",
+              "rtl_nf_conntrack_death_by_timeout_hooks",
+              "online_ip_timeout",
+              "add_online_ip",
           ]
 
-          # Direct call sites to key online-ip functions.
-          call_targets={}
-          for n in ["add_online_ip","find_online_ip","clear_online_ip_flag","set_online_ip_flag"]:
-              rr=range_for(n)
-              if rr: call_targets[rr[2]]=n
-
-          calls=[]
-          for i,l in enumerate(lines):
-              m=re.search(r'\bjal\s+([0-9a-fA-F]+)\s+<([^>]+)>',l)
-              if m:
-                  addr=int(m.group(1),16)
-                  if addr in call_targets or m.group(2) in call_targets.values():
-                      fn=owner(i)
-                      calls.append((fn,i,l,lines[max(fn[0] if fn else 0,i-24):min(len(lines),i+42)]))
-
-          # Accesses at +0x8c inside conntrack/online-ip/NOS-adjacent kernel functions.
-          off140=[]
-          for i,l in enumerate(lines):
-              if not re.search(r'\b(?:lw|sw)\s+[^,]+,140\([^)]+\)',l,re.I):
-                  continue
-              fn=owner(i)
-              if not fn:continue
-              if re.search(r'conntrack|online_ip|fastpath|nat|netif|packet|hook',fn[2],re.I):
-                  off140.append((fn,i,l,lines[max(fn[0],i-18):min(len(lines),i+30)]))
-
-          # Extract every reference inside nf_conntrack_in to +0x8c plus calls to
-          # add/find_online_ip, and annotate likely return-value stores.
-          nf=range_for("nf_conntrack_in")
-          nf_focus=[]
-          if nf:
-              st,en,a,n=nf
-              for i in range(st,en):
-                  l=lines[i]
-                  if (re.search(r'140\([^)]+\)',l) or
-                      "add_online_ip" in l or "find_online_ip" in l or
-                      "check_ip_addr" in l or
-                      re.search(r'120\([^)]+\)',l)):
-                      nf_focus.append((i,lines[max(st,i-14):min(en,i+24)]))
-
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 145: conntrack -> online_ip attachment =====\n")
-              o.write("Target: explain when the NOS-visible conntrack online_ip pointer at ct+0x8c is populated or can remain NULL.\n\n")
+              o.write("===== RUN 146: online_ip lifetime and conntrack detach =====\n")
+              o.write("Goal: prove how ct+0x8c is detached and how online_ip+0x08/list ownership controls record lifetime.\n\n")
 
-              o.write("===== RELEVANT SYMBOLS =====\n")
-              for a,t,n in syms:
-                  if re.search(r'online_ip|conntrack|nf_ct|ctnetlink',n,re.I):
-                      o.write(f"0x{a:08x} {t} {n}\n")
+              for n in names:
+                  a,b=block(n)
+                  o.write(f"===== {n} @ {('0x%x'%a) if a is not None else 'NOT FOUND'} =====\n")
+                  if b:o.write("\n".join(b)+"\n")
+                  o.write("\n")
 
-              for n in targets:
-                  o.write("\n"+dump(n))
-
-              o.write("\n===== DIRECT CALL SITES TO ONLINE_IP HELPERS =====\n")
-              for fn,i,l,ctx in calls:
-                  if fn:o.write(f"\n--- caller 0x{fn[1]:08x} <{fn[2]}> ---\n")
-                  o.write("\n".join(ctx)+"\n")
-
-              o.write("\n===== nf_conntrack_in FOCUSED SLICES =====\n")
-              seen=set()
-              for i,ctx in nf_focus:
-                  key=(max(0,i-14),min(len(lines),i+24))
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write("\n---\n"+"\n".join(ctx)+"\n")
-
-              o.write("\n===== +0x8c ACCESSES IN RELEVANT KERNEL FUNCTIONS =====\n")
-              seen=set()
-              for fn,i,l,ctx in off140:
-                  key=(fn[1],i)
-                  if key in seen:continue
-                  seen.add(key)
-                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
-                  o.write("\n".join(ctx)+"\n")
-
-              o.write("\n===== ONLINE_IP STRING / PROC / TIMEOUT CLUES =====\n")
-              strings=run(["strings","-tx",str(elf)])
-              for l in strings.splitlines():
-                  if re.search(r'online.?ip|online_ip|timeout|mac.*ip|ip.*mac',l,re.I):
-                      o.write(l+"\n")
+              o.write("===== FOCUSED +0x8c CONNTRACK / +0x08 ONLINE_IP PATTERNS =====\n")
+              for idx,(st,a,n) in enumerate(funcs):
+                  en=funcs[idx+1][0] if idx+1<len(funcs) else len(lines)
+                  b=lines[st:en]
+                  joined="\n".join(b)
+                  if not re.search(r'conntrack|online_ip|destroy|timeout|free',n,re.I):
+                      continue
+                  hits=[]
+                  for j,l in enumerate(b):
+                      if (re.search(r'\b(?:lw|sw)\s+[^,]+,140\([^)]+\)',l) or
+                          re.search(r'\b(?:lw|sw)\s+[^,]+,8\([^)]+\)',l) or
+                          re.search(r'\b(?:lw|sw)\s+[^,]+,(144|148)\([^)]+\)',l)):
+                          hits.append(j)
+                  if not hits:continue
+                  o.write(f"\n--- 0x{a:08x} <{n}> ---\n")
+                  seen=set()
+                  for j in hits:
+                      lo=max(0,j-15); hi=min(len(b),j+28)
+                      key=(lo,hi)
+                      if key in seen:continue
+                      seen.add(key)
+                      o.write("\n".join(b[lo:hi])+"\n...\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run145-conntrack-onlineip-attachment
-          path: docs/reverse-generated/run145-conntrack-onlineip-attachment.txt
+          name: run146-onlineip-lifetime
+          path: docs/reverse-generated/run146-onlineip-lifetime.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run145-conntrack-onlineip-attachment.txt
+          git add docs/reverse-generated/run146-onlineip-lifetime.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace conntrack online-ip attachment'
+            git commit -m 'reverse: resolve online-ip lifetime'
             git push
           fi
