@@ -1,0 +1,1078 @@
+===== RUN 159: WAN GetTrafficInfo schema / handler =====
+
+wan_rate__descriptor=0x3fdf0 size=60
+sizeof_message=20 n_fields=1 fields=0x3fdc0
+
+===== WANRATE FIELD DESCRIPTORS =====
+id=1 name=wan offset=0x10 quant=0xc type=16 label=2 flags=0x0
+
+===== CONFSRV RATE STRINGS =====
+   4720 confctl_get_wan_traffic_info
+   473d confctl_wan_traffic_info_init
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  67b90 GetTrafficInfo
+  752e8 confctl_get_wan_traffic_info
+  75348 fill_router_wan_rate
+  75360 get_router_wan_rate
+  75374 wan_traffic_info_renew
+  7538c fill_bridge_wan_rate
+  756a8 print_wan_rate
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+
+===== RATE STRING XREFS =====
+
+--- fill_router_wan_rate VA=0x475348 ---
+  44381c:	8fc20138 	lw	v0,312(s8)
+  443820:	ac400020 	sw	zero,32(v0)
+  443824:	8fc20138 	lw	v0,312(s8)
+  443828:	ac400024 	sw	zero,36(v0)
+  44382c:	8fc20024 	lw	v0,36(s8)
+  443830:	03c0e821 	move	sp,s8
+  443834:	8fbf0134 	lw	ra,308(sp)
+  443838:	8fbe0130 	lw	s8,304(sp)
+  44383c:	8fb1012c 	lw	s1,300(sp)
+  443840:	8fb00128 	lw	s0,296(sp)
+  443844:	27bd0138 	addiu	sp,sp,312
+  443848:	03e00008 	jr	ra
+  44384c:	00000000 	nop
+  443850:	3c1c0005 	lui	gp,0x5
+  443854:	279c3910 	addiu	gp,gp,14608
+  443858:	0399e021 	addu	gp,gp,t9
+  44385c:	27bdffd0 	addiu	sp,sp,-48
+  443860:	afbf002c 	sw	ra,44(sp)
+  443864:	afbe0028 	sw	s8,40(sp)
+  443868:	03a0f021 	move	s8,sp
+  44386c:	afbc0010 	sw	gp,16(sp)
+  443870:	afc40030 	sw	a0,48(s8)
+  443874:	afc50034 	sw	a1,52(s8)
+  443878:	afc60038 	sw	a2,56(s8)
+  44387c:	afc00018 	sw	zero,24(s8)
+  443880:	8fc20030 	lw	v0,48(s8)
+  443884:	10400004 	beqz	v0,443898 <router_wan_port_diag_errcode@@Base+0x1238>
+  443888:	00000000 	nop
+  44388c:	8fc20034 	lw	v0,52(s8)
+  443890:	1440000f 	bnez	v0,4438d0 <router_wan_port_diag_errcode@@Base+0x1270>
+  443894:	00000000 	nop
+  443898:	8f82822c 	lw	v0,-32212(gp)
+  44389c:	244248e4 	addiu	v0,v0,18660
+  4438a0:	00402021 	move	a0,v0
+  4438a4:	8f82822c 	lw	v0,-32212(gp)
+  4438a8:	24455348 	addiu	a1,v0,21320
+  4438ac:	24060ac7 	li	a2,2759
+  4438b0:	8f8287c8 	lw	v0,-30776(gp)
+  4438b4:	0040c821 	move	t9,v0
+  4438b8:	0320f809 	jalr	t9
+  4438bc:	00000000 	nop
+  4438c0:	8fdc0010 	lw	gp,16(s8)
+  4438c4:	2402ffff 	li	v0,-1
+  4438c8:	10000043 	b	4439d8 <router_wan_port_diag_errcode@@Base+0x1378>
+  4438cc:	00000000 	nop
+  4438d0:	afc00020 	sw	zero,32(s8)
+  4438d4:	1000003a 	b	4439c0 <router_wan_port_diag_errcode@@Base+0x1360>
+  4438d8:	00000000 	nop
+  4438dc:	8fc20020 	lw	v0,32(s8)
+  4438e0:	000210c0 	sll	v0,v0,0x3
+  4438e4:	00021880 	sll	v1,v0,0x2
+  4438e8:	00431021 	addu	v0,v0,v1
+  4438ec:	8fc30034 	lw	v1,52(s8)
+  4438f0:	00621021 	addu	v0,v1,v0
+  4438f4:	00402021 	move	a0,v0
+  4438f8:	8f8288dc 	lw	v0,-30500(gp)
+  4438fc:	0040c821 	move	t9,v0
+  443900:	0320f809 	jalr	t9
+  443904:	00000000 	nop
+  443908:	8fdc0010 	lw	gp,16(s8)
+  44390c:	8fc20020 	lw	v0,32(s8)
+  443910:	000210c0 	sll	v0,v0,0x3
+  443914:	00021880 	sll	v1,v0,0x2
+  443918:	00431021 	addu	v0,v0,v1
+  44391c:	8fc30034 	lw	v1,52(s8)
+  443920:	00621021 	addu	v0,v1,v0
+  443924:	8fc30020 	lw	v1,32(s8)
+  443928:	ac43000c 	sw	v1,12(v0)
+  44392c:	8fc20020 	lw	v0,32(s8)
+  443930:	000210c0 	sll	v0,v0,0x3
+  443934:	00021880 	sll	v1,v0,0x2
+  443938:	00431021 	addu	v0,v0,v1
+  44393c:	8fc30034 	lw	v1,52(s8)
+  443940:	00621821 	addu	v1,v1,v0
+  443944:	8fc20020 	lw	v0,32(s8)
+  443948:	24420001 	addiu	v0,v0,1
+  44394c:	00602021 	move	a0,v1
+  443950:	00402821 	move	a1,v0
+  443954:	8f8283b0 	lw	v0,-31824(gp)
+  443958:	24423390 	addiu	v0,v0,13200
+  44395c:	0040c821 	move	t9,v0
+  443960:	0320f809 	jalr	t9
+  443964:	00000000 	nop
+  443968:	8fdc0010 	lw	gp,16(s8)
+  44396c:	afc2001c 	sw	v0,28(s8)
+  443970:	8fc2001c 	lw	v0,28(s8)
+  443974:	10400003 	beqz	v0,443984 <router_wan_port_diag_errcode@@Base+0x1324>
+  443978:	00000000 	nop
+  44397c:	2402ffff 	li	v0,-1
+  443980:	afc20018 	sw	v0,24(s8)
+  443984:	8fc20030 	lw	v0,48(s8)
+  443988:	8c430010 	lw	v1,16(v0)
+  44398c:	8fc20020 	lw	v0,32(s8)
+  443990:	00021080 	sll	v0,v0,0x2
+  443994:	00621821 	addu	v1,v1,v0
+  443998:	8fc20020 	lw	v0,32(s8)
+  44399c:	000210c0 	sll	v0,v0,0x3
+  4439a0:	00022080 	sll	a0,v0,0x2
+  4439a4:	00441021 	addu	v0,v0,a0
+  4439a8:	8fc40034 	lw	a0,52(s8)
+  4439ac:	00821021 	addu	v0,a0,v0
+  4439b0:	ac620000 	sw	v0,0(v1)
+  4439b4:	8fc20020 	lw	v0,32(s8)
+  4439b8:	24420001 	addiu	v0,v0,1
+  4439bc:	afc20020 	sw	v0,32(s8)
+  4439c0:	8fc30020 	lw	v1,32(s8)
+  4439c4:	8fc20038 	lw	v0,56(s8)
+  4439c8:	0062102a 	slt	v0,v1,v0
+  4439cc:	1440ffc3 	bnez	v0,4438dc <router_wan_port_diag_errcode@@Base+0x127c>
+  4439d0:	00000000 	nop
+  4439d4:	8fc20018 	lw	v0,24(s8)
+  4439d8:	03c0e821 	move	sp,s8
+  4439dc:	8fbf002c 	lw	ra,44(sp)
+  4439e0:	8fbe0028 	lw	s8,40(sp)
+  4439e4:	27bd0030 	addiu	sp,sp,48
+  4439e8:	03e00008 	jr	ra
+  4439ec:	00000000 	nop
+
+004439f0 <confctl_get_wan_status@@Base>:
+  4439f0:	3c1c0005 	lui	gp,0x5
+  4439f4:	279c3770 	addiu	gp,gp,14192
+  4439f8:	0399e021 	addu	gp,gp,t9
+  4439fc:	27bdff88 	addiu	sp,sp,-120
+  443a00:	afbf0074 	sw	ra,116(sp)
+  443a04:	afbe0070 	sw	s8,112(sp)
+
+--- get_router_wan_rate VA=0x475360 ---
+  443378:	8fb20058 	lw	s2,88(sp)
+  44337c:	8fb10054 	lw	s1,84(sp)
+  443380:	8fb00050 	lw	s0,80(sp)
+  443384:	27bd0078 	addiu	sp,sp,120
+  443388:	03e00008 	jr	ra
+  44338c:	00000000 	nop
+  443390:	3c1c0005 	lui	gp,0x5
+  443394:	279c3dd0 	addiu	gp,gp,15824
+  443398:	0399e021 	addu	gp,gp,t9
+  44339c:	27bdfec8 	addiu	sp,sp,-312
+  4433a0:	afbf0134 	sw	ra,308(sp)
+  4433a4:	afbe0130 	sw	s8,304(sp)
+  4433a8:	afb1012c 	sw	s1,300(sp)
+  4433ac:	afb00128 	sw	s0,296(sp)
+  4433b0:	03a0f021 	move	s8,sp
+  4433b4:	afbc0018 	sw	gp,24(sp)
+  4433b8:	afc40138 	sw	a0,312(s8)
+  4433bc:	afc5013c 	sw	a1,316(s8)
+  4433c0:	27c30028 	addiu	v1,s8,40
+  4433c4:	24020100 	li	v0,256
+  4433c8:	00602021 	move	a0,v1
+  4433cc:	00002821 	move	a1,zero
+  4433d0:	00403021 	move	a2,v0
+  4433d4:	8f828930 	lw	v0,-30416(gp)
+  4433d8:	0040c821 	move	t9,v0
+  4433dc:	0320f809 	jalr	t9
+  4433e0:	00000000 	nop
+  4433e4:	8fdc0018 	lw	gp,24(s8)
+  4433e8:	8fc20138 	lw	v0,312(s8)
+  4433ec:	1440000f 	bnez	v0,44342c <router_wan_port_diag_errcode@@Base+0xdcc>
+  4433f0:	00000000 	nop
+  4433f4:	8f82822c 	lw	v0,-32212(gp)
+  4433f8:	244248e4 	addiu	v0,v0,18660
+  4433fc:	00402021 	move	a0,v0
+  443400:	8f82822c 	lw	v0,-32212(gp)
+  443404:	24455360 	addiu	a1,v0,21344
+  443408:	24060a7c 	li	a2,2684
+  44340c:	8f8287c8 	lw	v0,-30776(gp)
+  443410:	0040c821 	move	t9,v0
+  443414:	0320f809 	jalr	t9
+  443418:	00000000 	nop
+  44341c:	8fdc0018 	lw	gp,24(s8)
+  443420:	2402ffff 	li	v0,-1
+  443424:	10000102 	b	443830 <router_wan_port_diag_errcode@@Base+0x11d0>
+  443428:	00000000 	nop
+  44342c:	afc00024 	sw	zero,36(s8)
+  443430:	8fd1013c 	lw	s1,316(s8)
+  443434:	8fc4013c 	lw	a0,316(s8)
+  443438:	8f828648 	lw	v0,-31160(gp)
+  44343c:	0040c821 	move	t9,v0
+  443440:	0320f809 	jalr	t9
+  443444:	00000000 	nop
+  443448:	8fdc0018 	lw	gp,24(s8)
+  44344c:	00408021 	move	s0,v0
+  443450:	8f8288f0 	lw	v0,-30480(gp)
+  443454:	0040c821 	move	t9,v0
+  443458:	0320f809 	jalr	t9
+  44345c:	00000000 	nop
+  443460:	8fdc0018 	lw	gp,24(s8)
+  443464:	02202021 	move	a0,s1
+  443468:	02002821 	move	a1,s0
+  44346c:	00403021 	move	a2,v0
+  443470:	8f8286c4 	lw	v0,-31036(gp)
+  443474:	0040c821 	move	t9,v0
+  443478:	0320f809 	jalr	t9
+  44347c:	00000000 	nop
+  443480:	8fdc0018 	lw	gp,24(s8)
+  443484:	afc20020 	sw	v0,32(s8)
+  443488:	2404000a 	li	a0,10
+  44348c:	8f828240 	lw	v0,-32192(gp)
+  443490:	0040c821 	move	t9,v0
+  443494:	0320f809 	jalr	t9
+  443498:	00000000 	nop
+  44349c:	8fdc0018 	lw	gp,24(s8)
+  4434a0:	1040000f 	beqz	v0,4434e0 <router_wan_port_diag_errcode@@Base+0xe80>
+  4434a4:	00000000 	nop
+  4434a8:	8f82822c 	lw	v0,-32212(gp)
+  4434ac:	24424f44 	addiu	v0,v0,20292
+  4434b0:	8fc30020 	lw	v1,32(s8)
+  4434b4:	afa30010 	sw	v1,16(sp)
+  4434b8:	00402021 	move	a0,v0
+  4434bc:	8f82822c 	lw	v0,-32212(gp)
+  4434c0:	24455360 	addiu	a1,v0,21344
+  4434c4:	24060a82 	li	a2,2690
+  4434c8:	8fc7013c 	lw	a3,316(s8)
+  4434cc:	8f8287c8 	lw	v0,-30776(gp)
+  4434d0:	0040c821 	move	t9,v0
+  4434d4:	0320f809 	jalr	t9
+  4434d8:	00000000 	nop
+  4434dc:	8fdc0018 	lw	gp,24(s8)
+  4434e0:	8fc30020 	lw	v1,32(s8)
+  4434e4:	24020003 	li	v0,3
+  4434e8:	10620007 	beq	v1,v0,443508 <router_wan_port_diag_errcode@@Base+0xea8>
+  4434ec:	00000000 	nop
+  4434f0:	8fc20138 	lw	v0,312(s8)
+  4434f4:	ac400010 	sw	zero,16(v0)
+  4434f8:	8fc20138 	lw	v0,312(s8)
+  4434fc:	ac400014 	sw	zero,20(v0)
+  443500:	1000009e 	b	44377c <router_wan_port_diag_errcode@@Base+0x111c>
+  443504:	00000000 	nop
+  443508:	2404000a 	li	a0,10
+  44350c:	8f828240 	lw	v0,-32192(gp)
+  443510:	0040c821 	move	t9,v0
+  443514:	0320f809 	jalr	t9
+  443518:	00000000 	nop
+  44351c:	8fdc0018 	lw	gp,24(s8)
+  443520:	1040001e 	beqz	v0,44359c <router_wan_port_diag_errcode@@Base+0xf3c>
+  443524:	00000000 	nop
+  443528:	8f82822c 	lw	v0,-32212(gp)
+  44352c:	24434f84 	addiu	v1,v0,20356
+  443530:	8fc2013c 	lw	v0,316(s8)
+  443534:	2444ffff 	addiu	a0,v0,-1
+  443538:	8f82802c 	lw	v0,-32724(gp)
+  44353c:	00042040 	sll	a0,a0,0x1
+  443540:	24840001 	addiu	a0,a0,1
+  443544:	000420c0 	sll	a0,a0,0x3
+  443548:	24420020 	addiu	v0,v0,32
+  44354c:	00821021 	addu	v0,a0,v0
+  443550:	8c420000 	lw	v0,0(v0)
+  443554:	8fc4013c 	lw	a0,316(s8)
+  443558:	2485ffff 	addiu	a1,a0,-1
+  44355c:	8f84802c 	lw	a0,-32724(gp)
+  443560:	00052900 	sll	a1,a1,0x4
+  443564:	24840020 	addiu	a0,a0,32
+  443568:	00a42021 	addu	a0,a1,a0
+
+--- get_router_wan_rate VA=0x475360 ---
+  443434:	8fc4013c 	lw	a0,316(s8)
+  443438:	8f828648 	lw	v0,-31160(gp)
+  44343c:	0040c821 	move	t9,v0
+  443440:	0320f809 	jalr	t9
+  443444:	00000000 	nop
+  443448:	8fdc0018 	lw	gp,24(s8)
+  44344c:	00408021 	move	s0,v0
+  443450:	8f8288f0 	lw	v0,-30480(gp)
+  443454:	0040c821 	move	t9,v0
+  443458:	0320f809 	jalr	t9
+  44345c:	00000000 	nop
+  443460:	8fdc0018 	lw	gp,24(s8)
+  443464:	02202021 	move	a0,s1
+  443468:	02002821 	move	a1,s0
+  44346c:	00403021 	move	a2,v0
+  443470:	8f8286c4 	lw	v0,-31036(gp)
+  443474:	0040c821 	move	t9,v0
+  443478:	0320f809 	jalr	t9
+  44347c:	00000000 	nop
+  443480:	8fdc0018 	lw	gp,24(s8)
+  443484:	afc20020 	sw	v0,32(s8)
+  443488:	2404000a 	li	a0,10
+  44348c:	8f828240 	lw	v0,-32192(gp)
+  443490:	0040c821 	move	t9,v0
+  443494:	0320f809 	jalr	t9
+  443498:	00000000 	nop
+  44349c:	8fdc0018 	lw	gp,24(s8)
+  4434a0:	1040000f 	beqz	v0,4434e0 <router_wan_port_diag_errcode@@Base+0xe80>
+  4434a4:	00000000 	nop
+  4434a8:	8f82822c 	lw	v0,-32212(gp)
+  4434ac:	24424f44 	addiu	v0,v0,20292
+  4434b0:	8fc30020 	lw	v1,32(s8)
+  4434b4:	afa30010 	sw	v1,16(sp)
+  4434b8:	00402021 	move	a0,v0
+  4434bc:	8f82822c 	lw	v0,-32212(gp)
+  4434c0:	24455360 	addiu	a1,v0,21344
+  4434c4:	24060a82 	li	a2,2690
+  4434c8:	8fc7013c 	lw	a3,316(s8)
+  4434cc:	8f8287c8 	lw	v0,-30776(gp)
+  4434d0:	0040c821 	move	t9,v0
+  4434d4:	0320f809 	jalr	t9
+  4434d8:	00000000 	nop
+  4434dc:	8fdc0018 	lw	gp,24(s8)
+  4434e0:	8fc30020 	lw	v1,32(s8)
+  4434e4:	24020003 	li	v0,3
+  4434e8:	10620007 	beq	v1,v0,443508 <router_wan_port_diag_errcode@@Base+0xea8>
+  4434ec:	00000000 	nop
+  4434f0:	8fc20138 	lw	v0,312(s8)
+  4434f4:	ac400010 	sw	zero,16(v0)
+  4434f8:	8fc20138 	lw	v0,312(s8)
+  4434fc:	ac400014 	sw	zero,20(v0)
+  443500:	1000009e 	b	44377c <router_wan_port_diag_errcode@@Base+0x111c>
+  443504:	00000000 	nop
+  443508:	2404000a 	li	a0,10
+  44350c:	8f828240 	lw	v0,-32192(gp)
+  443510:	0040c821 	move	t9,v0
+  443514:	0320f809 	jalr	t9
+  443518:	00000000 	nop
+  44351c:	8fdc0018 	lw	gp,24(s8)
+  443520:	1040001e 	beqz	v0,44359c <router_wan_port_diag_errcode@@Base+0xf3c>
+  443524:	00000000 	nop
+  443528:	8f82822c 	lw	v0,-32212(gp)
+  44352c:	24434f84 	addiu	v1,v0,20356
+  443530:	8fc2013c 	lw	v0,316(s8)
+  443534:	2444ffff 	addiu	a0,v0,-1
+  443538:	8f82802c 	lw	v0,-32724(gp)
+  44353c:	00042040 	sll	a0,a0,0x1
+  443540:	24840001 	addiu	a0,a0,1
+  443544:	000420c0 	sll	a0,a0,0x3
+  443548:	24420020 	addiu	v0,v0,32
+  44354c:	00821021 	addu	v0,a0,v0
+  443550:	8c420000 	lw	v0,0(v0)
+  443554:	8fc4013c 	lw	a0,316(s8)
+  443558:	2485ffff 	addiu	a1,a0,-1
+  44355c:	8f84802c 	lw	a0,-32724(gp)
+  443560:	00052900 	sll	a1,a1,0x4
+  443564:	24840020 	addiu	a0,a0,32
+  443568:	00a42021 	addu	a0,a1,a0
+  44356c:	8c840000 	lw	a0,0(a0)
+  443570:	afa40010 	sw	a0,16(sp)
+  443574:	00602021 	move	a0,v1
+  443578:	8f83822c 	lw	v1,-32212(gp)
+  44357c:	24655360 	addiu	a1,v1,21344
+  443580:	24060a8c 	li	a2,2700
+  443584:	00403821 	move	a3,v0
+  443588:	8f8287c8 	lw	v0,-30776(gp)
+  44358c:	0040c821 	move	t9,v0
+  443590:	0320f809 	jalr	t9
+  443594:	00000000 	nop
+  443598:	8fdc0018 	lw	gp,24(s8)
+  44359c:	8fc2013c 	lw	v0,316(s8)
+  4435a0:	2443ffff 	addiu	v1,v0,-1
+  4435a4:	8f82802c 	lw	v0,-32724(gp)
+  4435a8:	00031840 	sll	v1,v1,0x1
+  4435ac:	24630001 	addiu	v1,v1,1
+  4435b0:	000318c0 	sll	v1,v1,0x3
+  4435b4:	24420020 	addiu	v0,v0,32
+  4435b8:	00621021 	addu	v0,v1,v0
+  4435bc:	8c430000 	lw	v1,0(v0)
+  4435c0:	8fc2013c 	lw	v0,316(s8)
+  4435c4:	2444ffff 	addiu	a0,v0,-1
+  4435c8:	8f82802c 	lw	v0,-32724(gp)
+  4435cc:	00042100 	sll	a0,a0,0x4
+  4435d0:	24420020 	addiu	v0,v0,32
+  4435d4:	00821021 	addu	v0,a0,v0
+  4435d8:	8c420000 	lw	v0,0(v0)
+  4435dc:	0043102a 	slt	v0,v0,v1
+  4435e0:	10400016 	beqz	v0,44363c <router_wan_port_diag_errcode@@Base+0xfdc>
+  4435e4:	00000000 	nop
+  4435e8:	8fc2013c 	lw	v0,316(s8)
+  4435ec:	2443ffff 	addiu	v1,v0,-1
+  4435f0:	8f82802c 	lw	v0,-32724(gp)
+  4435f4:	00031840 	sll	v1,v1,0x1
+  4435f8:	24630001 	addiu	v1,v1,1
+  4435fc:	000318c0 	sll	v1,v1,0x3
+  443600:	24420020 	addiu	v0,v0,32
+  443604:	00621021 	addu	v0,v1,v0
+  443608:	8c430000 	lw	v1,0(v0)
+  44360c:	8fc2013c 	lw	v0,316(s8)
+  443610:	2444ffff 	addiu	a0,v0,-1
+  443614:	8f82802c 	lw	v0,-32724(gp)
+  443618:	00042100 	sll	a0,a0,0x4
+  44361c:	24420020 	addiu	v0,v0,32
+  443620:	00821021 	addu	v0,a0,v0
+  443624:	8c420000 	lw	v0,0(v0)
+
+--- get_router_wan_rate VA=0x475360 ---
+  4434f0:	8fc20138 	lw	v0,312(s8)
+  4434f4:	ac400010 	sw	zero,16(v0)
+  4434f8:	8fc20138 	lw	v0,312(s8)
+  4434fc:	ac400014 	sw	zero,20(v0)
+  443500:	1000009e 	b	44377c <router_wan_port_diag_errcode@@Base+0x111c>
+  443504:	00000000 	nop
+  443508:	2404000a 	li	a0,10
+  44350c:	8f828240 	lw	v0,-32192(gp)
+  443510:	0040c821 	move	t9,v0
+  443514:	0320f809 	jalr	t9
+  443518:	00000000 	nop
+  44351c:	8fdc0018 	lw	gp,24(s8)
+  443520:	1040001e 	beqz	v0,44359c <router_wan_port_diag_errcode@@Base+0xf3c>
+  443524:	00000000 	nop
+  443528:	8f82822c 	lw	v0,-32212(gp)
+  44352c:	24434f84 	addiu	v1,v0,20356
+  443530:	8fc2013c 	lw	v0,316(s8)
+  443534:	2444ffff 	addiu	a0,v0,-1
+  443538:	8f82802c 	lw	v0,-32724(gp)
+  44353c:	00042040 	sll	a0,a0,0x1
+  443540:	24840001 	addiu	a0,a0,1
+  443544:	000420c0 	sll	a0,a0,0x3
+  443548:	24420020 	addiu	v0,v0,32
+  44354c:	00821021 	addu	v0,a0,v0
+  443550:	8c420000 	lw	v0,0(v0)
+  443554:	8fc4013c 	lw	a0,316(s8)
+  443558:	2485ffff 	addiu	a1,a0,-1
+  44355c:	8f84802c 	lw	a0,-32724(gp)
+  443560:	00052900 	sll	a1,a1,0x4
+  443564:	24840020 	addiu	a0,a0,32
+  443568:	00a42021 	addu	a0,a1,a0
+  44356c:	8c840000 	lw	a0,0(a0)
+  443570:	afa40010 	sw	a0,16(sp)
+  443574:	00602021 	move	a0,v1
+  443578:	8f83822c 	lw	v1,-32212(gp)
+  44357c:	24655360 	addiu	a1,v1,21344
+  443580:	24060a8c 	li	a2,2700
+  443584:	00403821 	move	a3,v0
+  443588:	8f8287c8 	lw	v0,-30776(gp)
+  44358c:	0040c821 	move	t9,v0
+  443590:	0320f809 	jalr	t9
+  443594:	00000000 	nop
+  443598:	8fdc0018 	lw	gp,24(s8)
+  44359c:	8fc2013c 	lw	v0,316(s8)
+  4435a0:	2443ffff 	addiu	v1,v0,-1
+  4435a4:	8f82802c 	lw	v0,-32724(gp)
+  4435a8:	00031840 	sll	v1,v1,0x1
+  4435ac:	24630001 	addiu	v1,v1,1
+  4435b0:	000318c0 	sll	v1,v1,0x3
+  4435b4:	24420020 	addiu	v0,v0,32
+  4435b8:	00621021 	addu	v0,v1,v0
+  4435bc:	8c430000 	lw	v1,0(v0)
+  4435c0:	8fc2013c 	lw	v0,316(s8)
+  4435c4:	2444ffff 	addiu	a0,v0,-1
+  4435c8:	8f82802c 	lw	v0,-32724(gp)
+  4435cc:	00042100 	sll	a0,a0,0x4
+  4435d0:	24420020 	addiu	v0,v0,32
+  4435d4:	00821021 	addu	v0,a0,v0
+  4435d8:	8c420000 	lw	v0,0(v0)
+  4435dc:	0043102a 	slt	v0,v0,v1
+  4435e0:	10400016 	beqz	v0,44363c <router_wan_port_diag_errcode@@Base+0xfdc>
+  4435e4:	00000000 	nop
+  4435e8:	8fc2013c 	lw	v0,316(s8)
+  4435ec:	2443ffff 	addiu	v1,v0,-1
+  4435f0:	8f82802c 	lw	v0,-32724(gp)
+  4435f4:	00031840 	sll	v1,v1,0x1
+  4435f8:	24630001 	addiu	v1,v1,1
+  4435fc:	000318c0 	sll	v1,v1,0x3
+  443600:	24420020 	addiu	v0,v0,32
+  443604:	00621021 	addu	v0,v1,v0
+  443608:	8c430000 	lw	v1,0(v0)
+  44360c:	8fc2013c 	lw	v0,316(s8)
+  443610:	2444ffff 	addiu	a0,v0,-1
+  443614:	8f82802c 	lw	v0,-32724(gp)
+  443618:	00042100 	sll	a0,a0,0x4
+  44361c:	24420020 	addiu	v0,v0,32
+  443620:	00821021 	addu	v0,a0,v0
+  443624:	8c420000 	lw	v0,0(v0)
+  443628:	00621823 	subu	v1,v1,v0
+  44362c:	8fc20138 	lw	v0,312(s8)
+  443630:	ac430010 	sw	v1,16(v0)
+  443634:	10000003 	b	443644 <router_wan_port_diag_errcode@@Base+0xfe4>
+  443638:	00000000 	nop
+  44363c:	8fc20138 	lw	v0,312(s8)
+  443640:	ac400010 	sw	zero,16(v0)
+  443644:	2404000a 	li	a0,10
+  443648:	8f828240 	lw	v0,-32192(gp)
+  44364c:	0040c821 	move	t9,v0
+  443650:	0320f809 	jalr	t9
+  443654:	00000000 	nop
+  443658:	8fdc0018 	lw	gp,24(s8)
+  44365c:	1040001d 	beqz	v0,4436d4 <router_wan_port_diag_errcode@@Base+0x1074>
+  443660:	00000000 	nop
+  443664:	8f82822c 	lw	v0,-32212(gp)
+  443668:	24444fc8 	addiu	a0,v0,20424
+  44366c:	8fc2013c 	lw	v0,316(s8)
+  443670:	2442ffff 	addiu	v0,v0,-1
+  443674:	8f83802c 	lw	v1,-32724(gp)
+  443678:	00021040 	sll	v0,v0,0x1
+  44367c:	24420001 	addiu	v0,v0,1
+  443680:	24630020 	addiu	v1,v1,32
+  443684:	000210c0 	sll	v0,v0,0x3
+  443688:	00621021 	addu	v0,v1,v0
+  44368c:	8c430004 	lw	v1,4(v0)
+  443690:	8fc2013c 	lw	v0,316(s8)
+  443694:	2442ffff 	addiu	v0,v0,-1
+  443698:	8f85802c 	lw	a1,-32724(gp)
+  44369c:	24a50020 	addiu	a1,a1,32
+  4436a0:	00021100 	sll	v0,v0,0x4
+  4436a4:	00a21021 	addu	v0,a1,v0
+  4436a8:	8c420004 	lw	v0,4(v0)
+  4436ac:	afa20010 	sw	v0,16(sp)
+  4436b0:	8f82822c 	lw	v0,-32212(gp)
+  4436b4:	24455360 	addiu	a1,v0,21344
+  4436b8:	24060a93 	li	a2,2707
+  4436bc:	00603821 	move	a3,v1
+  4436c0:	8f8287c8 	lw	v0,-30776(gp)
+  4436c4:	0040c821 	move	t9,v0
+  4436c8:	0320f809 	jalr	t9
+  4436cc:	00000000 	nop
+  4436d0:	8fdc0018 	lw	gp,24(s8)
+  4436d4:	8fc2013c 	lw	v0,316(s8)
+  4436d8:	2442ffff 	addiu	v0,v0,-1
+  4436dc:	8f83802c 	lw	v1,-32724(gp)
+  4436e0:	00021040 	sll	v0,v0,0x1
+
+--- get_router_wan_rate VA=0x475360 ---
+  443628:	00621823 	subu	v1,v1,v0
+  44362c:	8fc20138 	lw	v0,312(s8)
+  443630:	ac430010 	sw	v1,16(v0)
+  443634:	10000003 	b	443644 <router_wan_port_diag_errcode@@Base+0xfe4>
+  443638:	00000000 	nop
+  44363c:	8fc20138 	lw	v0,312(s8)
+  443640:	ac400010 	sw	zero,16(v0)
+  443644:	2404000a 	li	a0,10
+  443648:	8f828240 	lw	v0,-32192(gp)
+  44364c:	0040c821 	move	t9,v0
+  443650:	0320f809 	jalr	t9
+  443654:	00000000 	nop
+  443658:	8fdc0018 	lw	gp,24(s8)
+  44365c:	1040001d 	beqz	v0,4436d4 <router_wan_port_diag_errcode@@Base+0x1074>
+  443660:	00000000 	nop
+  443664:	8f82822c 	lw	v0,-32212(gp)
+  443668:	24444fc8 	addiu	a0,v0,20424
+  44366c:	8fc2013c 	lw	v0,316(s8)
+  443670:	2442ffff 	addiu	v0,v0,-1
+  443674:	8f83802c 	lw	v1,-32724(gp)
+  443678:	00021040 	sll	v0,v0,0x1
+  44367c:	24420001 	addiu	v0,v0,1
+  443680:	24630020 	addiu	v1,v1,32
+  443684:	000210c0 	sll	v0,v0,0x3
+  443688:	00621021 	addu	v0,v1,v0
+  44368c:	8c430004 	lw	v1,4(v0)
+  443690:	8fc2013c 	lw	v0,316(s8)
+  443694:	2442ffff 	addiu	v0,v0,-1
+  443698:	8f85802c 	lw	a1,-32724(gp)
+  44369c:	24a50020 	addiu	a1,a1,32
+  4436a0:	00021100 	sll	v0,v0,0x4
+  4436a4:	00a21021 	addu	v0,a1,v0
+  4436a8:	8c420004 	lw	v0,4(v0)
+  4436ac:	afa20010 	sw	v0,16(sp)
+  4436b0:	8f82822c 	lw	v0,-32212(gp)
+  4436b4:	24455360 	addiu	a1,v0,21344
+  4436b8:	24060a93 	li	a2,2707
+  4436bc:	00603821 	move	a3,v1
+  4436c0:	8f8287c8 	lw	v0,-30776(gp)
+  4436c4:	0040c821 	move	t9,v0
+  4436c8:	0320f809 	jalr	t9
+  4436cc:	00000000 	nop
+  4436d0:	8fdc0018 	lw	gp,24(s8)
+  4436d4:	8fc2013c 	lw	v0,316(s8)
+  4436d8:	2442ffff 	addiu	v0,v0,-1
+  4436dc:	8f83802c 	lw	v1,-32724(gp)
+  4436e0:	00021040 	sll	v0,v0,0x1
+  4436e4:	24420001 	addiu	v0,v0,1
+  4436e8:	24630020 	addiu	v1,v1,32
+  4436ec:	000210c0 	sll	v0,v0,0x3
+  4436f0:	00621021 	addu	v0,v1,v0
+  4436f4:	8c430004 	lw	v1,4(v0)
+  4436f8:	8fc2013c 	lw	v0,316(s8)
+  4436fc:	2442ffff 	addiu	v0,v0,-1
+  443700:	8f84802c 	lw	a0,-32724(gp)
+  443704:	24840020 	addiu	a0,a0,32
+  443708:	00021100 	sll	v0,v0,0x4
+  44370c:	00821021 	addu	v0,a0,v0
+  443710:	8c420004 	lw	v0,4(v0)
+  443714:	0043102a 	slt	v0,v0,v1
+  443718:	10400016 	beqz	v0,443774 <router_wan_port_diag_errcode@@Base+0x1114>
+  44371c:	00000000 	nop
+  443720:	8fc2013c 	lw	v0,316(s8)
+  443724:	2442ffff 	addiu	v0,v0,-1
+  443728:	8f83802c 	lw	v1,-32724(gp)
+  44372c:	00021040 	sll	v0,v0,0x1
+  443730:	24420001 	addiu	v0,v0,1
+  443734:	24630020 	addiu	v1,v1,32
+  443738:	000210c0 	sll	v0,v0,0x3
+  44373c:	00621021 	addu	v0,v1,v0
+  443740:	8c430004 	lw	v1,4(v0)
+  443744:	8fc2013c 	lw	v0,316(s8)
+  443748:	2442ffff 	addiu	v0,v0,-1
+  44374c:	8f84802c 	lw	a0,-32724(gp)
+  443750:	24840020 	addiu	a0,a0,32
+  443754:	00021100 	sll	v0,v0,0x4
+  443758:	00821021 	addu	v0,a0,v0
+  44375c:	8c420004 	lw	v0,4(v0)
+  443760:	00621823 	subu	v1,v1,v0
+  443764:	8fc20138 	lw	v0,312(s8)
+  443768:	ac430014 	sw	v1,20(v0)
+  44376c:	10000003 	b	44377c <router_wan_port_diag_errcode@@Base+0x111c>
+  443770:	00000000 	nop
+  443774:	8fc20138 	lw	v0,312(s8)
+  443778:	ac400014 	sw	zero,20(v0)
+  44377c:	27c20028 	addiu	v0,s8,40
+  443780:	8f83822c 	lw	v1,-32212(gp)
+  443784:	24645010 	addiu	a0,v1,20496
+  443788:	00402821 	move	a1,v0
+  44378c:	8f828638 	lw	v0,-31176(gp)
+  443790:	0040c821 	move	t9,v0
+  443794:	0320f809 	jalr	t9
+  443798:	00000000 	nop
+  44379c:	8fdc0018 	lw	gp,24(s8)
+  4437a0:	27c20028 	addiu	v0,s8,40
+  4437a4:	8f83822c 	lw	v1,-32212(gp)
+  4437a8:	2464501c 	addiu	a0,v1,20508
+  4437ac:	00402821 	move	a1,v0
+  4437b0:	8f828958 	lw	v0,-30376(gp)
+  4437b4:	0040c821 	move	t9,v0
+  4437b8:	0320f809 	jalr	t9
+  4437bc:	00000000 	nop
+  4437c0:	8fdc0018 	lw	gp,24(s8)
+  4437c4:	14400011 	bnez	v0,44380c <router_wan_port_diag_errcode@@Base+0x11ac>
+  4437c8:	00000000 	nop
+  4437cc:	8fc20138 	lw	v0,312(s8)
+  4437d0:	8c420010 	lw	v0,16(v0)
+  4437d4:	28423201 	slti	v0,v0,12801
+  4437d8:	14400004 	bnez	v0,4437ec <router_wan_port_diag_errcode@@Base+0x118c>
+  4437dc:	00000000 	nop
+  4437e0:	8fc20138 	lw	v0,312(s8)
+  4437e4:	24033200 	li	v1,12800
+  4437e8:	ac430010 	sw	v1,16(v0)
+  4437ec:	8fc20138 	lw	v0,312(s8)
+  4437f0:	8c420014 	lw	v0,20(v0)
+  4437f4:	28423201 	slti	v0,v0,12801
+  4437f8:	14400004 	bnez	v0,44380c <router_wan_port_diag_errcode@@Base+0x11ac>
+  4437fc:	00000000 	nop
+  443800:	8fc20138 	lw	v0,312(s8)
+  443804:	24033200 	li	v1,12800
+  443808:	ac430014 	sw	v1,20(v0)
+  44380c:	8fc20138 	lw	v0,312(s8)
+  443810:	ac400018 	sw	zero,24(v0)
+  443814:	8fc20138 	lw	v0,312(s8)
+  443818:	ac40001c 	sw	zero,28(v0)
+
+--- get_router_wan_rate VA=0x475360 ---
+  461d80:	00402021 	move	a0,v0
+  461d84:	8f99851c 	lw	t9,-31460(gp)
+  461d88:	0320f809 	jalr	t9
+  461d8c:	00408021 	move	s0,v0
+  461d90:	8fbc0010 	lw	gp,16(sp)
+  461d94:	00402021 	move	a0,v0
+  461d98:	00602821 	move	a1,v1
+  461d9c:	8f828494 	lw	v0,-31596(gp)
+  461da0:	8f998440 	lw	t9,-31680(gp)
+  461da4:	8c46edf8 	lw	a2,-4616(v0)
+  461da8:	0320f809 	jalr	t9
+  461dac:	8c47edfc 	lw	a3,-4612(v0)
+  461db0:	8fbc0010 	lw	gp,16(sp)
+  461db4:	02402021 	move	a0,s2
+  461db8:	02202821 	move	a1,s1
+  461dbc:	8f998520 	lw	t9,-31456(gp)
+  461dc0:	00403021 	move	a2,v0
+  461dc4:	0320f809 	jalr	t9
+  461dc8:	00603821 	move	a3,v1
+  461dcc:	8fbc0010 	lw	gp,16(sp)
+  461dd0:	00602821 	move	a1,v1
+  461dd4:	8f998518 	lw	t9,-31464(gp)
+  461dd8:	0320f809 	jalr	t9
+  461ddc:	00402021 	move	a0,v0
+  461de0:	02001821 	move	v1,s0
+  461de4:	8fbf0024 	lw	ra,36(sp)
+  461de8:	8fb20020 	lw	s2,32(sp)
+  461dec:	8fb1001c 	lw	s1,28(sp)
+  461df0:	8fb00018 	lw	s0,24(sp)
+  461df4:	03e00008 	jr	ra
+  461df8:	27bd0028 	addiu	sp,sp,40
+  461dfc:	00000000 	nop
+
+00461e00 <__fixunsdfdi@@Base>:
+  461e00:	3c1c0003 	lui	gp,0x3
+  461e04:	279c5360 	addiu	gp,gp,21344
+  461e08:	0399e021 	addu	gp,gp,t9
+  461e0c:	27bdffd8 	addiu	sp,sp,-40
+  461e10:	afbf0024 	sw	ra,36(sp)
+  461e14:	afb30020 	sw	s3,32(sp)
+  461e18:	afb2001c 	sw	s2,28(sp)
+  461e1c:	afb00018 	sw	s0,24(sp)
+  461e20:	afbc0010 	sw	gp,16(sp)
+  461e24:	8f828494 	lw	v0,-31596(gp)
+  461e28:	8f998440 	lw	t9,-31680(gp)
+  461e2c:	00809021 	move	s2,a0
+  461e30:	8c46edf0 	lw	a2,-4624(v0)
+  461e34:	8c47edf4 	lw	a3,-4620(v0)
+  461e38:	0320f809 	jalr	t9
+  461e3c:	00a09821 	move	s3,a1
+  461e40:	8fbc0010 	lw	gp,16(sp)
+  461e44:	00602821 	move	a1,v1
+  461e48:	8f998518 	lw	t9,-31464(gp)
+  461e4c:	0320f809 	jalr	t9
+  461e50:	00402021 	move	a0,v0
+  461e54:	8fbc0010 	lw	gp,16(sp)
+  461e58:	00402021 	move	a0,v0
+  461e5c:	8f99851c 	lw	t9,-31460(gp)
+  461e60:	0320f809 	jalr	t9
+  461e64:	00408021 	move	s0,v0
+  461e68:	8fbc0010 	lw	gp,16(sp)
+  461e6c:	00402021 	move	a0,v0
+  461e70:	00602821 	move	a1,v1
+  461e74:	8f828494 	lw	v0,-31596(gp)
+  461e78:	8f998440 	lw	t9,-31680(gp)
+  461e7c:	8c46edf8 	lw	a2,-4616(v0)
+  461e80:	0320f809 	jalr	t9
+  461e84:	8c47edfc 	lw	a3,-4612(v0)
+  461e88:	8fbc0010 	lw	gp,16(sp)
+  461e8c:	02402021 	move	a0,s2
+  461e90:	02602821 	move	a1,s3
+  461e94:	8f998520 	lw	t9,-31456(gp)
+  461e98:	00403021 	move	a2,v0
+  461e9c:	0320f809 	jalr	t9
+  461ea0:	00603821 	move	a3,v1
+  461ea4:	8fbc0010 	lw	gp,16(sp)
+  461ea8:	00602821 	move	a1,v1
+  461eac:	8f998518 	lw	t9,-31464(gp)
+  461eb0:	0320f809 	jalr	t9
+  461eb4:	00402021 	move	a0,v0
+  461eb8:	02001821 	move	v1,s0
+  461ebc:	8fbf0024 	lw	ra,36(sp)
+  461ec0:	8fb30020 	lw	s3,32(sp)
+  461ec4:	8fb2001c 	lw	s2,28(sp)
+  461ec8:	8fb00018 	lw	s0,24(sp)
+  461ecc:	03e00008 	jr	ra
+  461ed0:	27bd0028 	addiu	sp,sp,40
+	...
+
+00461ee0 <__floatundisf@@Base>:
+  461ee0:	3c1c0003 	lui	gp,0x3
+  461ee4:	279c5280 	addiu	gp,gp,21120
+  461ee8:	0399e021 	addu	gp,gp,t9
+  461eec:	27bdffd8 	addiu	sp,sp,-40
+  461ef0:	afbf0024 	sw	ra,36(sp)
+  461ef4:	afb10020 	sw	s1,32(sp)
+  461ef8:	afb0001c 	sw	s0,28(sp)
+  461efc:	afbc0010 	sw	gp,16(sp)
+  461f00:	3c020020 	lui	v0,0x20
+  461f04:	00a2102b 	sltu	v0,a1,v0
+  461f08:	14400006 	bnez	v0,461f24 <__floatundisf@@Base+0x44>
+  461f0c:	00808021 	move	s0,a0
+  461f10:	308207ff 	andi	v0,a0,0x7ff
+  461f14:	10400003 	beqz	v0,461f24 <__floatundisf@@Base+0x44>
+  461f18:	2402f800 	li	v0,-2048
+  461f1c:	00828024 	and	s0,a0,v0
+  461f20:	36100800 	ori	s0,s0,0x800
+  461f24:	8f99851c 	lw	t9,-31460(gp)
+  461f28:	0320f809 	jalr	t9
+  461f2c:	00a02021 	move	a0,a1
+  461f30:	8fbc0010 	lw	gp,16(sp)
+  461f34:	00602821 	move	a1,v1
+  461f38:	00402021 	move	a0,v0
+  461f3c:	8f868494 	lw	a2,-31596(gp)
+  461f40:	8f998440 	lw	t9,-31680(gp)
+  461f44:	8cc7ee04 	lw	a3,-4604(a2)
+  461f48:	0320f809 	jalr	t9
+  461f4c:	8cc6ee00 	lw	a2,-4608(a2)
+  461f50:	8fbc0010 	lw	gp,16(sp)
+  461f54:	02002021 	move	a0,s0
+  461f58:	00408821 	move	s1,v0
+  461f5c:	8f99851c 	lw	t9,-31460(gp)
+  461f60:	0320f809 	jalr	t9
+  461f64:	00608021 	move	s0,v1
+  461f68:	8fbc0010 	lw	gp,16(sp)
+
+--- fill_bridge_wan_rate VA=0x47538c ---
+  442d78:	8fc30020 	lw	v1,32(s8)
+  442d7c:	8fc20040 	lw	v0,64(s8)
+  442d80:	0062102a 	slt	v0,v1,v0
+  442d84:	1440ffb9 	bnez	v0,442c6c <router_wan_port_diag_errcode@@Base+0x60c>
+  442d88:	00000000 	nop
+  442d8c:	8fc20018 	lw	v0,24(s8)
+  442d90:	03c0e821 	move	sp,s8
+  442d94:	8fbf0034 	lw	ra,52(sp)
+  442d98:	8fbe0030 	lw	s8,48(sp)
+  442d9c:	8fb0002c 	lw	s0,44(sp)
+  442da0:	27bd0038 	addiu	sp,sp,56
+  442da4:	03e00008 	jr	ra
+  442da8:	00000000 	nop
+  442dac:	3c1c0005 	lui	gp,0x5
+  442db0:	279c43b4 	addiu	gp,gp,17332
+  442db4:	0399e021 	addu	gp,gp,t9
+  442db8:	27bdffd0 	addiu	sp,sp,-48
+  442dbc:	afbf002c 	sw	ra,44(sp)
+  442dc0:	afbe0028 	sw	s8,40(sp)
+  442dc4:	03a0f021 	move	s8,sp
+  442dc8:	afbc0010 	sw	gp,16(sp)
+  442dcc:	afc40030 	sw	a0,48(s8)
+  442dd0:	afc50034 	sw	a1,52(s8)
+  442dd4:	afc60038 	sw	a2,56(s8)
+  442dd8:	afc00018 	sw	zero,24(s8)
+  442ddc:	8fc20030 	lw	v0,48(s8)
+  442de0:	10400004 	beqz	v0,442df4 <router_wan_port_diag_errcode@@Base+0x794>
+  442de4:	00000000 	nop
+  442de8:	8fc20034 	lw	v0,52(s8)
+  442dec:	1440000f 	bnez	v0,442e2c <router_wan_port_diag_errcode@@Base+0x7cc>
+  442df0:	00000000 	nop
+  442df4:	8f82822c 	lw	v0,-32212(gp)
+  442df8:	244248e4 	addiu	v0,v0,18660
+  442dfc:	00402021 	move	a0,v0
+  442e00:	8f82822c 	lw	v0,-32212(gp)
+  442e04:	2445538c 	addiu	a1,v0,21388
+  442e08:	24060a1f 	li	a2,2591
+  442e0c:	8f8287c8 	lw	v0,-30776(gp)
+  442e10:	0040c821 	move	t9,v0
+  442e14:	0320f809 	jalr	t9
+  442e18:	00000000 	nop
+  442e1c:	8fdc0010 	lw	gp,16(s8)
+  442e20:	2402ffff 	li	v0,-1
+  442e24:	10000057 	b	442f84 <router_wan_port_diag_errcode@@Base+0x924>
+  442e28:	00000000 	nop
+  442e2c:	afc00020 	sw	zero,32(s8)
+  442e30:	1000004e 	b	442f6c <router_wan_port_diag_errcode@@Base+0x90c>
+  442e34:	00000000 	nop
+  442e38:	8fc20020 	lw	v0,32(s8)
+  442e3c:	000210c0 	sll	v0,v0,0x3
+  442e40:	00021880 	sll	v1,v0,0x2
+  442e44:	00431021 	addu	v0,v0,v1
+  442e48:	8fc30034 	lw	v1,52(s8)
+  442e4c:	00621021 	addu	v0,v1,v0
+  442e50:	00402021 	move	a0,v0
+  442e54:	8f8288dc 	lw	v0,-30500(gp)
+  442e58:	0040c821 	move	t9,v0
+  442e5c:	0320f809 	jalr	t9
+  442e60:	00000000 	nop
+  442e64:	8fdc0010 	lw	gp,16(s8)
+  442e68:	8fc20020 	lw	v0,32(s8)
+  442e6c:	000210c0 	sll	v0,v0,0x3
+  442e70:	00021880 	sll	v1,v0,0x2
+  442e74:	00431021 	addu	v0,v0,v1
+  442e78:	8fc30034 	lw	v1,52(s8)
+  442e7c:	00621021 	addu	v0,v1,v0
+  442e80:	8fc30020 	lw	v1,32(s8)
+  442e84:	ac43000c 	sw	v1,12(v0)
+  442e88:	8fc20020 	lw	v0,32(s8)
+  442e8c:	000210c0 	sll	v0,v0,0x3
+  442e90:	00021880 	sll	v1,v0,0x2
+  442e94:	00431021 	addu	v0,v0,v1
+  442e98:	8fc30034 	lw	v1,52(s8)
+  442e9c:	00621021 	addu	v0,v1,v0
+  442ea0:	ac400010 	sw	zero,16(v0)
+  442ea4:	8fc20020 	lw	v0,32(s8)
+  442ea8:	000210c0 	sll	v0,v0,0x3
+  442eac:	00021880 	sll	v1,v0,0x2
+  442eb0:	00431021 	addu	v0,v0,v1
+  442eb4:	8fc30034 	lw	v1,52(s8)
+  442eb8:	00621021 	addu	v0,v1,v0
+  442ebc:	ac400014 	sw	zero,20(v0)
+  442ec0:	8fc20020 	lw	v0,32(s8)
+  442ec4:	000210c0 	sll	v0,v0,0x3
+  442ec8:	00021880 	sll	v1,v0,0x2
+  442ecc:	00431021 	addu	v0,v0,v1
+  442ed0:	8fc30034 	lw	v1,52(s8)
+  442ed4:	00621021 	addu	v0,v1,v0
+  442ed8:	ac400018 	sw	zero,24(v0)
+  442edc:	8fc20020 	lw	v0,32(s8)
+  442ee0:	000210c0 	sll	v0,v0,0x3
+  442ee4:	00021880 	sll	v1,v0,0x2
+  442ee8:	00431021 	addu	v0,v0,v1
+  442eec:	8fc30034 	lw	v1,52(s8)
+  442ef0:	00621021 	addu	v0,v1,v0
+  442ef4:	ac40001c 	sw	zero,28(v0)
+  442ef8:	8fc20020 	lw	v0,32(s8)
+  442efc:	000210c0 	sll	v0,v0,0x3
+  442f00:	00021880 	sll	v1,v0,0x2
+  442f04:	00431021 	addu	v0,v0,v1
+  442f08:	8fc30034 	lw	v1,52(s8)
+  442f0c:	00621021 	addu	v0,v1,v0
+  442f10:	ac400020 	sw	zero,32(v0)
+  442f14:	8fc20020 	lw	v0,32(s8)
+  442f18:	000210c0 	sll	v0,v0,0x3
+  442f1c:	00021880 	sll	v1,v0,0x2
+  442f20:	00431021 	addu	v0,v0,v1
+  442f24:	8fc30034 	lw	v1,52(s8)
+  442f28:	00621021 	addu	v0,v1,v0
+  442f2c:	ac400024 	sw	zero,36(v0)
+  442f30:	8fc20030 	lw	v0,48(s8)
+  442f34:	8c430010 	lw	v1,16(v0)
+  442f38:	8fc20020 	lw	v0,32(s8)
+  442f3c:	00021080 	sll	v0,v0,0x2
+  442f40:	00621821 	addu	v1,v1,v0
+  442f44:	8fc20020 	lw	v0,32(s8)
+  442f48:	000210c0 	sll	v0,v0,0x3
+  442f4c:	00022080 	sll	a0,v0,0x2
+  442f50:	00441021 	addu	v0,v0,a0
+  442f54:	8fc40034 	lw	a0,52(s8)
+  442f58:	00821021 	addu	v0,a0,v0
+  442f5c:	ac620000 	sw	v0,0(v1)
+  442f60:	8fc20020 	lw	v0,32(s8)
+  442f64:	24420001 	addiu	v0,v0,1
+  442f68:	afc20020 	sw	v0,32(s8)
+
+--- print_wan_rate VA=0x4756a8 ---
+  43b4a8:	8f8285f8 	lw	v0,-31240(gp)
+  43b4ac:	0040c821 	move	t9,v0
+  43b4b0:	0320f809 	jalr	t9
+  43b4b4:	00000000 	nop
+  43b4b8:	8fdc0010 	lw	gp,16(s8)
+  43b4bc:	afc2001c 	sw	v0,28(s8)
+  43b4c0:	00001021 	move	v0,zero
+  43b4c4:	03c0e821 	move	sp,s8
+  43b4c8:	8fbf016c 	lw	ra,364(sp)
+  43b4cc:	8fbe0168 	lw	s8,360(sp)
+  43b4d0:	8fb00164 	lw	s0,356(sp)
+  43b4d4:	27bd0170 	addiu	sp,sp,368
+  43b4d8:	03e00008 	jr	ra
+  43b4dc:	00000000 	nop
+  43b4e0:	3c1c0006 	lui	gp,0x6
+  43b4e4:	279cbc80 	addiu	gp,gp,-17280
+  43b4e8:	0399e021 	addu	gp,gp,t9
+  43b4ec:	27bdffd8 	addiu	sp,sp,-40
+  43b4f0:	afbf0024 	sw	ra,36(sp)
+  43b4f4:	afbe0020 	sw	s8,32(sp)
+  43b4f8:	03a0f021 	move	s8,sp
+  43b4fc:	afbc0010 	sw	gp,16(sp)
+  43b500:	afc40028 	sw	a0,40(s8)
+  43b504:	8fc20028 	lw	v0,40(s8)
+  43b508:	1040005f 	beqz	v0,43b688 <confctl_get_dhcps_cfg@@Base+0x410>
+  43b50c:	00000000 	nop
+  43b510:	afc0001c 	sw	zero,28(s8)
+  43b514:	10000054 	b	43b668 <confctl_get_dhcps_cfg@@Base+0x3f0>
+  43b518:	00000000 	nop
+  43b51c:	8f82822c 	lw	v0,-32212(gp)
+  43b520:	24434854 	addiu	v1,v0,18516
+  43b524:	8fc2001c 	lw	v0,28(s8)
+  43b528:	24420001 	addiu	v0,v0,1
+  43b52c:	00602021 	move	a0,v1
+  43b530:	8f83822c 	lw	v1,-32212(gp)
+  43b534:	246556a8 	addiu	a1,v1,22184
+  43b538:	24060021 	li	a2,33
+  43b53c:	00403821 	move	a3,v0
+  43b540:	8f8287c8 	lw	v0,-30776(gp)
+  43b544:	0040c821 	move	t9,v0
+  43b548:	0320f809 	jalr	t9
+  43b54c:	00000000 	nop
+  43b550:	8fdc0010 	lw	gp,16(s8)
+  43b554:	8fc20028 	lw	v0,40(s8)
+  43b558:	8c430010 	lw	v1,16(v0)
+  43b55c:	8fc2001c 	lw	v0,28(s8)
+  43b560:	00021080 	sll	v0,v0,0x2
+  43b564:	00621021 	addu	v0,v1,v0
+  43b568:	8c420000 	lw	v0,0(v0)
+  43b56c:	afc20018 	sw	v0,24(s8)
+  43b570:	8f82822c 	lw	v0,-32212(gp)
+  43b574:	24434874 	addiu	v1,v0,18548
+  43b578:	8fc20018 	lw	v0,24(s8)
+  43b57c:	8c42000c 	lw	v0,12(v0)
+  43b580:	00602021 	move	a0,v1
+  43b584:	00402821 	move	a1,v0
+  43b588:	8f8287c8 	lw	v0,-30776(gp)
+  43b58c:	0040c821 	move	t9,v0
+  43b590:	0320f809 	jalr	t9
+  43b594:	00000000 	nop
+  43b598:	8fdc0010 	lw	gp,16(s8)
+  43b59c:	8f82822c 	lw	v0,-32212(gp)
+  43b5a0:	24434880 	addiu	v1,v0,18560
+  43b5a4:	8fc20018 	lw	v0,24(s8)
+  43b5a8:	8c420010 	lw	v0,16(v0)
+  43b5ac:	00602021 	move	a0,v1
+  43b5b0:	00402821 	move	a1,v0
+  43b5b4:	8f8287c8 	lw	v0,-30776(gp)
+  43b5b8:	0040c821 	move	t9,v0
+  43b5bc:	0320f809 	jalr	t9
+  43b5c0:	00000000 	nop
+  43b5c4:	8fdc0010 	lw	gp,16(s8)
+  43b5c8:	8f82822c 	lw	v0,-32212(gp)
+  43b5cc:	24434890 	addiu	v1,v0,18576
+  43b5d0:	8fc20018 	lw	v0,24(s8)
+  43b5d4:	8c420014 	lw	v0,20(v0)
+  43b5d8:	00602021 	move	a0,v1
+  43b5dc:	00402821 	move	a1,v0
+  43b5e0:	8f8287c8 	lw	v0,-30776(gp)
+  43b5e4:	0040c821 	move	t9,v0
+  43b5e8:	0320f809 	jalr	t9
+  43b5ec:	00000000 	nop
+  43b5f0:	8fdc0010 	lw	gp,16(s8)
+  43b5f4:	8f82822c 	lw	v0,-32212(gp)
+  43b5f8:	244448a4 	addiu	a0,v0,18596
+  43b5fc:	8fc20018 	lw	v0,24(s8)
+  43b600:	8c430018 	lw	v1,24(v0)
+  43b604:	8fc20018 	lw	v0,24(s8)
+  43b608:	8c42001c 	lw	v0,28(v0)
+  43b60c:	00602821 	move	a1,v1
+  43b610:	00403021 	move	a2,v0
+  43b614:	8f8287c8 	lw	v0,-30776(gp)
+  43b618:	0040c821 	move	t9,v0
+  43b61c:	0320f809 	jalr	t9
+  43b620:	00000000 	nop
+  43b624:	8fdc0010 	lw	gp,16(s8)
+  43b628:	8f82822c 	lw	v0,-32212(gp)
+  43b62c:	244448b8 	addiu	a0,v0,18616
+  43b630:	8fc20018 	lw	v0,24(s8)
+  43b634:	8c430020 	lw	v1,32(v0)
+  43b638:	8fc20018 	lw	v0,24(s8)
+  43b63c:	8c420024 	lw	v0,36(v0)
+  43b640:	00602821 	move	a1,v1
+  43b644:	00403021 	move	a2,v0
+  43b648:	8f8287c8 	lw	v0,-30776(gp)
+  43b64c:	0040c821 	move	t9,v0
+  43b650:	0320f809 	jalr	t9
+  43b654:	00000000 	nop
+  43b658:	8fdc0010 	lw	gp,16(s8)
+  43b65c:	8fc2001c 	lw	v0,28(s8)
+  43b660:	24420001 	addiu	v0,v0,1
+  43b664:	afc2001c 	sw	v0,28(s8)
+  43b668:	8fc3001c 	lw	v1,28(s8)
+  43b66c:	8fc20028 	lw	v0,40(s8)
+  43b670:	8c42000c 	lw	v0,12(v0)
+  43b674:	0062102b 	sltu	v0,v1,v0
+  43b678:	1440ffa8 	bnez	v0,43b51c <confctl_get_dhcps_cfg@@Base+0x2a4>
+  43b67c:	00000000 	nop
+  43b680:	10000002 	b	43b68c <confctl_get_dhcps_cfg@@Base+0x414>
+  43b684:	00000000 	nop
+  43b688:	00000000 	nop
+  43b68c:	03c0e821 	move	sp,s8
+  43b690:	8fbf0024 	lw	ra,36(sp)
+  43b694:	8fbe0020 	lw	s8,32(sp)
+  43b698:	27bd0028 	addiu	sp,sp,40
+
+===== LIBUCAPI WAN/TRAFFIC STRINGS =====
+   2e80 uc_api_m_cloud_info_send_dev_traffic
+  1f86c MESH_WAN
+  1f878 MESH_WAN_SET
+  1f894 MESH_WAN_GET
+  1f8b4 M_MESH_WAN
+  1f8c0 CMD_MESH_WAN_DETECT
+  1f8e4 CMD_MESH_WAN_STATUS
+  1f904 CMD_MESH_WAN_DIAG
+  1f924 CMD_MESH_WAN_LINEUP_GET
+  1f93c GetTrafficInfo
+  1f94c CMD_MESH_WAN_TRAFFIC
+  202a0 CMD_MESH_WAN_INTERNET
+
+===== WAN_RATE INIT/PACK SYMBOLS =====
+
+--- firmware-src/RootFS-unpacked/lib/libpb.so ---
+   106: 00021f00   160 FUNC    GLOBAL DEFAULT   10 wan_rate__pack_to_buffer
+   191: 00022008   160 FUNC    GLOBAL DEFAULT   10 wan_rate__free_unpacked
+   281: 00021e60   160 FUNC    GLOBAL DEFAULT   10 wan_rate__pack
+   316: 00021fa0   104 FUNC    GLOBAL DEFAULT   10 wan_rate__unpack
+   413: 00021dc8   152 FUNC    GLOBAL DEFAULT   10 wan_rate__get_packed_size
+   462: 0003fdf0    60 OBJECT  GLOBAL DEFAULT   18 wan_rate__descriptor
+   614: 00021d58   112 FUNC    GLOBAL DEFAULT   10 wan_rate__init
+
+--- firmware-src/RootFS-unpacked/bin/confsrv ---
+    40: 00444598  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_traffic_info
+   164: 00444ab4   152 FUNC    GLOBAL DEFAULT   12 confctl_wan_traffic_info_init
+   338: 00465ee0     0 FUNC    GLOBAL DEFAULT  UND wan_rate__get_packed_size
+   555: 00465280     0 FUNC    GLOBAL DEFAULT  UND get_interface_statistics
+   560: 00465240     0 FUNC    GLOBAL DEFAULT  UND wan_rate__pack
+   591: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_rate__descriptor
+   606: 00464fb0     0 FUNC    GLOBAL DEFAULT  UND get_wan_statistics
+
+--- firmware-src/RootFS-unpacked/lib/libucapi.so ---
+    52: 00007698    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_dev_traffic
+   208: 00017c2c    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_rate_get_hdl_reg
