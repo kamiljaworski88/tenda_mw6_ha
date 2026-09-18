@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–157.
+after Runs 37 and 123–161.
 
 ## 1. Local API surface
 
@@ -204,13 +204,34 @@ offsets in `struct sk_buff`.
 | `+0x60/+0x64` | `+0x28` current download |
 | `+0x68/+0x6c` | `+0x30` previous download |
 
-The userspace helper then computes
-`delta_bytes / elapsed_seconds / 1024`.
+Run 158 resolves the arithmetic constants exactly:
+
+- `1,000,000.0f` — microseconds per second,
+- `1024.0f` — bytes per KiB.
+
+The userspace helper computes, for each direction:
+
+```text
+rate = trunc(
+    delta_bytes
+    / (elapsed_microseconds / 1_000_000.0)
+    / 1024.0
+)
+```
+
+The two statistics snapshots are separated by approximately 500,000 µs when
+the helper needs to wait for a fresh interval.
 
 Therefore:
 
-- `uprate` = upload rate in KiB/s,
-- `downrate` = download rate in KiB/s.
+- `uprate` = integer upload rate in KiB/s,
+- `downrate` = integer download rate in KiB/s,
+- values below 1 KiB/s truncate to 0,
+- at an exact 0.5 s sample window roughly 512 transferred bytes are sufficient
+  to reach a displayed value of 1 KiB/s.
+
+Thus idle/background traffic can legitimately display 0, but sustained
+Speedtest-class traffic cannot be explained by integer truncation alone.
 
 ## 12. What zero rates now mean
 
@@ -422,21 +443,47 @@ Thus both wireless and wired HostInfo identity normally converge on current
 ARP state. A persistent strict-match failure now requires a specific runtime
 discrepancy rather than a generic stale-cache mechanism.
 
-## 15. Current zero-rate decision tree
+## 15. Independent WAN traffic control — Runs 159–161
+
+The same authenticated TCP/9000 session exposes the confirmed read-only
+`M_MESH_WAN[18] / CMD_MESH_WAN_TRAFFIC[8]` command (`GetTrafficInfo`).
+
+The protobuf schema is now resolved:
+
+`WanRate` contains repeated `WanPortRate` messages with fields:
+
+1. `idx`
+2. `uprate`
+3. `downrate`
+4. `total_up`
+5. `total_down`
+
+This gives the client diagnostic an independent control signal: the router can
+prove that WAN traffic existed during the same period in which a particular
+HostInfo reports zero per-client rate.
+
+The diagnostic intentionally uses WAN `uprate/downrate` only as a non-zero
+control and does not yet assign a user-facing unit to those aggregate fields.
+
+## 16. Current zero-rate decision tree
 
 Static reverse engineering has now resolved the kernel accounting path,
-userspace inventory gate, and the normal wireless identity source.
+userspace inventory gate, normal wired/wireless identity source, exact
+per-client arithmetic, and an independent WAN traffic control.
 
-The remaining live distinction is:
+The live distinction is now:
 
 1. **HostInfo.online drops to 0** while the client is expected to be active:
    investigate `device_list` reporting / 45-second last-seen watchdog first.
-2. **HostInfo.online stays 1 for >45 s but both rates remain 0 under real
-   traffic**: focus on the live `g_ip_info` snapshot, strict IP+MAC match, or
-   online-ip counters.
-3. **Any non-zero rate appears**: the complete local per-client rate pipeline
-   is working for that client.
+2. **HostInfo.online stays 1, WAN traffic is independently non-zero, but the
+   selected client remains 0/0**: this is strong evidence to focus directly on
+   the live per-client `g_ip_info` / `online_ip` record or match.
+3. **HostInfo.online stays 1 but both client and WAN control remain zero**:
+   the run did not prove sustained forwarded traffic and is not sufficient to
+   diagnose per-client accounting.
+4. **Any non-zero client rate appears**: the complete local per-client rate
+   pipeline is working for that client.
 
-`tools/mw6_probe.py --diagnose-rates` implements this exact read-only test.
+`tools/mw6_probe.py --diagnose-rates` implements this read-only test.
 Its default observation window is 65 seconds, intentionally longer than the
 45-second inventory watchdog.
