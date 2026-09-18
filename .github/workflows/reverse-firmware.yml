@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Map skb header copy fields
+      - name: Trace skb direction-bit writers
         shell: bash
         run: |
           set -euo pipefail
@@ -30,87 +30,157 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run141-skb-header-copy-map.txt'
+          out='docs/reverse-generated/run142-skb-direction-bit-writers.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          {
-            echo '===== RUN 141: MW6 sk_buff header copy / field map ====='
-            echo 'Known: skb_iif ~= +0x70, unknown words +0x74/+0x78, rxhash = +0x7c.'
-            echo
-
-            echo '===== SYMBOLS 0x8037f000..0x8037f900 ====='
-            mipsel-linux-gnu-nm -n "$elf" | awk '$1 >= "8037f000" && $1 <= "8037f900" {print}'
-
-            echo
-            echo '===== COPY/CLONE REGION ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x8037f000 --stop-address=0x8037f900 "$elf"
-
-            echo
-            echo '===== CORE DEV RX REGION ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x8038a470 --stop-address=0x8038a650 "$elf"
-
-            echo
-            echo '===== RXHASH REGION ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x80389130 --stop-address=0x80389260 "$elf"
-
-            echo
-            echo '===== TC/FW CLASSIFIERS AROUND KNOWN SYMBOLS ====='
-            for spec in               '803b3c80 803b3e80 u32_classify'               '803b4750 803b4920 fw_change'               '803a8708 803a8910 sch_direct_xmit'; do
-              set -- $spec
-              echo "--- $3 ---"
-              mipsel-linux-gnu-objdump -drwC --start-address=0x$1 --stop-address=0x$2 "$elf"
-            done
-
-            echo
-            echo '===== FUNCTIONS REFERENCING EXACT OFFSETS +0x70/+0x74/+0x78/+0x7c ====='
-            mipsel-linux-gnu-objdump -drwC "$elf" > /tmp/mw6kernel/all.dis
-            python3 - /tmp/mw6kernel/all.dis <<'PY'
-          import re,sys
+          python3 - "$elf" firmware-src "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
-          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
-          funcs=[]
-          for i,l in enumerate(lines):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-          for fi,(st,addr,name) in enumerate(funcs):
-              en=funcs[fi+1][0] if fi+1<len(funcs) else len(lines)
-              block=lines[st:en]
-              hits=[]
-              for bi,l in enumerate(block):
-                  m=re.search(r'\b(lw|sw|lh|lhu|sh|lb|lbu|sb)\s+[^,]+,(112|116|120|124)\(([a-z0-9]+)\)',l,re.I)
-                  if m: hits.append((bi,l))
-              if not hits: continue
-              # Keep network/skb/netfilter/driver functions, plus copy/clone/allocation functions.
-              if not re.search(r'skb|netif|conntrack|rtl|packet|bridge|br_|ip_|udp|tcp|fastpath|nat|qdisc|classif|copy|clone|alloc',name,re.I):
-                  continue
-              print(f"\n--- 0x{addr:08x} <{name}> ---")
+
+          kernel=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
+
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
+
+          def parse_funcs(text):
+              lines=text.splitlines()
+              funcs=[]
+              for i,l in enumerate(lines):
+                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                  if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+              return lines, funcs
+
+          def owner(funcs, idx):
+              lo,hi=0,len(funcs)
+              while lo<hi:
+                  mid=(lo+hi)//2
+                  if funcs[mid][0]<=idx: lo=mid+1
+                  else: hi=mid
+              return funcs[lo-1] if lo else None
+
+          def interesting_writes(text,label):
+              lines,funcs=parse_funcs(text)
+              found=[]
+              for i,l in enumerate(lines):
+                  sm=re.search(r'\bsw\s+([a-z0-9]+),120\(([a-z0-9]+)\)',l,re.I)
+                  if not sm: continue
+                  src,base=sm.group(1),sm.group(2)
+                  fn=owner(funcs,i)
+                  if not fn: continue
+
+                  # Backward slice over a short basic-block-like window.
+                  tags=[]
+                  for j in range(max(fn[0],i-32),i):
+                      x=lines[j]
+                      if re.search(rf'\bori\s+{src},{src},(0x[0-9a-f]+|\d+)\b',x,re.I):
+                          val=int(re.search(r'(0x[0-9a-f]+|\d+)\s*$',x,re.I).group(1),0)
+                          if val & 1: tags.append(f"ORI_BIT1:{val:#x}")
+                          if val & 2: tags.append(f"ORI_BIT2:{val:#x}")
+                      m=re.search(rf'\b(?:li|addiu)\s+{src},(?:zero,)?(0x[0-9a-f]+|\d+)\b',x,re.I)
+                      if m:
+                          try: val=int(m.group(1),0)
+                          except: val=-1
+                          if val in (1,2,3): tags.append(f"CONST:{val}")
+                      # Track classic load field -> OR -> store even if register changes via move.
+                      if re.search(rf'\blw\s+{src},120\({base}\)',x,re.I):
+                          tags.append("RMW_LOAD_SAME_FIELD")
+                  # Include every true skb-offset write in high-value network functions,
+                  # and all writers whose short slice contains bit 1/2 evidence.
+                  networkish=bool(re.search(
+                    r'rtl|netif|eth|wlan|conntrack|fast|nat|bridge|br_|ip_|packet|skb|xmit|rx|tx|forward|hook',
+                    fn[2],re.I))
+                  if tags or networkish:
+                      ctx=lines[max(fn[0],i-28):min(len(lines),i+18)]
+                      found.append((label,fn[1],fn[2],i,l,tags,ctx))
+              return found
+
+          kdis=run(["mipsel-linux-gnu-objdump","-drwC",str(kernel)])
+          all_found=interesting_writes(kdis,"kernel")
+
+          module_dumps={}
+          for ko in root.rglob("*.ko"):
+              d=run(["mipsel-linux-gnu-objdump","-drwC",str(ko)])
+              module_dumps[str(ko.relative_to(root))]=d
+              all_found += interesting_writes(d,str(ko.relative_to(root)))
+
+          knm=run(["mipsel-linux-gnu-nm","-n",str(kernel)])
+          syms=[]
+          for l in knm.splitlines():
+              p=l.split(maxsplit=2)
+              if len(p)==3:
+                  try:a=int(p[0],16)
+                  except:continue
+                  syms.append((a,p[1],p[2]))
+          syms.sort()
+
+          def dump_named(name, span=0x1800):
+              ms=[x for x in syms if x[2]==name]
+              if not ms: return f"===== {name}: NOT FOUND =====\n"
+              a,t,n=ms[0]; stop=a+span
+              for aa,tt,nn in syms:
+                  if aa>a:
+                      stop=min(stop,aa); break
+              return f"===== {name} @ 0x{a:x} =====\n"+run([
+                "mipsel-linux-gnu-objdump","-drwC",
+                f"--start-address=0x{a:x}",f"--stop-address=0x{stop:x}",str(kernel)])
+
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 142: MW6 skb+0x78 direction-bit writers =====\n")
+              o.write("Proven semantics from nos.ko tbq_timer_func:\n")
+              o.write("  bit 0x2 = WAN TX / client upload / LAN->WAN\n")
+              o.write("  bit 0x1 = WAN RX / client download / WAN->LAN\n\n")
+
+              for n in [
+                "interrupt_dsr_rx",
+                "rtl_netif_rx",
+                "nf_conntrack_in",
+                "fastpath_xmit_prerouting_hook",
+                "FastPath_Enter",
+                "rtl865x_handle_nat",
+                "rtl_netif_receive_skb_hooks"
+              ]:
+                  o.write(dump_named(n))
+                  o.write("\n")
+
+              o.write("===== CANDIDATE WRITES TO OFFSET +0x78 =====\n")
               seen=set()
-              for bi,l in hits:
-                  lo=max(0,bi-4); hi=min(len(block),bi+6)
-                  key=(lo,hi)
+              for label,addr,name,i,l,tags,ctx in all_found:
+                  key=(label,addr,i)
                   if key in seen: continue
                   seen.add(key)
-                  print("\n".join(block[lo:hi]))
-                  print("...")
+                  o.write(f"\n--- {label}: 0x{addr:x} <{name}> ---\n")
+                  o.write("tags: "+(", ".join(tags) if tags else "network-function write") + "\n")
+                  o.write("\n".join(ctx)+"\n")
+
+              o.write("\n===== MODULE SYMBOLS / RELOCS RELEVANT TO DIRECTION OR ACCOUNTING =====\n")
+              for label,d in module_dumps.items():
+                  if not re.search(r'nos|fast|nat|rtl|bm|portal|filter',label,re.I):
+                      continue
+                  rel=run(["mipsel-linux-gnu-objdump","-r",str(root/label)])
+                  hits=[x for x in rel.splitlines() if re.search(
+                    r'online_ip|wan_(?:tx|rx)_bytes|conntrack|fastpath|tbq|hook|hw_nat',x,re.I)]
+                  if hits:
+                      o.write(f"\n--- {label} ---\n")
+                      o.write("\n".join(hits)+"\n")
           PY
-          } > "$out"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run141-skb-header-copy-map
-          path: docs/reverse-generated/run141-skb-header-copy-map.txt
+          name: run142-skb-direction-bit-writers
+          path: docs/reverse-generated/run142-skb-direction-bit-writers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run141-skb-header-copy-map.txt
+          git add docs/reverse-generated/run142-skb-direction-bit-writers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: map skb header copy fields'
+            git commit -m 'reverse: trace skb direction bit writers'
             git push
           fi
