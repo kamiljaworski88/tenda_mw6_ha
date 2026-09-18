@@ -114,6 +114,25 @@ python .\tools\mw6_probe.py `
   --count 10
 ```
 
+For the current zero-rate investigation, use the 65-second diagnostic. It
+intentionally crosses the firmware's 45-second inventory watchdog:
+
+```powershell
+python .\tools\mw6_probe.py `
+  --pcap .\PCAPdroid_16_wrz_11_20_35.pcap `
+  --host 192.168.5.1 `
+  --diagnose-rates "CLIENT_NAME_IP_OR_MAC" `
+  --interval 5 `
+  --duration 65
+```
+
+The summary classifies the result as:
+
+- `INVENTORY_ONLINE_DROPPED` — HostInfo inventory state is stale/offline,
+- `ONLINE_BUT_RATES_ZERO` — inventory stayed valid; continue at
+  `g_ip_info` / strict IP+MAC / kernel counters,
+- `RATE_PIPELINE_ACTIVE` — non-zero per-client firmware rate was observed.
+
 The successful LOGIN payload is extracted from the capture and intentionally
 never printed.
 
@@ -142,23 +161,30 @@ The integration intentionally does not depend on Tenda cloud services.
 
 ## Current research target
 
-The main blocker is now narrowly defined: reliable runtime population and
-attachment of kernel `online_ip` records.
+The complete static pipeline is now resolved through both inventory and kernel
+accounting.
 
-Static analysis has already ruled out:
+Runs 149–151 prove:
 
-- wrong HostInfo field mapping,
-- wrong rate units,
-- missing GetHostList rate helper,
-- direction-bit confusion,
-- software FastPath bypass.
+- `HostInfo.online = client_status+0x84`,
+- client reports refresh `last_seen`,
+- a 45-second watchdog marks stale inventory offline,
+- the reporting MW6 identity becomes `HostInfo.assoc_sn`,
+- each device-list upload is merged by client MAC into the central client hash.
 
-The current target is:
+The next blocker is therefore a single runtime distinction:
 
-`nf_conntrack_in → find/add online_ip → conntrack online_ip association → NOS accounting → g_ip_info`.
+```text
+inventory watchdog
+        vs
+online HostInfo + zero g_ip_info/rate
+        vs
+working non-zero firmware rate
+```
 
-Only after non-zero live rates are reproducible should upload/download sensors
-and daily/monthly transfer entities be enabled in Home Assistant.
+Use `--diagnose-rates` under real traffic to make that distinction before
+enabling production upload/download and daily/monthly transfer entities in
+Home Assistant.
 
 ## Safety rule
 
