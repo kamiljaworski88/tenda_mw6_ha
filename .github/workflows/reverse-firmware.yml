@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/run167
+          mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
           out='docs/reverse-generated/run167-device-list-dispatch-channel.txt'
 
@@ -37,26 +37,13 @@ jobs:
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
           dis=run(["mipsel-linux-gnu-objdump","-drwC",str(dev)]).splitlines()
-          abi=run(["mipsel-linux-gnu-readelf","-A",str(dev)])
 
-          got={}
-          for l in abi.splitlines():
-              m=re.match(r'\s*([0-9a-fA-F]+)\s+(-?\d+)\(gp\)\s+([0-9a-fA-F]+)\s+[0-9a-fA-F]+\s+\S+\s+\S+\s+(.+)$',l)
-              if m:
-                  got[int(m.group(2))]=m.group(5).strip()
-
-          funcs=[]
-          for i,l in enumerate(dis):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-          starts=[]
-          for i,l in enumerate(dis):
-              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
-              if not m: continue
-              nxt='\n'.join(dis[i:min(len(dis),i+8)])
-              if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
-                  starts.append((i,int(m.group(1),16)))
-          starts=sorted(starts)
+          GOT={
+              -32516:"timer_start",
+              -32468:"timer_check_ok_and_wait",
+              -32404:"timer_stop",
+              -32348:"cmd_pub",
+          }
 
           def slice_addr(start,stop):
               outl=[]; active=False
@@ -77,12 +64,11 @@ jobs:
               ann=[]
               for i,l in enumerate(block):
                   m=re.search(r'\blw\s+v0,(-?\d+)\(gp\)',l)
-                  if not m: continue
-                  off=int(m.group(1))
-                  sym=got.get(off)
+                  if not m:continue
+                  off=int(m.group(1)); sym=GOT.get(off)
                   near='\n'.join(block[i:min(len(block),i+5)])
                   if sym and 'jalr' in near:
-                      ann.append((i,off,sym,block[max(0,i-6):min(len(block),i+8)]))
+                      ann.append((i,off,sym,block[max(0,i-7):min(len(block),i+9)]))
               return ann
 
           with dev.open('rb') as f:
@@ -93,7 +79,7 @@ jobs:
                       if va<=addr and addr+n<=va+z:
                           return sec.data()[addr-va:addr-va+n],sec.name
                   raise KeyError(hex(addr))
-              raw,sec=read_va(0x4103b0,0x80)
+              raw,sec=read_va(0x4103b0,0x90)
 
           mini=[]
           base=0x4103b0
@@ -104,47 +90,49 @@ jobs:
               if q>p and q<len(raw) and raw[q]==0:
                   mini.append((base+p,raw[p:q].decode('ascii','replace')))
                   p=q+1
-              else:
-                  p+=1
+              else:p+=1
 
-          branch_ctx=[]
-          for i,l in enumerate(dispatch):
-              if re.search(r'\bli\s+v1,(?:3|4)\b',l):
-                  branch_ctx.append((i,dispatch[max(0,i-12):min(len(dispatch),i+70)]))
+          # Exact strings at important addresses even when shorter than default
+          def cstr_at(addr):
+              off=addr-base
+              if not (0<=off<len(raw)):return None
+              b=bytearray()
+              while off<len(raw) and raw[off]!=0:
+                  b.append(raw[off]);off+=1
+              return b.decode('ascii','replace')
 
           with out.open('w',encoding='utf-8') as o:
               o.write('===== RUN 167: device_list timer dispatch + publish channel =====\n\n')
-
-              o.write('===== RODATA 0x4103b0..0x410430 =====\n')
-              o.write(f'section={sec}\nhex={raw.hex(" ")}\n')
+              o.write('===== RODATA =====\n')
+              o.write(f'section={sec}\n')
+              o.write(f'0x4103c0={cstr_at(0x4103c0)!r}\n')
+              o.write(f'0x4103d4={cstr_at(0x4103d4)!r}\n')
+              o.write(f'0x4103e4={cstr_at(0x4103e4)!r}\n')
+              o.write(f'0x4103fc={cstr_at(0x4103fc)!r}\n')
+              o.write('all strings:\n')
               for a,s in mini:o.write(f'0x{a:08x}: {s!r}\n')
 
-              o.write('\n===== start_device_list_timer =====\n')
+              o.write('\n===== TIMER START =====\n')
               o.write('\n'.join(start_timer)+'\n')
-              o.write('\n--- annotated calls ---\n')
               for i,off,sym,ctx in annotate(start_timer):
-                  o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
+                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
 
-              o.write('\n===== TIMER/EVENT DISPATCH 0x404bd0..0x405150 =====\n')
+              o.write('\n===== TIMER DISPATCH =====\n')
               o.write('\n'.join(dispatch)+'\n')
-              o.write('\n--- annotated calls ---\n')
+              o.write('\n===== DISPATCH ANNOTATED KNOWN CALLS =====\n')
               for i,off,sym,ctx in annotate(dispatch):
-                  o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
+                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
 
-              o.write('\n===== ID 3 / ID 4 BRANCH CONTEXTS =====\n')
-              for i,ctx in branch_ctx:
-                  o.write('\n---\n'+'\n'.join(ctx)+'\n')
-
-              o.write('\n===== do_upload_client_list TAIL / PUBLISH =====\n')
-              o.write('\n'.join(upload[-120:])+'\n')
-              o.write('\n--- annotated calls ---\n')
+              o.write('\n===== DO_UPLOAD PUBLISH TAIL =====\n')
+              o.write('\n'.join(upload[-125:])+'\n')
+              o.write('\n===== DO_UPLOAD ANNOTATED KNOWN CALLS =====\n')
               for i,off,sym,ctx in annotate(upload):
-                  if sym and re.search(r'cmd_pub|memcpy|free|malloc|time',sym,re.I):
-                      o.write(f'GOT {off}(gp) -> {sym}\n'+'\n'.join(ctx)+'\n---\n')
+                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
 
-              o.write('\n===== STATIC EXPECTATION TO VERIFY =====\n')
-              o.write('timer id 3 should dispatch timeout check; timer id 4 should dispatch client-list upload.\n')
-              o.write('publish key at 0x4103d4 is expected to be confctl_srv_key; command embedded in payload is device_list_upload.\n')
+              o.write('\n===== FOCUSED ID 3 / 4 COMPARISONS =====\n')
+              for i,l in enumerate(dispatch):
+                  if re.search(r'\bli\s+v1,(?:3|4)\b',l):
+                      o.write('\n---\n'+'\n'.join(dispatch[max(0,i-8):min(len(dispatch),i+55)])+'\n')
           PY
 
       - uses: actions/upload-artifact@v4
