@@ -1,0 +1,810 @@
+===== RUN 167: device_list timer dispatch + publish channel =====
+
+===== RODATA =====
+section=.rodata
+0x4103c0='device_list_upload'
+0x4103d4='confctl_srv_key'
+0x4103e4='do_upload_one_client'
+0x4103fc='do_upload_client_list'
+all strings:
+0x004103c0: 'device_list_upload'
+0x004103d4: 'confctl_srv_key'
+0x004103e4: 'do_upload_one_client'
+0x004103fc: 'do_upload_client_list'
+0x00410414: 'deal_rssi_of_client'
+0x00410428: 'get_device_client_rssi'
+
+===== TIMER START =====
+  403940:	3c1c0002 	lui	gp,0x2
+  403944:	279c4b60 	addiu	gp,gp,19296
+  403948:	0399e021 	addu	gp,gp,t9
+  40394c:	27bdffd0 	addiu	sp,sp,-48
+  403950:	afbf002c 	sw	ra,44(sp)
+  403954:	afbe0028 	sw	s8,40(sp)
+  403958:	03a0f021 	move	s8,sp
+  40395c:	afbc0018 	sw	gp,24(sp)
+  403960:	8f828028 	lw	v0,-32728(gp)
+  403964:	2444d3bc 	addiu	a0,v0,-11332
+  403968:	24050003 	li	a1,3
+  40396c:	24062710 	li	a2,10000
+  403970:	24070001 	li	a3,1
+  403974:	8f8280fc 	lw	v0,-32516(gp)
+  403978:	0040c821 	move	t9,v0
+  40397c:	0320f809 	jalr	t9
+  403980:	00000000 	nop
+  403984:	8fdc0018 	lw	gp,24(s8)
+  403988:	afc20020 	sw	v0,32(s8)
+  40398c:	8fc20020 	lw	v0,32(s8)
+  403990:	1040000e 	beqz	v0,4039cc <get_each_conn_type_list_hdr@@Base+0xbcc>
+  403994:	00000000 	nop
+  403998:	8f828028 	lw	v0,-32728(gp)
+  40399c:	2442d3c8 	addiu	v0,v0,-11320
+  4039a0:	afa20010 	sw	v0,16(sp)
+  4039a4:	8f828028 	lw	v0,-32728(gp)
+  4039a8:	2444d95c 	addiu	a0,v0,-9892
+  4039ac:	240502ba 	li	a1,698
+  4039b0:	24060003 	li	a2,3
+  4039b4:	24070046 	li	a3,70
+  4039b8:	8f828154 	lw	v0,-32428(gp)
+  4039bc:	0040c821 	move	t9,v0
+  4039c0:	0320f809 	jalr	t9
+  4039c4:	00000000 	nop
+  4039c8:	8fdc0018 	lw	gp,24(s8)
+  4039cc:	8f828028 	lw	v0,-32728(gp)
+  4039d0:	2444d3bc 	addiu	a0,v0,-11332
+  4039d4:	24050004 	li	a1,4
+  4039d8:	24064e20 	li	a2,20000
+  4039dc:	24070001 	li	a3,1
+  4039e0:	8f8280fc 	lw	v0,-32516(gp)
+  4039e4:	0040c821 	move	t9,v0
+  4039e8:	0320f809 	jalr	t9
+  4039ec:	00000000 	nop
+  4039f0:	8fdc0018 	lw	gp,24(s8)
+  4039f4:	afc20020 	sw	v0,32(s8)
+  4039f8:	8fc20020 	lw	v0,32(s8)
+  4039fc:	1040000e 	beqz	v0,403a38 <get_each_conn_type_list_hdr@@Base+0xc38>
+  403a00:	00000000 	nop
+  403a04:	8f828028 	lw	v0,-32728(gp)
+  403a08:	2442d404 	addiu	v0,v0,-11260
+  403a0c:	afa20010 	sw	v0,16(sp)
+  403a10:	8f828028 	lw	v0,-32728(gp)
+  403a14:	2444d95c 	addiu	a0,v0,-9892
+  403a18:	240502c0 	li	a1,704
+  403a1c:	24060003 	li	a2,3
+  403a20:	24070046 	li	a3,70
+  403a24:	8f828154 	lw	v0,-32428(gp)
+  403a28:	0040c821 	move	t9,v0
+  403a2c:	0320f809 	jalr	t9
+  403a30:	00000000 	nop
+  403a34:	8fdc0018 	lw	gp,24(s8)
+  403a38:	03c0e821 	move	sp,s8
+  403a3c:	8fbf002c 	lw	ra,44(sp)
+  403a40:	8fbe0028 	lw	s8,40(sp)
+  403a44:	27bd0030 	addiu	sp,sp,48
+  403a48:	03e00008 	jr	ra
+  403a4c:	00000000 	nop
+
+GOT -32516 -> timer_start
+  403958:	03a0f021 	move	s8,sp
+  40395c:	afbc0018 	sw	gp,24(sp)
+  403960:	8f828028 	lw	v0,-32728(gp)
+  403964:	2444d3bc 	addiu	a0,v0,-11332
+  403968:	24050003 	li	a1,3
+  40396c:	24062710 	li	a2,10000
+  403970:	24070001 	li	a3,1
+  403974:	8f8280fc 	lw	v0,-32516(gp)
+  403978:	0040c821 	move	t9,v0
+  40397c:	0320f809 	jalr	t9
+  403980:	00000000 	nop
+  403984:	8fdc0018 	lw	gp,24(s8)
+  403988:	afc20020 	sw	v0,32(s8)
+  40398c:	8fc20020 	lw	v0,32(s8)
+  403990:	1040000e 	beqz	v0,4039cc <get_each_conn_type_list_hdr@@Base+0xbcc>
+  403994:	00000000 	nop
+
+GOT -32516 -> timer_start
+  4039c4:	00000000 	nop
+  4039c8:	8fdc0018 	lw	gp,24(s8)
+  4039cc:	8f828028 	lw	v0,-32728(gp)
+  4039d0:	2444d3bc 	addiu	a0,v0,-11332
+  4039d4:	24050004 	li	a1,4
+  4039d8:	24064e20 	li	a2,20000
+  4039dc:	24070001 	li	a3,1
+  4039e0:	8f8280fc 	lw	v0,-32516(gp)
+  4039e4:	0040c821 	move	t9,v0
+  4039e8:	0320f809 	jalr	t9
+  4039ec:	00000000 	nop
+  4039f0:	8fdc0018 	lw	gp,24(s8)
+  4039f4:	afc20020 	sw	v0,32(s8)
+  4039f8:	8fc20020 	lw	v0,32(s8)
+  4039fc:	1040000e 	beqz	v0,403a38 <get_each_conn_type_list_hdr@@Base+0xc38>
+  403a00:	00000000 	nop
+
+===== TIMER DISPATCH =====
+  404bd0:	3c1c0002 	lui	gp,0x2
+  404bd4:	279c38d0 	addiu	gp,gp,14544
+  404bd8:	0399e021 	addu	gp,gp,t9
+  404bdc:	27bdff80 	addiu	sp,sp,-128
+  404be0:	afbf007c 	sw	ra,124(sp)
+  404be4:	afbe0078 	sw	s8,120(sp)
+  404be8:	03a0f021 	move	s8,sp
+  404bec:	afbc0018 	sw	gp,24(sp)
+  404bf0:	afc40080 	sw	a0,128(s8)
+  404bf4:	afc50084 	sw	a1,132(s8)
+  404bf8:	afc60088 	sw	a2,136(s8)
+  404bfc:	27c3002c 	addiu	v1,s8,44
+  404c00:	24020040 	li	v0,64
+  404c04:	00602021 	move	a0,v1
+  404c08:	00002821 	move	a1,zero
+  404c0c:	00403021 	move	a2,v0
+  404c10:	8f828188 	lw	v0,-32376(gp)
+  404c14:	0040c821 	move	t9,v0
+  404c18:	0320f809 	jalr	t9
+  404c1c:	00000000 	nop
+  404c20:	8fdc0018 	lw	gp,24(s8)
+  404c24:	afc00070 	sw	zero,112(s8)
+  404c28:	8f828028 	lw	v0,-32728(gp)
+  404c2c:	2442d540 	addiu	v0,v0,-10944
+  404c30:	afa20010 	sw	v0,16(sp)
+  404c34:	8f828028 	lw	v0,-32728(gp)
+  404c38:	2444d890 	addiu	a0,v0,-10096
+  404c3c:	240504a7 	li	a1,1191
+  404c40:	00003021 	move	a2,zero
+  404c44:	24070046 	li	a3,70
+  404c48:	8f828154 	lw	v0,-32428(gp)
+  404c4c:	0040c821 	move	t9,v0
+  404c50:	0320f809 	jalr	t9
+  404c54:	00000000 	nop
+  404c58:	8fdc0018 	lw	gp,24(s8)
+  404c5c:	27c20070 	addiu	v0,s8,112
+  404c60:	8fc40084 	lw	a0,132(s8)
+  404c64:	00402821 	move	a1,v0
+  404c68:	8f8281a8 	lw	v0,-32344(gp)
+  404c6c:	0040c821 	move	t9,v0
+  404c70:	0320f809 	jalr	t9
+  404c74:	00000000 	nop
+  404c78:	8fdc0018 	lw	gp,24(s8)
+  404c7c:	afc20024 	sw	v0,36(s8)
+  404c80:	8fc20024 	lw	v0,36(s8)
+  404c84:	1c40000c 	bgtz	v0,404cb8 <del_roam_not_in_wifi_client_lists@@Base+0x5e0>
+  404c88:	00000000 	nop
+  404c8c:	8fc40084 	lw	a0,132(s8)
+  404c90:	8f828030 	lw	v0,-32720(gp)
+  404c94:	24450478 	addiu	a1,v0,1144
+  404c98:	8f828024 	lw	v0,-32732(gp)
+  404c9c:	24423d14 	addiu	v0,v0,15636
+  404ca0:	0040c821 	move	t9,v0
+  404ca4:	0320f809 	jalr	t9
+  404ca8:	00000000 	nop
+  404cac:	8fdc0018 	lw	gp,24(s8)
+  404cb0:	10000130 	b	405174 <del_roam_not_in_wifi_client_lists@@Base+0xa9c>
+  404cb4:	00000000 	nop
+  404cb8:	8fc20070 	lw	v0,112(s8)
+  404cbc:	27c4006c 	addiu	a0,s8,108
+  404cc0:	27c3002c 	addiu	v1,s8,44
+  404cc4:	00602821 	move	a1,v1
+  404cc8:	00403021 	move	a2,v0
+  404ccc:	8f828024 	lw	v0,-32732(gp)
+  404cd0:	24424040 	addiu	v0,v0,16448
+  404cd4:	0040c821 	move	t9,v0
+  404cd8:	0320f809 	jalr	t9
+  404cdc:	00000000 	nop
+  404ce0:	8fdc0018 	lw	gp,24(s8)
+  404ce4:	97c2006c 	lhu	v0,108(s8)
+  404ce8:	144000c9 	bnez	v0,405010 <del_roam_not_in_wifi_client_lists@@Base+0x938>
+  404cec:	00000000 	nop
+  404cf0:	27c2002c 	addiu	v0,s8,44
+  404cf4:	afc20028 	sw	v0,40(s8)
+  404cf8:	8fc20028 	lw	v0,40(s8)
+  404cfc:	8c420000 	lw	v0,0(v0)
+  404d00:	24030001 	li	v1,1
+  404d04:	10430010 	beq	v0,v1,404d48 <del_roam_not_in_wifi_client_lists@@Base+0x670>
+  404d08:	00000000 	nop
+  404d0c:	28430002 	slti	v1,v0,2
+  404d10:	10600005 	beqz	v1,404d28 <del_roam_not_in_wifi_client_lists@@Base+0x650>
+  404d14:	00000000 	nop
+  404d18:	1040001a 	beqz	v0,404d84 <del_roam_not_in_wifi_client_lists@@Base+0x6ac>
+  404d1c:	00000000 	nop
+  404d20:	100000ac 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d24:	00000000 	nop
+  404d28:	24030003 	li	v1,3
+  404d2c:	10430031 	beq	v0,v1,404df4 <del_roam_not_in_wifi_client_lists@@Base+0x71c>
+  404d30:	00000000 	nop
+  404d34:	24030004 	li	v1,4
+  404d38:	10430071 	beq	v0,v1,404f00 <del_roam_not_in_wifi_client_lists@@Base+0x828>
+  404d3c:	00000000 	nop
+  404d40:	100000a4 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d44:	00000000 	nop
+  404d48:	8f828028 	lw	v0,-32728(gp)
+  404d4c:	2442d550 	addiu	v0,v0,-10928
+  404d50:	afa20010 	sw	v0,16(sp)
+  404d54:	8f828028 	lw	v0,-32728(gp)
+  404d58:	2444d890 	addiu	a0,v0,-10096
+  404d5c:	240504b7 	li	a1,1207
+  404d60:	24060003 	li	a2,3
+  404d64:	24070046 	li	a3,70
+  404d68:	8f828154 	lw	v0,-32428(gp)
+  404d6c:	0040c821 	move	t9,v0
+  404d70:	0320f809 	jalr	t9
+  404d74:	00000000 	nop
+  404d78:	8fdc0018 	lw	gp,24(s8)
+  404d7c:	100000ef 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404d80:	00000000 	nop
+  404d84:	8f828028 	lw	v0,-32728(gp)
+  404d88:	2442d568 	addiu	v0,v0,-10904
+  404d8c:	afa20010 	sw	v0,16(sp)
+  404d90:	8f828028 	lw	v0,-32728(gp)
+  404d94:	2444d890 	addiu	a0,v0,-10096
+  404d98:	240504ba 	li	a1,1210
+  404d9c:	24060001 	li	a2,1
+  404da0:	24070046 	li	a3,70
+  404da4:	8f828154 	lw	v0,-32428(gp)
+  404da8:	0040c821 	move	t9,v0
+  404dac:	0320f809 	jalr	t9
+  404db0:	00000000 	nop
+  404db4:	8fdc0018 	lw	gp,24(s8)
+  404db8:	8f82812c 	lw	v0,-32468(gp)
+  404dbc:	0040c821 	move	t9,v0
+  404dc0:	0320f809 	jalr	t9
+  404dc4:	00000000 	nop
+  404dc8:	8fdc0018 	lw	gp,24(s8)
+  404dcc:	104000d1 	beqz	v0,405114 <del_roam_not_in_wifi_client_lists@@Base+0xa3c>
+  404dd0:	00000000 	nop
+  404dd4:	8f828024 	lw	v0,-32732(gp)
+  404dd8:	24423940 	addiu	v0,v0,14656
+  404ddc:	0040c821 	move	t9,v0
+  404de0:	0320f809 	jalr	t9
+  404de4:	00000000 	nop
+  404de8:	8fdc0018 	lw	gp,24(s8)
+  404dec:	100000d3 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404df0:	00000000 	nop
+  404df4:	8f848034 	lw	a0,-32716(gp)
+  404df8:	8f828074 	lw	v0,-32652(gp)
+  404dfc:	0040c821 	move	t9,v0
+  404e00:	0320f809 	jalr	t9
+  404e04:	00000000 	nop
+  404e08:	8fdc0018 	lw	gp,24(s8)
+  404e0c:	8f82802c 	lw	v0,-32724(gp)
+  404e10:	8c420000 	lw	v0,0(v0)
+  404e14:	1040000c 	beqz	v0,404e48 <del_roam_not_in_wifi_client_lists@@Base+0x770>
+  404e18:	00000000 	nop
+  404e1c:	8f828028 	lw	v0,-32728(gp)
+  404e20:	2442d588 	addiu	v0,v0,-10872
+  404e24:	00402021 	move	a0,v0
+  404e28:	8f828028 	lw	v0,-32728(gp)
+  404e2c:	2445d8a8 	addiu	a1,v0,-10072
+  404e30:	240604c2 	li	a2,1218
+  404e34:	8f828150 	lw	v0,-32432(gp)
+  404e38:	0040c821 	move	t9,v0
+  404e3c:	0320f809 	jalr	t9
+  404e40:	00000000 	nop
+  404e44:	8fdc0018 	lw	gp,24(s8)
+  404e48:	8f828078 	lw	v0,-32648(gp)
+  404e4c:	0040c821 	move	t9,v0
+  404e50:	0320f809 	jalr	t9
+  404e54:	00000000 	nop
+  404e58:	8fdc0018 	lw	gp,24(s8)
+  404e5c:	8f828024 	lw	v0,-32732(gp)
+  404e60:	2442481c 	addiu	v0,v0,18460
+  404e64:	0040c821 	move	t9,v0
+  404e68:	0320f809 	jalr	t9
+  404e6c:	00000000 	nop
+  404e70:	8fdc0018 	lw	gp,24(s8)
+  404e74:	8f828024 	lw	v0,-32732(gp)
+  404e78:	24424ac0 	addiu	v0,v0,19136
+  404e7c:	0040c821 	move	t9,v0
+  404e80:	0320f809 	jalr	t9
+  404e84:	00000000 	nop
+  404e88:	8fdc0018 	lw	gp,24(s8)
+  404e8c:	8f828028 	lw	v0,-32728(gp)
+  404e90:	2444d3bc 	addiu	a0,v0,-11332
+  404e94:	24050003 	li	a1,3
+  404e98:	24062710 	li	a2,10000
+  404e9c:	24070001 	li	a3,1
+  404ea0:	8f8280fc 	lw	v0,-32516(gp)
+  404ea4:	0040c821 	move	t9,v0
+  404ea8:	0320f809 	jalr	t9
+  404eac:	00000000 	nop
+  404eb0:	8fdc0018 	lw	gp,24(s8)
+  404eb4:	afc20024 	sw	v0,36(s8)
+  404eb8:	8fc20024 	lw	v0,36(s8)
+  404ebc:	10400098 	beqz	v0,405120 <del_roam_not_in_wifi_client_lists@@Base+0xa48>
+  404ec0:	00000000 	nop
+  404ec4:	8f828028 	lw	v0,-32728(gp)
+  404ec8:	2442d3c8 	addiu	v0,v0,-11320
+  404ecc:	afa20010 	sw	v0,16(sp)
+  404ed0:	8f828028 	lw	v0,-32728(gp)
+  404ed4:	2444d890 	addiu	a0,v0,-10096
+  404ed8:	240504c9 	li	a1,1225
+  404edc:	24060003 	li	a2,3
+  404ee0:	24070046 	li	a3,70
+  404ee4:	8f828154 	lw	v0,-32428(gp)
+  404ee8:	0040c821 	move	t9,v0
+  404eec:	0320f809 	jalr	t9
+  404ef0:	00000000 	nop
+  404ef4:	8fdc0018 	lw	gp,24(s8)
+  404ef8:	10000090 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404efc:	00000000 	nop
+  404f00:	8f82802c 	lw	v0,-32724(gp)
+  404f04:	8c420000 	lw	v0,0(v0)
+  404f08:	1040000c 	beqz	v0,404f3c <del_roam_not_in_wifi_client_lists@@Base+0x864>
+  404f0c:	00000000 	nop
+  404f10:	8f828028 	lw	v0,-32728(gp)
+  404f14:	2442d5c4 	addiu	v0,v0,-10812
+  404f18:	00402021 	move	a0,v0
+  404f1c:	8f828028 	lw	v0,-32728(gp)
+  404f20:	2445d8a8 	addiu	a1,v0,-10072
+  404f24:	240604cd 	li	a2,1229
+  404f28:	8f828150 	lw	v0,-32432(gp)
+  404f2c:	0040c821 	move	t9,v0
+  404f30:	0320f809 	jalr	t9
+  404f34:	00000000 	nop
+  404f38:	8fdc0018 	lw	gp,24(s8)
+  404f3c:	8f82804c 	lw	v0,-32692(gp)
+  404f40:	8c420000 	lw	v0,0(v0)
+  404f44:	8f848040 	lw	a0,-32704(gp)
+  404f48:	00402821 	move	a1,v0
+  404f4c:	8f82807c 	lw	v0,-32644(gp)
+  404f50:	0040c821 	move	t9,v0
+  404f54:	0320f809 	jalr	t9
+  404f58:	00000000 	nop
+  404f5c:	8fdc0018 	lw	gp,24(s8)
+  404f60:	8f828028 	lw	v0,-32728(gp)
+  404f64:	2444d3bc 	addiu	a0,v0,-11332
+  404f68:	24050004 	li	a1,4
+  404f6c:	24064e20 	li	a2,20000
+  404f70:	24070001 	li	a3,1
+  404f74:	8f8280fc 	lw	v0,-32516(gp)
+  404f78:	0040c821 	move	t9,v0
+  404f7c:	0320f809 	jalr	t9
+  404f80:	00000000 	nop
+  404f84:	8fdc0018 	lw	gp,24(s8)
+  404f88:	afc20024 	sw	v0,36(s8)
+  404f8c:	8fc20024 	lw	v0,36(s8)
+  404f90:	10400066 	beqz	v0,40512c <del_roam_not_in_wifi_client_lists@@Base+0xa54>
+  404f94:	00000000 	nop
+  404f98:	8f828028 	lw	v0,-32728(gp)
+  404f9c:	2442d404 	addiu	v0,v0,-11260
+  404fa0:	afa20010 	sw	v0,16(sp)
+  404fa4:	8f828028 	lw	v0,-32728(gp)
+  404fa8:	2444d890 	addiu	a0,v0,-10096
+  404fac:	240504d2 	li	a1,1234
+  404fb0:	24060003 	li	a2,3
+  404fb4:	24070046 	li	a3,70
+  404fb8:	8f828154 	lw	v0,-32428(gp)
+  404fbc:	0040c821 	move	t9,v0
+  404fc0:	0320f809 	jalr	t9
+  404fc4:	00000000 	nop
+  404fc8:	8fdc0018 	lw	gp,24(s8)
+  404fcc:	1000005b 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404fd0:	00000000 	nop
+  404fd4:	8f828028 	lw	v0,-32728(gp)
+  404fd8:	2442d5fc 	addiu	v0,v0,-10756
+  404fdc:	afa20010 	sw	v0,16(sp)
+  404fe0:	8f828028 	lw	v0,-32728(gp)
+  404fe4:	2444d890 	addiu	a0,v0,-10096
+  404fe8:	240504d6 	li	a1,1238
+  404fec:	24060003 	li	a2,3
+  404ff0:	24070046 	li	a3,70
+  404ff4:	8f828154 	lw	v0,-32428(gp)
+  404ff8:	0040c821 	move	t9,v0
+  404ffc:	0320f809 	jalr	t9
+  405000:	00000000 	nop
+  405004:	8fdc0018 	lw	gp,24(s8)
+  405008:	1000005a 	b	405174 <del_roam_not_in_wifi_client_lists@@Base+0xa9c>
+  40500c:	00000000 	nop
+  405010:	97c3006c 	lhu	v1,108(s8)
+  405014:	24020001 	li	v0,1
+  405018:	10620005 	beq	v1,v0,405030 <del_roam_not_in_wifi_client_lists@@Base+0x958>
+  40501c:	00000000 	nop
+  405020:	97c3006c 	lhu	v1,108(s8)
+  405024:	24020002 	li	v0,2
+  405028:	1462002d 	bne	v1,v0,4050e0 <del_roam_not_in_wifi_client_lists@@Base+0xa08>
+  40502c:	00000000 	nop
+  405030:	27c2002c 	addiu	v0,s8,44
+  405034:	afc20020 	sw	v0,32(s8)
+  405038:	8f82802c 	lw	v0,-32724(gp)
+  40503c:	8c420000 	lw	v0,0(v0)
+  405040:	10400010 	beqz	v0,405084 <del_roam_not_in_wifi_client_lists@@Base+0x9ac>
+  405044:	00000000 	nop
+  405048:	8f828028 	lw	v0,-32728(gp)
+  40504c:	2443d61c 	addiu	v1,v0,-10724
+  405050:	97c2006c 	lhu	v0,108(s8)
+  405054:	8fc40020 	lw	a0,32(s8)
+  405058:	afa40010 	sw	a0,16(sp)
+  40505c:	00602021 	move	a0,v1
+  405060:	8f838028 	lw	v1,-32728(gp)
+  405064:	2465d8a8 	addiu	a1,v1,-10072
+  405068:	240604dd 	li	a2,1245
+  40506c:	00403821 	move	a3,v0
+  405070:	8f828150 	lw	v0,-32432(gp)
+  405074:	0040c821 	move	t9,v0
+  405078:	0320f809 	jalr	t9
+  40507c:	00000000 	nop
+  405080:	8fdc0018 	lw	gp,24(s8)
+  405084:	97c2006c 	lhu	v0,108(s8)
+  405088:	00402021 	move	a0,v0
+  40508c:	8fc50020 	lw	a1,32(s8)
+  405090:	8f828080 	lw	v0,-32640(gp)
+  405094:	0040c821 	move	t9,v0
+  405098:	0320f809 	jalr	t9
+  40509c:	00000000 	nop
+  4050a0:	8fdc0018 	lw	gp,24(s8)
+  4050a4:	97c3006c 	lhu	v1,108(s8)
+  4050a8:	24020002 	li	v0,2
+  4050ac:	14620022 	bne	v1,v0,405138 <del_roam_not_in_wifi_client_lists@@Base+0xa60>
+  4050b0:	00000000 	nop
+  4050b4:	8f848040 	lw	a0,-32704(gp)
+  4050b8:	24050020 	li	a1,32
+  4050bc:	8f86804c 	lw	a2,-32692(gp)
+  4050c0:	8fc70020 	lw	a3,32(s8)
+  4050c4:	8f828084 	lw	v0,-32636(gp)
+  4050c8:	0040c821 	move	t9,v0
+  4050cc:	0320f809 	jalr	t9
+  4050d0:	00000000 	nop
+  4050d4:	8fdc0018 	lw	gp,24(s8)
+  4050d8:	10000018 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  4050dc:	00000000 	nop
+  4050e0:	8f828028 	lw	v0,-32728(gp)
+  4050e4:	2442d648 	addiu	v0,v0,-10680
+  4050e8:	00402021 	move	a0,v0
+  4050ec:	8f828028 	lw	v0,-32728(gp)
+  4050f0:	2445d8a8 	addiu	a1,v0,-10072
+  4050f4:	240604e6 	li	a2,1254
+  4050f8:	8f828150 	lw	v0,-32432(gp)
+  4050fc:	0040c821 	move	t9,v0
+  405100:	0320f809 	jalr	t9
+  405104:	00000000 	nop
+  405108:	8fdc0018 	lw	gp,24(s8)
+  40510c:	1000000b 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  405110:	00000000 	nop
+  405114:	00000000 	nop
+  405118:	10000008 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  40511c:	00000000 	nop
+  405120:	00000000 	nop
+  405124:	10000005 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  405128:	00000000 	nop
+  40512c:	00000000 	nop
+  405130:	10000002 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  405134:	00000000 	nop
+  405138:	00000000 	nop
+  40513c:	8f828028 	lw	v0,-32728(gp)
+  405140:	2442d66c 	addiu	v0,v0,-10644
+  405144:	afa20010 	sw	v0,16(sp)
+  405148:	8f828028 	lw	v0,-32728(gp)
+  40514c:	2444d890 	addiu	a0,v0,-10096
+
+===== DISPATCH ANNOTATED KNOWN CALLS =====
+
+GOT -32468 -> timer_check_ok_and_wait
+  404d9c:	24060001 	li	a2,1
+  404da0:	24070046 	li	a3,70
+  404da4:	8f828154 	lw	v0,-32428(gp)
+  404da8:	0040c821 	move	t9,v0
+  404dac:	0320f809 	jalr	t9
+  404db0:	00000000 	nop
+  404db4:	8fdc0018 	lw	gp,24(s8)
+  404db8:	8f82812c 	lw	v0,-32468(gp)
+  404dbc:	0040c821 	move	t9,v0
+  404dc0:	0320f809 	jalr	t9
+  404dc4:	00000000 	nop
+  404dc8:	8fdc0018 	lw	gp,24(s8)
+  404dcc:	104000d1 	beqz	v0,405114 <del_roam_not_in_wifi_client_lists@@Base+0xa3c>
+  404dd0:	00000000 	nop
+  404dd4:	8f828024 	lw	v0,-32732(gp)
+  404dd8:	24423940 	addiu	v0,v0,14656
+
+GOT -32516 -> timer_start
+  404e84:	00000000 	nop
+  404e88:	8fdc0018 	lw	gp,24(s8)
+  404e8c:	8f828028 	lw	v0,-32728(gp)
+  404e90:	2444d3bc 	addiu	a0,v0,-11332
+  404e94:	24050003 	li	a1,3
+  404e98:	24062710 	li	a2,10000
+  404e9c:	24070001 	li	a3,1
+  404ea0:	8f8280fc 	lw	v0,-32516(gp)
+  404ea4:	0040c821 	move	t9,v0
+  404ea8:	0320f809 	jalr	t9
+  404eac:	00000000 	nop
+  404eb0:	8fdc0018 	lw	gp,24(s8)
+  404eb4:	afc20024 	sw	v0,36(s8)
+  404eb8:	8fc20024 	lw	v0,36(s8)
+  404ebc:	10400098 	beqz	v0,405120 <del_roam_not_in_wifi_client_lists@@Base+0xa48>
+  404ec0:	00000000 	nop
+
+GOT -32516 -> timer_start
+  404f58:	00000000 	nop
+  404f5c:	8fdc0018 	lw	gp,24(s8)
+  404f60:	8f828028 	lw	v0,-32728(gp)
+  404f64:	2444d3bc 	addiu	a0,v0,-11332
+  404f68:	24050004 	li	a1,4
+  404f6c:	24064e20 	li	a2,20000
+  404f70:	24070001 	li	a3,1
+  404f74:	8f8280fc 	lw	v0,-32516(gp)
+  404f78:	0040c821 	move	t9,v0
+  404f7c:	0320f809 	jalr	t9
+  404f80:	00000000 	nop
+  404f84:	8fdc0018 	lw	gp,24(s8)
+  404f88:	afc20024 	sw	v0,36(s8)
+  404f8c:	8fc20024 	lw	v0,36(s8)
+  404f90:	10400066 	beqz	v0,40512c <del_roam_not_in_wifi_client_lists@@Base+0xa54>
+  404f94:	00000000 	nop
+
+===== DO_UPLOAD PUBLISH TAIL =====
+  40bde8:	8f8280cc 	lw	v0,-32564(gp)
+  40bdec:	0040c821 	move	t9,v0
+  40bdf0:	0320f809 	jalr	t9
+  40bdf4:	00000000 	nop
+  40bdf8:	8fdc0010 	lw	gp,16(s8)
+  40bdfc:	8fc20020 	lw	v0,32(s8)
+  40be00:	00021080 	sll	v0,v0,0x2
+  40be04:	00021940 	sll	v1,v0,0x5
+  40be08:	00621023 	subu	v0,v1,v0
+  40be0c:	8fc30038 	lw	v1,56(s8)
+  40be10:	00628021 	addu	s0,v1,v0
+  40be14:	8fc2003c 	lw	v0,60(s8)
+  40be18:	8c42005c 	lw	v0,92(v0)
+  40be1c:	00402021 	move	a0,v0
+  40be20:	8f828118 	lw	v0,-32488(gp)
+  40be24:	0040c821 	move	t9,v0
+  40be28:	0320f809 	jalr	t9
+  40be2c:	00000000 	nop
+  40be30:	8fdc0010 	lw	gp,16(s8)
+  40be34:	ae02005c 	sw	v0,92(s0)
+  40be38:	8fc20020 	lw	v0,32(s8)
+  40be3c:	00021080 	sll	v0,v0,0x2
+  40be40:	00021940 	sll	v1,v0,0x5
+  40be44:	00621023 	subu	v0,v1,v0
+  40be48:	8fc30038 	lw	v1,56(s8)
+  40be4c:	00628021 	addu	s0,v1,v0
+  40be50:	8fc2003c 	lw	v0,60(s8)
+  40be54:	8c420060 	lw	v0,96(v0)
+  40be58:	00402021 	move	a0,v0
+  40be5c:	8f828118 	lw	v0,-32488(gp)
+  40be60:	0040c821 	move	t9,v0
+  40be64:	0320f809 	jalr	t9
+  40be68:	00000000 	nop
+  40be6c:	8fdc0010 	lw	gp,16(s8)
+  40be70:	ae020060 	sw	v0,96(s0)
+  40be74:	8fc20020 	lw	v0,32(s8)
+  40be78:	00021080 	sll	v0,v0,0x2
+  40be7c:	00021940 	sll	v1,v0,0x5
+  40be80:	00621023 	subu	v0,v1,v0
+  40be84:	8fc30038 	lw	v1,56(s8)
+  40be88:	00628021 	addu	s0,v1,v0
+  40be8c:	8fc2003c 	lw	v0,60(s8)
+  40be90:	8c420064 	lw	v0,100(v0)
+  40be94:	8fc3001c 	lw	v1,28(s8)
+  40be98:	00621023 	subu	v0,v1,v0
+  40be9c:	00402021 	move	a0,v0
+  40bea0:	8f828118 	lw	v0,-32488(gp)
+  40bea4:	0040c821 	move	t9,v0
+  40bea8:	0320f809 	jalr	t9
+  40beac:	00000000 	nop
+  40beb0:	8fdc0010 	lw	gp,16(s8)
+  40beb4:	ae020064 	sw	v0,100(s0)
+  40beb8:	8fc2003c 	lw	v0,60(s8)
+  40bebc:	24030001 	li	v1,1
+  40bec0:	ac430060 	sw	v1,96(v0)
+  40bec4:	8fc20020 	lw	v0,32(s8)
+  40bec8:	24420001 	addiu	v0,v0,1
+  40becc:	afc20020 	sw	v0,32(s8)
+  40bed0:	8fc20040 	lw	v0,64(s8)
+  40bed4:	8c420000 	lw	v0,0(v0)
+  40bed8:	afc20040 	sw	v0,64(s8)
+  40bedc:	8fc20040 	lw	v0,64(s8)
+  40bee0:	8c420000 	lw	v0,0(v0)
+  40bee4:	00402021 	move	a0,v0
+  40bee8:	8f828028 	lw	v0,-32728(gp)
+  40beec:	2442b2b0 	addiu	v0,v0,-19792
+  40bef0:	0040c821 	move	t9,v0
+  40bef4:	0320f809 	jalr	t9
+  40bef8:	00000000 	nop
+  40befc:	8fdc0010 	lw	gp,16(s8)
+  40bf00:	8fc20024 	lw	v0,36(s8)
+  40bf04:	000210c0 	sll	v0,v0,0x3
+  40bf08:	8fc30058 	lw	v1,88(s8)
+  40bf0c:	00621821 	addu	v1,v1,v0
+  40bf10:	8fc20040 	lw	v0,64(s8)
+  40bf14:	1462ffa2 	bne	v1,v0,40bda0 <do_upload_client_list@@Base+0x21c>
+  40bf18:	00000000 	nop
+  40bf1c:	10000002 	b	40bf28 <do_upload_client_list@@Base+0x3a4>
+  40bf20:	00000000 	nop
+  40bf24:	00000000 	nop
+  40bf28:	8fc20024 	lw	v0,36(s8)
+  40bf2c:	24420001 	addiu	v0,v0,1
+  40bf30:	afc20024 	sw	v0,36(s8)
+  40bf34:	8fc20024 	lw	v0,36(s8)
+  40bf38:	28420020 	slti	v0,v0,32
+  40bf3c:	1440ff90 	bnez	v0,40bd80 <do_upload_client_list@@Base+0x1fc>
+  40bf40:	00000000 	nop
+  40bf44:	8fc20020 	lw	v0,32(s8)
+  40bf48:	00021080 	sll	v0,v0,0x2
+  40bf4c:	00021940 	sll	v1,v0,0x5
+  40bf50:	00621023 	subu	v0,v1,v0
+  40bf54:	24430020 	addiu	v1,v0,32
+  40bf58:	8fc20034 	lw	v0,52(s8)
+  40bf5c:	a8430023 	swl	v1,35(v0)
+  40bf60:	b8430020 	swr	v1,32(v0)
+  40bf64:	8fc20028 	lw	v0,40(s8)
+  40bf68:	8f838028 	lw	v1,-32728(gp)
+  40bf6c:	246403d4 	addiu	a0,v1,980
+  40bf70:	8fc50030 	lw	a1,48(s8)
+  40bf74:	00403021 	move	a2,v0
+  40bf78:	8f8281a4 	lw	v0,-32348(gp)
+  40bf7c:	0040c821 	move	t9,v0
+  40bf80:	0320f809 	jalr	t9
+  40bf84:	00000000 	nop
+  40bf88:	8fdc0010 	lw	gp,16(s8)
+  40bf8c:	8fc40030 	lw	a0,48(s8)
+  40bf90:	8f8280f0 	lw	v0,-32528(gp)
+  40bf94:	0040c821 	move	t9,v0
+  40bf98:	0320f809 	jalr	t9
+  40bf9c:	00000000 	nop
+  40bfa0:	8fdc0010 	lw	gp,16(s8)
+  40bfa4:	afc00030 	sw	zero,48(s8)
+  40bfa8:	00000000 	nop
+  40bfac:	10000002 	b	40bfb8 <do_upload_client_list@@Base+0x434>
+  40bfb0:	00000000 	nop
+  40bfb4:	00000000 	nop
+  40bfb8:	03c0e821 	move	sp,s8
+  40bfbc:	8fbf0054 	lw	ra,84(sp)
+  40bfc0:	8fbe0050 	lw	s8,80(sp)
+  40bfc4:	8fb0004c 	lw	s0,76(sp)
+  40bfc8:	27bd0058 	addiu	sp,sp,88
+  40bfcc:	03e00008 	jr	ra
+  40bfd0:	00000000 	nop
+
+0040bfd4 <do_upload_one_client@@Base>:
+
+===== DO_UPLOAD ANNOTATED KNOWN CALLS =====
+
+GOT -32348 -> cmd_pub
+  40bf5c:	a8430023 	swl	v1,35(v0)
+  40bf60:	b8430020 	swr	v1,32(v0)
+  40bf64:	8fc20028 	lw	v0,40(s8)
+  40bf68:	8f838028 	lw	v1,-32728(gp)
+  40bf6c:	246403d4 	addiu	a0,v1,980
+  40bf70:	8fc50030 	lw	a1,48(s8)
+  40bf74:	00403021 	move	a2,v0
+  40bf78:	8f8281a4 	lw	v0,-32348(gp)
+  40bf7c:	0040c821 	move	t9,v0
+  40bf80:	0320f809 	jalr	t9
+  40bf84:	00000000 	nop
+  40bf88:	8fdc0010 	lw	gp,16(s8)
+  40bf8c:	8fc40030 	lw	a0,48(s8)
+  40bf90:	8f8280f0 	lw	v0,-32528(gp)
+  40bf94:	0040c821 	move	t9,v0
+  40bf98:	0320f809 	jalr	t9
+
+===== FOCUSED ID 3 / 4 COMPARISONS =====
+
+---
+  404d08:	00000000 	nop
+  404d0c:	28430002 	slti	v1,v0,2
+  404d10:	10600005 	beqz	v1,404d28 <del_roam_not_in_wifi_client_lists@@Base+0x650>
+  404d14:	00000000 	nop
+  404d18:	1040001a 	beqz	v0,404d84 <del_roam_not_in_wifi_client_lists@@Base+0x6ac>
+  404d1c:	00000000 	nop
+  404d20:	100000ac 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d24:	00000000 	nop
+  404d28:	24030003 	li	v1,3
+  404d2c:	10430031 	beq	v0,v1,404df4 <del_roam_not_in_wifi_client_lists@@Base+0x71c>
+  404d30:	00000000 	nop
+  404d34:	24030004 	li	v1,4
+  404d38:	10430071 	beq	v0,v1,404f00 <del_roam_not_in_wifi_client_lists@@Base+0x828>
+  404d3c:	00000000 	nop
+  404d40:	100000a4 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d44:	00000000 	nop
+  404d48:	8f828028 	lw	v0,-32728(gp)
+  404d4c:	2442d550 	addiu	v0,v0,-10928
+  404d50:	afa20010 	sw	v0,16(sp)
+  404d54:	8f828028 	lw	v0,-32728(gp)
+  404d58:	2444d890 	addiu	a0,v0,-10096
+  404d5c:	240504b7 	li	a1,1207
+  404d60:	24060003 	li	a2,3
+  404d64:	24070046 	li	a3,70
+  404d68:	8f828154 	lw	v0,-32428(gp)
+  404d6c:	0040c821 	move	t9,v0
+  404d70:	0320f809 	jalr	t9
+  404d74:	00000000 	nop
+  404d78:	8fdc0018 	lw	gp,24(s8)
+  404d7c:	100000ef 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404d80:	00000000 	nop
+  404d84:	8f828028 	lw	v0,-32728(gp)
+  404d88:	2442d568 	addiu	v0,v0,-10904
+  404d8c:	afa20010 	sw	v0,16(sp)
+  404d90:	8f828028 	lw	v0,-32728(gp)
+  404d94:	2444d890 	addiu	a0,v0,-10096
+  404d98:	240504ba 	li	a1,1210
+  404d9c:	24060001 	li	a2,1
+  404da0:	24070046 	li	a3,70
+  404da4:	8f828154 	lw	v0,-32428(gp)
+  404da8:	0040c821 	move	t9,v0
+  404dac:	0320f809 	jalr	t9
+  404db0:	00000000 	nop
+  404db4:	8fdc0018 	lw	gp,24(s8)
+  404db8:	8f82812c 	lw	v0,-32468(gp)
+  404dbc:	0040c821 	move	t9,v0
+  404dc0:	0320f809 	jalr	t9
+  404dc4:	00000000 	nop
+  404dc8:	8fdc0018 	lw	gp,24(s8)
+  404dcc:	104000d1 	beqz	v0,405114 <del_roam_not_in_wifi_client_lists@@Base+0xa3c>
+  404dd0:	00000000 	nop
+  404dd4:	8f828024 	lw	v0,-32732(gp)
+  404dd8:	24423940 	addiu	v0,v0,14656
+  404ddc:	0040c821 	move	t9,v0
+  404de0:	0320f809 	jalr	t9
+  404de4:	00000000 	nop
+  404de8:	8fdc0018 	lw	gp,24(s8)
+  404dec:	100000d3 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404df0:	00000000 	nop
+  404df4:	8f848034 	lw	a0,-32716(gp)
+  404df8:	8f828074 	lw	v0,-32652(gp)
+  404dfc:	0040c821 	move	t9,v0
+  404e00:	0320f809 	jalr	t9
+
+---
+  404d14:	00000000 	nop
+  404d18:	1040001a 	beqz	v0,404d84 <del_roam_not_in_wifi_client_lists@@Base+0x6ac>
+  404d1c:	00000000 	nop
+  404d20:	100000ac 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d24:	00000000 	nop
+  404d28:	24030003 	li	v1,3
+  404d2c:	10430031 	beq	v0,v1,404df4 <del_roam_not_in_wifi_client_lists@@Base+0x71c>
+  404d30:	00000000 	nop
+  404d34:	24030004 	li	v1,4
+  404d38:	10430071 	beq	v0,v1,404f00 <del_roam_not_in_wifi_client_lists@@Base+0x828>
+  404d3c:	00000000 	nop
+  404d40:	100000a4 	b	404fd4 <del_roam_not_in_wifi_client_lists@@Base+0x8fc>
+  404d44:	00000000 	nop
+  404d48:	8f828028 	lw	v0,-32728(gp)
+  404d4c:	2442d550 	addiu	v0,v0,-10928
+  404d50:	afa20010 	sw	v0,16(sp)
+  404d54:	8f828028 	lw	v0,-32728(gp)
+  404d58:	2444d890 	addiu	a0,v0,-10096
+  404d5c:	240504b7 	li	a1,1207
+  404d60:	24060003 	li	a2,3
+  404d64:	24070046 	li	a3,70
+  404d68:	8f828154 	lw	v0,-32428(gp)
+  404d6c:	0040c821 	move	t9,v0
+  404d70:	0320f809 	jalr	t9
+  404d74:	00000000 	nop
+  404d78:	8fdc0018 	lw	gp,24(s8)
+  404d7c:	100000ef 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404d80:	00000000 	nop
+  404d84:	8f828028 	lw	v0,-32728(gp)
+  404d88:	2442d568 	addiu	v0,v0,-10904
+  404d8c:	afa20010 	sw	v0,16(sp)
+  404d90:	8f828028 	lw	v0,-32728(gp)
+  404d94:	2444d890 	addiu	a0,v0,-10096
+  404d98:	240504ba 	li	a1,1210
+  404d9c:	24060001 	li	a2,1
+  404da0:	24070046 	li	a3,70
+  404da4:	8f828154 	lw	v0,-32428(gp)
+  404da8:	0040c821 	move	t9,v0
+  404dac:	0320f809 	jalr	t9
+  404db0:	00000000 	nop
+  404db4:	8fdc0018 	lw	gp,24(s8)
+  404db8:	8f82812c 	lw	v0,-32468(gp)
+  404dbc:	0040c821 	move	t9,v0
+  404dc0:	0320f809 	jalr	t9
+  404dc4:	00000000 	nop
+  404dc8:	8fdc0018 	lw	gp,24(s8)
+  404dcc:	104000d1 	beqz	v0,405114 <del_roam_not_in_wifi_client_lists@@Base+0xa3c>
+  404dd0:	00000000 	nop
+  404dd4:	8f828024 	lw	v0,-32732(gp)
+  404dd8:	24423940 	addiu	v0,v0,14656
+  404ddc:	0040c821 	move	t9,v0
+  404de0:	0320f809 	jalr	t9
+  404de4:	00000000 	nop
+  404de8:	8fdc0018 	lw	gp,24(s8)
+  404dec:	100000d3 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404df0:	00000000 	nop
+  404df4:	8f848034 	lw	a0,-32716(gp)
+  404df8:	8f828074 	lw	v0,-32652(gp)
+  404dfc:	0040c821 	move	t9,v0
+  404e00:	0320f809 	jalr	t9
+  404e04:	00000000 	nop
+  404e08:	8fdc0018 	lw	gp,24(s8)
+  404e0c:	8f82802c 	lw	v0,-32724(gp)
