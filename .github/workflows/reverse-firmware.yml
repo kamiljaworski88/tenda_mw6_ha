@@ -14,45 +14,167 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Resolve timer_start semantics
+          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
+          python3 -m pip install --break-system-packages pyelftools
+      - name: Resolve timer dispatch and client-list publish
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated
-          lib='firmware-src/RootFS-unpacked/lib/libcommon.so'
+          mkdir -p docs/reverse-generated /tmp/run166
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run165-timer-start-semantics.txt'
-          {
-            echo '===== RUN 165: libcommon timer_start semantics ====='
-            echo
-            echo '===== timer_start / timer_stop / timer worker symbols ====='
-            mipsel-linux-gnu-nm -D -n "$lib" | grep -Ei 'timer_(start|stop|check|init|process|add|del)|timer' || true
-            echo
-            echo '===== timer_start body ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x39b00 --stop-address=0x3a500 "$lib"
-            echo
-            echo '===== device_list timer start/restart area ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x403900 --stop-address=0x403d00 "$dev"
-            echo
-            echo '===== device_list callback table tail ====='
-            mipsel-linux-gnu-objdump -s --start-address=0x420000 --stop-address=0x420900 "$dev" || true
-            echo
-            echo '===== timer strings ====='
-            strings -tx "$lib" | grep -Ei 'timer|interval|timeout|repeat|period' || true
-          } > "$out"
+          out='docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt'
+          mipsel-linux-gnu-objdump -drwC "$dev" > /tmp/run166/dis.txt
+          mipsel-linux-gnu-readelf -A "$dev" > /tmp/run166/abi.txt
+          mipsel-linux-gnu-readelf -Ws "$dev" > /tmp/run166/syms.txt
+          strings -tx "$dev" > /tmp/run166/strings.txt
+
+          python3 - "$dev" /tmp/run166/dis.txt /tmp/run166/abi.txt /tmp/run166/syms.txt /tmp/run166/strings.txt "$out" <<'PY'
+          import re,sys,struct
+          from pathlib import Path
+          from elftools.elf.elffile import ELFFile
+
+          dev=Path(sys.argv[1])
+          lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          abi=Path(sys.argv[3]).read_text(errors='replace')
+          syms=Path(sys.argv[4]).read_text(errors='replace').splitlines()
+          strs=Path(sys.argv[5]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[6])
+
+          funcs=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+          starts=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'^\s*([0-9a-fA-F]+):\s+.*\blui\s+gp,',l)
+              if m:
+                  nxt='\n'.join(lines[i:min(len(lines),i+8)])
+                  if re.search(r'\baddu\s+gp,gp,t9',nxt) and re.search(r'\baddiu\s+sp,sp,-',nxt):
+                      starts.append((i,int(m.group(1),16)))
+          starts=sorted(starts)
+
+          def owner(idx):
+              best=None
+              for st,a,n in funcs:
+                  if st>idx:break
+                  best=(st,a,n)
+              for st,a in starts:
+                  if st>idx:break
+                  if best is None or st>best[0]:
+                      best=(st,a,f'sub_{a:08x}')
+              return best
+
+          # ELF string VA helper
+          raw=dev.read_bytes()
+          strvas={}
+          with dev.open('rb') as f:
+              ef=ELFFile(f)
+              for lit in [b'do_upload_client_list',b'do_client_timeout_check',
+                          b'device_list_upload',b'timer',b'start_device_list_timer']:
+                  positions=[]
+                  pos=0
+                  while True:
+                      off=raw.find(lit,pos)
+                      if off<0:break
+                      va=None
+                      for sec in ef.iter_sections():
+                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
+                          if so<=off<so+sz:
+                              va=int(sec['sh_addr'])+(off-so);break
+                      positions.append((off,va))
+                      pos=off+1
+                  strvas[lit.decode()]=positions
+
+          # Identify xrefs to do_upload/client_timeout function-name strings.
+          xrefs=[]
+          for name,positions in strvas.items():
+              for off,va in positions:
+                  if not va:continue
+                  lo=va&0xffff; signed=lo if lo<0x8000 else lo-0x10000
+                  for i,l in enumerate(lines):
+                      if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
+                          fn=owner(i)
+                          xrefs.append((name,va,fn,i,lines[max(fn[0] if fn else 0,i-40):min(len(lines),i+110)]))
+
+          # All contexts containing constants 3/4 and calls/jalr around timer-processing functions.
+          dispatch=[]
+          for i,l in enumerate(lines):
+              if re.search(r'\b(?:li|addiu)\s+[a-z0-9]+,(?:zero,)?(?:3|4)\b',l):
+                  fn=owner(i)
+                  if not fn:continue
+                  ctx=lines[max(fn[0],i-25):min(len(lines),i+70)]
+                  joined='\n'.join(ctx)
+                  if re.search(r'timer|40afcc|40bb84|jalr|cmd_pub',joined,re.I):
+                      dispatch.append((fn,i,ctx))
+
+          # Resolve GOT map from ABI output; retain device_list relevant imported symbols.
+          got_lines=[]
+          for l in abi.splitlines():
+              if re.search(r'cmd_pub|timer_start|timer_stop|timer_check_ok|do_upload|client_timeout',l,re.I):
+                  got_lines.append(l)
+
+          # Explicit do_upload_client_list body and final calls.
+          def body_by_addr(addr,stop):
+              outl=[]; active=False
+              for l in lines:
+                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
+                  if not m:
+                      if active:outl.append(l)
+                      continue
+                  a=int(m.group(1),16)
+                  if addr<=a<stop:
+                      active=True;outl.append(l)
+                  elif active and a>=stop:break
+              return outl
+          upload=body_by_addr(0x40bb84,0x40bfd4)
+
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 166: timer dispatch + device_list_upload publish =====\n\n')
+              o.write('===== STRING VAS =====\n')
+              for k,v in strvas.items():o.write(f'{k}: {v}\n')
+
+              o.write('\n===== STRING XREF CONTEXTS =====\n')
+              seen=set()
+              for name,va,fn,i,ctx in xrefs:
+                  key=(name,fn[1] if fn else 0)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- {name} @0x{va:x} owner={('0x%08x <%s>'%(fn[1],fn[2])) if fn else '?'} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
+
+              o.write('\n===== ID 3/4 DISPATCH CANDIDATES =====\n')
+              seen=set()
+              for fn,i,ctx in dispatch:
+                  key=(fn[1],i)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
+                  o.write('\n'.join(ctx)+'\n')
+
+              o.write('\n===== GOT SYMBOL CLUES =====\n')
+              o.write('\n'.join(got_lines)+'\n')
+
+              o.write('\n===== FULL do_upload_client_list =====\n')
+              o.write('\n'.join(upload)+'\n')
+
+              o.write('\n===== do_upload_client_list CALL-LIKE SITES =====\n')
+              for i,l in enumerate(upload):
+                  if re.search(r'\bjalr\b|\bjal\b',l):
+                      o.write('\n'.join(upload[max(0,i-9):min(len(upload),i+12)])+'\n---\n')
+          PY
+
       - uses: actions/upload-artifact@v4
         with:
-          name: run165-timer-start-semantics
-          path: docs/reverse-generated/run165-timer-start-semantics.txt
+          name: run166-device-list-timer-dispatch-publish
+          path: docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run165-timer-start-semantics.txt
+          git add docs/reverse-generated/run166-device-list-timer-dispatch-publish.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve timer_start semantics'
+            git commit -m 'reverse: resolve device-list timer dispatch'
             git push
           fi
