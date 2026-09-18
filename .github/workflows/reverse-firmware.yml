@@ -18,153 +18,130 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3
+          sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
+          python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace NOS/TBQ online-ip accounting
+      - name: Find online_ip counter writers
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
-          mkdir -p docs/reverse-generated /tmp/mw6
-          moddir='firmware-src/RootFS-unpacked/lib/modules'
-          out='docs/reverse-generated/run130-nos-tbq-accounting.txt'
+          mkdir -p docs/reverse-generated /tmp/mw6kernel
+          img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
+          raw='/tmp/mw6kernel/kernel.raw'
+          elf='/tmp/mw6kernel/kernel.elf'
+          out='docs/reverse-generated/run130-onlineip-counter-writers.txt'
 
-          python3 - "$moddir" "$out" <<'PY'
+          dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
+          xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
+          test -s "$raw"
+          vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
+
+          python3 - "$elf" firmware-src "$out" <<'PY'
           import re, subprocess, sys
           from pathlib import Path
 
-          moddir=Path(sys.argv[1]); out=Path(sys.argv[2])
+          elf=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
 
-          def sh(args):
-              proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, errors='replace', check=False)
-              return proc.stdout
+          def run(cmd):
+              return subprocess.run(cmd, text=True, errors='replace', stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
 
-          def nm(path):
-              return sh(['mipsel-linux-gnu-nm','-n',str(path)]).splitlines()
+          def funcs_for(path):
+              rows=[]
+              for line in run(["mipsel-linux-gnu-nm","-n",str(path)]).splitlines():
+                  p=line.split(maxsplit=2)
+                  if len(p)==3:
+                      try: a=int(p[0],16)
+                      except: continue
+                      if p[1].lower() in ('t','w'): rows.append((a,p[2]))
+              rows.sort()
+              return rows
 
-          def dis(path):
-              return sh(['mipsel-linux-gnu-objdump','-drwC',str(path)]).splitlines()
+          def dis(path, start=None, stop=None):
+              cmd=["mipsel-linux-gnu-objdump","-drwC"]
+              if start is not None: cmd.append(f"--start-address=0x{start:x}")
+              if stop is not None: cmd.append(f"--stop-address=0x{stop:x}")
+              cmd.append(str(path))
+              return run(cmd).splitlines()
 
-          def funcs_from_dis(lines):
-              fs=[]
-              for i,l in enumerate(lines):
-                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-                  if m: fs.append((i,int(m.group(1),16),m.group(2)))
-              return fs
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 130: online_ip current-counter writers =====\n")
+              o.write("Kernel current counters established by get_online_ip_info mapping:\n")
+              o.write("  +0x50/+0x54 = current upload bytes\n")
+              o.write("  +0x58/+0x5c = previous upload snapshot\n")
+              o.write("  +0x60/+0x64 = current download bytes\n")
+              o.write("  +0x68/+0x6c = previous download snapshot\n\n")
 
-          def owner(funcs, idx):
-              best=None
-              for row,addr,name in funcs:
-                  if row>idx: break
-                  best=(row,addr,name)
-              return best
+              o.write("===== MODULES IMPORTING online_ip SYMBOLS =====\n")
+              kos=list(root.rglob("*.ko"))
+              importers=[]
+              for ko in kos:
+                  nm=run(["mipsel-linux-gnu-nm","-u",str(ko)])
+                  hits=[ln for ln in nm.splitlines() if re.search(r'online_ip|set_online_ip_flag|clear_online_ip_flag',ln,re.I)]
+                  if hits:
+                      importers.append(ko)
+                      o.write(f"\n--- {ko} ---\n")
+                      o.write("\n".join(hits)+"\n")
 
-          modules=[]
-          for p in sorted(moddir.glob('*.ko')):
-              sy='\n'.join(nm(p))
-              st=sh(['strings','-a',str(p)])
-              if any(k in sy or k in st for k in (
-                  'tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
-                  'online_ip_hash','nos_track_event_register'
-              )):
-                  modules.append((p,sy,st))
+              # For every importer, dump relocation neighborhoods and any RMW-looking
+              # accesses at offsets 0x50..0x6c.
+              mempat=re.compile(r'\b(lw|sw)\s+([a-z0-9]+),(80|84|88|92|96|100|104|108)\(([a-z0-9]+)\)')
+              for ko in importers:
+                  lines=dis(ko)
+                  o.write(f"\n===== DISASSEMBLY HITS {ko} =====\n")
+                  for i,l in enumerate(lines):
+                      if re.search(r'online_ip|set_online_ip_flag|clear_online_ip_flag',l,re.I) or mempat.search(l):
+                          o.write("\n".join(lines[max(0,i-8):min(len(lines),i+12)])+"\n---\n")
 
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 130: NOS/TBQ and online_ip accounting =====\n')
-              o.write('\n===== MODULE IDENTIFICATION =====\n')
-              for p,sy,st in modules:
-                  tags=[]
-                  for k in ('tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
-                            'online_ip_hash','online_ip_hash_size','nos_track_event_register',
-                            'nos_track_event_unregister','clear_online_ip_flag'):
-                      if k in sy or k in st: tags.append(k)
-                  o.write(f'{p}: {", ".join(tags)}\n')
-
-              for p,sy,st in modules:
-                  if not any(k in sy or k in st for k in (
-                      'tbq_online_ip_track_alloc','online_ip_hash','nos_track_event_register'
-                  )):
-                      continue
-                  lines=dis(p); funcs=funcs_from_dis(lines)
-                  o.write(f'\n\n===== MODULE {p.name} =====\n')
-                  o.write('\n--- RELEVANT SYMBOLS ---\n')
-                  for l in sy.splitlines():
-                      if re.search(r'(tbq|wan_(rx|tx)_bytes|online_ip|nos_track|hook|qos|rate)',l,re.I):
-                          o.write(l+'\n')
-
-                  needles=[
-                      'tbq_online_ip_track_alloc','wan_rx_bytes','wan_tx_bytes',
-                      'online_ip_hash','online_ip_hash_size',
-                      'nos_track_event_register','nos_track_event_unregister',
-                      'clear_online_ip_flag','nf_register_hooks'
-                  ]
-                  seen=set()
+              o.write("\n===== BUILT-IN KERNEL RMW CANDIDATES +0x50/+0x60 =====\n")
+              funcs=funcs_for(elf)
+              ranges=[(0x803a0000,0x803e8000),(0x80450000,0x80470000)]
+              for lo,hi in ranges:
+                  lines=dis(elf,lo,hi)
+                  starts=[]
                   for idx,l in enumerate(lines):
-                      if not any(n in l for n in needles):
+                      m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                      if m: starts.append((idx,int(m.group(1),16),m.group(2)))
+                  def owner(idx):
+                      b=None
+                      for row,a,n in starts:
+                          if row>idx: break
+                          b=(row,a,n)
+                      return b
+                  for i,l in enumerate(lines):
+                      m=mempat.search(l)
+                      if not m or m.group(1)!='sw' or int(m.group(3)) not in (80,84,96,100):
                           continue
-                      own=owner(funcs,idx)
-                      key=(own[1],own[2]) if own else ('none',idx)
-                      if key in seen: continue
-                      seen.add(key)
-                      start=max(0,(own[0] if own else idx)-2)
-                      end=len(lines)
-                      if own:
-                          for row,addr,name in funcs:
-                              if row>own[0]:
-                                  end=row; break
-                      block=lines[start:end]
-                      o.write(f'\n--- FUNCTION/OWNER {own} triggered by: {l.strip()} ---\n')
-                      # For very large functions keep useful neighborhoods only.
-                      if len(block) <= 420:
-                          o.write('\n'.join(block)+'\n')
-                      else:
-                          hits=[j for j,x in enumerate(block) if any(n in x for n in needles)]
-                          emitted=[]
-                          for h in hits:
-                              lo=max(0,h-28); hi=min(len(block),h+55)
-                              if emitted and lo<=emitted[-1][1]:
-                                  emitted[-1]=(emitted[-1][0],max(emitted[-1][1],hi))
-                              else:
-                                  emitted.append((lo,hi))
-                          for lo,hi in emitted:
-                              o.write('\n'.join(block[lo:hi])+'\n...\n')
+                      fn=owner(i)
+                      # Require same function neighborhood to both load and store one
+                      # current-counter word, avoiding generic structure offsets.
+                      off=m.group(3); base=m.group(4)
+                      hood=lines[max(fn[0] if fn else 0,i-18):min(len(lines),i+19)]
+                      if any(re.search(rf'\blw\s+[^,]+,{off}\({base}\)',x) for x in hood):
+                          o.write(f"\n--- {fn} candidate offset +0x{int(off):x} ---\n")
+                          o.write("\n".join(hood)+"\n")
 
-                  # Show exact tbq allocator function even if no relocation line triggered.
-                  wanted={'tbq_online_ip_track_alloc','tbq_track_set_weight','tbq_user_track_free'}
-                  for row,addr,name in funcs:
-                      if name not in wanted: continue
-                      end=len(lines)
-                      for rr,aa,nn in funcs:
-                          if rr>row:
-                              end=rr; break
-                      o.write(f'\n--- EXACT FUNCTION {name} @ 0x{addr:x} ---\n')
-                      o.write('\n'.join(lines[row:end])+'\n')
-
-                  # Relocations often reveal callback registration more clearly than disassembly.
-                  rel=sh(['mipsel-linux-gnu-readelf','-rW',str(p)])
-                  o.write('\n--- RELOCATIONS RELEVANT TO TRACKING ---\n')
-                  for l in rel.splitlines():
-                      if re.search(r'(tbq|wan_rx_bytes|wan_tx_bytes|online_ip|nos_track|nf_register_hooks)',l,re.I):
-                          o.write(l+'\n')
-
-                  o.write('\n--- RELEVANT STRINGS ---\n')
-                  for l in st.splitlines():
-                      if re.search(r'(TBQ|wan_rx|wan_tx|bytes per|up_limit|down_limit|online_ip|track event)',l,re.I):
-                          o.write(l+'\n')
+              o.write("\n===== EXACT KERNEL FUNCTIONS THAT SERIALIZE/SNAPSHOT COUNTERS =====\n")
+              for name in ("get_online_ip_info","online_ip_seq_show","nf_conntrack_in"):
+                  f=[x for x in funcs if x[1]==name]
+                  if not f: continue
+                  idx=funcs.index(f[0]); start=f[0][0]; stop=funcs[idx+1][0] if idx+1<len(funcs) else start+0x2000
+                  o.write(f"\n--- {name} ---\n")
+                  o.write("\n".join(dis(elf,start,stop))+"\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run130-nos-tbq-accounting
-          path: docs/reverse-generated/run130-nos-tbq-accounting.txt
+          name: run130-onlineip-counter-writers
+          path: docs/reverse-generated/run130-onlineip-counter-writers.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run130-nos-tbq-accounting.txt
+          git add docs/reverse-generated/run130-onlineip-counter-writers.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace NOS TBQ online-ip accounting'
+            git commit -m 'reverse: locate online_ip counter writers'
             git push
           fi
