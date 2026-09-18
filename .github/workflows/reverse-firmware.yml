@@ -14,138 +14,47 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
-          python3 -m pip install --break-system-packages pyelftools
-      - name: Resolve device_list timer dispatch and publish channel
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+      - name: Map timer branch calls
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run167-device-list-dispatch-channel.txt'
-
-          python3 - "$dev" "$out" <<'PY'
-          import re, subprocess, sys
-          from pathlib import Path
-          from elftools.elf.elffile import ELFFile
-
-          dev=Path(sys.argv[1]); out=Path(sys.argv[2])
-
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-
-          dis=run(["mipsel-linux-gnu-objdump","-drwC",str(dev)]).splitlines()
-
-          GOT={
-              -32516:"timer_start",
-              -32468:"timer_check_ok_and_wait",
-              -32404:"timer_stop",
-              -32348:"cmd_pub",
-          }
-
-          def slice_addr(start,stop):
-              outl=[]; active=False
-              for l in dis:
-                  m=re.match(r'^\s*([0-9a-fA-F]+):',l)
-                  if m:
-                      a=int(m.group(1),16)
-                      if start<=a<stop: active=True
-                      elif active and a>=stop: break
-                  if active: outl.append(l)
-              return outl
-
-          dispatch=slice_addr(0x404bd0,0x405150)
-          start_timer=slice_addr(0x403940,0x403a50)
-          upload=slice_addr(0x40bb84,0x40bfd4)
-
-          def annotate(block):
-              ann=[]
-              for i,l in enumerate(block):
-                  m=re.search(r'\blw\s+v0,(-?\d+)\(gp\)',l)
-                  if not m:continue
-                  off=int(m.group(1)); sym=GOT.get(off)
-                  near='\n'.join(block[i:min(len(block),i+5)])
-                  if sym and 'jalr' in near:
-                      ann.append((i,off,sym,block[max(0,i-7):min(len(block),i+9)]))
-              return ann
-
-          with dev.open('rb') as f:
-              ef=ELFFile(f)
-              def read_va(addr,n):
-                  for sec in ef.iter_sections():
-                      va=int(sec['sh_addr']); z=int(sec['sh_size'])
-                      if va<=addr and addr+n<=va+z:
-                          return sec.data()[addr-va:addr-va+n],sec.name
-                  raise KeyError(hex(addr))
-              raw,sec=read_va(0x4103b0,0x90)
-
-          mini=[]
-          base=0x4103b0
-          p=0
-          while p<len(raw):
-              q=p
-              while q<len(raw) and 32<=raw[q]<127:q+=1
-              if q>p and q<len(raw) and raw[q]==0:
-                  mini.append((base+p,raw[p:q].decode('ascii','replace')))
-                  p=q+1
-              else:p+=1
-
-          # Exact strings at important addresses even when shorter than default
-          def cstr_at(addr):
-              off=addr-base
-              if not (0<=off<len(raw)):return None
-              b=bytearray()
-              while off<len(raw) and raw[off]!=0:
-                  b.append(raw[off]);off+=1
-              return b.decode('ascii','replace')
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 167: device_list timer dispatch + publish channel =====\n\n')
-              o.write('===== RODATA =====\n')
-              o.write(f'section={sec}\n')
-              o.write(f'0x4103c0={cstr_at(0x4103c0)!r}\n')
-              o.write(f'0x4103d4={cstr_at(0x4103d4)!r}\n')
-              o.write(f'0x4103e4={cstr_at(0x4103e4)!r}\n')
-              o.write(f'0x4103fc={cstr_at(0x4103fc)!r}\n')
-              o.write('all strings:\n')
-              for a,s in mini:o.write(f'0x{a:08x}: {s!r}\n')
-
-              o.write('\n===== TIMER START =====\n')
-              o.write('\n'.join(start_timer)+'\n')
-              for i,off,sym,ctx in annotate(start_timer):
-                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
-
-              o.write('\n===== TIMER DISPATCH =====\n')
-              o.write('\n'.join(dispatch)+'\n')
-              o.write('\n===== DISPATCH ANNOTATED KNOWN CALLS =====\n')
-              for i,off,sym,ctx in annotate(dispatch):
-                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
-
-              o.write('\n===== DO_UPLOAD PUBLISH TAIL =====\n')
-              o.write('\n'.join(upload[-125:])+'\n')
-              o.write('\n===== DO_UPLOAD ANNOTATED KNOWN CALLS =====\n')
-              for i,off,sym,ctx in annotate(upload):
-                  o.write(f'\nGOT {off} -> {sym}\n'+'\n'.join(ctx)+'\n')
-
-              o.write('\n===== FOCUSED ID 3 / 4 COMPARISONS =====\n')
-              for i,l in enumerate(dispatch):
-                  if re.search(r'\bli\s+v1,(?:3|4)\b',l):
-                      o.write('\n---\n'+'\n'.join(dispatch[max(0,i-8):min(len(dispatch),i+55)])+'\n')
-          PY
-
+          out='docs/reverse-generated/run168-timer-branch-calls.txt'
+          {
+            echo '===== RUN 168: timer ID 3/4 branch calls ====='
+            echo
+            echo '===== GOT OFFSETS OF INTEREST ====='
+            mipsel-linux-gnu-readelf -A "$dev" | grep -E -- '-32716\(gp\)|-32704\(gp\)|-32692\(gp\)|-32652\(gp\)|-32648\(gp\)|-32644\(gp\)|-32640\(gp\)|-32636\(gp\)|do_client_timeout_check|do_upload_client_list' || true
+            echo
+            echo '===== DYNAMIC SYMBOLS ====='
+            mipsel-linux-gnu-readelf -Ws "$dev" | grep -E 'do_client_timeout_check|do_upload_client_list|wired_client_timeout_check|get_all_wireless_client|update_wire_client_from_sw_list|wifi|arp|client' || true
+            echo
+            echo '===== LOCAL HELPERS 0x404780..0x404b80 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404780 --stop-address=0x404b80 "$dev"
+            echo
+            echo '===== TIMER BRANCH 3 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404df4 --stop-address=0x404f00 "$dev"
+            echo
+            echo '===== TIMER BRANCH 4 ====='
+            mipsel-linux-gnu-objdump -drwC --start-address=0x404f00 --stop-address=0x404fd4 "$dev"
+            echo
+            echo '===== STRINGS / FUNCTION NAMES AROUND RELEVANT RODATA ====='
+            strings -tx "$dev" | grep -E 'do_client_timeout_check|do_upload_client_list|wired_client_timeout_check|get_all_wireless_client|update_wire_client_from_sw_list|CLIENT_LIST_UPLOAD|CLIENT_TIMEOUT_CHECK|wifi|arp|upload' || true
+          } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: run167-device-list-dispatch-channel
-          path: docs/reverse-generated/run167-device-list-dispatch-channel.txt
+          name: run168-timer-branch-calls
+          path: docs/reverse-generated/run168-timer-branch-calls.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run167-device-list-dispatch-channel.txt
+          git add docs/reverse-generated/run168-timer-branch-calls.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve device-list timer dispatch channel'
+            git commit -m 'reverse: map device-list timer branch calls'
             git push
           fi
