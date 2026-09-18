@@ -36,7 +36,8 @@ jobs:
           moddir=Path(sys.argv[1]); out=Path(sys.argv[2])
 
           def sh(args):
-              return subprocess.check_output(args,text=True,errors='replace')
+              proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, errors='replace', check=False)
+              return proc.stdout
 
           def nm(path):
               return sh(['mipsel-linux-gnu-nm','-n',str(path)]).splitlines()
