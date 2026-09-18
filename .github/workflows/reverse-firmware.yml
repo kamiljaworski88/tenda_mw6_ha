@@ -18,153 +18,128 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils-mipsel-linux-gnu git python3-pip
+          sudo apt-get install -y git python3-pip binutils-mipsel-linux-gnu
           python3 -m pip install --break-system-packages pyelftools
 
-      - name: Resolve WAN traffic protobuf and handler
+      - name: Resolve nested WAN rate protobuf
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           pb='firmware-src/RootFS-unpacked/lib/libpb.so'
-          conf='firmware-src/RootFS-unpacked/bin/confsrv'
-          uc='firmware-src/RootFS-unpacked/lib/libucapi.so'
-          out='docs/reverse-generated/run159-wan-traffic-schema.txt'
+          out='docs/reverse-generated/run160-wan-rate-nested-schema.txt'
 
-          python3 - "$pb" "$conf" "$uc" "$out" <<'PY'
-          import re, struct, subprocess, sys
+          python3 - "$pb" "$out" <<'PY'
+          import struct, subprocess, sys
           from pathlib import Path
           from elftools.elf.elffile import ELFFile
 
-          pb,conf,uc,out=map(Path,sys.argv[1:5])
+          pb=Path(sys.argv[1]); out=Path(sys.argv[2])
 
           def run(cmd):
               return subprocess.run(cmd,text=True,errors='replace',
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-          def sym(path,name):
-              txt=run(["mipsel-linux-gnu-readelf","-Ws",str(path)])
-              for l in txt.splitlines():
-                  p=l.split()
-                  if len(p)>=8 and p[-1].split("@")[0]==name:
-                      try:return int(p[1],16),int(p[2])
-                      except:return None,None
-              return None,None
-
-          class Reader:
-              def __init__(self,path):
-                  self.f=path.open('rb'); self.e=ELFFile(self.f)
+          class R:
+              def __init__(self,p):
+                  self.f=p.open('rb'); self.e=ELFFile(self.f)
               def read(self,a,n):
-                  for sec in self.e.iter_sections():
-                      va=int(sec['sh_addr']); sz=int(sec['sh_size'])
-                      if va<=a and a+n<=va+sz:
-                          return sec.data()[a-va:a-va+n]
+                  for s in self.e.iter_sections():
+                      va=int(s['sh_addr']); z=int(s['sh_size'])
+                      if va<=a and a+n<=va+z:return s.data()[a-va:a-va+n]
                   raise KeyError(hex(a))
-              def u32(self,a): return struct.unpack("<I",self.read(a,4))[0]
+              def u32(self,a):return struct.unpack('<I',self.read(a,4))[0]
               def cstr(self,a,n=128):
-                  if not a:return ""
+                  if not a:return ''
                   b=bytearray()
                   for i in range(n):
                       x=self.read(a+i,1)[0]
-                      if not x:break
+                      if x==0:break
                       b.append(x)
-                  return b.decode(errors="replace")
+                  return b.decode(errors='replace')
               def close(self):self.f.close()
 
-          r=Reader(pb)
-          desc,size=sym(pb,"wan_rate__descriptor")
-          fields=[]
-          if desc:
-              words=[r.u32(desc+4*i) for i in range(12)]
-              sizeof_msg=words[5]; nfields=words[6]; fa=words[7]
-              for i in range(nfields):
-                  a=fa+i*48
-                  w=[r.u32(a+4*j) for j in range(12)]
-                  fields.append({
-                    "id":w[1],"name":r.cstr(w[0]),"label":w[2],"type":w[3],
-                    "quant":w[4],"offset":w[5],"flags":w[8]
-                  })
-          else:
-              sizeof_msg=nfields=fa=None
+          def syms():
+              arr=[]
+              for l in run(["mipsel-linux-gnu-readelf","-Ws",str(pb)]).splitlines():
+                  p=l.split()
+                  if len(p)>=8:
+                      try:a=int(p[1],16); size=int(p[2])
+                      except:continue
+                      arr.append((a,size,p[-1].split('@')[0]))
+              return arr
 
-          # Strings and nearby disassembly for known rate routines.
-          conf_strings=run(["strings","-tx",str(conf)])
-          rate_strs=[l for l in conf_strings.splitlines()
-                     if re.search(r'fill_router_wan_rate|get_router_wan_rate|fill_bridge_wan_rate|print_wan_rate|wan1\.(?:up|down)rate|GetTrafficInfo|TRAFFIC',l,re.I)]
+          ss=syms()
+          def find(name):
+              for a,z,n in ss:
+                  if n==name:return a,z
+              return None,None
+          def name_at(addr):
+              exact=[n for a,z,n in ss if a==addr]
+              return exact[0] if exact else None
 
-          # Find __FUNCTION__ string VAs for local rate helpers and xrefs by low16.
-          raw=conf.read_bytes()
-          vas=[]
-          with conf.open("rb") as f:
-              ef=ELFFile(f)
-              for lit in [b'fill_router_wan_rate',b'get_router_wan_rate',b'fill_bridge_wan_rate',b'print_wan_rate']:
-                  pos=0
-                  while True:
-                      off=raw.find(lit,pos)
-                      if off<0:break
-                      va=None
-                      for sec in ef.iter_sections():
-                          so=int(sec['sh_offset']); sz=int(sec['sh_size'])
-                          if so<=off<so+sz:
-                              va=int(sec['sh_addr'])+(off-so);break
-                      vas.append((lit.decode(),off,va))
-                      pos=off+1
+          r=R(pb)
+          root,_=find('wan_rate__descriptor')
+          w=[r.u32(root+4*i) for i in range(12)]
+          fa=w[7]; nf=w[6]
+          rows=[]
+          for i in range(nf):
+              a=fa+i*48; q=[r.u32(a+4*j) for j in range(12)]
+              rows.append({
+                'name':r.cstr(q[0]),'id':q[1],'label':q[2],'type':q[3],
+                'quant':q[4],'offset':q[5],'descriptor':q[6],
+                'descriptor_name':name_at(q[6]),'default':q[7]
+              })
 
-          dis=run(["mipsel-linux-gnu-objdump","-drwC",str(conf)]).splitlines()
-          xrefs=[]
-          for name,off,va in vas:
-              if not va:continue
-              lo=va&0xffff; signed=lo if lo<0x8000 else lo-0x10000
-              for i,l in enumerate(dis):
-                  if re.search(rf'\baddiu\s+[^,]+,[^,]+,(?:{signed}|0x{lo:x})\b',l,re.I):
-                      xrefs.append((name,va,i,dis[max(0,i-35):min(len(dis),i+90)]))
+          nested_addrs=sorted({x['descriptor'] for x in rows if x['descriptor']})
+          nested=[]
+          for da in nested_addrs:
+              # If field descriptor points to ProtobufCMessageDescriptor.
+              q=[r.u32(da+4*i) for i in range(12)]
+              try:
+                  msg_name=r.cstr(q[1])
+                  sizeof=q[5]; n=q[6]; faddr=q[7]
+                  fs=[]
+                  if 0<n<64 and 0<sizeof<2048:
+                      for j in range(n):
+                          a=faddr+j*48; z=[r.u32(a+4*k) for k in range(12)]
+                          fs.append({
+                            'id':z[1],'name':r.cstr(z[0]),'label':z[2],'type':z[3],
+                            'quant':z[4],'offset':z[5],'descriptor':z[6],
+                            'descriptor_name':name_at(z[6])
+                          })
+                      nested.append((da,msg_name,sizeof,n,fs))
+              except Exception:
+                  pass
 
-          ucstrings=run(["strings","-tx",str(uc)])
-          uc_rate=[l for l in ucstrings.splitlines()
-                   if re.search(r'MESH_WAN|TRAFFIC|GetTrafficInfo|WAN_TRAFFIC|CMD_MESH_WAN',l,re.I)]
-
-          with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 159: WAN GetTrafficInfo schema / handler =====\n\n")
-              o.write(f"wan_rate__descriptor={hex(desc) if desc else 'NOT FOUND'} size={size}\n")
-              o.write(f"sizeof_message={sizeof_msg} n_fields={nfields} fields={hex(fa) if fa else '?'}\n")
-              o.write("\n===== WANRATE FIELD DESCRIPTORS =====\n")
-              for f in fields:
-                  o.write(f"id={f['id']} name={f['name']} offset=0x{f['offset']:x} quant=0x{f['quant']:x} type={f['type']} label={f['label']} flags=0x{f['flags']:x}\n")
-
-              o.write("\n===== CONFSRV RATE STRINGS =====\n")
-              o.write("\n".join(rate_strs)+"\n")
-
-              o.write("\n===== RATE STRING XREFS =====\n")
-              for name,va,i,ctx in xrefs:
-                  o.write(f"\n--- {name} VA=0x{va:x} ---\n")
-                  o.write("\n".join(ctx)+"\n")
-
-              o.write("\n===== LIBUCAPI WAN/TRAFFIC STRINGS =====\n")
-              o.write("\n".join(uc_rate)+"\n")
-
-              o.write("\n===== WAN_RATE INIT/PACK SYMBOLS =====\n")
-              for path in [pb,conf,uc]:
-                  o.write(f"\n--- {path} ---\n")
-                  sy=run(["mipsel-linux-gnu-readelf","-Ws",str(path)])
-                  for l in sy.splitlines():
-                      if re.search(r'wan_rate|traffic|get.*rate|interface_statistics|wan_statistics',l,re.I):
-                          o.write(l+"\n")
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 160: nested WAN rate protobuf =====\n\n')
+              o.write('===== ROOT WanRate =====\n')
+              for x in rows:o.write(repr(x)+'\n')
+              o.write('\n===== NESTED MESSAGE DESCRIPTORS =====\n')
+              for da,nm,sz,n,fs in nested:
+                  o.write(f'\n--- 0x{da:x} {name_at(da)} protobuf_name={nm!r} sizeof={sz} fields={n} ---\n')
+                  for f in fs:o.write(repr(f)+'\n')
+              o.write('\n===== RELATED SYMBOLS =====\n')
+              for a,z,n in ss:
+                  if 'wan' in n.lower() and ('rate' in n.lower() or 'traffic' in n.lower()):
+                      o.write(f'0x{a:08x} size={z} {n}\n')
           r.close()
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run159-wan-traffic-schema
-          path: docs/reverse-generated/run159-wan-traffic-schema.txt
+          name: run160-wan-rate-nested-schema
+          path: docs/reverse-generated/run160-wan-rate-nested-schema.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
-          git config user.email '41898218+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run159-wan-traffic-schema.txt
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/reverse-generated/run160-wan-rate-nested-schema.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve WAN traffic schema'
+            git commit -m 'reverse: resolve nested WAN rate schema'
             git push
           fi
