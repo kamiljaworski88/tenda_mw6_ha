@@ -19,9 +19,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
-          python3 -m pip install --break-system-packages vmlinux-to-elf pyelftools
+          python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Resolve nos_tbq_enqueue kernel call sites
+      - name: Trace conntrack to online_ip attachment
         shell: bash
         run: |
           set -euo pipefail
@@ -30,49 +30,41 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          nos='firmware-src/RootFS-unpacked/lib/modules/nos.ko'
-          out='docs/reverse-generated/run144-nos-tbq-callback-callers.txt'
+          out='docs/reverse-generated/run145-conntrack-onlineip-attachment.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
-
           mipsel-linux-gnu-objdump -drwC "$elf" > /tmp/mw6kernel/kernel.dis
-          mipsel-linux-gnu-objdump -drwC "$nos" > /tmp/mw6kernel/nos.dis
 
-          python3 - "$elf" /tmp/mw6kernel/kernel.dis /tmp/mw6kernel/nos.dis "$out" <<'PY'
-          import re, struct, sys
+          python3 - "$elf" /tmp/mw6kernel/kernel.dis "$out" <<'PY'
+          import re, subprocess, sys
           from pathlib import Path
-          from elftools.elf.elffile import ELFFile
 
-          elf_path=Path(sys.argv[1])
-          kdis=Path(sys.argv[2]).read_text(errors='replace').splitlines()
-          ndis=Path(sys.argv[3]).read_text(errors='replace').splitlines()
-          out=Path(sys.argv[4])
+          elf=Path(sys.argv[1])
+          lines=Path(sys.argv[2]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[3])
 
-          KSYMTAB=0x80547fd8
+          def run(cmd):
+              return subprocess.run(cmd,text=True,errors='replace',
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-          with elf_path.open('rb') as f:
-              ef=ELFFile(f)
-              raw=None
-              secname=None
-              for sec in ef.iter_sections():
-                  a=sec['sh_addr']; z=sec['sh_size']
-                  if a <= KSYMTAB and KSYMTAB+8 <= a+z:
-                      off=KSYMTAB-a
-                      raw=sec.data()[off:off+8]
-                      secname=sec.name
-                      break
-              if raw is None:
-                  raise SystemExit('ksymtab entry not mapped')
-              value,nameptr=struct.unpack('<II',raw)
+          nm=run(["mipsel-linux-gnu-nm","-n",str(elf)])
+          syms=[]
+          for l in nm.splitlines():
+              p=l.split(maxsplit=2)
+              if len(p)==3:
+                  try:a=int(p[0],16)
+                  except:continue
+                  syms.append((a,p[1],p[2]))
+          syms.sort()
 
-          # Function ownership map.
           funcs=[]
-          for i,l in enumerate(kdis):
+          for i,l in enumerate(lines):
               m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
               if m: funcs.append((i,int(m.group(1),16),m.group(2)))
+
           def owner(idx):
               lo,hi=0,len(funcs)
               while lo<hi:
@@ -81,99 +73,118 @@ jobs:
                   else: hi=mid
               return funcs[lo-1] if lo else None
 
-          # Parse MIPS absolute references of form:
-          # lui r, HI ; ... lw/sw x, LO(r)
-          # Account for sign-extended LO by using (hi<<16)+signed(lo).
-          refs=[]
-          for i,l in enumerate(kdis):
-              lm=re.search(r'\blui\s+([a-z0-9]+),(0x[0-9a-fA-F]+|\d+)',l)
-              if not lm: continue
-              base=lm.group(1); hi=int(lm.group(2),0)
-              for j in range(i+1,min(len(kdis),i+14)):
-                  # Stop on next function boundary.
-                  if re.match(r'^[0-9a-fA-F]+ <[^>]+>:',kdis[j]): break
-                  mm=re.search(rf'\b(lw|sw)\s+([a-z0-9]+),(-?\d+)\({base}\)',kdis[j])
-                  if not mm: continue
-                  op,reg,lo=mm.group(1),mm.group(2),int(mm.group(3))
-                  addr=((hi<<16)+lo)&0xffffffff
-                  if addr==value:
+          def range_for(name):
+              ms=[x for x in funcs if x[2]==name]
+              if not ms:return None
+              st,a,n=ms[0]
+              nxt=next((x[0] for x in funcs if x[0]>st),len(lines))
+              return st,nxt,a,n
+
+          def dump(name):
+              r=range_for(name)
+              if not r:return f"===== {name}: NOT FOUND =====\n"
+              st,en,a,n=r
+              return f"===== {name} @ 0x{a:x} =====\n"+"\n".join(lines[st:en])+"\n"
+
+          targets=[
+              "nf_conntrack_in","add_online_ip","find_online_ip",
+              "online_ip_get_idx","online_ip_timeout",
+              "get_online_ip_info","clear_online_ip_flag","set_online_ip_flag",
+              "init_online_ip"
+          ]
+
+          # Direct call sites to key online-ip functions.
+          call_targets={}
+          for n in ["add_online_ip","find_online_ip","clear_online_ip_flag","set_online_ip_flag"]:
+              rr=range_for(n)
+              if rr: call_targets[rr[2]]=n
+
+          calls=[]
+          for i,l in enumerate(lines):
+              m=re.search(r'\bjal\s+([0-9a-fA-F]+)\s+<([^>]+)>',l)
+              if m:
+                  addr=int(m.group(1),16)
+                  if addr in call_targets or m.group(2) in call_targets.values():
                       fn=owner(i)
-                      ctx=kdis[max(fn[0] if fn else 0,i-10):min(len(kdis),j+22)]
-                      refs.append((fn,op,reg,i,j,ctx))
+                      calls.append((fn,i,l,lines[max(fn[0] if fn else 0,i-24):min(len(lines),i+42)]))
 
-          # Find callback function in nos.ko at 0x5e9c and end at next symbol/function.
-          nfuncs=[]
-          for i,l in enumerate(ndis):
-              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-              if m:nfuncs.append((i,int(m.group(1),16),m.group(2)))
-          cb_start=None; cb_end=None
-          for idx,(li,a,n) in enumerate(nfuncs):
-              if a==0x5e9c:
-                  cb_start=li
-                  cb_end=nfuncs[idx+1][0] if idx+1<len(nfuncs) else len(ndis)
-                  break
-          if cb_start is None:
-              # 0x5e9c can be an unnamed local target inside init_module;
-              # dump by address with objdump output line search.
-              for i,l in enumerate(ndis):
-                  if re.match(r'^\s*5e9c:',l):
-                      cb_start=i; cb_end=min(len(ndis),i+650); break
+          # Accesses at +0x8c inside conntrack/online-ip/NOS-adjacent kernel functions.
+          off140=[]
+          for i,l in enumerate(lines):
+              if not re.search(r'\b(?:lw|sw)\s+[^,]+,140\([^)]+\)',l,re.I):
+                  continue
+              fn=owner(i)
+              if not fn:continue
+              if re.search(r'conntrack|online_ip|fastpath|nat|netif|packet|hook',fn[2],re.I):
+                  off140.append((fn,i,l,lines[max(fn[0],i-18):min(len(lines),i+30)]))
 
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 144: nos_tbq_enqueue pointer and callers =====\n')
-              o.write(f'ksymtab entry @ 0x{KSYMTAB:08x} section={secname}\n')
-              o.write(f'exported variable address = 0x{value:08x}\n')
-              o.write(f'export name pointer       = 0x{nameptr:08x}\n\n')
+          # Extract every reference inside nf_conntrack_in to +0x8c plus calls to
+          # add/find_online_ip, and annotate likely return-value stores.
+          nf=range_for("nf_conntrack_in")
+          nf_focus=[]
+          if nf:
+              st,en,a,n=nf
+              for i in range(st,en):
+                  l=lines[i]
+                  if (re.search(r'140\([^)]+\)',l) or
+                      "add_online_ip" in l or "find_online_ip" in l or
+                      "check_ip_addr" in l or
+                      re.search(r'120\([^)]+\)',l)):
+                      nf_focus.append((i,lines[max(st,i-14):min(en,i+24)]))
 
-              o.write('===== KERNEL REFERENCES TO EXPORTED CALLBACK POINTER =====\n')
-              if not refs:
-                  o.write('NO REFERENCES FOUND BY LUI+LW/SW SCAN\n')
-              for fn,op,reg,i,j,ctx in refs:
-                  if fn:
-                      o.write(f'\n--- 0x{fn[1]:08x} <{fn[2]}> {op} ref ---\n')
-                  else:
-                      o.write('\n--- unknown owner ---\n')
-                  o.write('\n'.join(ctx)+'\n')
+          with out.open("w",encoding="utf-8") as o:
+              o.write("===== RUN 145: conntrack -> online_ip attachment =====\n")
+              o.write("Target: explain when the NOS-visible conntrack online_ip pointer at ct+0x8c is populated or can remain NULL.\n\n")
 
-              o.write('\n===== NOS CALLBACK INSTALLED AT .text+0x5e9c =====\n')
-              if cb_start is not None:
-                  o.write('\n'.join(ndis[cb_start:cb_end])+'\n')
-              else:
-                  o.write('CALLBACK START NOT FOUND\n')
+              o.write("===== RELEVANT SYMBOLS =====\n")
+              for a,t,n in syms:
+                  if re.search(r'online_ip|conntrack|nf_ct|ctnetlink',n,re.I):
+                      o.write(f"0x{a:08x} {t} {n}\n")
 
-              o.write('\n===== NOS RELOCS/CALLS INSIDE 0x5e9c..0x6428 =====\n')
-              for l in ndis:
-                  am=re.match(r'^\s*([0-9a-fA-F]+):',l)
-                  if not am: continue
-                  a=int(am.group(1),16)
-                  if 0x5e9c <= a < 0x6428 and re.search(
-                    r'R_MIPS_|jal|jalr|online_ip|tbq_|wan_(?:rx|tx)|nf_|conn',l,re.I):
-                      o.write(l+'\n')
+              for n in targets:
+                  o.write("\n"+dump(n))
 
-              o.write('\n===== DIRECT FASTPATH SYMBOL RANGES =====\n')
-              # Dump caller functions from kernel refs in full enough context.
-              emitted=set()
-              for fn,op,reg,i,j,ctx in refs:
-                  if not fn or fn[1] in emitted: continue
-                  emitted.add(fn[1])
-                  st=fn[0]
-                  en=next((x[0] for x in funcs if x[0]>st),min(len(kdis),st+1200))
-                  o.write(f'\n--- FULL 0x{fn[1]:08x} <{fn[2]}> ---\n')
-                  o.write('\n'.join(kdis[st:en])+'\n')
+              o.write("\n===== DIRECT CALL SITES TO ONLINE_IP HELPERS =====\n")
+              for fn,i,l,ctx in calls:
+                  if fn:o.write(f"\n--- caller 0x{fn[1]:08x} <{fn[2]}> ---\n")
+                  o.write("\n".join(ctx)+"\n")
+
+              o.write("\n===== nf_conntrack_in FOCUSED SLICES =====\n")
+              seen=set()
+              for i,ctx in nf_focus:
+                  key=(max(0,i-14),min(len(lines),i+24))
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write("\n---\n"+"\n".join(ctx)+"\n")
+
+              o.write("\n===== +0x8c ACCESSES IN RELEVANT KERNEL FUNCTIONS =====\n")
+              seen=set()
+              for fn,i,l,ctx in off140:
+                  key=(fn[1],i)
+                  if key in seen:continue
+                  seen.add(key)
+                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
+                  o.write("\n".join(ctx)+"\n")
+
+              o.write("\n===== ONLINE_IP STRING / PROC / TIMEOUT CLUES =====\n")
+              strings=run(["strings","-tx",str(elf)])
+              for l in strings.splitlines():
+                  if re.search(r'online.?ip|online_ip|timeout|mac.*ip|ip.*mac',l,re.I):
+                      o.write(l+"\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run144-nos-tbq-callback-callers
-          path: docs/reverse-generated/run144-nos-tbq-callback-callers.txt
+          name: run145-conntrack-onlineip-attachment
+          path: docs/reverse-generated/run145-conntrack-onlineip-attachment.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run144-nos-tbq-callback-callers.txt
+          git add docs/reverse-generated/run145-conntrack-onlineip-attachment.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve NOS callback callers'
+            git commit -m 'reverse: trace conntrack online-ip attachment'
             git push
           fi
