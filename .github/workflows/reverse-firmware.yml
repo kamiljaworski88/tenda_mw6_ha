@@ -1,145 +1,66 @@
 name: Reverse MW6 firmware
-
 on:
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/reverse-firmware.yml
-
 permissions:
   contents: write
-
 jobs:
   reverse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y git python3-pip binutils-mipsel-linux-gnu
+          sudo apt-get install -y git python3-pip
           python3 -m pip install --break-system-packages pyelftools
-
-      - name: Resolve nested WAN rate protobuf
-        shell: bash
+      - name: Read wan_port_rate descriptor
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
-          pb='firmware-src/RootFS-unpacked/lib/libpb.so'
-          out='docs/reverse-generated/run160-wan-rate-nested-schema.txt'
-
-          python3 - "$pb" "$out" <<'PY'
-          import struct, subprocess, sys
+          python3 - <<'PY' > docs/reverse-generated/run161-wan-port-rate-schema.txt
+          import struct
           from pathlib import Path
           from elftools.elf.elffile import ELFFile
-
-          pb=Path(sys.argv[1]); out=Path(sys.argv[2])
-
-          def run(cmd):
-              return subprocess.run(cmd,text=True,errors='replace',
-                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-
-          class R:
-              def __init__(self,p):
-                  self.f=p.open('rb'); self.e=ELFFile(self.f)
-              def read(self,a,n):
-                  for s in self.e.iter_sections():
-                      va=int(s['sh_addr']); z=int(s['sh_size'])
-                      if va<=a and a+n<=va+z:return s.data()[a-va:a-va+n]
-                  raise KeyError(hex(a))
-              def u32(self,a):return struct.unpack('<I',self.read(a,4))[0]
-              def cstr(self,a,n=128):
-                  if not a:return ''
-                  b=bytearray()
-                  for i in range(n):
-                      x=self.read(a+i,1)[0]
-                      if x==0:break
-                      b.append(x)
-                  return b.decode(errors='replace')
-              def close(self):self.f.close()
-
-          def syms():
-              arr=[]
-              for l in run(["mipsel-linux-gnu-readelf","-Ws",str(pb)]).splitlines():
-                  p=l.split()
-                  if len(p)>=8:
-                      try:a=int(p[1],16); size=int(p[2])
-                      except:continue
-                      arr.append((a,size,p[-1].split('@')[0]))
-              return arr
-
-          ss=syms()
-          def find(name):
-              for a,z,n in ss:
-                  if n==name:return a,z
-              return None,None
-          def name_at(addr):
-              exact=[n for a,z,n in ss if a==addr]
-              return exact[0] if exact else None
-
-          r=R(pb)
-          root,_=find('wan_rate__descriptor')
-          w=[r.u32(root+4*i) for i in range(12)]
-          fa=w[7]; nf=w[6]
-          rows=[]
-          for i in range(nf):
-              a=fa+i*48; q=[r.u32(a+4*j) for j in range(12)]
-              rows.append({
-                'name':r.cstr(q[0]),'id':q[1],'label':q[2],'type':q[3],
-                'quant':q[4],'offset':q[5],'descriptor':q[6],
-                'descriptor_name':name_at(q[6]),'default':q[7]
-              })
-
-          nested_addrs=sorted({x['descriptor'] for x in rows if x['descriptor']})
-          nested=[]
-          for da in nested_addrs:
-              # If field descriptor points to ProtobufCMessageDescriptor.
-              q=[r.u32(da+4*i) for i in range(12)]
-              try:
-                  msg_name=r.cstr(q[1])
-                  sizeof=q[5]; n=q[6]; faddr=q[7]
-                  fs=[]
-                  if 0<n<64 and 0<sizeof<2048:
-                      for j in range(n):
-                          a=faddr+j*48; z=[r.u32(a+4*k) for k in range(12)]
-                          fs.append({
-                            'id':z[1],'name':r.cstr(z[0]),'label':z[2],'type':z[3],
-                            'quant':z[4],'offset':z[5],'descriptor':z[6],
-                            'descriptor_name':name_at(z[6])
-                          })
-                      nested.append((da,msg_name,sizeof,n,fs))
-              except Exception:
-                  pass
-
-          with out.open('w',encoding='utf-8') as o:
-              o.write('===== RUN 160: nested WAN rate protobuf =====\n\n')
-              o.write('===== ROOT WanRate =====\n')
-              for x in rows:o.write(repr(x)+'\n')
-              o.write('\n===== NESTED MESSAGE DESCRIPTORS =====\n')
-              for da,nm,sz,n,fs in nested:
-                  o.write(f'\n--- 0x{da:x} {name_at(da)} protobuf_name={nm!r} sizeof={sz} fields={n} ---\n')
-                  for f in fs:o.write(repr(f)+'\n')
-              o.write('\n===== RELATED SYMBOLS =====\n')
-              for a,z,n in ss:
-                  if 'wan' in n.lower() and ('rate' in n.lower() or 'traffic' in n.lower()):
-                      o.write(f'0x{a:08x} size={z} {n}\n')
-          r.close()
+          p=Path('firmware-src/RootFS-unpacked/lib/libpb.so')
+          f=p.open('rb'); e=ELFFile(f)
+          def read(a,n):
+              for s in e.iter_sections():
+                  va=int(s['sh_addr']); z=int(s['sh_size'])
+                  if va<=a and a+n<=va+z:return s.data()[a-va:a-va+n]
+              raise KeyError(hex(a))
+          def u32(a):return struct.unpack('<I',read(a,4))[0]
+          def cstr(a):
+              b=bytearray()
+              for i in range(128):
+                  x=read(a+i,1)[0]
+                  if not x:break
+                  b.append(x)
+              return b.decode(errors='replace')
+          desc=0x3fd84
+          w=[u32(desc+4*i) for i in range(12)]
+          print('===== RUN 161: wan_port_rate schema =====')
+          print('descriptor',hex(desc),'name',cstr(w[1]),'sizeof',w[5],'n_fields',w[6],'fields',hex(w[7]))
+          for i in range(w[6]):
+              a=w[7]+i*48
+              q=[u32(a+4*j) for j in range(12)]
+              print(f"id={q[1]} name={cstr(q[0])} label={q[2]} type={q[3]} quant=0x{q[4]:x} offset=0x{q[5]:x} descriptor=0x{q[6]:x} flags=0x{q[8]:x}")
+          f.close()
           PY
-
       - uses: actions/upload-artifact@v4
         with:
-          name: run160-wan-rate-nested-schema
-          path: docs/reverse-generated/run160-wan-rate-nested-schema.txt
+          name: run161-wan-port-rate-schema
+          path: docs/reverse-generated/run161-wan-port-rate-schema.txt
           retention-days: 7
-
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run160-wan-rate-nested-schema.txt
+          git add docs/reverse-generated/run161-wan-port-rate-schema.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: resolve nested WAN rate schema'
+            git commit -m 'reverse: resolve WAN port rate schema'
             git push
           fi
