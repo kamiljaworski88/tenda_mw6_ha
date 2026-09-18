@@ -1,0 +1,363 @@
+===== RUN 147: HostInfo.online source and client aging =====
+Goal: map device_list/client-status fields into HostInfo, especially protobuf field 6 (online), and find who clears that source field.
+
+===== CONFSRV RELEVANT SYMBOLS =====
+
+
+===== DEVICE_LIST RELEVANT SYMBOLS =====
+
+
+===== confsrv:fill_host_info_from_client_status @ NOT FOUND =====
+
+===== confsrv:fill_host_lists_info @ NOT FOUND =====
+
+===== confsrv:fill_host_lists_rate @ NOT FOUND =====
+
+===== confsrv:confctl_get_host_list @ NOT FOUND =====
+
+===== confsrv:device_client_offline_check @ NOT FOUND =====
+
+===== confsrv:update_list_to_client_hash_table @ NOT FOUND =====
+
+===== confsrv:update_client_info_to_hash_table @ NOT FOUND =====
+
+===== confsrv:add_new_client_to_hash_table @ NOT FOUND =====
+
+===== confsrv:upload_client_online_status_change @ NOT FOUND =====
+
+===== confsrv:transform_client_status_to_user_device @ NOT FOUND =====
+
+===== confsrv:del_from_offline_client_list @ NOT FOUND =====
+
+===== confsrv:add_to_offline_client_list @ NOT FOUND =====
+
+===== device_list:do_upload_client_list @ NOT FOUND =====
+
+===== device_list:do_upload_one_client @ NOT FOUND =====
+
+===== device_list:update_client_status @ NOT FOUND =====
+
+===== device_list:client_offline_check @ NOT FOUND =====
+
+===== device_list:update_client_info @ NOT FOUND =====
+
+===== device_list:add_client @ NOT FOUND =====
+
+===== fill_host_info_from_client_status ALL LOAD/STORE OFFSETS =====
+FUNCTION NOT FOUND
+
+===== STRING CLUES =====
+
+--- confsrv ---
+   3f24 cm_timeout
+   3f8a g_online_map_head
+   4205 confctl_report_assoc_msg
+   4270 make_highdevice_list_cfg
+   442a confctl_hanle_assoc_report
+   4488 confctl_device_list_upload
+   44a3 confctl_device_list_status_init
+   44c3 confctl_rqst_client_hostname
+   454a confctl_set_dhcps_cfg
+   4560 confctl_get_dhcps_cfg
+   47a8 add_results_timeout_check
+   4a5e ucloud_get_fastroam
+   4a72 ucloud_set_fastroam
+   4bb8 update_highdevice_list
+   55c3 update_assoc_tab
+   562d assoc_peer_check
+   563e assoc_node_info__init
+   5654 fill_assoc_node_rule
+   56a2 fill_assoc_node_list
+   5cda dhcp_cfg__unpack
+   5d51 dhcp_cfg__free_unpacked
+   5d69 dhcp_cfg__descriptor
+   5d7e dhcp_cfg__get_packed_size
+   5d98 dhcp_cfg__pack
+   6159 set_wan_dhcp
+   621a confctl_log_timeout_check
+   66c0 upgrade_sched_reboot_timeout_check_srv
+   66e7 upgrade_sched_reboot_timeout_event_srv
+   6adb unregister_timeout_check
+   6b16 file_get_wl_assoc_msg
+   6b2c file_get_wired_assoc_msg
+   6b60 check_addnode_online
+   6bfa send_all_client_status_list
+   6d53 sched_reboot_timeout_check
+   6d6e sched_reboot_timeout_event
+   6f6c wlan_roaming__descriptor
+   6f85 wlan_roaming__get_packed_size
+   6fa3 wlan_roaming__pack
+   6fb6 wlan_roaming__unpack
+   6fcb wlan_roaming__free_unpacked
+  66398 dhcpc
+  663b8 /var/dhcpc
+  665f0 device_list
+  66610 /var/device_list_socket
+  66844 oom at <../../device_list/include/extern/from_redis.h:32>
+  66b6c make_highdevice_list_cfg
+  66ff8 dhcpc
+  67018 /var/dhcpc
+  67250 device_list
+  67270 /var/device_list_socket
+  67620 upload all client status to cloud
+  67690 all device list status uploaded by device_list
+  67830 print client list get online ip info(app)
+  6785c print client lists status(app)
+  67890 upload client and node status start cmd
+  679cc ReportAssocMsg
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67d48 GetWlRoaming
+  67d58 SetWlRoaming
+  681e8 dhcpc
+  68208 /var/dhcpc
+  68440 device_list
+  68460 /var/device_list_socket
+  68ba0 	DHCP : 
+  68bac 	DHCP cfg is NULL
+  69238 dhcpc
+  69258 /var/dhcpc
+  69490 device_list
+  694b0 /var/device_list_socket
+  69dd8 dhcpc
+  69df8 /var/dhcpc
+  6a030 device_list
+  6a050 /var/device_list_socket
+  6a748 dhcpc
+  6a768 /var/dhcpc
+  6a9a0 device_list
+  6a9c0 /var/device_list_socket
+  6ac34 dhcps.static.listnum
+  6ac4c dhcps.static.list%d
+  6b0c8 dhcpc
+  6b0e8 /var/dhcpc
+  6b320 device_list
+  6b340 /var/device_list_socket
+  6bd98 dhcpc
+  6bdb8 /var/dhcpc
+  6bff0 device_list
+  6c010 /var/device_list_socket
+  6ca58 dhcpc
+  6ca78 /var/dhcpc
+  6ccb0 device_list
+  6ccd0 /var/device_list_socket
+  6d4c8 dhcpc
+  6d4e8 /var/dhcpc
+  6d720 device_list
+  6d740 /var/device_list_socket
+  6e2b8 dhcpc
+  6e2d8 /var/dhcpc
+  6e510 device_list
+  6e530 /var/device_list_socket
+  6edf8 dhcpc
+  6ee18 /var/dhcpc
+  6f050 device_list
+  6f070 /var/device_list_socket
+  6f638 dhcpc
+  6f658 /var/dhcpc
+  6f890 device_list
+  6f8b0 /var/device_list_socket
+  6ff90   assoc_num:    %d     
+  6ffac   assoc_node%d: sn:%s    wl2g_rssi:%d    wl5g_rssi:%d    wired_rssi:%d    peer_flag:%d
+  70170 djc___first_online__%s(%d)
+  70280   fill assoc node rule failed!  
+  702d8    fill assoc node list failed  
+  70548   assoc_node%d: sn:%s    wl2g_rssi:%d    wl5g_rssi:%d    wired_rssi:%d
+  707dc [%s][%d][luminais] 	assoc_sn_cnt : %d
+  70804 [%s][%d][luminais] assoc_list<%d> : 
+  7082c [%s][%d][luminais] 	%d	assoc_sn : %s
+  708cc [%s][%d][luminais] 0 == assoc_num
+  708f0 [%s][%d]%s check_node_is_assoc fail, change to offline!!!
+  714c4 update_node_status_by_assoc
+  714e0 check_node_is_assoc
+  714f4 in_node_assoc_list
+  71550 fill_assoc_node_status
+  715b8 node_real_assoc_num
+  71a48 dhcpc
+  71a68 /var/dhcpc
+  71ca0 device_list
+  71cc0 /var/device_list_socket
+  720a4  	online : %d
+  72208  	assoc_sn : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  72483 [1;35mgoto online
+  725eb [1;35mgoto offline
+  72630 [%s][%d][luminais] alloc_roam_client_info failed.
+  72664 [%s][%d][luminais] not find any roam client info
+  726c4 rsp_client_hostname
+  726d8 device_list@%s
+  72ae3 [1;35mprint_upload_cloud_client_status
+  72c84 api/device_list_status.c
+  72e30 send_all_client_status_list
+  72e4c fill_cloud_info_device_lists_rate
+  73008 find_client_in_online_ip_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  7325c print_online_ip_info
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  736f8 dhcpc
+  73718 /var/dhcpc
+  73950 device_list
+  73970 /var/device_list_socket
+  73ba4 wl.guest.dhcps_ip
+  73bbc wl.guest.dhcps_mask
+  73cfc wl.guest.dhcps_ifname
+  73d3c wl.guest.dhcps_dns1
+  73d50 wl.guest.dhcps_dns2
+  73d88 wl.guest.dhcps_ipstart
+  73dc4 wl.guest.dhcps_ipend
+  73f00 dhcp_cfg__unpack failed
+  73fbc wl.guest.dhcps_enable
+  73fec confctl_set_dhcps_cfg
+  743a8 dhcpc
+  743c8 /var/dhcpc
+  74600 device_list
+  74620 /var/device_list_socket
+  74c18 [%s][%d][luminais] DHCP can access to INTERNET
+  75148 [%s][%d][luminais] Set wan%d dhcp OK!
+  7563c fill_wan_port_dhcp_cfg
+  75a48 dhcpc
+  75a68 /var/dhcpc
+  75ca0 device_list
+  75cc0 /var/device_list_socket
+  762c8 dhcpc
+  762e8 /var/dhcpc
+  76520 device_list
+  76540 /var/device_list_socket
+  769a4 static,dhcp,adsl,rsadsl,rsapptp,rsal2tp,ap
+  76f84 [arainc][INTERNET_OFFLINE]%s(%d)
+  7721c device_list
+  77850 upgrade_shced_timeout start    %s(%d)
+  7798c upgrade_mpp_check_msg_num_old_timeout
+  77c20 upgrade_mpp_check_msg_num_new_timeout
+  78238 dhcpc
+  78258 /var/dhcpc
+  78490 device_list
+  784b0 /var/device_list_socket
+  787b0 wl.guest.dhcps_ifname
+  78b54 wl.guest.dhcps_enable
+  78bf8 wl.guest.dhcps_ip
+  78c0c wl.guest.dhcps_mask
+  78d20 djc____timeout is %d____%s(%d)
+  7900c update_highdevice_list
+  79024 update_highdevice_list
+  794b8 dhcpc
+  794d8 /var/dhcpc
+  79710 device_list
+  79730 /var/device_list_socket
+  79e68 dhcpc
+  79e88 /var/dhcpc
+  7a0c0 device_list
+  7a0e0 /var/device_list_socket
+  7a3c8 /proc/wlan0/mesh_assoc_mpinfo
+  7a3e8 /proc/wlan1/mesh_assoc_mpinfo
+  7a438 ReportAssocMsg
+  7a7e8 dhcpc
+  7a808 /var/dhcpc
+  7aa40 device_list
+  7aa60 /var/device_list_socket
+  7b193 [1;35mnode %s is timeout
+  7b1b4 ucloud_add_node_timeout
+  7b21c check_addnode_online
+  7b297 [1;35mcall send_all_client_status_list
+  7ba08 dhcpc
+  7ba28 /var/dhcpc
+  7bc60 device_list
+  7bc80 /var/device_list_socket
+  7c2b8 dhcpc
+  7c2d8 /var/dhcpc
+  7c510 device_list
+  7c530 /var/device_list_socket
+  7cdb8 dhcpc
+  7cdd8 /var/dhcpc
+  7d010 device_list
+  7d030 /var/device_list_socket
+  7d2b4    get dhcp cfg failed.     
+  7d2d4      dhcp list unpack failed.    
+  7d594   get dhcp cfg failed!   
+  7d81c    set dhcp cfg failed.   
+  7dec8 dhcpc
+  7dee8 /var/dhcpc
+  7e120 device_list
+  7e140 /var/device_list_socket
+  7e374 wlan.fastroam.enable
+  7e7e8 dhcpc
+  7e808 /var/dhcpc
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+
+--- device_list ---
+   1036 monitor_program_register_associ_proc
+   105b g_device_list_debug_en
+   11ee do_client_timeout_check
+   124f dhcp_nl_event_handle
+   137c update_to_roam_list
+   13a8 del_roam_not_in_wifi_client_lists
+   cad8 dhcpc
+   caf8 /var/dhcpc
+   cd30 device_list
+   cd50 /var/device_list_socket
+   cfec [%s][%d][luminais] g_device_list_debug_en = %d
+   d10c g_roam_list_num = %d
+   d218 [%s][%d][luminais] hostname : %s
+   d31c [%s][%d][luminais] convert_dhcp_info_to_client_list failed.
+   d3bc device_list
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d518 rqst_client_hostname
+   d59f [1;35mdo_client_timeout_check
+   d6cc [%s][%d][luminais] print_dhcp_info : 
+   d714 rsp_client_hostname
+   d728 device_list@%s
+   d738 /var/device_list_socket
+   d830 device_list_main_loop
+   d848 device_list_cmd_sub
+   d85c dhcp_nl_event_handle
+   d8c0 request_client_hostname
+   d8d8 update_to_roam_list
+   d8ec del_from_roam_list
+   d900 add_to_roam_list
+   d914 find_in_roam_list
+   d944 stop_device_list_timer
+   d95c start_device_list_timer
+   d974 deal_new_dhcp_info
+   d9a0 convert_dhcp_info_to_client_list
+   d9f8 print_dhcp_info
+   da54 device_list_debug_switch
+   ddf8 dhcpc
+   de18 /var/dhcpc
+   e050 device_list
+   e070 /var/device_list_socket
+   e858 dhcpc
+   e878 /var/dhcpc
+   eab0 device_list
+   ead0 /var/device_list_socket
+   f198 dhcpc
+   f1b8 /var/dhcpc
+   f3f0 device_list
+   f410 /var/device_list_socket
+   f974 do_client_timeout_check
+   f98c check_wifi_client_roam_or_static
+   fa18 wired_client_timeout_check
+   fe78 dhcpc
+   fe98 /var/dhcpc
+  100d0 device_list
+  100f0 /var/device_list_socket
+  103c0 device_list_upload
