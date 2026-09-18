@@ -1,7 +1,7 @@
 # Run 139 — consolidated per-client rate pipeline
 
 This document is the current source of truth for MW6 per-client traffic rates
-after Runs 37 and 123–146.
+after Runs 37 and 123–151.
 
 ## 1. Local API surface
 
@@ -279,26 +279,117 @@ Therefore an online-ip record cannot age out while a referenced active
 conntrack remains attached. Plain timeout/lifetime is no longer a leading
 explanation for zero rates during active transfer.
 
-The highest-value unresolved fault domain is now above that layer:
+## 13. Userspace inventory gate — Runs 149–151
 
-1. `HostInfo.online` is zero/stale, so the rate helper skips the client
-   before matching `g_ip_info`,
-2. the client never creates a qualifying LAN→WAN IPv4 conntrack/online-ip
-   association,
-3. HostInfo IP/MAC is stale or otherwise differs from the reconstructed
-   Ethernet identity in `online_ip`.
+Runs 149–151 resolve the previously missing inventory side of the rate gate.
 
-## 13. Next reverse target
+The protobuf-c descriptor proves that `HostInfo.online` is stored at
+`HostInfo +0x20`. The mapper at `0x433ab4`
+(`fill_host_info_from_client_status`) copies one byte from
+`client_status +0x84` into that field:
 
-The kernel attachment, MAC source and lifetime path are now resolved. The next
-target moves back to userspace inventory state:
+```text
+HostInfo.online = client_status[0x84]
+```
 
-`device_list client status → fill_host_info_from_client_status → HostInfo.online`.
+This is independent from the kernel `online_ip` structure.
 
-Resolve the exact source field and offline/aging logic for HostInfo.online,
-because a false zero there prevents `fill_host_lists_rate` from attempting
-the otherwise-correct online-ip match.
+### Client status lifecycle
 
-After that static path is exhausted, one live read-only test should distinguish
-a stale HostInfo.online value from missing online-ip counters or an identity
-mismatch.
+The local client hash uses a 148-byte status object. Important fields are:
+
+| client status offset | Meaning |
+| --- | --- |
+| `+0x60` | reporting node / associated-node serial context |
+| `+0x84` | online flag |
+| `+0x88` | last-seen timestamp |
+| `+0x5c` | online/offline state-change timestamp |
+
+The identified functions are:
+
+- `0x431744` = `add_new_client_to_hash_table`
+- `0x431b04` = `update_client_info_to_hash_table`
+- `0x432780` = `device_client_offline_check`
+- `0x431534` = `upload_client_online_status_change`
+
+Both add and update paths refresh `client_status+0x88 = now`.
+When a client is first added, or returns from offline state, the online flag is
+set to 1.
+
+The offline watchdog checks:
+
+```text
+client.online == 1
+and now - client.last_seen >= 45 seconds
+```
+
+and then performs:
+
+```text
+client.online = 0
+client.state_change = now
+```
+
+Therefore `HostInfo.online` means "freshly reported by device_list within the
+inventory watchdog", not "kernel currently sees IP traffic".
+
+This matters because `fill_host_lists_rate` checks `HostInfo.online`
+before parsing IP/MAC or consulting `g_ip_info`. A stale inventory record can
+therefore force `uprate=0/downrate=0` even if kernel traffic counters exist.
+
+### Mesh upload / assoc_sn path
+
+`confctl_device_list_upload` parses its payload as:
+
+```text
+32-byte reporting-node identity
++ N * 124-byte raw client records
+```
+
+The client count is derived from `(payload_len - 32) / 124`.
+
+The local merge function at `0x4320f0` iterates every raw record, finds the
+client by MAC, and dispatches to:
+
+- `update_client_info_to_hash_table(existing, raw_client, reporter)`, or
+- `add_new_client_to_hash_table(raw_client, reporter)`.
+
+The same 32-byte reporter identity is copied into the client status field later
+exported as `HostInfo.assoc_sn`.
+
+So the local chain is now resolved:
+
+```text
+mesh node device_list report
+        ↓
+confctl_device_list_upload
+        ↓
+merge by client MAC
+        ↓
+online=1 + last_seen=now + reporting node
+        ↓
+fill_host_info_from_client_status
+        ↓
+HostInfo.online + HostInfo.assoc_sn
+        ↓
+fill_host_lists_rate
+```
+
+## 14. Current zero-rate decision tree
+
+Static reverse engineering has now resolved both the kernel accounting path
+and the userspace inventory gate.
+
+The remaining live distinction is:
+
+1. **HostInfo.online drops to 0** while the client is expected to be active:
+   investigate `device_list` reporting / 45-second last-seen watchdog first.
+2. **HostInfo.online stays 1 for >45 s but both rates remain 0 under real
+   traffic**: focus on the live `g_ip_info` snapshot, strict IP+MAC match, or
+   online-ip counters.
+3. **Any non-zero rate appears**: the complete local per-client rate pipeline
+   is working for that client.
+
+`tools/mw6_probe.py --diagnose-rates` implements this exact read-only test.
+Its default observation window is 65 seconds, intentionally longer than the
+45-second inventory watchdog.
