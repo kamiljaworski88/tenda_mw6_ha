@@ -1,0 +1,196 @@
+===== RUN 158: exact GetHostList rate arithmetic =====
+
+===== CONSTANTS =====
+VA 0x0047335c: bytes=00 24 74 49 00 00 80 44 section=  [15] .rodata           PROGBITS        00465f80 065f80 018f58 00   A  0   0 16
+  u32_le=1232348160
+  float_le=1000000.0
+  double_le=9.444735550160699e+21
+VA 0x00473360: bytes=00 00 80 44 00 00 00 00 section=  [15] .rodata           PROGBITS        00465f80 065f80 018f58 00   A  0   0 16
+  u32_le=1149239296
+  float_le=1024.0
+  double_le=5.67799655e-315
+
+===== LIBGCC/ARITHMETIC HELPERS =====
+0x00461ee0: None
+0x00462880: None
+0x00462b90: None
+0x004640a0: None
+0x00461d10: None
+
+===== SYMBOLS AROUND HELPERS =====
+
+===== RATE HELPER DISASSEMBLY 0x434734..0x434950 =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00434734 <confctl_rqst_client_hostname@@Base+0xfd8>:
+  434734:	8fc20038 	lw	v0,56(s8)
+  434738:	8c440028 	lw	a0,40(v0)
+  43473c:	8c45002c 	lw	a1,44(v0)
+  434740:	8fc20038 	lw	v0,56(s8)
+  434744:	8c430034 	lw	v1,52(v0)
+  434748:	8c420030 	lw	v0,48(v0)
+  43474c:	0065302b 	sltu	a2,v1,a1
+  434750:	14c00007 	bnez	a2,434770 <confctl_rqst_client_hostname@@Base+0x1014>
+  434754:	00000000 	nop
+  434758:	00603021 	move	a2,v1
+  43475c:	14a60031 	bne	a1,a2,434824 <confctl_rqst_client_hostname@@Base+0x10c8>
+  434760:	00000000 	nop
+  434764:	0044102b 	sltu	v0,v0,a0
+  434768:	1040002e 	beqz	v0,434824 <confctl_rqst_client_hostname@@Base+0x10c8>
+  43476c:	00000000 	nop
+  434770:	8fc20038 	lw	v0,56(s8)
+  434774:	8c440028 	lw	a0,40(v0)
+  434778:	8c45002c 	lw	a1,44(v0)
+  43477c:	8fc20038 	lw	v0,56(s8)
+  434780:	8c460030 	lw	a2,48(v0)
+  434784:	8c470034 	lw	a3,52(v0)
+  434788:	00861023 	subu	v0,a0,a2
+  43478c:	0082402b 	sltu	t0,a0,v0
+  434790:	00a71823 	subu	v1,a1,a3
+  434794:	00682023 	subu	a0,v1,t0
+  434798:	00801821 	move	v1,a0
+  43479c:	8f868370 	lw	a2,-31888(gp)
+  4347a0:	00402021 	move	a0,v0
+  4347a4:	00602821 	move	a1,v1
+  4347a8:	00c0c821 	move	t9,a2
+  4347ac:	0320f809 	jalr	t9
+  4347b0:	00000000 	nop
+  4347b4:	8fdc0028 	lw	gp,40(s8)
+  4347b8:	00401821 	move	v1,v0
+  4347bc:	8f828374 	lw	v0,-31884(gp)
+  4347c0:	00602021 	move	a0,v1
+  4347c4:	8fc5003c 	lw	a1,60(s8)
+  4347c8:	0040c821 	move	t9,v0
+  4347cc:	0320f809 	jalr	t9
+  4347d0:	00000000 	nop
+  4347d4:	8fdc0028 	lw	gp,40(s8)
+  4347d8:	00402021 	move	a0,v0
+  4347dc:	8f83822c 	lw	v1,-32212(gp)
+  4347e0:	8f828374 	lw	v0,-31884(gp)
+  4347e4:	8c653360 	lw	a1,13152(v1)
+  4347e8:	0040c821 	move	t9,v0
+  4347ec:	0320f809 	jalr	t9
+  4347f0:	00000000 	nop
+  4347f4:	8fdc0028 	lw	gp,40(s8)
+  4347f8:	00401821 	move	v1,v0
+  4347fc:	8f828380 	lw	v0,-31872(gp)
+  434800:	00602021 	move	a0,v1
+  434804:	0040c821 	move	t9,v0
+  434808:	0320f809 	jalr	t9
+  43480c:	00000000 	nop
+  434810:	8fdc0028 	lw	gp,40(s8)
+  434814:	afc20040 	sw	v0,64(s8)
+  434818:	afc30044 	sw	v1,68(s8)
+  43481c:	10000005 	b	434834 <confctl_rqst_client_hostname@@Base+0x10d8>
+  434820:	00000000 	nop
+  434824:	00001021 	move	v0,zero
+  434828:	00001821 	move	v1,zero
+  43482c:	afc20040 	sw	v0,64(s8)
+  434830:	afc30044 	sw	v1,68(s8)
+  434834:	8fc20038 	lw	v0,56(s8)
+  434838:	8c440018 	lw	a0,24(v0)
+  43483c:	8c45001c 	lw	a1,28(v0)
+  434840:	8fc20038 	lw	v0,56(s8)
+  434844:	8c430024 	lw	v1,36(v0)
+  434848:	8c420020 	lw	v0,32(v0)
+  43484c:	0065302b 	sltu	a2,v1,a1
+  434850:	14c00007 	bnez	a2,434870 <confctl_rqst_client_hostname@@Base+0x1114>
+  434854:	00000000 	nop
+  434858:	00603021 	move	a2,v1
+  43485c:	14a60031 	bne	a1,a2,434924 <confctl_rqst_client_hostname@@Base+0x11c8>
+  434860:	00000000 	nop
+  434864:	0044102b 	sltu	v0,v0,a0
+  434868:	1040002e 	beqz	v0,434924 <confctl_rqst_client_hostname@@Base+0x11c8>
+  43486c:	00000000 	nop
+  434870:	8fc20038 	lw	v0,56(s8)
+  434874:	8c440018 	lw	a0,24(v0)
+  434878:	8c45001c 	lw	a1,28(v0)
+  43487c:	8fc20038 	lw	v0,56(s8)
+  434880:	8c460020 	lw	a2,32(v0)
+  434884:	8c470024 	lw	a3,36(v0)
+  434888:	00861023 	subu	v0,a0,a2
+  43488c:	0082402b 	sltu	t0,a0,v0
+  434890:	00a71823 	subu	v1,a1,a3
+  434894:	00682023 	subu	a0,v1,t0
+  434898:	00801821 	move	v1,a0
+  43489c:	8f868370 	lw	a2,-31888(gp)
+  4348a0:	00402021 	move	a0,v0
+  4348a4:	00602821 	move	a1,v1
+  4348a8:	00c0c821 	move	t9,a2
+  4348ac:	0320f809 	jalr	t9
+  4348b0:	00000000 	nop
+  4348b4:	8fdc0028 	lw	gp,40(s8)
+  4348b8:	00401821 	move	v1,v0
+  4348bc:	8f828374 	lw	v0,-31884(gp)
+  4348c0:	00602021 	move	a0,v1
+  4348c4:	8fc5003c 	lw	a1,60(s8)
+  4348c8:	0040c821 	move	t9,v0
+  4348cc:	0320f809 	jalr	t9
+  4348d0:	00000000 	nop
+  4348d4:	8fdc0028 	lw	gp,40(s8)
+  4348d8:	00402021 	move	a0,v0
+  4348dc:	8f83822c 	lw	v1,-32212(gp)
+  4348e0:	8f828374 	lw	v0,-31884(gp)
+  4348e4:	8c653360 	lw	a1,13152(v1)
+  4348e8:	0040c821 	move	t9,v0
+  4348ec:	0320f809 	jalr	t9
+  4348f0:	00000000 	nop
+  4348f4:	8fdc0028 	lw	gp,40(s8)
+  4348f8:	00401821 	move	v1,v0
+  4348fc:	8f828380 	lw	v0,-31872(gp)
+  434900:	00602021 	move	a0,v1
+  434904:	0040c821 	move	t9,v0
+  434908:	0320f809 	jalr	t9
+  43490c:	00000000 	nop
+  434910:	8fdc0028 	lw	gp,40(s8)
+  434914:	afc20048 	sw	v0,72(s8)
+  434918:	afc3004c 	sw	v1,76(s8)
+  43491c:	10000005 	b	434934 <confctl_rqst_client_hostname@@Base+0x11d8>
+  434920:	00000000 	nop
+  434924:	00001021 	move	v0,zero
+  434928:	00001821 	move	v1,zero
+  43492c:	afc20048 	sw	v0,72(s8)
+  434930:	afc3004c 	sw	v1,76(s8)
+  434934:	8fc30040 	lw	v1,64(s8)
+  434938:	8fc20034 	lw	v0,52(s8)
+  43493c:	ac430028 	sw	v1,40(v0)
+  434940:	8fc30048 	lw	v1,72(s8)
+  434944:	8fc20034 	lw	v0,52(s8)
+  434948:	ac430024 	sw	v1,36(v0)
+  43494c:	10000002 	b	434958 <confctl_rqst_client_hostname@@Base+0x11fc>
+
+===== RELEVANT STATIC STRINGS / CONSTANT CLUES =====
+   5f8e wan_port_rate__init
+   603d wan_rate__descriptor
+   6052 wan_rate__get_packed_size
+   606c wan_rate__pack
+  66a68 op=%d,wl_rate=%d
+  6a38c op=%d,wl_rate=24
+  6a3a0 op=%d,wl_rate=5
+  6ea3c generate_rule_id
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  72e4c fill_cloud_info_device_lists_rate
+  72ff0 fill_host_lists_rate
+  73e90 op=%d,wl_rate=24
+  73fa8 op=%d,wl_rate=%d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  74f17 [1;35m<%d> up_rate = %d, down_rate = %d
+  75348 fill_router_wan_rate
+  75360 get_router_wan_rate
+  7538c fill_bridge_wan_rate
+  756a8 print_wan_rate
+  776a4 _g_read_byte=%d_%s(%d)
+  78a8c op=%d,wl_rate=%d
+  7e44c op=%d,wl_rate=%d
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
