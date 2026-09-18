@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace online_ip creation gate
+      - name: Trace skb direction marks
         shell: bash
         run: |
           set -euo pipefail
@@ -30,67 +30,105 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run136-onlineip-creation-gate.txt'
+          out='docs/reverse-generated/run137-skb-direction-mark.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          {
-            echo '===== RUN 136: online_ip creation gate ====='
-            echo
-            echo '===== SYMBOLS ====='
-            mipsel-linux-gnu-nm -n "$elf" | grep -E 'check_ip_addr|find_online_ip|add_online_ip|nf_conntrack_in|online_ip|fastpath|skb|mark' || true
+          mipsel-linux-gnu-objdump -drwC "$elf" > /tmp/mw6kernel/all.dis
 
-            echo
-            echo '===== check_ip_addr + find_online_ip ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x803d2b80 --stop-address=0x803d2d80 "$elf"
+          python3 - /tmp/mw6kernel/all.dis "$out" <<'PY'
+          import re, sys
+          from pathlib import Path
+          lines=Path(sys.argv[1]).read_text(errors='replace').splitlines()
+          out=Path(sys.argv[2])
 
-            echo
-            echo '===== nf_conntrack_in full relevant body ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x803bea80 --stop-address=0x803bf320 "$elf"
+          funcs=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+              if m:
+                  funcs.append((i,int(m.group(1),16),m.group(2)))
+          def owner(i):
+              lo=0; hi=len(funcs)
+              while lo<hi:
+                  mid=(lo+hi)//2
+                  if funcs[mid][0]<=i: lo=mid+1
+                  else: hi=mid
+              return funcs[lo-1] if lo else None
 
-            echo
-            echo '===== ALL DIRECT CALLS TO add_online_ip ====='
-            mipsel-linux-gnu-objdump -d "$elf" | grep -B18 -A24 -E 'jal[[:space:]]+803d4190|<add_online_ip>' || true
+          mem=re.compile(r'\b(lw|sw)\s+([a-z0-9]+),120\(([a-z0-9]+)\)',re.I)
+          candidates=[]
+          seen=set()
+          for i,l in enumerate(lines):
+              m=mem.search(l)
+              if not m or m.group(1).lower()!='sw':
+                  continue
+              fn=owner(i)
+              if not fn: continue
+              start=fn[0]
+              end=next((x[0] for x in funcs if x[0]>start),len(lines))
+              block=lines[start:end]
+              bi=i-start
+              ctx=block[max(0,bi-35):min(len(block),bi+25)]
+              joined='\n'.join(ctx)
 
-            echo
-            echo '===== KERNEL ACCESSES TO skb-ish offset +0x78 / decimal 120 NEAR CONNTRACK/FASTPATH ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x80380000 --stop-address=0x8045c000 "$elf" |
-              grep -B8 -A12 -E '\b(lw|sw)[[:space:]].*,120\([^)]*\)|0x78\)' || true
+              # Strong RMW candidate: same function/context reads offset 120,
+              # manipulates bit 1/2, then writes it.
+              has_load=bool(re.search(r'\blw\s+[^,]+,120\([^)]+\)',joined,re.I))
+              bitops=bool(re.search(
+                  r'\b(?:ori|xori|andi)\s+[^\n]*(?:0x1\b|0x2\b)|\bli\s+[^,]+,(?:1|2)\b',
+                  joined,re.I))
+              networkish=bool(re.search(
+                  r'skb|conntrack|fastpath|nat|netif|eth|rtl|ip_|ipv4|bridge|br_|nf_|forward|route|wan|lan',
+                  fn[2],re.I))
+              if has_load and bitops and networkish:
+                  key=(fn[1],i)
+                  if key not in seen:
+                      seen.add(key)
+                      candidates.append((fn,i,ctx))
 
-            echo
-            echo '===== MODULES IMPORTING add/find/check online_ip ====='
-            find firmware-src -name '*.ko' -type f -print0 | while IFS= read -r -d '' ko; do
-              hits="$(mipsel-linux-gnu-nm -u "$ko" 2>/dev/null | grep -E 'add_online_ip|find_online_ip|check_ip_addr|online_ip' || true)"
-              if [ -n "$hits" ]; then
-                echo "--- $ko ---"
-                echo "$hits"
-              fi
-            done
+          with out.open('w',encoding='utf-8') as o:
+              o.write('===== RUN 137: skb +0x78 direction mark writers =====\n')
+              o.write('Target behavior: nf_conntrack_in tests skb+0x78 bit 0x2 before online_ip creation; NOS tests bit 0x2 as TX and bit 0x1 as RX.\n\n')
 
-            echo
-            echo '===== LIBCOMMON STATISTIC CONFIG STRINGS / RODATA ====='
-            lib='firmware-src/RootFS-unpacked/lib/libcommon.so'
-            strings -tx "$lib" | grep -E -i 'statistic|online.?ip|ip.?info|max.*host|host.*max|netlink' || true
-            echo
-            echo '--- rodata around 0x5ab80 ---'
-            mipsel-linux-gnu-objdump -s --start-address=0x5ab60 --stop-address=0x5ac40 "$lib" || true
-          } > "$out"
+              o.write('===== STRONG RMW / NETWORK FUNCTION CANDIDATES =====\n')
+              for fn,i,ctx in candidates:
+                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> store-line {i} ---\n")
+                  o.write('\n'.join(ctx)+'\n')
+
+              o.write('\n===== ALL +0x78 STORES IN NAMED NETWORKISH FUNCTIONS =====\n')
+              emitted=set()
+              for i,l in enumerate(lines):
+                  m=mem.search(l)
+                  if not m or m.group(1).lower()!='sw': continue
+                  fn=owner(i)
+                  if not fn or not re.search(r'skb|conntrack|fastpath|nat|netif|eth|rtl|ip_|ipv4|bridge|br_|nf_|forward|route|wan|lan',fn[2],re.I):
+                      continue
+                  if (fn[1],i) in emitted: continue
+                  emitted.add((fn[1],i))
+                  o.write(f"\n--- 0x{fn[1]:08x} <{fn[2]}> ---\n")
+                  o.write('\n'.join(lines[max(fn[0],i-18):min(len(lines),i+20)])+'\n')
+
+              o.write('\n===== nf_conntrack_in TEST SITES =====\n')
+              for i,l in enumerate(lines):
+                  if re.search(r'803b[e-f][0-9a-f]{4}:',l,re.I) and re.search(r'120\([^)]+\)',l):
+                      o.write('\n'.join(lines[max(0,i-12):min(len(lines),i+18)])+'\n---\n')
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run136-onlineip-creation-gate
-          path: docs/reverse-generated/run136-onlineip-creation-gate.txt
+          name: run137-skb-direction-mark
+          path: docs/reverse-generated/run137-skb-direction-mark.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run136-onlineip-creation-gate.txt
+          git add docs/reverse-generated/run137-skb-direction-mark.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace online_ip creation gate'
+            git commit -m 'reverse: trace skb direction mark'
             git push
           fi
