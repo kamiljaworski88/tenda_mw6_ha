@@ -15,40 +15,41 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mipsel-linux-gnu git
-      - name: Trace need_upload filtering
+      - name: Resolve need_upload flag
         shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/latonita/tenda-reverse.git firmware-src
           mkdir -p docs/reverse-generated
           dev='firmware-src/RootFS-unpacked/bin/device_list'
-          out='docs/reverse-generated/run169-need-upload-filter.txt'
+          out='docs/reverse-generated/run170-need-upload-flag.txt'
           {
-            echo '===== RUN 169: need_upload filtering ====='
+            echo '===== RUN 170: need_upload flag ====='
             echo
-            echo '===== strings ====='
-            strings -tx "$dev" | grep -Ei 'need_upload|upload_nova_client_node|upload.*client|client.*upload' || true
+            echo '===== need_upload xref (0x40d373 / signed low16 -11405) ====='
+            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B50 -A80 -E 'd373|-11405' || true
             echo
-            echo '===== xref windows for rodata low16 d373/d988 ====='
-            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B40 -A80 -E 'd373|d988' || true
+            echo '===== GOT helper -32488 ====='
+            mipsel-linux-gnu-readelf -A "$dev" | grep -E -- '-32488\(gp\)' || true
             echo
-            echo '===== full do_upload_client_list ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x40bb84 --stop-address=0x40bfd4 "$dev"
+            echo '===== ALL obvious +96 accesses in client-related functions ====='
+            mipsel-linux-gnu-objdump -drwC "$dev" | grep -B12 -A20 -E '\b(lw|sw|lbu|sb)[[:space:]]+[^,]+,96\(' || true
             echo
-            echo '===== client record update/upload helpers nearby ====='
-            mipsel-linux-gnu-objdump -drwC --start-address=0x40b2a8 --stop-address=0x40bb84 "$dev"
+            echo '===== client hash functions ====='
+            mipsel-linux-gnu-readelf -Ws "$dev" | grep -Ei 'client_hs|alloc_device_client|update.*client|add.*client|need_upload' || true
           } > "$out"
       - uses: actions/upload-artifact@v4
         with:
-          name: run169-need-upload-filter
-          path: docs/reverse-generated/run169-need-upload-filter.txt
+          name: run170-need-upload-flag
+          path: docs/reverse-generated/run170-need-upload-flag.txt
           retention-days: 7
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run169-need-upload-filter.txt
+          git pull --rebase
+          git add docs/reverse-generated/run170-need-upload-flag.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace need_upload filtering'
+            git commit -m 'reverse: resolve need_upload flag'
             git push
           fi
