@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y binutils-mipsel-linux-gnu git xz-utils python3-pip
           python3 -m pip install --break-system-packages vmlinux-to-elf
 
-      - name: Trace skb bit writers across kernel and modules
+      - name: Identify skb offset 0x78
         shell: bash
         run: |
           set -euo pipefail
@@ -30,109 +30,113 @@ jobs:
           img='firmware-src/image-unpacked-as-per-mtd/30_KernelFS'
           raw='/tmp/mw6kernel/kernel.raw'
           elf='/tmp/mw6kernel/kernel.elf'
-          out='docs/reverse-generated/run138-skb-bit-writers.txt'
+          out='docs/reverse-generated/run140-skb-offset-78-identity.txt'
 
           dd if="$img" of=/tmp/mw6kernel/kernel.lzma bs=1 skip=$((0x2818)) status=none
           xz --format=lzma -dc /tmp/mw6kernel/kernel.lzma > "$raw" || true
           test -s "$raw"
           vmlinux-to-elf "$raw" "$elf" >/tmp/mw6kernel/v2e.log 2>&1
 
-          python3 - "$elf" firmware-src "$out" <<'PY'
+          python3 - "$elf" "$out" <<'PY'
           import re, subprocess, sys
           from pathlib import Path
 
-          kernel=Path(sys.argv[1]); root=Path(sys.argv[2]); out=Path(sys.argv[3])
+          elf=Path(sys.argv[1]); out=Path(sys.argv[2])
 
           def run(cmd):
               return subprocess.run(cmd,text=True,errors='replace',
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
 
-          def analyze(path, label):
-              txt=run(["mipsel-linux-gnu-objdump","-drwC",str(path)])
-              lines=txt.splitlines()
-              funcs=[]
-              for i,l in enumerate(lines):
-                  m=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
-                  if m: funcs.append((i,int(m.group(1),16),m.group(2)))
-              hits=[]
-              for fi,(start,addr,name) in enumerate(funcs):
-                  end=funcs[fi+1][0] if fi+1<len(funcs) else len(lines)
-                  block=lines[start:end]
-                  # Track only short straight-line sequences around offset 120.
-                  for bi,l in enumerate(block):
-                      m=re.search(r'\blw\s+([a-z0-9]+),120\(([a-z0-9]+)\)',l,re.I)
-                      if not m: continue
-                      src,base=m.group(1),m.group(2)
-                      regs={src}
-                      for j in range(bi+1,min(len(block),bi+18)):
-                          x=block[j]
-                          # stop after branch/jump/call, except simple delay-friendly sequence
-                          if j>bi+1 and re.search(r'\b(?:beq|bne|bnez|beqz|j|jal|jalr|jr)\b',x):
-                              break
-                          mm=re.search(r'\bmove\s+([a-z0-9]+),([a-z0-9]+)',x,re.I)
-                          if mm and mm.group(2) in regs: regs.add(mm.group(1))
-                          mm=re.search(r'\b(?:ori|xori)\s+([a-z0-9]+),([a-z0-9]+),(0x[0-9a-f]+|\d+)',x,re.I)
-                          if mm and mm.group(2) in regs:
-                              val=int(mm.group(3),0)
-                              regs.add(mm.group(1))
-                              if val in (1,2,3):
-                                  dst=mm.group(1)
-                                  for k in range(j+1,min(len(block),j+8)):
-                                      sw=re.search(rf'\bsw\s+{dst},120\({base}\)',block[k],re.I)
-                                      if sw:
-                                          hits.append((addr,name,val,start+bi,start+j,start+k,
-                                                       lines[max(start,start+bi-10):min(end,start+k+10)]))
-                          mm=re.search(r'\baddiu\s+([a-z0-9]+),zero,(1|2|3)\b',x,re.I)
-                          if mm:
-                              dst=mm.group(1); val=int(mm.group(2))
-                              for k in range(j+1,min(len(block),j+8)):
-                                  if re.search(rf'\bsw\s+{dst},120\({base}\)',block[k],re.I):
-                                      hits.append((addr,name,val,start+bi,start+j,start+k,
-                                                   lines[max(start,start+bi-10):min(end,start+k+10)]))
-                  # Also direct constant stores produced as li + sw without prior load.
-                  for bi,l in enumerate(block):
-                      mm=re.search(r'\bli\s+([a-z0-9]+),(1|2|3)\b',l,re.I)
-                      if not mm: continue
-                      reg,val=mm.group(1),int(mm.group(2))
-                      for k in range(bi+1,min(len(block),bi+10)):
-                          sm=re.search(rf'\bsw\s+{reg},120\(([a-z0-9]+)\)',block[k],re.I)
-                          if sm:
-                              hits.append((addr,name,val,start+bi,start+bi,start+k,
-                                           lines[max(start,start+bi-8):min(end,start+k+10)]))
-              return hits, lines
+          nm=run(["mipsel-linux-gnu-nm","-n",str(elf)])
+          syms=[]
+          for l in nm.splitlines():
+              p=l.split(maxsplit=2)
+              if len(p)==3:
+                  try: a=int(p[0],16)
+                  except: continue
+                  syms.append((a,p[1],p[2]))
+          syms.sort()
+
+          def dump_symbol(name, span=0x1000):
+              matches=[x for x in syms if x[2]==name]
+              if not matches:
+                  return f"===== {name}: NOT FOUND =====\n"
+              a,t,n=matches[0]
+              nxt=a+span
+              for aa,tt,nn in syms:
+                  if aa>a:
+                      nxt=min(nxt,aa)
+                      break
+              return (f"===== {name} @ 0x{a:x} =====\n"+
+                      run(["mipsel-linux-gnu-objdump","-drwC",
+                           f"--start-address=0x{a:x}",f"--stop-address=0x{nxt:x}",str(elf)]))
+
+          all_dis=run(["mipsel-linux-gnu-objdump","-drwC",str(elf)])
+          lines=all_dis.splitlines()
 
           with out.open("w",encoding="utf-8") as o:
-              o.write("===== RUN 138: skb +0x78 bit writers across kernel/modules =====\n")
-              targets=[(kernel,"kernel")]
-              targets += [(p,str(p.relative_to(root))) for p in root.rglob("*.ko")]
-              total=0
-              for p,label in targets:
-                  hits,_=analyze(p,label)
-                  # Keep all exact RMW/direct hits; name/path provides context.
-                  if not hits: continue
-                  o.write(f"\n===== {label} =====\n")
-                  seen=set()
-                  for addr,name,val,li,oi,si,ctx in hits:
-                      key=(addr,name,val,si)
-                      if key in seen: continue
-                      seen.add(key); total+=1
-                      o.write(f"\n--- 0x{addr:x} <{name}> sets value/bit {val} around +0x78 ---\n")
-                      o.write("\n".join(ctx)+"\n")
-              o.write(f"\n===== TOTAL EXACT CANDIDATES: {total} =====\n")
+              o.write("===== RUN 140: identify sk_buff +0x78 =====\n")
+              o.write("Known MW6 anchors from disassembly: skb+0x50=len, skb+0xcc=data, candidate direction word at +0x78.\n")
+              o.write("Kernel: Linux 3.10.90 / RTL8197F / Realtek SDK v3.4.11B.\n\n")
+
+              for n in [
+                  "__skb_get_rxhash",
+                  "skb_get_rxhash",
+                  "get_rps_cpu",
+                  "set_rps_cpu",
+                  "skb_flow_dissect",
+                  "eth_type_trans",
+                  "__alloc_skb",
+                  "skb_clone",
+                  "skb_copy",
+                  "__pskb_copy"
+              ]:
+                  o.write(dump_symbol(n))
+                  o.write("\n")
+
+              o.write("===== SYMBOLS CONTAINING HASH/RPS/FLOW =====\n")
+              for a,t,n in syms:
+                  if re.search(r'rxhash|hash|rps|flow_dissect|skb.*hash',n,re.I):
+                      o.write(f"0x{a:08x} {t} {n}\n")
+
+              o.write("\n===== ALL +0x78 ACCESSES IN HASH/RPS/FLOW FUNCTIONS =====\n")
+              current=None
+              for i,l in enumerate(lines):
+                  fm=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                  if fm: current=(int(fm.group(1),16),fm.group(2))
+                  if not current: continue
+                  if re.search(r'hash|rps|flow|skb',current[1],re.I) and re.search(r'\b(?:lw|sw)\s+[^,]+,120\([^)]+\)',l):
+                      o.write(f"\n--- 0x{current[0]:08x} <{current[1]}> ---\n")
+                      o.write("\n".join(lines[max(0,i-12):min(len(lines),i+18)])+"\n")
+
+              o.write("\n===== VALIDATION ANCHORS =====\n")
+              # Find candidate functions that touch both known skb anchors and +0x78.
+              funcs=[]
+              for i,l in enumerate(lines):
+                  fm=re.match(r'^([0-9a-fA-F]+) <([^>]+)>:',l)
+                  if fm: funcs.append((i,int(fm.group(1),16),fm.group(2)))
+              for fi,(st,a,n) in enumerate(funcs):
+                  en=funcs[fi+1][0] if fi+1<len(funcs) else len(lines)
+                  b="\n".join(lines[st:en])
+                  has50=bool(re.search(r'\b(?:lw|sw)\s+[^,]+,80\([^)]+\)',b))
+                  has78=bool(re.search(r'\b(?:lw|sw)\s+[^,]+,120\([^)]+\)',b))
+                  hascc=bool(re.search(r'\b(?:lw|sw)\s+[^,]+,204\([^)]+\)',b))
+                  if has78 and (has50 or hascc):
+                      o.write(f"0x{a:08x} <{n}> anchors: len={has50} +0x78={has78} data={hascc}\n")
           PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: run138-skb-bit-writers
-          path: docs/reverse-generated/run138-skb-bit-writers.txt
+          name: run140-skb-offset-78-identity
+          path: docs/reverse-generated/run140-skb-offset-78-identity.txt
           retention-days: 7
 
       - name: Commit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reverse-generated/run138-skb-bit-writers.txt
+          git add docs/reverse-generated/run140-skb-offset-78-identity.txt
           if ! git diff --cached --quiet; then
-            git commit -m 'reverse: trace skb bit writers across firmware'
+            git commit -m 'reverse: identify skb offset 0x78'
             git push
           fi
