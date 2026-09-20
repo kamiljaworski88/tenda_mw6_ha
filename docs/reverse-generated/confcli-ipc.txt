@@ -1,0 +1,1517 @@
+===== firmware-src/RootFS-unpacked/bin/confcli symbols =====
+     1: 004064b4  1280 FUNC    GLOBAL DEFAULT   12 main
+     3: 00421aac  1084 FUNC    GLOBAL DEFAULT   12 confctl_get_master_wlan_cli
+     5: 00407358   308 FUNC    GLOBAL DEFAULT   12 conf_msg_define
+     6: 0041197c   852 FUNC    GLOBAL DEFAULT   12 confctl_set_app_language
+    22: 00427570   112 FUNC    GLOBAL DEFAULT   12 confctl_log_report_init
+    27: 00427448   104 FUNC    GLOBAL DEFAULT   12 confctl_report_log
+    28: 00407210   328 FUNC    GLOBAL DEFAULT   12 conf_msg_hander
+    34: 00410f88  1476 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_timezone
+    40: 0041ebb0  1916 FUNC    GLOBAL DEFAULT   12 confctl_update_grp_info_from_mpp
+    50: 00420f40  2924 FUNC    GLOBAL DEFAULT   12 confctl_set_master_wlan_cli
+    52: 00411cd0   132 FUNC    GLOBAL DEFAULT   12 confctl_set_fast_done
+    53: 0041f56c   452 FUNC    GLOBAL DEFAULT   12 confctl_do_restore_some_map
+    62: 004274b0   192 FUNC    GLOBAL DEFAULT   12 confctl_log_timeout_check
+    65: 00421ee8  1512 FUNC    GLOBAL DEFAULT   12 confctl_get_guest_wlan_cli
+    66: 0042d2c8   132 FUNC    GLOBAL DEFAULT   12 confctl_clr_cloud_account_done
+    67: 00428c14  2356 FUNC    GLOBAL DEFAULT   12 confctl_set_allconfig_cli
+    72: 0042d200   200 FUNC    GLOBAL DEFAULT   12 confctl_set_cloud_mng_status
+    75: 00407548   224 FUNC    GLOBAL DEFAULT   12 conf_msg_all_cmds_init
+    78: 0042d34c   216 FUNC    GLOBAL DEFAULT   12 confctl_confirm_cloud_account
+    80: 0040d970  1480 FUNC    GLOBAL DEFAULT   12 confctl_set_host_marks
+   102: 00407628   104 FUNC    GLOBAL DEFAULT   12 conf_msg_open
+   107: 00424040  3556 FUNC    GLOBAL DEFAULT   12 confctl_set_wan_cfg_cli
+   114: 004200bc   604 FUNC    GLOBAL DEFAULT   12 confctl_report_assoc_msg
+   115: 0041154c  1072 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_time
+   116: 00426300   724 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_from_mpp
+   123: 004267a0   116 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_request_init
+   127: 00425d6c  1416 FUNC    GLOBAL DEFAULT   12 confctl_set_conflict_guest_ip
+   145: 00425828  1348 FUNC    GLOBAL DEFAULT   12 confctl_set_conflict_lanip
+   152: 0041f4f8   116 FUNC    GLOBAL DEFAULT   12 confctl_update_grp_info_request_init
+   153: 0040846c   536 FUNC    GLOBAL DEFAULT   12 print_confctl_debug_list
+   163: 004224d0  3496 FUNC    GLOBAL DEFAULT   12 confctl_set_guest_wlan_cli
+   167: 00408690  1736 FUNC    GLOBAL DEFAULT   12 confctl_define_callback
+   172: 00407a78   676 FUNC    GLOBAL DEFAULT   12 confctl_assistant_device_left_time
+   179: 00408254   536 FUNC    GLOBAL DEFAULT   12 confctl_module_debug_en
+   180: 0042523c  1516 FUNC    GLOBAL DEFAULT   12 confctl_set_dhcps_cfg_cli
+   185: 00426f8c   168 FUNC    GLOBAL DEFAULT   12 confctl_pub_map_schedu_reboot
+   186: 00454060   192 OBJECT  GLOBAL DEFAULT   21 g_confctl_debug_list
+   247: 004316d0     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   253: 00431680     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   324: 00431260     0 FUNC    GLOBAL DEFAULT  UND auto_maint__get_packed_size
+   333: 004311e0     0 FUNC    GLOBAL DEFAULT  UND auto_maint__unpack
+   349: 004310e0     0 FUNC    GLOBAL DEFAULT  UND auto_maint__pack
+   390: 00430e60     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   391: 00430e50     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   393: 00430e30     0 FUNC    GLOBAL DEFAULT  UND __uClibc_main
+===== firmware-src/RootFS-unpacked/bin/confcli GOT / relocations =====
+   243: 00431710     0 FUNC    GLOBAL DEFAULT  UND vsnprintf
+   244: 00431700     0 FUNC    GLOBAL DEFAULT  UND enable_conn_innernet
+   245: 004316f0     0 FUNC    GLOBAL DEFAULT  UND __assert
+   246: 004316e0     0 FUNC    GLOBAL DEFAULT  UND family_group__free_unpacked
+   247: 004316d0     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   248: 004316c0     0 FUNC    GLOBAL DEFAULT  UND redis_option_new
+   249: 00000000     0 OBJECT  GLOBAL DEFAULT  UND port_fwd_list__descriptor
+   250: 004316b0     0 FUNC    GLOBAL DEFAULT  UND qos_rule__unpack
+   251: 004316a0     0 FUNC    GLOBAL DEFAULT  UND __errno_location
+   252: 00431690     0 FUNC    GLOBAL DEFAULT  UND env_init
+   253: 00431680     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   254: 00431670     0 FUNC    GLOBAL DEFAULT  UND systool_handle_restore_zero
+   255: 00431660     0 FUNC    GLOBAL DEFAULT  UND mf_lists__unpack
+   256: 00431650     0 FUNC    GLOBAL DEFAULT  UND mxp_manage_list__free_unpacked
+   257: 00000000     0 OBJECT  GLOBAL DEFAULT  UND time_group__descriptor
+--
+   386: 00430ea0     0 FUNC    GLOBAL DEFAULT  UND gettimeofday
+   387: 00430e90     0 FUNC    GLOBAL DEFAULT  UND sscanf
+   388: 00430e80     0 FUNC    GLOBAL DEFAULT  UND user_group__pack
+   389: 00430e70     0 FUNC    GLOBAL DEFAULT  UND time_info__free_unpacked
+   390: 00430e60     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   391: 00430e50     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   392: 00430e40     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+   393: 00430e30     0 FUNC    GLOBAL DEFAULT  UND __uClibc_main
+   394: 00430e20     0 FUNC    GLOBAL DEFAULT  UND register_conn_esta_notify_cb
+--
+  00454508 -31800(gp) 00431710 00431710 FUNC    UND vsnprintf
+  0045450c -31796(gp) 00431700 00431700 FUNC    UND enable_conn_innernet
+  00454510 -31792(gp) 004316f0 004316f0 FUNC    UND __assert
+  00454514 -31788(gp) 004316e0 004316e0 FUNC    UND family_group__free_unpacked
+  00454518 -31784(gp) 004316d0 004316d0 FUNC    UND cmd_sub
+  0045451c -31780(gp) 004316c0 004316c0 FUNC    UND redis_option_new
+  00454520 -31776(gp) 00000000 00000000 OBJECT  UND port_fwd_list__descriptor
+  00454524 -31772(gp) 004316b0 004316b0 FUNC    UND qos_rule__unpack
+  00454528 -31768(gp) 004316a0 004316a0 FUNC    UND __errno_location
+  0045452c -31764(gp) 00431690 00431690 FUNC    UND env_init
+  00454530 -31760(gp) 00431680 00431680 FUNC    UND cmd_init
+  00454534 -31756(gp) 00431670 00431670 FUNC    UND systool_handle_restore_zero
+  00454538 -31752(gp) 00431660 00431660 FUNC    UND mf_lists__unpack
+  0045453c -31748(gp) 00431650 00431650 FUNC    UND mxp_manage_list__free_unpacked
+  00454540 -31744(gp) 00000000 00000000 OBJECT  UND time_group__descriptor
+--
+  00454744 -31228(gp) 00430ea0 00430ea0 FUNC    UND gettimeofday
+  00454748 -31224(gp) 00430e90 00430e90 FUNC    UND sscanf
+  0045474c -31220(gp) 00430e80 00430e80 FUNC    UND user_group__pack
+  00454750 -31216(gp) 00430e70 00430e70 FUNC    UND time_info__free_unpacked
+  00454754 -31212(gp) 00430e60 00430e60 FUNC    UND cmd_pub
+  00454758 -31208(gp) 00430e50 00430e50 FUNC    UND auto_maint__free_unpacked
+  0045475c -31204(gp) 00430e40 00430e40 FUNC    UND ifaddrs_ethaddr_ntoa
+  00454760 -31200(gp) 00430e30 00430e30 FUNC    UND __uClibc_main
+  00454764 -31196(gp) 00430e20 00430e20 FUNC    UND register_conn_esta_notify_cb
+===== firmware-src/RootFS-unpacked/bin/confcli strings =====
+  32380 sys.cfg.stamp
+  32390 sys.led.en
+  3239c confctl_cli.c
+  323ac        malloc   failed !     
+  323cc map_report
+  323d8 confctl_srv_key
+  323e8 wl.guest.dhcps_enable
+  32400 wl.guest.effective_time
+  3241c guest.stime
+  32430 ReportGuest
+  3243c assist.dev.stime
+--
+  3256c Initialize AP MIB failed.
+  32588 Initialize env failed !
+  325a0 %s@%s
+  325a8 confctl_cli
+  325b4 uc_api_init failed
+  325c8 confctl_cli_key
+  325d8 confctl_force_upgrade_cli
+  325f4 check_mpp_highdevice_cfg
+  32650 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  326f8 monitor
+  32718 /var/pm_socket
+--
+  32f74 /proc/hybrid_steering/fixed_2g
+  32f98 ERR command!
+  32fa8 DiagLogUpload
+  32fb8        malloc failed!      
+  32fd8 %s[%d]      cmd:%s      
+  32ff4 confctl_cli_key
+  33004 [%s][%d][luminais] %s [%d]
+  33020 mesh_node_a
+  3302c upload_device_start
+  33040 upload all client status to cloud
+  33064 dev_mark_list_a
+--
+  33150 app set time zone
+  33164 SetSysTime
+  33170 app set system time
+  33184 NewNodeAddResults
+  33198 get add new node result
+  331b0 GetTrafficInfo
+  331c0 get wan traffic info
+  331d8 SetWanCfg
+  331e4 send_all_node_status_list
+  33200 upload all node status to cloud
+  33220 GetWanDiag
+--
+  3b640 /var/mib.mem
+  3b650 restore_zero
+  3b660 [%s][%d][luminais] reset button restore zero
+  3b690 [%s][%d][luminais] serial_num %s is not in group, restore zero
+  3b6d0 request_grp_info
+  3b6e4 confctl_srv_key
+  3b6f4 [%s][%d][luminais] GetValue serial.number failed
+  3b728 recv value is null!%s(%d)
+  3b744 [%s][%d]receive MPP %s restore some cmd
+  3b770 [%s][%d]stop some service before restore some
+  3b7a0 [%s][%d]start restore some
+--
+  3c168 /proc/wlan0/mesh_assoc_mpinfo
+  3c188 /proc/wlan1/mesh_assoc_mpinfo
+  3c1a8 /proc/link_loop
+  3c1b8        malloc   failed !     
+  3c1d8 ReportAssocMsg
+  3c1e8 confctl_srv_key
+  3c268 monitor
+  3c288 /var/pm_socket
+  3c2cc timer
+  3c2ec /var/tm_socket
+  3c330 cfms
+--
+  3f050 prod_common_so
+  3f114 [%s][%d][luminais] invalid param.
+  3f138 sys.cfg.stamp
+  3f148 serial.number
+  3f158 update_remark_request
+  3f170 confctl_srv_key
+  3f180 [%s][%d][luminais] GetValue serial.number failed
+  3f1b4 /var/mib.mem
+  3f1c4 assist.dev.mac
+  3f1d4 iwpriv wlan0 del_sta %s
+  3f1ec %s(%d)
+--
+  42230 /proc/meminfo
+  42244 %*s %d %*s
+  42250 flash set is ok
+  42260        malloc   failed !     
+  42280 GetUcloudImage
+  42290 confctl_srv_key
+  422a0 ck = %d___%s(%d)
+  422b4 api/upgrade_cli.c
+  422c8 enable:             %d 
+  422e4 delay_en:           %d 
+  42300 count_num:          %d 
+===== firmware-src/RootFS-unpacked/bin/confsrv symbols =====
+     1: 004090f4  1436 FUNC    GLOBAL DEFAULT   12 main
+     5: 0040a028   308 FUNC    GLOBAL DEFAULT   12 conf_msg_define
+     6: 00414bec   852 FUNC    GLOBAL DEFAULT   12 confctl_set_app_language
+    28: 00446580   112 FUNC    GLOBAL DEFAULT   12 confctl_log_report_init
+    29: 00458714  2180 FUNC    GLOBAL DEFAULT   12 confctl_add_node_results_handle
+    36: 00446458   104 FUNC    GLOBAL DEFAULT   12 confctl_report_log
+    37: 00409ee0   328 FUNC    GLOBAL DEFAULT   12 conf_msg_hander
+    40: 00444598  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_traffic_info
+    43: 0045c530   124 FUNC    GLOBAL DEFAULT   12 confctl_sched_reboot_init
+    55: 0043ab40  1848 FUNC    GLOBAL DEFAULT   12 confctl_set_dhcps_cfg
+    56: 004141f8  1476 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_timezone
+    62: 004216f0  1772 FUNC    GLOBAL DEFAULT   12 confctl_report_node_msg
+    80: 0044545c  3776 FUNC    GLOBAL DEFAULT   12 confctl_set_wan_cfg
+    87: 0044d9b8   300 FUNC    GLOBAL DEFAULT   12 confctl_upgrade_mpp_to_map
+    88: 004439f0  1284 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_status
+    89: 00414f40   132 FUNC    GLOBAL DEFAULT   12 confctl_set_fast_done
+    98: 00452b48  1512 FUNC    GLOBAL DEFAULT   12 confctl_get_guest_wlan
+   107: 0044e760   448 FUNC    GLOBAL DEFAULT   12 confctl_get_mesh_id
+   108: 004464c0   192 FUNC    GLOBAL DEFAULT   12 confctl_log_timeout_check
+   114: 0043b278   616 FUNC    GLOBAL DEFAULT   12 confctl_get_dhcps_cfg
+   117: 00460a88   132 FUNC    GLOBAL DEFAULT   12 confctl_clr_cloud_account_done
+   118: 004239ec  2096 FUNC    GLOBAL DEFAULT   12 confctl_report_map
+   126: 004609c0   200 FUNC    GLOBAL DEFAULT   12 confctl_set_cloud_mng_status
+   130: 00436bc8  1036 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_request_handle
+   132: 00424888  2076 FUNC    GLOBAL DEFAULT   12 confctl_hanle_assoc_report
+   133: 0040a218   224 FUNC    GLOBAL DEFAULT   12 conf_msg_all_cmds_init
+   138: 00460b0c   236 FUNC    GLOBAL DEFAULT   12 confctl_confirm_cloud_account
+   141: 00410be0  1480 FUNC    GLOBAL DEFAULT   12 confctl_set_host_marks
+   151: 00451af0  3100 FUNC    GLOBAL DEFAULT   12 confctl_set_master_wlan
+   164: 00444ab4   152 FUNC    GLOBAL DEFAULT   12 confctl_wan_traffic_info_init
+   171: 00444b4c   468 FUNC    GLOBAL DEFAULT   12 confctl_is_wan_line_up
+   173: 004403fc  1528 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_detect
+   180: 0040a2f8   104 FUNC    GLOBAL DEFAULT   12 conf_msg_open
+   181: 00413d70   624 FUNC    GLOBAL DEFAULT   12 confctl_get_is_suilt
+   190: 0045270c  1084 FUNC    GLOBAL DEFAULT   12 confctl_get_master_wlan
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   195: 0043375c   328 FUNC    GLOBAL DEFAULT   12 confctl_rqst_client_hostname
+   199: 00457cfc   604 FUNC    GLOBAL DEFAULT   12 confctl_report_assoc_msg
+   201: 0045f800  2376 FUNC    GLOBAL DEFAULT   12 confctl_set_allconfig
+   202: 004147bc  1072 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_time
+   216: 004324c8   696 FUNC    GLOBAL DEFAULT   12 confctl_device_list_upload
+   218: 00453130  3664 FUNC    GLOBAL DEFAULT   12 confctl_set_guest_wlan
+   227: 00444d20  1536 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_cfg
+   237: 004608b0   272 FUNC    GLOBAL DEFAULT   12 confctl_get_cloud_mng_status
+   250: 00422764   208 FUNC    GLOBAL DEFAULT   12 confctl_node_msg_init
+   253: 0042e66c  1308 FUNC    GLOBAL DEFAULT   12 confctl_restore_zero_report_handle
+   257: 00432aa8   228 FUNC    GLOBAL DEFAULT   12 confctl_device_list_status_init
+   263: 0040b13c   536 FUNC    GLOBAL DEFAULT   12 print_confctl_debug_list
+   281: 0044407c  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_diag
+   282: 0040b360  3176 FUNC    GLOBAL DEFAULT   12 confctl_define_callback
+   284: 00456ef0   260 FUNC    GLOBAL DEFAULT   12 confctl_new_node_report_handle
+   289: 0040a748   676 FUNC    GLOBAL DEFAULT   12 confctl_assistant_device_left_time
+   301: 0040af24   536 FUNC    GLOBAL DEFAULT   12 confctl_module_debug_en
+   309: 0048f070   192 OBJECT  GLOBAL DEFAULT   21 g_confctl_debug_list
+   328: 0042e48c   480 FUNC    GLOBAL DEFAULT   12 confctl_request_grp_info_handle
+   329: 00435424  1576 FUNC    GLOBAL DEFAULT   12 confctl_get_remark_list
+   411: 00465a70     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   421: 00465a00     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   523: 00465450     0 FUNC    GLOBAL DEFAULT  UND auto_maint__get_packed_size
+   539: 00465370     0 FUNC    GLOBAL DEFAULT  UND auto_maint__unpack
+   564: 00465210     0 FUNC    GLOBAL DEFAULT  UND auto_maint__pack
+   629: 00000000     0 OBJECT  GLOBAL DEFAULT  UND auto_maint__descriptor
+   630: 00464e90     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   631: 00464e80     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   637: 00464e30     0 FUNC    GLOBAL DEFAULT  UND __uClibc_main
+===== firmware-src/RootFS-unpacked/bin/confsrv GOT / relocations =====
+   407: 00465ab0     0 FUNC    GLOBAL DEFAULT  UND enable_conn_innernet
+   408: 00465aa0     0 FUNC    GLOBAL DEFAULT  UND __assert
+   409: 00465a90     0 FUNC    GLOBAL DEFAULT  UND family_group__free_unpacked
+   410: 00465a80     0 FUNC    GLOBAL DEFAULT  UND ugw_accept_client
+   411: 00465a70     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   412: 00465a60     0 FUNC    GLOBAL DEFAULT  UND redis_option_new
+   413: 00465a50     0 FUNC    GLOBAL DEFAULT  UND fw_multi_upgrade_info_t__pack
+   414: 00000000     0 OBJECT  GLOBAL DEFAULT  UND port_fwd_list__descriptor
+   415: 00465a40     0 FUNC    GLOBAL DEFAULT  UND qos_rule__unpack
+--
+   417: 00465a20     0 FUNC    GLOBAL DEFAULT  UND env_init
+   418: 00000000     0 OBJECT  GLOBAL DEFAULT  UND proto_product_info__descriptor
+   419: 00465a10     0 FUNC    GLOBAL DEFAULT  UND static_cfg__init
+   420: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_conn_type__descriptor
+   421: 00465a00     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   422: 004659f0     0 FUNC    GLOBAL DEFAULT  UND systool_handle_restore_zero
+   423: 004659e0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_dev_config_q
+   424: 004659d0     0 FUNC    GLOBAL DEFAULT  UND mf_lists__unpack
+   425: 004659c0     0 FUNC    GLOBAL DEFAULT  UND mxp_manage_list__free_unpacked
+--
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+   627: 00464eb0     0 FUNC    GLOBAL DEFAULT  UND user_group__pack
+   628: 00464ea0     0 FUNC    GLOBAL DEFAULT  UND time_info__free_unpacked
+   629: 00000000     0 OBJECT  GLOBAL DEFAULT  UND auto_maint__descriptor
+   630: 00464e90     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   631: 00464e80     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   632: 00464e70     0 FUNC    GLOBAL DEFAULT  UND high_device_config__free_unpacked
+   633: 00464e60     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+   634: 00464e50     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+--
+  0048f7c0 -31136(gp) 00465ab0 00465ab0 FUNC    UND enable_conn_innernet
+  0048f7c4 -31132(gp) 00465aa0 00465aa0 FUNC    UND __assert
+  0048f7c8 -31128(gp) 00465a90 00465a90 FUNC    UND family_group__free_unpacked
+  0048f7cc -31124(gp) 00465a80 00465a80 FUNC    UND ugw_accept_client
+  0048f7d0 -31120(gp) 00465a70 00465a70 FUNC    UND cmd_sub
+  0048f7d4 -31116(gp) 00465a60 00465a60 FUNC    UND redis_option_new
+  0048f7d8 -31112(gp) 00465a50 00465a50 FUNC    UND fw_multi_upgrade_info_t__pack
+  0048f7dc -31108(gp) 00000000 00000000 OBJECT  UND port_fwd_list__descriptor
+  0048f7e0 -31104(gp) 00465a40 00465a40 FUNC    UND qos_rule__unpack
+--
+  0048f7e8 -31096(gp) 00465a20 00465a20 FUNC    UND env_init
+  0048f7ec -31092(gp) 00000000 00000000 OBJECT  UND proto_product_info__descriptor
+  0048f7f0 -31088(gp) 00465a10 00465a10 FUNC    UND static_cfg__init
+  0048f7f4 -31084(gp) 00000000 00000000 OBJECT  UND wan_conn_type__descriptor
+  0048f7f8 -31080(gp) 00465a00 00465a00 FUNC    UND cmd_init
+  0048f7fc -31076(gp) 004659f0 004659f0 FUNC    UND systool_handle_restore_zero
+  0048f800 -31072(gp) 004659e0 004659e0 FUNC    UND uc_api_m_cloud_info_send_dev_config_q
+  0048f804 -31068(gp) 004659d0 004659d0 FUNC    UND mf_lists__unpack
+  0048f808 -31064(gp) 004659c0 004659c0 FUNC    UND mxp_manage_list__free_unpacked
+--
+  0048fb2c -30260(gp) 00000000 00000000 OBJECT  UND g_ip_info
+  0048fb30 -30256(gp) 00464eb0 00464eb0 FUNC    UND user_group__pack
+  0048fb34 -30252(gp) 00464ea0 00464ea0 FUNC    UND time_info__free_unpacked
+  0048fb38 -30248(gp) 00000000 00000000 OBJECT  UND auto_maint__descriptor
+  0048fb3c -30244(gp) 00464e90 00464e90 FUNC    UND cmd_pub
+  0048fb40 -30240(gp) 00464e80 00464e80 FUNC    UND auto_maint__free_unpacked
+  0048fb44 -30236(gp) 00464e70 00464e70 FUNC    UND high_device_config__free_unpacked
+  0048fb48 -30232(gp) 00464e60 00464e60 FUNC    UND ugw_proc_recv_msg
+  0048fb4c -30228(gp) 00464e50 00464e50 FUNC    UND ifaddrs_ethaddr_ntoa
+===== firmware-src/RootFS-unpacked/bin/confsrv strings =====
+   4404 confctl_node_msg_init
+   441a conf_msg_define
+   442a confctl_hanle_assoc_report
+   4445 confctl_request_grp_info_handle
+   4465 confctl_restore_zero_report_handle
+   4488 confctl_device_list_upload
+   44a3 confctl_device_list_status_init
+   44c3 confctl_rqst_client_hostname
+   44e0 confctl_get_host_list
+   44f6 confctl_set_host_marks
+   450d confctl_get_remark_list
+--
+  66844 oom at <../../device_list/include/extern/from_redis.h:32>
+  66880 Unsupport Event: %d
+  66898 [%s][%d][luminais] cmd is %s
+  668b8 SetConflictLanIp
+  668cc SetConflictGuestIp
+  668e0 confctl_cli_key
+  668f0 accept
+  668f8 socket:malloc
+  66908 [%s][%d][luminais] cm_new failed.
+  6692c /var/confsrv_socket
+  66940 [%s][%d][luminais] init_unix_socket_server %s failed.
+--
+  66ac8 confctl_srv.c
+  66ad8 Initialize AP MIB failed !
+  66af4 Initialize env failed !
+  66b0c [%s][%d][luminais] init_confctl_unix_sock failed
+  66b40 uc_api_init failed
+  66b54 confctl_srv_key
+  66b64 main
+  66b6c make_highdevice_list_cfg
+  66b88 confctl_force_upgrade
+  66ba0 init_confsrv_unix_sock
+  66bb8 confsrv_unix_accept_event_handle
+--
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+--
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  677b8 SetWanCfg
+  677c4 send_all_node_status_list
+  677e0 upload all node status to cloud
+  67800 GetWanDiag
+--
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+--
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+  67b90 GetTrafficInfo
+  67ba0 NewNodeReport
+  67bb0 NewNodeAddResults
+  67bc4 QuerryNodeRslt
+  67bd4 GetIsSuilt
+  67be0 SetSysTimeZone
+--
+  6fc9c 5834
+  6fca4 sys.cfg.stamp
+  6fcb4 sys.led.en
+  6fcc0        malloc   failed !     
+  6fce0 map_report
+  6fcec confctl_srv_key
+  6fcfc %s[%d]      sn too short!        
+  6fd20 sys.mesh.groupsn
+  6fd38 [%s][%d][luminais] mpp is not in the mesh group config
+  6fd70 sys.comparison_version
+  6fd88 /var/node_version_infro
+--
+  70bc1 [1;32m[%s][%d] : 
+  70bd7 [1;35mlocal_sn = %s
+  70bf0 update_grp_info
+  70c01 [1;32m[%s][%d] : 
+  70c17 [1;35mmsghr->length = %u
+  70c38 confctl_cli_key
+  70c49 [1;32m[%s][%d] : 
+  70c5f [1;35mmap_key = %s
+  70c78 wl2g.mesh.id
+  70c88 ucloud
+  70c90 [%s][%d]
+--
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+  728dc update_client_remark
+  728f4 confctl_cli_key
+  72905 [1;32m[%s][%d] : 
+  7291b [1;35msend client remark to map
+  72941 [1;32m[%s][%d] : 
+  72957 [1;35mprint cloud remark table
+  7297d [1;32m[%s][%d] : 
+--
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+--
+  76ab8 %*s %d %*s
+  76ac4 download_info
+  76ad4 api/login.c
+  76ae0        malloc   failed !     
+  76b00 MultiDownloadInfoReq
+  76b18 confctl_cli_key
+  76b28 FwDownloadInfoT array alloc memory Failed
+  76b54 out malloc error%s(%d)
+  76b6c [FwDownloadInfoT array alloc memory Failed]%s(%d)
+  76ba0 [download_info->fw_size = %d][g_fw_size_all = %d]%s(%d)
+  76bdc [download_info->recved = %d][g_recved_size_all = %d]%s(%d)
+--
+  78d68       enable value is error!      
+  78d8c change__guest_wlan__iptables__rule___%s(%d)
+  78dbc op=%d
+  78dc8        malloc   failed !     
+  78de8 ChangeGuest
+  78df4 confctl_cli_key
+  78e04 map_time_letf is %s____%s(%d)
+  78e24 mpp_time_letf is %d____%s(%d)
+  78e44 time_error is %d_____%s(%d)
+  78e64 map need exchange___%s(%d)
+  78e80 map guest_wlan is alltime___%s(%d)
+--
+  7a3c8 /proc/wlan0/mesh_assoc_mpinfo
+  7a3e8 /proc/wlan1/mesh_assoc_mpinfo
+  7a408 /proc/link_loop
+  7a418        malloc   failed !     
+  7a438 ReportAssocMsg
+  7a448 confctl_srv_key
+  7a4c8 monitor
+  7a4e8 /var/pm_socket
+  7a52c timer
+  7a54c /var/tm_socket
+  7a590 cfms
+--
+  7c924 sched.reboot.debug.flag
+  7c940 ......come here..sched reboot.
+  7c960 reboot now!
+  7c96c        malloc   failed !     
+  7c98c MapReboot
+  7c998 confctl_cli_key
+  7c9a8 MapSchedReboot
+  7c9b8 date;reboot
+  7c9c4  invaild para ! 
+  7c9d8  unpackd failed ! 
+  7c9f4 %llu
+--
+  7d9d8 [%s][%d]rst_some_status send config to cloud!
+  7da0c   s_time :%s 
+  7da1c config_time :%lld    local_time:%lld    
+  7da48        malloc failed!      
+  7da68 SetAllConfig
+  7da78 confctl_cli_key
+  7da88 dev_config_time_a
+  7da9c send_upload_local_config
+  7dab8 send_query_remote_config
+  7dad4 confctl_set_allconfig
+  7daec allconfig_protobuf_data_build
+===== firmware-src/RootFS-unpacked/lib/libcmdctl.so symbols =====
+     2: 00001e5c    80 FUNC    GLOBAL DEFAULT   10 cmd_set
+     4: 00001e04    88 FUNC    GLOBAL DEFAULT   10 cmd_pub
+     9: 00001eac   104 FUNC    GLOBAL DEFAULT   10 cmd_get
+    16: 00001040   168 FUNC    GLOBAL DEFAULT   10 cmd_init
+    18: 000017bc   172 FUNC    GLOBAL DEFAULT   10 cmd_sub
+    53: 00000f54    24 FUNC    LOCAL  DEFAULT   10 cmd_set_done
+    63: 00001400    92 FUNC    LOCAL  DEFAULT   10 cmd_pub_done
+    66: 0000159c   212 FUNC    LOCAL  DEFAULT   10 cmd_get_done
+    82: 00001e5c    80 FUNC    GLOBAL DEFAULT   10 cmd_set
+    84: 00001e04    88 FUNC    GLOBAL DEFAULT   10 cmd_pub
+    97: 00001eac   104 FUNC    GLOBAL DEFAULT   10 cmd_get
+   122: 00001040   168 FUNC    GLOBAL DEFAULT   10 cmd_init
+   128: 000017bc   172 FUNC    GLOBAL DEFAULT   10 cmd_sub
+===== firmware-src/RootFS-unpacked/lib/libcmdctl.so GOT / relocations =====
+Symbol table '.dynsym' contains 70 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000d64     0 SECTION LOCAL  DEFAULT    9 .init
+     2: 00001e5c    80 FUNC    GLOBAL DEFAULT   10 cmd_set
+     3: 00000de0     0 NOTYPE  GLOBAL DEFAULT   10 _ftext
+     4: 00001e04    88 FUNC    GLOBAL DEFAULT   10 cmd_pub
+     5: 00002450    28 FUNC    GLOBAL DEFAULT   12 _fini
+     6: 00000f6c    24 FUNC    GLOBAL DEFAULT   10 cmd_on_connect
+     7: 00001f20   508 FUNC    GLOBAL DEFAULT   10 cmdsh_random_key
+     8: 00000d64    28 FUNC    GLOBAL DEFAULT    9 _init
+     9: 00001eac   104 FUNC    GLOBAL DEFAULT   10 cmd_get
+    10: 0001a750     0 SECTION GLOBAL DEFAULT  ABS _gp_disp
+    11: 00000f84    24 FUNC    GLOBAL DEFAULT   10 cmd_on_close
+    12: 0001284c     0 NOTYPE  GLOBAL DEFAULT   20 _fbss
+    13: 00012760     0 OBJECT  GLOBAL DEFAULT  ABS _GLOBAL_OFFSET_TABLE_
+    14: 00012760     0 NOTYPE  GLOBAL DEFAULT   18 _fdata
+    15: 0001284c     0 NOTYPE  GLOBAL DEFAULT   20 __bss_start
+    16: 00001040   168 FUNC    GLOBAL DEFAULT   10 cmd_init
+    17: 00001670    80 FUNC    GLOBAL DEFAULT   10 cmd_unsub
+    18: 000017bc   172 FUNC    GLOBAL DEFAULT   10 cmd_sub
+    19: 0001284c     0 NOTYPE  GLOBAL DEFAULT   19 _edata
+    20: 000128e0     0 NOTYPE  GLOBAL DEFAULT   20 _end
+    21: 00002430     0 FUNC    GLOBAL DEFAULT  UND strlen
+    22: 00002420     0 FUNC    GLOBAL DEFAULT  UND redis_reader_init
+--
+    49: 00002120     0 FUNC    LOCAL  DEFAULT   10 __do_global_ctors_aux
+    50: 00000000     0 FILE    LOCAL  DEFAULT  ABS initfini.c
+    51: 00000000     0 FILE    LOCAL  DEFAULT  ABS cmdctl.c
+    52: 00000f20    52 FUNC    LOCAL  DEFAULT   10 subscribe_callback
+    53: 00000f54    24 FUNC    LOCAL  DEFAULT   10 cmd_set_done
+    54: 00012870   104 OBJECT  LOCAL  DEFAULT   20 g_cmd_ctx
+    55: 00000f9c   164 FUNC    LOCAL  DEFAULT   10 command_connect
+    56: 000025f0    16 OBJECT  LOCAL  DEFAULT   13 __func__.5985
+    57: 000010e8   324 FUNC    LOCAL  DEFAULT   10 command_connect_done
+--
+    59: 0000134c   180 FUNC    LOCAL  DEFAULT   10 command_read_done
+    60: 0000122c   288 FUNC    LOCAL  DEFAULT   10 command_close
+    61: 0000262c    14 OBJECT  LOCAL  DEFAULT   13 __func__.5933
+    62: 00002618    18 OBJECT  LOCAL  DEFAULT   13 __func__.5954
+    63: 00001400    92 FUNC    LOCAL  DEFAULT   10 cmd_pub_done
+    64: 0000145c   176 FUNC    LOCAL  DEFAULT   10 redis_parse
+    65: 0000150c   144 FUNC    LOCAL  DEFAULT   10 recv_reply_cb
+    66: 0000159c   212 FUNC    LOCAL  DEFAULT   10 cmd_get_done
+    67: 000016c0   252 FUNC    LOCAL  DEFAULT   10 T.55
+    68: 00001868  1436 FUNC    LOCAL  DEFAULT   10 T.54
+    69: 00000000     0 FILE    LOCAL  DEFAULT  ABS cmdsh.c
+    70: 00002720    17 OBJECT  LOCAL  DEFAULT   13 __func__.5639
+--
+    78: 00002190     0 FUNC    GLOBAL DEFAULT  UND redis_writer_flush
+    79: 000021a0     0 FUNC    GLOBAL DEFAULT  UND cm_write
+    80: 000021b0     0 FUNC    GLOBAL DEFAULT  UND redisReaderFeed
+    81: 000021c0     0 FUNC    GLOBAL DEFAULT  UND sdsfree
+    82: 00001e5c    80 FUNC    GLOBAL DEFAULT   10 cmd_set
+    83: 00000de0     0 NOTYPE  GLOBAL DEFAULT   10 _ftext
+    84: 00001e04    88 FUNC    GLOBAL DEFAULT   10 cmd_pub
+    85: 000021d0     0 FUNC    GLOBAL DEFAULT  UND subscribe_register
+    86: 00002450    28 FUNC    GLOBAL DEFAULT   12 _fini
+    87: 000021e0     0 FUNC    GLOBAL DEFAULT  UND sdsIncrLen
+    88: 00000f6c    24 FUNC    GLOBAL DEFAULT   10 cmd_on_connect
+--
+    93: 00002220     0 FUNC    GLOBAL DEFAULT  UND fclose
+    94: 00001f20   508 FUNC    GLOBAL DEFAULT   10 cmdsh_random_key
+    95: 00000d64    28 FUNC    GLOBAL DEFAULT    9 _init
+    96: 00002230     0 FUNC    GLOBAL DEFAULT  UND redis_writer_init
+    97: 00001eac   104 FUNC    GLOBAL DEFAULT   10 cmd_get
+    98: 00002240     0 FUNC    GLOBAL DEFAULT  UND cm_time
+    99: 00000000     0 FUNC    WEAK   DEFAULT  UND __register_frame_info@@GLIBC_2.0
+   100: 0001a750     0 SECTION GLOBAL DEFAULT  ABS _gp_disp
+   101: 00000f84    24 FUNC    GLOBAL DEFAULT   10 cmd_on_close
+--
+   118: 000022f0     0 FUNC    GLOBAL DEFAULT  UND cm_read
+   119: 00002300     0 FUNC    GLOBAL DEFAULT  UND cm_timeout
+   120: 00002310     0 FUNC    GLOBAL DEFAULT  UND sdsMakeRoomFor
+   121: 00002320     0 FUNC    GLOBAL DEFAULT  UND redisReaderGetReply
+   122: 00001040   168 FUNC    GLOBAL DEFAULT   10 cmd_init
+   123: 00002330     0 FUNC    GLOBAL DEFAULT  UND sdsll2str
+   124: 00002340     0 FUNC    GLOBAL DEFAULT  UND sdsempty
+   125: 00001670    80 FUNC    GLOBAL DEFAULT   10 cmd_unsub
+   126: 00002350     0 FUNC    GLOBAL DEFAULT  UND __errno_location
+   127: 00002360     0 FUNC    GLOBAL DEFAULT  UND redis_option_new
+   128: 000017bc   172 FUNC    GLOBAL DEFAULT   10 cmd_sub
+   129: 00002370     0 FUNC    GLOBAL DEFAULT  UND redisReaderCleanup
+   130: 00002380     0 FUNC    GLOBAL DEFAULT  UND cm_io_connect
+   131: 00002390     0 FUNC    GLOBAL DEFAULT  UND Base64encode
+   132: 000023a0     0 FUNC    GLOBAL DEFAULT  UND cm_strerror
+===== firmware-src/RootFS-unpacked/lib/libcmdctl.so strings =====
+   2618 command_read_done
+   262c command_close
+   2648 /dev/urandom
+   265c [%.3f cmdsh.c:19 %s] open /dev/urandom error: %s
+   2690 [%.3f cmdsh.c:23 %s] read /dev/urandom error: %s
+   26c4 cmdrpc@
+   26cc cm_assert(enclen == Base64encode_len(sizeof(buf))) failure at <cmdsh.c:31>
+   2720 cmdsh_random_key
+   284c GCC: (GNU) 3.3.2
+   285d GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+   2bba cmd_on_connect
+===== confcli disassembly refs =====
+2871-  407454:	8fc40018 	lw	a0,24(s8)
+2872-  407458:	8f828028 	lw	v0,-32728(gp)
+2873-  40745c:	24427690 	addiu	v0,v0,30352
+2874-  407460:	0040c821 	move	t9,v0
+2875-  407464:	0320f809 	jalr	t9
+2876-  407468:	00000000 	nop
+2877-  40746c:	8fdc0010 	lw	gp,16(s8)
+2878-  407470:	00001021 	move	v0,zero
+2879-  407474:	03c0e821 	move	sp,s8
+2880-  407478:	8fbf0024 	lw	ra,36(sp)
+2881-  40747c:	8fbe0020 	lw	s8,32(sp)
+2882-  407480:	27bd0028 	addiu	sp,sp,40
+2883-  407484:	03e00008 	jr	ra
+2884-  407488:	00000000 	nop
+2885-  40748c:	3c1c0005 	lui	gp,0x5
+2886-  407490:	279c4cb4 	addiu	gp,gp,19636
+2887-  407494:	0399e021 	addu	gp,gp,t9
+2888-  407498:	27bdffe0 	addiu	sp,sp,-32
+2889-  40749c:	afbf001c 	sw	ra,28(sp)
+2890-  4074a0:	afbe0018 	sw	s8,24(sp)
+2891-  4074a4:	03a0f021 	move	s8,sp
+2892-  4074a8:	afbc0010 	sw	gp,16(sp)
+2893-  4074ac:	afc40020 	sw	a0,32(s8)
+2894-  4074b0:	8fc20020 	lw	v0,32(s8)
+2895-  4074b4:	1440000e 	bnez	v0,4074f0 <conf_msg_define@@Base+0x198>
+2896-  4074b8:	00000000 	nop
+2897-  4074bc:	8f828024 	lw	v0,-32732(gp)
+2898-  4074c0:	24422ef4 	addiu	v0,v0,12020
+2899-  4074c4:	00402021 	move	a0,v0
+2900-  4074c8:	8f828024 	lw	v0,-32732(gp)
+2901-  4074cc:	244533b0 	addiu	a1,v0,13232
+2902-  4074d0:	240600cf 	li	a2,207
+2903-  4074d4:	8f8284bc 	lw	v0,-31556(gp)
+2904-  4074d8:	0040c821 	move	t9,v0
+2905-  4074dc:	0320f809 	jalr	t9
+2906-  4074e0:	00000000 	nop
+2907-  4074e4:	8fdc0010 	lw	gp,16(s8)
+2908-  4074e8:	10000011 	b	407530 <conf_msg_define@@Base+0x1d8>
+2909-  4074ec:	00000000 	nop
+2910-  4074f0:	8fc20020 	lw	v0,32(s8)
+2911-  4074f4:	8c420014 	lw	v0,20(v0)
+2912-  4074f8:	1040000c 	beqz	v0,40752c <conf_msg_define@@Base+0x1d4>
+2913-  4074fc:	00000000 	nop
+2914-  407500:	8fc20020 	lw	v0,32(s8)
+2915-  407504:	8c420014 	lw	v0,20(v0)
+2916-  407508:	8fc30020 	lw	v1,32(s8)
+2917-  40750c:	8c630018 	lw	v1,24(v1)
+2918-  407510:	00602021 	move	a0,v1
+2919-  407514:	0040c821 	move	t9,v0
+2920-  407518:	0320f809 	jalr	t9
+2921-  40751c:	00000000 	nop
+2922-  407520:	8fdc0010 	lw	gp,16(s8)
+2923-  407524:	10000002 	b	407530 <conf_msg_define@@Base+0x1d8>
+2924-  407528:	00000000 	nop
+2925-  40752c:	00000000 	nop
+2926-  407530:	03c0e821 	move	sp,s8
+2927-  407534:	8fbf001c 	lw	ra,28(sp)
+2928-  407538:	8fbe0018 	lw	s8,24(sp)
+2929-  40753c:	27bd0020 	addiu	sp,sp,32
+2930-  407540:	03e00008 	jr	ra
+2931-  407544:	00000000 	nop
+2932-
+2933-00407548 <conf_msg_all_cmds_init@@Base>:
+2934-  407548:	3c1c0005 	lui	gp,0x5
+2935-  40754c:	279c4bf8 	addiu	gp,gp,19448
+2936-  407550:	0399e021 	addu	gp,gp,t9
+2937-  407554:	27bdffd8 	addiu	sp,sp,-40
+2938-  407558:	afbf0024 	sw	ra,36(sp)
+2939-  40755c:	afbe0020 	sw	s8,32(sp)
+2940-  407560:	03a0f021 	move	s8,sp
+2941-  407564:	afbc0010 	sw	gp,16(sp)
+2942-  407568:	27c2001c 	addiu	v0,s8,28
+2943-  40756c:	8f83805c 	lw	v1,-32676(gp)
+2944-  407570:	246447b8 	addiu	a0,v1,18360
+2945-  407574:	00402821 	move	a1,v0
+2946-  407578:	8f828064 	lw	v0,-32668(gp)
+2947-  40757c:	0040c821 	move	t9,v0
+2948-  407580:	0320f809 	jalr	t9
+2949-  407584:	00000000 	nop
+2950-  407588:	8fdc0010 	lw	gp,16(s8)
+2951-  40758c:	afc20018 	sw	v0,24(s8)
+2952-  407590:	8fc20018 	lw	v0,24(s8)
+2953-  407594:	1040001e 	beqz	v0,407610 <conf_msg_all_cmds_init@@Base+0xc8>
+2954-  407598:	00000000 	nop
+2955-  40759c:	8fc40018 	lw	a0,24(s8)
+2956-  4075a0:	8f828028 	lw	v0,-32728(gp)
+2957-  4075a4:	2442748c 	addiu	v0,v0,29836
+2958-  4075a8:	0040c821 	move	t9,v0
+2959-  4075ac:	0320f809 	jalr	t9
+2960-  4075b0:	00000000 	nop
+2961-  4075b4:	8fdc0010 	lw	gp,16(s8)
+2962-  4075b8:	10000008 	b	4075dc <conf_msg_all_cmds_init@@Base+0x94>
+2963-  4075bc:	00000000 	nop
+2964-  4075c0:	8fc40018 	lw	a0,24(s8)
+2965-  4075c4:	8f828028 	lw	v0,-32728(gp)
+2966-  4075c8:	2442748c 	addiu	v0,v0,29836
+2967-  4075cc:	0040c821 	move	t9,v0
+2968-  4075d0:	0320f809 	jalr	t9
+2969-  4075d4:	00000000 	nop
+2970-  4075d8:	8fdc0010 	lw	gp,16(s8)
+2971-  4075dc:	27c2001c 	addiu	v0,s8,28
+2972-  4075e0:	8f83805c 	lw	v1,-32676(gp)
+2973-  4075e4:	246447b8 	addiu	a0,v1,18360
+2974-  4075e8:	00402821 	move	a1,v0
+2975-  4075ec:	8f828068 	lw	v0,-32664(gp)
+2976-  4075f0:	0040c821 	move	t9,v0
+2977-  4075f4:	0320f809 	jalr	t9
+2978-  4075f8:	00000000 	nop
+2979-  4075fc:	8fdc0010 	lw	gp,16(s8)
+2980-  407600:	afc20018 	sw	v0,24(s8)
+2981-  407604:	8fc20018 	lw	v0,24(s8)
+2982-  407608:	1440ffed 	bnez	v0,4075c0 <conf_msg_all_cmds_init@@Base+0x78>
+2983-  40760c:	00000000 	nop
+2984-  407610:	03c0e821 	move	sp,s8
+2985-  407614:	8fbf0024 	lw	ra,36(sp)
+2986-  407618:	8fbe0020 	lw	s8,32(sp)
+2987-  40761c:	27bd0028 	addiu	sp,sp,40
+2988-  407620:	03e00008 	jr	ra
+2989-  407624:	00000000 	nop
+2990-
+2991:00407628 <conf_msg_open@@Base>:
+2992-  407628:	3c1c0005 	lui	gp,0x5
+2993-  40762c:	279c4b18 	addiu	gp,gp,19224
+2994-  407630:	0399e021 	addu	gp,gp,t9
+2995-  407634:	27bdffe0 	addiu	sp,sp,-32
+2996-  407638:	afbf001c 	sw	ra,28(sp)
+2997-  40763c:	afbe0018 	sw	s8,24(sp)
+2998-  407640:	03a0f021 	move	s8,sp
+2999-  407644:	afbc0010 	sw	gp,16(sp)
+3000-  407648:	8f82805c 	lw	v0,-32676(gp)
+3001-  40764c:	244447b8 	addiu	a0,v0,18360
+3002-  407650:	00002821 	move	a1,zero
+3003-  407654:	8f828028 	lw	v0,-32728(gp)
+3004-  407658:	244670f0 	addiu	a2,v0,28912
+3005-  40765c:	8f828028 	lw	v0,-32728(gp)
+3006-  407660:	24477160 	addiu	a3,v0,29024
+3007-  407664:	8f82806c 	lw	v0,-32660(gp)
+3008-  407668:	0040c821 	move	t9,v0
+3009-  40766c:	0320f809 	jalr	t9
+3010-  407670:	00000000 	nop
+3011-  407674:	8fdc0010 	lw	gp,16(s8)
+3012-  407678:	03c0e821 	move	sp,s8
+3013-  40767c:	8fbf001c 	lw	ra,28(sp)
+3014-  407680:	8fbe0018 	lw	s8,24(sp)
+3015-  407684:	27bd0020 	addiu	sp,sp,32
+3016-  407688:	03e00008 	jr	ra
+3017-  40768c:	00000000 	nop
+3018-  407690:	3c1c0005 	lui	gp,0x5
+3019-  407694:	279c4ab0 	addiu	gp,gp,19120
+3020-  407698:	0399e021 	addu	gp,gp,t9
+3021-  40769c:	27bdffd8 	addiu	sp,sp,-40
+3022-  4076a0:	afbf0024 	sw	ra,36(sp)
+3023-  4076a4:	afbe0020 	sw	s8,32(sp)
+3024-  4076a8:	03a0f021 	move	s8,sp
+3025-  4076ac:	afbc0010 	sw	gp,16(sp)
+3026-  4076b0:	afc40028 	sw	a0,40(s8)
+3027-  4076b4:	8fc20028 	lw	v0,40(s8)
+3028:  4076b8:	14400004 	bnez	v0,4076cc <conf_msg_open@@Base+0xa4>
+3029-  4076bc:	00000000 	nop
+3030-  4076c0:	2402ffff 	li	v0,-1
+3031:  4076c4:	10000027 	b	407764 <conf_msg_open@@Base+0x13c>
+3032-  4076c8:	00000000 	nop
+3033-  4076cc:	8fc20028 	lw	v0,40(s8)
+3034-  4076d0:	afc2001c 	sw	v0,28(s8)
+3035-  4076d4:	8f82805c 	lw	v0,-32676(gp)
+3036-  4076d8:	244447b8 	addiu	a0,v0,18360
+3037-  4076dc:	8fc5001c 	lw	a1,28(s8)
+3038-  4076e0:	8f828060 	lw	v0,-32672(gp)
+3039-  4076e4:	0040c821 	move	t9,v0
+3040-  4076e8:	0320f809 	jalr	t9
+3041-  4076ec:	00000000 	nop
+3042-  4076f0:	8fdc0010 	lw	gp,16(s8)
+3043-  4076f4:	afc20018 	sw	v0,24(s8)
+3044-  4076f8:	8fc20018 	lw	v0,24(s8)
+3045:  4076fc:	10400010 	beqz	v0,407740 <conf_msg_open@@Base+0x118>
+3046-  407700:	00000000 	nop
+3047-  407704:	8f82805c 	lw	v0,-32676(gp)
+3048-  407708:	244447b8 	addiu	a0,v0,18360
+3049-  40770c:	8fc50018 	lw	a1,24(s8)
+3050-  407710:	8f828070 	lw	v0,-32656(gp)
+3051-  407714:	0040c821 	move	t9,v0
+3052-  407718:	0320f809 	jalr	t9
+3053-  40771c:	00000000 	nop
+3054-  407720:	8fdc0010 	lw	gp,16(s8)
+3055-  407724:	8fc40018 	lw	a0,24(s8)
+3056-  407728:	8f828028 	lw	v0,-32728(gp)
+3057-  40772c:	2442777c 	addiu	v0,v0,30588
+3058-  407730:	0040c821 	move	t9,v0
+3059-  407734:	0320f809 	jalr	t9
+3060-  407738:	00000000 	nop
+3061-  40773c:	8fdc0010 	lw	gp,16(s8)
+3062-  407740:	8f82805c 	lw	v0,-32676(gp)
+3063-  407744:	244447b8 	addiu	a0,v0,18360
+3064-  407748:	8fc5001c 	lw	a1,28(s8)
+3065-  40774c:	8f828074 	lw	v0,-32652(gp)
+3066-  407750:	0040c821 	move	t9,v0
+3067-  407754:	0320f809 	jalr	t9
+3068-  407758:	00000000 	nop
+3069-  40775c:	8fdc0010 	lw	gp,16(s8)
+3070-  407760:	00001021 	move	v0,zero
+3071-  407764:	03c0e821 	move	sp,s8
+3072-  407768:	8fbf0024 	lw	ra,36(sp)
+3073-  40776c:	8fbe0020 	lw	s8,32(sp)
+3074-  407770:	27bd0028 	addiu	sp,sp,40
+3075-  407774:	03e00008 	jr	ra
+3076-  407778:	00000000 	nop
+3077-  40777c:	3c1c0005 	lui	gp,0x5
+3078-  407780:	279c49c4 	addiu	gp,gp,18884
+3079-  407784:	0399e021 	addu	gp,gp,t9
+3080-  407788:	27bdffe0 	addiu	sp,sp,-32
+3081-  40778c:	afbf001c 	sw	ra,28(sp)
+3082-  407790:	afbe0018 	sw	s8,24(sp)
+3083-  407794:	03a0f021 	move	s8,sp
+3084-  407798:	afbc0010 	sw	gp,16(sp)
+3085-  40779c:	afc40020 	sw	a0,32(s8)
+3086-  4077a0:	8fc20020 	lw	v0,32(s8)
+3087:  4077a4:	10400019 	beqz	v0,40780c <conf_msg_open@@Base+0x1e4>
+3088-  4077a8:	00000000 	nop
+3089-  4077ac:	8f82805c 	lw	v0,-32676(gp)
+3090-  4077b0:	244447b8 	addiu	a0,v0,18360
+3091-  4077b4:	8fc50020 	lw	a1,32(s8)
+3092-  4077b8:	8f828060 	lw	v0,-32672(gp)
+3093-  4077bc:	0040c821 	move	t9,v0
+3094-  4077c0:	0320f809 	jalr	t9
+3095-  4077c4:	00000000 	nop
+3096-  4077c8:	8fdc0010 	lw	gp,16(s8)
+3097:  4077cc:	1440000f 	bnez	v0,40780c <conf_msg_open@@Base+0x1e4>
+3098-  4077d0:	00000000 	nop
+3099-  4077d4:	8fc20020 	lw	v0,32(s8)
+3100-  4077d8:	8c42000c 	lw	v0,12(v0)
+3101-  4077dc:	00402021 	move	a0,v0
+3102-  4077e0:	8f828390 	lw	v0,-31856(gp)
+3103-  4077e4:	0040c821 	move	t9,v0
+3104-  4077e8:	0320f809 	jalr	t9
+3105-  4077ec:	00000000 	nop
+3106-  4077f0:	8fdc0010 	lw	gp,16(s8)
+3107-  4077f4:	8fc40020 	lw	a0,32(s8)
+3108-  4077f8:	8f828390 	lw	v0,-31856(gp)
+3109-  4077fc:	0040c821 	move	t9,v0
+3110-  407800:	0320f809 	jalr	t9
+3111-  407804:	00000000 	nop
+3112-  407808:	8fdc0010 	lw	gp,16(s8)
+3113-  40780c:	03c0e821 	move	sp,s8
+3114-  407810:	8fbf001c 	lw	ra,28(sp)
+3115-  407814:	8fbe0018 	lw	s8,24(sp)
+3116-  407818:	27bd0020 	addiu	sp,sp,32
+3117-  40781c:	03e00008 	jr	ra
+3118-  407820:	00000000 	nop
+3119-  407824:	3c1c0005 	lui	gp,0x5
+3120-  407828:	279c491c 	addiu	gp,gp,18716
+3121-  40782c:	0399e021 	addu	gp,gp,t9
+3122-  407830:	27bdffd8 	addiu	sp,sp,-40
+3123-  407834:	afbf0024 	sw	ra,36(sp)
+3124-  407838:	afbe0020 	sw	s8,32(sp)
+3125-  40783c:	03a0f021 	move	s8,sp
+3126-  407840:	afbc0010 	sw	gp,16(sp)
+3127-  407844:	27c2001c 	addiu	v0,s8,28
+3128-  407848:	8f83805c 	lw	v1,-32676(gp)
+3129-  40784c:	246447b8 	addiu	a0,v1,18360
+3130-  407850:	00402821 	move	a1,v0
+3131-  407854:	8f828064 	lw	v0,-32668(gp)
+3132-  407858:	0040c821 	move	t9,v0
+3133-  40785c:	0320f809 	jalr	t9
+3134-  407860:	00000000 	nop
+3135-  407864:	8fdc0010 	lw	gp,16(s8)
+3136-  407868:	afc20018 	sw	v0,24(s8)
+3137-  40786c:	8fc20018 	lw	v0,24(s8)
+3138:  407870:	1040002e 	beqz	v0,40792c <conf_msg_open@@Base+0x304>
+3139-  407874:	00000000 	nop
+3140-  407878:	8f82805c 	lw	v0,-32676(gp)
+3141-  40787c:	244447b8 	addiu	a0,v0,18360
+3142-  407880:	8fc50018 	lw	a1,24(s8)
+3143-  407884:	8f828070 	lw	v0,-32656(gp)
+3144-  407888:	0040c821 	move	t9,v0
+3145-  40788c:	0320f809 	jalr	t9
+3146-  407890:	00000000 	nop
+3147-  407894:	8fdc0010 	lw	gp,16(s8)
+3148-  407898:	8fc40018 	lw	a0,24(s8)
+3149-  40789c:	8f828028 	lw	v0,-32728(gp)
+3150-  4078a0:	2442777c 	addiu	v0,v0,30588
+3151-  4078a4:	0040c821 	move	t9,v0
+3152-  4078a8:	0320f809 	jalr	t9
+3153-  4078ac:	00000000 	nop
+3154-  4078b0:	8fdc0010 	lw	gp,16(s8)
+3155:  4078b4:	10000010 	b	4078f8 <conf_msg_open@@Base+0x2d0>
+3156-  4078b8:	00000000 	nop
+3157-  4078bc:	8f82805c 	lw	v0,-32676(gp)
+3158-  4078c0:	244447b8 	addiu	a0,v0,18360
+3159-  4078c4:	8fc50018 	lw	a1,24(s8)
+3160-  4078c8:	8f828070 	lw	v0,-32656(gp)
+3161-  4078cc:	0040c821 	move	t9,v0
+3162-  4078d0:	0320f809 	jalr	t9
+3163-  4078d4:	00000000 	nop
+3164-  4078d8:	8fdc0010 	lw	gp,16(s8)
+3165-  4078dc:	8fc40018 	lw	a0,24(s8)
+3166-  4078e0:	8f828028 	lw	v0,-32728(gp)
+3167-  4078e4:	2442777c 	addiu	v0,v0,30588
+3168-  4078e8:	0040c821 	move	t9,v0
+3169-  4078ec:	0320f809 	jalr	t9
+3170-  4078f0:	00000000 	nop
+3171-  4078f4:	8fdc0010 	lw	gp,16(s8)
+3172-  4078f8:	27c2001c 	addiu	v0,s8,28
+3173-  4078fc:	8f83805c 	lw	v1,-32676(gp)
+3174-  407900:	246447b8 	addiu	a0,v1,18360
+3175-  407904:	00402821 	move	a1,v0
+3176-  407908:	8f828068 	lw	v0,-32664(gp)
+3177-  40790c:	0040c821 	move	t9,v0
+3178-  407910:	0320f809 	jalr	t9
+3179-  407914:	00000000 	nop
+3180-  407918:	8fdc0010 	lw	gp,16(s8)
+3181-  40791c:	afc20018 	sw	v0,24(s8)
+3182-  407920:	8fc20018 	lw	v0,24(s8)
+3183:  407924:	1440ffe5 	bnez	v0,4078bc <conf_msg_open@@Base+0x294>
+3184-  407928:	00000000 	nop
+3185-  40792c:	03c0e821 	move	sp,s8
+3186-  407930:	8fbf0024 	lw	ra,36(sp)
+3187-  407934:	8fbe0020 	lw	s8,32(sp)
+3188-  407938:	27bd0028 	addiu	sp,sp,40
+3189-  40793c:	03e00008 	jr	ra
+3190-  407940:	00000000 	nop
+3191-
+3192-00407944 <check_hw_enable_status@@Base>:
+3193-  407944:	3c1c0005 	lui	gp,0x5
+3194-  407948:	279c47fc 	addiu	gp,gp,18428
+3195-  40794c:	0399e021 	addu	gp,gp,t9
+3196-  407950:	27bdffe0 	addiu	sp,sp,-32
+3197-  407954:	afbf001c 	sw	ra,28(sp)
+3198-  407958:	afbe0018 	sw	s8,24(sp)
+3199-  40795c:	03a0f021 	move	s8,sp
+3200-  407960:	afbc0010 	sw	gp,16(sp)
+3201-  407964:	8f828078 	lw	v0,-32648(gp)
+3202-  407968:	24030001 	li	v1,1
+3203-  40796c:	ac430000 	sw	v1,0(v0)
+3204-  407970:	8f82807c 	lw	v0,-32644(gp)
+3205-  407974:	8c420000 	lw	v0,0(v0)
+3206-  407978:	14400006 	bnez	v0,407994 <check_hw_enable_status@@Base+0x50>
+3207-  40797c:	00000000 	nop
+3208-  407980:	8f828080 	lw	v0,-32640(gp)
+3209-  407984:	0040c821 	move	t9,v0
+3210-  407988:	0320f809 	jalr	t9
+3211-  40798c:	00000000 	nop
+3212-  407990:	8fdc0010 	lw	gp,16(s8)
+3213-  407994:	8f828078 	lw	v0,-32648(gp)
+3214-  407998:	8c430000 	lw	v1,0(v0)
+3215-  40799c:	8f82807c 	lw	v0,-32644(gp)
+3216-  4079a0:	ac430000 	sw	v1,0(v0)
+3217-  4079a4:	03c0e821 	move	sp,s8
+3218-  4079a8:	8fbf001c 	lw	ra,28(sp)
+3219-  4079ac:	8fbe0018 	lw	s8,24(sp)
+3220-  4079b0:	27bd0020 	addiu	sp,sp,32
+3221-  4079b4:	03e00008 	jr	ra
+3222-  4079b8:	00000000 	nop
+3223-
+3224-004079bc <change_hw_fastpath@@Base>:
+3225-  4079bc:	3c1c0005 	lui	gp,0x5
+3226-  4079c0:	279c4784 	addiu	gp,gp,18308
+3227-  4079c4:	0399e021 	addu	gp,gp,t9
+3228-  4079c8:	27bdffe0 	addiu	sp,sp,-32
+3229-  4079cc:	afbf001c 	sw	ra,28(sp)
+3230-  4079d0:	afbe0018 	sw	s8,24(sp)
+3231-  4079d4:	03a0f021 	move	s8,sp
+3232-  4079d8:	afbc0010 	sw	gp,16(sp)
+3233-  4079dc:	afc40020 	sw	a0,32(s8)
+3234-  4079e0:	8f828078 	lw	v0,-32648(gp)
+3235-  4079e4:	8c420000 	lw	v0,0(v0)
+3236-  4079e8:	1440000b 	bnez	v0,407a18 <change_hw_fastpath@@Base+0x5c>
+3237-  4079ec:	00000000 	nop
+3238-  4079f0:	8f82807c 	lw	v0,-32644(gp)
+3239-  4079f4:	8c430000 	lw	v1,0(v0)
+3240-  4079f8:	24020001 	li	v0,1
+3241-  4079fc:	14620006 	bne	v1,v0,407a18 <change_hw_fastpath@@Base+0x5c>
+3242-  407a00:	00000000 	nop
+3243-  407a04:	8f828084 	lw	v0,-32636(gp)
+3244-  407a08:	0040c821 	move	t9,v0
+3245-  407a0c:	0320f809 	jalr	t9
+3246-  407a10:	00000000 	nop
+3247-  407a14:	8fdc0010 	lw	gp,16(s8)
+3248-  407a18:	8f828078 	lw	v0,-32648(gp)
+3249-  407a1c:	8c430000 	lw	v1,0(v0)
+3250-  407a20:	8f82807c 	lw	v0,-32644(gp)
+3251-  407a24:	ac430000 	sw	v1,0(v0)
+3252-  407a28:	8f828078 	lw	v0,-32648(gp)
+3253-  407a2c:	ac400000 	sw	zero,0(v0)
+3254-  407a30:	8f828024 	lw	v0,-32732(gp)
+3255-  407a34:	8c4333cc 	lw	v1,13260(v0)
+3256-  407a38:	8c4233c8 	lw	v0,13256(v0)
+3257-  407a3c:	00402021 	move	a0,v0
+3258-  407a40:	00602821 	move	a1,v1
+3259-  407a44:	8f868088 	lw	a2,-32632(gp)
+3260-  407a48:	00003821 	move	a3,zero
+3261-  407a4c:	8f828410 	lw	v0,-31728(gp)
+3262-  407a50:	0040c821 	move	t9,v0
+3263-  407a54:	0320f809 	jalr	t9
+3264-  407a58:	00000000 	nop
+3265-  407a5c:	8fdc0010 	lw	gp,16(s8)
+3266-  407a60:	03c0e821 	move	sp,s8
+3267-  407a64:	8fbf001c 	lw	ra,28(sp)
+3268-  407a68:	8fbe0018 	lw	s8,24(sp)
+3269-  407a6c:	27bd0020 	addiu	sp,sp,32
+3270-  407a70:	03e00008 	jr	ra
+3271-  407a74:	00000000 	nop
+3272-
+3273-00407a78 <confctl_assistant_device_left_time@@Base>:
+3274-  407a78:	3c1c0005 	lui	gp,0x5
+3275-  407a7c:	279c46c8 	addiu	gp,gp,18120
+3276-  407a80:	0399e021 	addu	gp,gp,t9
+3277-  407a84:	27bdfe98 	addiu	sp,sp,-360
+3278-  407a88:	afbf0164 	sw	ra,356(sp)
+3279-  407a8c:	afbe0160 	sw	s8,352(sp)
+3280-  407a90:	afb0015c 	sw	s0,348(sp)
+3281-  407a94:	03a0f021 	move	s8,sp
+3282-  407a98:	afbc0010 	sw	gp,16(sp)
+3283-  407a9c:	27c3001c 	addiu	v1,s8,28
+3284-  407aa0:	24020080 	li	v0,128
+3285-  407aa4:	00602021 	move	a0,v1
+3286-  407aa8:	00002821 	move	a1,zero
+3287-  407aac:	00403021 	move	a2,v0
+3288-  407ab0:	8f8285ac 	lw	v0,-31316(gp)
+3289-  407ab4:	0040c821 	move	t9,v0
+3290-  407ab8:	0320f809 	jalr	t9
+3291-  407abc:	00000000 	nop
+3292-  407ac0:	8fdc0010 	lw	gp,16(s8)
+3293-  407ac4:	27c3009c 	addiu	v1,s8,156
+3294-  407ac8:	24020080 	li	v0,128
+3295-  407acc:	00602021 	move	a0,v1
+3296-  407ad0:	00002821 	move	a1,zero
+3297-  407ad4:	00403021 	move	a2,v0
+3298-  407ad8:	8f8285ac 	lw	v0,-31316(gp)
+3299-  407adc:	0040c821 	move	t9,v0
+3300-  407ae0:	0320f809 	jalr	t9
+3301-  407ae4:	00000000 	nop
+3302-  407ae8:	8fdc0010 	lw	gp,16(s8)
+3303-  407aec:	afc0011c 	sw	zero,284(s8)
+3304-  407af0:	afc00120 	sw	zero,288(s8)
+3305-  407af4:	afc00124 	sw	zero,292(s8)
+3306-  407af8:	afc00128 	sw	zero,296(s8)
+3307-  407afc:	a7c0012c 	sh	zero,300(s8)
+3308-  407b00:	afc00130 	sw	zero,304(s8)
+3309-  407b04:	afc00134 	sw	zero,308(s8)
+3310-  407b08:	afc00138 	sw	zero,312(s8)
+3311-  407b0c:	afc0013c 	sw	zero,316(s8)
+3312-  407b10:	a7c00140 	sh	zero,320(s8)
+3313-  407b14:	afc00144 	sw	zero,324(s8)
+3314-  407b18:	afc00148 	sw	zero,328(s8)
+3315-  407b1c:	afc0014c 	sw	zero,332(s8)
+3316-  407b20:	afc00150 	sw	zero,336(s8)
+3317-  407b24:	a7c00154 	sh	zero,340(s8)
+3318-  407b28:	afc00018 	sw	zero,24(s8)
+3319-  407b2c:	8f828468 	lw	v0,-31640(gp)
+3320-  407b30:	0040c821 	move	t9,v0
+3321-  407b34:	0320f809 	jalr	t9
+3322-  407b38:	00000000 	nop
+3323-  407b3c:	8fdc0010 	lw	gp,16(s8)
+3324-  407b40:	afc20018 	sw	v0,24(s8)
+3325-  407b44:	27c2001c 	addiu	v0,s8,28
+3326-  407b48:	8f838024 	lw	v1,-32732(gp)
+3327-  407b4c:	24642f18 	addiu	a0,v1,12056
+3328-  407b50:	8f838024 	lw	v1,-32732(gp)
+3329-  407b54:	24652f28 	addiu	a1,v1,12072
+3330-  407b58:	00403021 	move	a2,v0
+3331-  407b5c:	8f82859c 	lw	v0,-31332(gp)
+3332-  407b60:	0040c821 	move	t9,v0
+3333-  407b64:	0320f809 	jalr	t9
+3334-  407b68:	00000000 	nop
+3335-  407b6c:	8fdc0010 	lw	gp,16(s8)
+3336-  407b70:	14400057 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+3337-  407b74:	00000000 	nop
+3338-  407b78:	27c2009c 	addiu	v0,s8,156
+3339-  407b7c:	8f838024 	lw	v1,-32732(gp)
+3340-  407b80:	24642f18 	addiu	a0,v1,12056
+3341-  407b84:	8f838024 	lw	v1,-32732(gp)
+3342-  407b88:	24652f3c 	addiu	a1,v1,12092
+3343-  407b8c:	00403021 	move	a2,v0
+3344-  407b90:	8f82859c 	lw	v0,-31332(gp)
+3345-  407b94:	0040c821 	move	t9,v0
+3346-  407b98:	0320f809 	jalr	t9
+3347-  407b9c:	00000000 	nop
+3348-  407ba0:	8fdc0010 	lw	gp,16(s8)
+3349-  407ba4:	1440004a 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+3350-  407ba8:	00000000 	nop
+3351-  407bac:	27c20144 	addiu	v0,s8,324
+3352-  407bb0:	8f838024 	lw	v1,-32732(gp)
+3353-  407bb4:	24642f18 	addiu	a0,v1,12056
+3354-  407bb8:	8f838024 	lw	v1,-32732(gp)
+3355-  407bbc:	24652f50 	addiu	a1,v1,12112
+3356-  407bc0:	00403021 	move	a2,v0
+3357-  407bc4:	8f82859c 	lw	v0,-31332(gp)
+3358-  407bc8:	0040c821 	move	t9,v0
+3359-  407bcc:	0320f809 	jalr	t9
+3360-  407bd0:	00000000 	nop
+3361-  407bd4:	8fdc0010 	lw	gp,16(s8)
+3362-  407bd8:	1440003d 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+3363-  407bdc:	00000000 	nop
+3364-  407be0:	27c2009c 	addiu	v0,s8,156
+3365-  407be4:	00402021 	move	a0,v0
+3366-  407be8:	8f82838c 	lw	v0,-31860(gp)
+3367-  407bec:	0040c821 	move	t9,v0
+3368-  407bf0:	0320f809 	jalr	t9
+3369-  407bf4:	00000000 	nop
+3370-  407bf8:	8fdc0010 	lw	gp,16(s8)
+3371-  407bfc:	18400034 	blez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+3372-  407c00:	00000000 	nop
+3373-  407c04:	27c2001c 	addiu	v0,s8,28
+3374-  407c08:	00402021 	move	a0,v0
+3375-  407c0c:	8f82838c 	lw	v0,-31860(gp)
+3376-  407c10:	0040c821 	move	t9,v0
+3377-  407c14:	0320f809 	jalr	t9
+3378-  407c18:	00000000 	nop
+3379-  407c1c:	8fdc0010 	lw	gp,16(s8)
+3380-  407c20:	8fc30018 	lw	v1,24(s8)
+3381-  407c24:	00628023 	subu	s0,v1,v0
+3382-  407c28:	27c2009c 	addiu	v0,s8,156
+3383-  407c2c:	00402021 	move	a0,v0
+3384-  407c30:	8f82838c 	lw	v0,-31860(gp)
+3385-  407c34:	0040c821 	move	t9,v0
+3386-  407c38:	0320f809 	jalr	t9
+3387-  407c3c:	00000000 	nop
+3388-  407c40:	8fdc0010 	lw	gp,16(s8)
+3389-  407c44:	0050102a 	slt	v0,v0,s0
+3390-  407c48:	10400021 	beqz	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+3391-  407c4c:	00000000 	nop
+3392-  407c50:	27c30144 	addiu	v1,s8,324
+3393-  407c54:	27c20130 	addiu	v0,s8,304
+3394-  407c58:	00602021 	move	a0,v1
+3395-  407c5c:	00402821 	move	a1,v0
+3396-  407c60:	8f828478 	lw	v0,-31624(gp)
+3397-  407c64:	0040c821 	move	t9,v0
+3398-  407c68:	0320f809 	jalr	t9
+3399-  407c6c:	00000000 	nop
+3400-  407c70:	8fdc0010 	lw	gp,16(s8)
+3401-  407c74:	27c20130 	addiu	v0,s8,304
+3402-  407c78:	8f838024 	lw	v1,-32732(gp)
+3403-  407c7c:	24642f60 	addiu	a0,v1,12128
+===== confsrv init refs =====
+2491-  409d54:	00621024 	and	v0,v1,v0
+2492-  409d58:	afc20008 	sw	v0,8(s8)
+2493-  409d5c:	8fc20008 	lw	v0,8(s8)
+2494-  409d60:	10400009 	beqz	v0,409d88 <hash_pjw@@Base+0x70>
+2495-  409d64:	00000000 	nop
+2496-  409d68:	8fc20008 	lw	v0,8(s8)
+2497-  409d6c:	00021e02 	srl	v1,v0,0x18
+2498-  409d70:	8fc2000c 	lw	v0,12(s8)
+2499-  409d74:	00621826 	xor	v1,v1,v0
+2500-  409d78:	3c020fff 	lui	v0,0xfff
+2501-  409d7c:	3442ffff 	ori	v0,v0,0xffff
+2502-  409d80:	00621024 	and	v0,v1,v0
+2503-  409d84:	afc2000c 	sw	v0,12(s8)
+2504-  409d88:	8fc20018 	lw	v0,24(s8)
+2505-  409d8c:	24420001 	addiu	v0,v0,1
+2506-  409d90:	afc20018 	sw	v0,24(s8)
+2507-  409d94:	8fc20018 	lw	v0,24(s8)
+2508-  409d98:	80420000 	lb	v0,0(v0)
+2509-  409d9c:	1440ffe5 	bnez	v0,409d34 <hash_pjw@@Base+0x1c>
+2510-  409da0:	00000000 	nop
+2511-  409da4:	8fc2000c 	lw	v0,12(s8)
+2512-  409da8:	03c0e821 	move	sp,s8
+2513-  409dac:	8fbe0014 	lw	s8,20(sp)
+2514-  409db0:	27bd0018 	addiu	sp,sp,24
+2515-  409db4:	03e00008 	jr	ra
+2516-  409db8:	00000000 	nop
+2517-  409dbc:	00000000 	nop
+2518-  409dc0:	27bdffe8 	addiu	sp,sp,-24
+2519-  409dc4:	afbe0014 	sw	s8,20(sp)
+2520-  409dc8:	03a0f021 	move	s8,sp
+2521-  409dcc:	afc40018 	sw	a0,24(s8)
+2522-  409dd0:	afc0000c 	sw	zero,12(s8)
+2523-  409dd4:	8fc20018 	lw	v0,24(s8)
+2524-  409dd8:	8c42000c 	lw	v0,12(v0)
+2525-  409ddc:	afc20008 	sw	v0,8(s8)
+2526-  409de0:	10000009 	b	409e08 <hash_pjw@@Base+0xf0>
+2527-  409de4:	00000000 	nop
+2528-  409de8:	8fc20008 	lw	v0,8(s8)
+2529-  409dec:	80420000 	lb	v0,0(v0)
+2530-  409df0:	8fc3000c 	lw	v1,12(s8)
+2531-  409df4:	00621021 	addu	v0,v1,v0
+2532-  409df8:	afc2000c 	sw	v0,12(s8)
+2533-  409dfc:	8fc20008 	lw	v0,8(s8)
+2534-  409e00:	24420001 	addiu	v0,v0,1
+2535-  409e04:	afc20008 	sw	v0,8(s8)
+2536-  409e08:	8fc20008 	lw	v0,8(s8)
+2537-  409e0c:	80420000 	lb	v0,0(v0)
+2538-  409e10:	1440fff5 	bnez	v0,409de8 <hash_pjw@@Base+0xd0>
+2539-  409e14:	00000000 	nop
+2540-  409e18:	8fc2000c 	lw	v0,12(s8)
+2541-  409e1c:	03c0e821 	move	sp,s8
+2542-  409e20:	8fbe0014 	lw	s8,20(sp)
+2543-  409e24:	27bd0018 	addiu	sp,sp,24
+2544-  409e28:	03e00008 	jr	ra
+2545-  409e2c:	00000000 	nop
+2546-  409e30:	27bdffe0 	addiu	sp,sp,-32
+2547-  409e34:	afbe001c 	sw	s8,28(sp)
+2548-  409e38:	03a0f021 	move	s8,sp
+2549-  409e3c:	afc40020 	sw	a0,32(s8)
+2550-  409e40:	afc50024 	sw	a1,36(s8)
+2551-  409e44:	8fc20020 	lw	v0,32(s8)
+2552-  409e48:	8c42000c 	lw	v0,12(v0)
+2553-  409e4c:	afc20010 	sw	v0,16(s8)
+2554-  409e50:	8fc20024 	lw	v0,36(s8)
+2555-  409e54:	8c42000c 	lw	v0,12(v0)
+2556-  409e58:	afc2000c 	sw	v0,12(s8)
+2557-  409e5c:	10000002 	b	409e68 <hash_pjw@@Base+0x150>
+2558-  409e60:	00000000 	nop
+2559-  409e64:	00000000 	nop
+2560-  409e68:	8fc20010 	lw	v0,16(s8)
+2561-  409e6c:	80420000 	lb	v0,0(v0)
+2562-  409e70:	00401821 	move	v1,v0
+2563-  409e74:	8fc2000c 	lw	v0,12(s8)
+2564-  409e78:	80420000 	lb	v0,0(v0)
+2565-  409e7c:	00621023 	subu	v0,v1,v0
+2566-  409e80:	afc20008 	sw	v0,8(s8)
+2567-  409e84:	8fc20008 	lw	v0,8(s8)
+2568-  409e88:	0002102b 	sltu	v0,zero,v0
+2569-  409e8c:	304200ff 	andi	v0,v0,0xff
+2570-  409e90:	8fc3000c 	lw	v1,12(s8)
+2571-  409e94:	24630001 	addiu	v1,v1,1
+2572-  409e98:	afc3000c 	sw	v1,12(s8)
+2573-  409e9c:	1440000a 	bnez	v0,409ec8 <hash_pjw@@Base+0x1b0>
+2574-  409ea0:	00000000 	nop
+2575-  409ea4:	8fc20010 	lw	v0,16(s8)
+2576-  409ea8:	80420000 	lb	v0,0(v0)
+2577-  409eac:	2c420001 	sltiu	v0,v0,1
+2578-  409eb0:	304200ff 	andi	v0,v0,0xff
+2579-  409eb4:	8fc30010 	lw	v1,16(s8)
+2580-  409eb8:	24630001 	addiu	v1,v1,1
+2581-  409ebc:	afc30010 	sw	v1,16(s8)
+2582-  409ec0:	1040ffe8 	beqz	v0,409e64 <hash_pjw@@Base+0x14c>
+2583-  409ec4:	00000000 	nop
+2584-  409ec8:	8fc20008 	lw	v0,8(s8)
+2585-  409ecc:	03c0e821 	move	sp,s8
+2586-  409ed0:	8fbe001c 	lw	s8,28(sp)
+2587-  409ed4:	27bd0020 	addiu	sp,sp,32
+2588-  409ed8:	03e00008 	jr	ra
+2589-  409edc:	00000000 	nop
+2590-
+2591:00409ee0 <conf_msg_hander@@Base>:
+2592-  409ee0:	3c1c0009 	lui	gp,0x9
+2593-  409ee4:	279cd280 	addiu	gp,gp,-11648
+2594-  409ee8:	0399e021 	addu	gp,gp,t9
+2595-  409eec:	27bdffa0 	addiu	sp,sp,-96
+2596-  409ef0:	afbf005c 	sw	ra,92(sp)
+2597-  409ef4:	afbe0058 	sw	s8,88(sp)
+2598-  409ef8:	03a0f021 	move	s8,sp
+2599-  409efc:	afbc0018 	sw	gp,24(sp)
+2600-  409f00:	afc40060 	sw	a0,96(s8)
+2601-  409f04:	afc50064 	sw	a1,100(s8)
+2602-  409f08:	afc60068 	sw	a2,104(s8)
+2603-  409f0c:	afc7006c 	sw	a3,108(s8)
+2604-  409f10:	afc0002c 	sw	zero,44(s8)
+2605-  409f14:	afc00028 	sw	zero,40(s8)
+2606-  409f18:	afc00024 	sw	zero,36(s8)
+2607-  409f1c:	afc00050 	sw	zero,80(s8)
+2608-  409f20:	afc00020 	sw	zero,32(s8)
+2609-  409f24:	8fc20064 	lw	v0,100(s8)
+2610:  409f28:	14400004 	bnez	v0,409f3c <conf_msg_hander@@Base+0x5c>
+2611-  409f2c:	00000000 	nop
+2612-  409f30:	2402ffff 	li	v0,-1
+2613:  409f34:	10000036 	b	40a010 <conf_msg_hander@@Base+0x130>
+2614-  409f38:	00000000 	nop
+2615-  409f3c:	8fc20064 	lw	v0,100(s8)
+2616-  409f40:	afc2002c 	sw	v0,44(s8)
+2617-  409f44:	8fc2002c 	lw	v0,44(s8)
+2618-  409f48:	afc20040 	sw	v0,64(s8)
+2619-  409f4c:	27c20034 	addiu	v0,s8,52
+2620-  409f50:	8f83802c 	lw	v1,-32724(gp)
+2621-  409f54:	2464fbc8 	addiu	a0,v1,-1080
+2622-  409f58:	00402821 	move	a1,v0
+2623-  409f5c:	8f8280a4 	lw	v0,-32604(gp)
+2624-  409f60:	0040c821 	move	t9,v0
+2625-  409f64:	0320f809 	jalr	t9
+2626-  409f68:	00000000 	nop
+2627-  409f6c:	8fdc0018 	lw	gp,24(s8)
+2628-  409f70:	afc20030 	sw	v0,48(s8)
+2629-  409f74:	8fc20030 	lw	v0,48(s8)
+2630:  409f78:	10400024 	beqz	v0,40a00c <conf_msg_hander@@Base+0x12c>
+2631-  409f7c:	00000000 	nop
+2632-  409f80:	8fc20030 	lw	v0,48(s8)
+2633-  409f84:	8c420010 	lw	v0,16(v0)
+2634:  409f88:	10400020 	beqz	v0,40a00c <conf_msg_hander@@Base+0x12c>
+2635-  409f8c:	00000000 	nop
+2636-  409f90:	8fc20030 	lw	v0,48(s8)
+2637-  409f94:	8c420010 	lw	v0,16(v0)
+2638-  409f98:	8fc4002c 	lw	a0,44(s8)
+2639-  409f9c:	8fc3002c 	lw	v1,44(s8)
+2640-  409fa0:	24650024 	addiu	a1,v1,36
+2641-  409fa4:	8fc30068 	lw	v1,104(s8)
+2642-  409fa8:	2463ffdc 	addiu	v1,v1,-36
+2643-  409fac:	00603021 	move	a2,v1
+2644-  409fb0:	27c30050 	addiu	v1,s8,80
+2645-  409fb4:	27c70054 	addiu	a3,s8,84
+2646-  409fb8:	afa70010 	sw	a3,16(sp)
+2647-  409fbc:	00603821 	move	a3,v1
+2648-  409fc0:	0040c821 	move	t9,v0
+2649-  409fc4:	0320f809 	jalr	t9
+2650-  409fc8:	00000000 	nop
+2651-  409fcc:	8fdc0018 	lw	gp,24(s8)
+2652-  409fd0:	afc20020 	sw	v0,32(s8)
+2653-  409fd4:	8fc20050 	lw	v0,80(s8)
+2654:  409fd8:	10400009 	beqz	v0,40a000 <conf_msg_hander@@Base+0x120>
+2655-  409fdc:	00000000 	nop
+2656-  409fe0:	8fc20050 	lw	v0,80(s8)
+2657-  409fe4:	00402021 	move	a0,v0
+2658-  409fe8:	8f828614 	lw	v0,-31212(gp)
+2659-  409fec:	0040c821 	move	t9,v0
+2660-  409ff0:	0320f809 	jalr	t9
+2661-  409ff4:	00000000 	nop
+2662-  409ff8:	8fdc0018 	lw	gp,24(s8)
+2663-  409ffc:	afc00050 	sw	zero,80(s8)
+2664-  40a000:	00001021 	move	v0,zero
+2665:  40a004:	10000002 	b	40a010 <conf_msg_hander@@Base+0x130>
+2666-  40a008:	00000000 	nop
+2667-  40a00c:	2402ffff 	li	v0,-1
+2668-  40a010:	03c0e821 	move	sp,s8
+2669-  40a014:	8fbf005c 	lw	ra,92(sp)
+2670-  40a018:	8fbe0058 	lw	s8,88(sp)
+2671-  40a01c:	27bd0060 	addiu	sp,sp,96
+2672-  40a020:	03e00008 	jr	ra
+2673-  40a024:	00000000 	nop
+2674-
+2675-0040a028 <conf_msg_define@@Base>:
+2676-  40a028:	3c1c0009 	lui	gp,0x9
+2677-  40a02c:	279cd138 	addiu	gp,gp,-11976
+2678-  40a030:	0399e021 	addu	gp,gp,t9
+2679-  40a034:	27bdffd8 	addiu	sp,sp,-40
+2680-  40a038:	afbf0024 	sw	ra,36(sp)
+2681-  40a03c:	afbe0020 	sw	s8,32(sp)
+2682-  40a040:	03a0f021 	move	s8,sp
+2683-  40a044:	afbc0010 	sw	gp,16(sp)
+2684-  40a048:	afc40028 	sw	a0,40(s8)
+2685-  40a04c:	afc5002c 	sw	a1,44(s8)
+2686-  40a050:	afc60030 	sw	a2,48(s8)
+2687-  40a054:	afc70034 	sw	a3,52(s8)
+2688-  40a058:	afc00018 	sw	zero,24(s8)
+2689-  40a05c:	2404001c 	li	a0,28
+2690-  40a060:	8f828904 	lw	v0,-30460(gp)
+2691-  40a064:	0040c821 	move	t9,v0
+2692-  40a068:	0320f809 	jalr	t9
+2693-  40a06c:	00000000 	nop
+2694-  40a070:	8fdc0010 	lw	gp,16(s8)
+2695-  40a074:	afc20018 	sw	v0,24(s8)
+2696-  40a078:	8fc20018 	lw	v0,24(s8)
+2697-  40a07c:	1440000f 	bnez	v0,40a0bc <conf_msg_define@@Base+0x94>
+2698-  40a080:	00000000 	nop
+2699-  40a084:	24040003 	li	a0,3
+2700-  40a088:	8f828024 	lw	v0,-32732(gp)
+2701-  40a08c:	244574a4 	addiu	a1,v0,29860
+2702-  40a090:	240600af 	li	a2,175
+2703-  40a094:	8f828024 	lw	v0,-32732(gp)
+2704-  40a098:	244774b8 	addiu	a3,v0,29880
+2705-  40a09c:	8f828040 	lw	v0,-32704(gp)
+2706-  40a0a0:	0040c821 	move	t9,v0
+2707-  40a0a4:	0320f809 	jalr	t9
+2708-  40a0a8:	00000000 	nop
+2709-  40a0ac:	8fdc0010 	lw	gp,16(s8)
+2710-  40a0b0:	2402ffff 	li	v0,-1
+2711-  40a0b4:	10000023 	b	40a144 <conf_msg_define@@Base+0x11c>
+2712-  40a0b8:	00000000 	nop
+2713-  40a0bc:	8fc40018 	lw	a0,24(s8)
+2714-  40a0c0:	00002821 	move	a1,zero
+2715-  40a0c4:	2406001c 	li	a2,28
+2716-  40a0c8:	8f828930 	lw	v0,-30416(gp)
+2717-  40a0cc:	0040c821 	move	t9,v0
+2718-  40a0d0:	0320f809 	jalr	t9
+2719-  40a0d4:	00000000 	nop
+2720-  40a0d8:	8fdc0010 	lw	gp,16(s8)
+2721-  40a0dc:	8fc20018 	lw	v0,24(s8)
+2722-  40a0e0:	8fc3002c 	lw	v1,44(s8)
+2723-  40a0e4:	ac430010 	sw	v1,16(v0)
+2724-  40a0e8:	8fc40028 	lw	a0,40(s8)
+2725-  40a0ec:	8f828894 	lw	v0,-30572(gp)
+2726-  40a0f0:	0040c821 	move	t9,v0
+2727-  40a0f4:	0320f809 	jalr	t9
+2728-  40a0f8:	00000000 	nop
+2729-  40a0fc:	8fdc0010 	lw	gp,16(s8)
+2730-  40a100:	00401821 	move	v1,v0
+2731-  40a104:	8fc20018 	lw	v0,24(s8)
+2732-  40a108:	ac43000c 	sw	v1,12(v0)
+2733-  40a10c:	8fc20018 	lw	v0,24(s8)
+2734-  40a110:	8fc30030 	lw	v1,48(s8)
+2735-  40a114:	ac430014 	sw	v1,20(v0)
+2736-  40a118:	8fc20018 	lw	v0,24(s8)
+2737-  40a11c:	8fc30034 	lw	v1,52(s8)
+2738-  40a120:	ac430018 	sw	v1,24(v0)
+2739-  40a124:	8fc40018 	lw	a0,24(s8)
+2740-  40a128:	8f828030 	lw	v0,-32720(gp)
+2741-  40a12c:	2442a360 	addiu	v0,v0,-23712
+2742-  40a130:	0040c821 	move	t9,v0
+2743-  40a134:	0320f809 	jalr	t9
+2744-  40a138:	00000000 	nop
+2745-  40a13c:	8fdc0010 	lw	gp,16(s8)
+2746-  40a140:	00001021 	move	v0,zero
+2747-  40a144:	03c0e821 	move	sp,s8
+2748-  40a148:	8fbf0024 	lw	ra,36(sp)
+2749-  40a14c:	8fbe0020 	lw	s8,32(sp)
+2750-  40a150:	27bd0028 	addiu	sp,sp,40
+2751-  40a154:	03e00008 	jr	ra
+2752-  40a158:	00000000 	nop
+2753-  40a15c:	3c1c0009 	lui	gp,0x9
+2754-  40a160:	279cd004 	addiu	gp,gp,-12284
+2755-  40a164:	0399e021 	addu	gp,gp,t9
+2756-  40a168:	27bdffe0 	addiu	sp,sp,-32
+2757-  40a16c:	afbf001c 	sw	ra,28(sp)
+2758-  40a170:	afbe0018 	sw	s8,24(sp)
+2759-  40a174:	03a0f021 	move	s8,sp
+2760-  40a178:	afbc0010 	sw	gp,16(sp)
+2761-  40a17c:	afc40020 	sw	a0,32(s8)
+2762-  40a180:	8fc20020 	lw	v0,32(s8)
+2763-  40a184:	1440000e 	bnez	v0,40a1c0 <conf_msg_define@@Base+0x198>
+2764-  40a188:	00000000 	nop
+2765-  40a18c:	8f828024 	lw	v0,-32732(gp)
+2766-  40a190:	244274d4 	addiu	v0,v0,29908
+2767-  40a194:	00402021 	move	a0,v0
+2768-  40a198:	8f828024 	lw	v0,-32732(gp)
+2769-  40a19c:	24457990 	addiu	a1,v0,31120
+2770-  40a1a0:	240600cf 	li	a2,207
+2771-  40a1a4:	8f8287c8 	lw	v0,-30776(gp)
+2772-  40a1a8:	0040c821 	move	t9,v0
+2773-  40a1ac:	0320f809 	jalr	t9
+2774-  40a1b0:	00000000 	nop
+2775-  40a1b4:	8fdc0010 	lw	gp,16(s8)
+2776-  40a1b8:	10000011 	b	40a200 <conf_msg_define@@Base+0x1d8>
+2777-  40a1bc:	00000000 	nop
+2778-  40a1c0:	8fc20020 	lw	v0,32(s8)
+2779-  40a1c4:	8c420014 	lw	v0,20(v0)
+2780-  40a1c8:	1040000c 	beqz	v0,40a1fc <conf_msg_define@@Base+0x1d4>
+2781-  40a1cc:	00000000 	nop
+2782-  40a1d0:	8fc20020 	lw	v0,32(s8)
+2783-  40a1d4:	8c420014 	lw	v0,20(v0)
+2784-  40a1d8:	8fc30020 	lw	v1,32(s8)
+2785-  40a1dc:	8c630018 	lw	v1,24(v1)
+2786-  40a1e0:	00602021 	move	a0,v1
+2787-  40a1e4:	0040c821 	move	t9,v0
+2788-  40a1e8:	0320f809 	jalr	t9
+2789-  40a1ec:	00000000 	nop
+2790-  40a1f0:	8fdc0010 	lw	gp,16(s8)
+2791-  40a1f4:	10000002 	b	40a200 <conf_msg_define@@Base+0x1d8>
+2792-  40a1f8:	00000000 	nop
+2793-  40a1fc:	00000000 	nop
+2794-  40a200:	03c0e821 	move	sp,s8
+2795-  40a204:	8fbf001c 	lw	ra,28(sp)
+2796-  40a208:	8fbe0018 	lw	s8,24(sp)
+2797-  40a20c:	27bd0020 	addiu	sp,sp,32
+2798-  40a210:	03e00008 	jr	ra
+2799-  40a214:	00000000 	nop
+2800-
+2801-0040a218 <conf_msg_all_cmds_init@@Base>:
+2802-  40a218:	3c1c0009 	lui	gp,0x9
+2803-  40a21c:	279ccf48 	addiu	gp,gp,-12472
+2804-  40a220:	0399e021 	addu	gp,gp,t9
+2805-  40a224:	27bdffd8 	addiu	sp,sp,-40
+2806-  40a228:	afbf0024 	sw	ra,36(sp)
+2807-  40a22c:	afbe0020 	sw	s8,32(sp)
+2808-  40a230:	03a0f021 	move	s8,sp
+2809-  40a234:	afbc0010 	sw	gp,16(sp)
+2810-  40a238:	27c2001c 	addiu	v0,s8,28
+2811-  40a23c:	8f83802c 	lw	v1,-32724(gp)
+2812-  40a240:	2464fbc8 	addiu	a0,v1,-1080
+2813-  40a244:	00402821 	move	a1,v0
+2814-  40a248:	8f8280a8 	lw	v0,-32600(gp)
+2815-  40a24c:	0040c821 	move	t9,v0
+2816-  40a250:	0320f809 	jalr	t9
+2817-  40a254:	00000000 	nop
+2818-  40a258:	8fdc0010 	lw	gp,16(s8)
+2819-  40a25c:	afc20018 	sw	v0,24(s8)
+2820-  40a260:	8fc20018 	lw	v0,24(s8)
+2821-  40a264:	1040001e 	beqz	v0,40a2e0 <conf_msg_all_cmds_init@@Base+0xc8>
+2822-  40a268:	00000000 	nop
+2823-  40a26c:	8fc40018 	lw	a0,24(s8)
+2824-  40a270:	8f828030 	lw	v0,-32720(gp)
+2825-  40a274:	2442a15c 	addiu	v0,v0,-24228
+2826-  40a278:	0040c821 	move	t9,v0
+2827-  40a27c:	0320f809 	jalr	t9
+2828-  40a280:	00000000 	nop
+2829-  40a284:	8fdc0010 	lw	gp,16(s8)
+2830-  40a288:	10000008 	b	40a2ac <conf_msg_all_cmds_init@@Base+0x94>
+2831-  40a28c:	00000000 	nop
+2832-  40a290:	8fc40018 	lw	a0,24(s8)
+2833-  40a294:	8f828030 	lw	v0,-32720(gp)
+2834-  40a298:	2442a15c 	addiu	v0,v0,-24228
+2835-  40a29c:	0040c821 	move	t9,v0
+2836-  40a2a0:	0320f809 	jalr	t9
+2837-  40a2a4:	00000000 	nop
+2838-  40a2a8:	8fdc0010 	lw	gp,16(s8)
+2839-  40a2ac:	27c2001c 	addiu	v0,s8,28
+2840-  40a2b0:	8f83802c 	lw	v1,-32724(gp)
+2841-  40a2b4:	2464fbc8 	addiu	a0,v1,-1080
+2842-  40a2b8:	00402821 	move	a1,v0
+2843-  40a2bc:	8f8280ac 	lw	v0,-32596(gp)
+2844-  40a2c0:	0040c821 	move	t9,v0
+2845-  40a2c4:	0320f809 	jalr	t9

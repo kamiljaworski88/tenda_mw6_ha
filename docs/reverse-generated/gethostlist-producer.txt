@@ -1,0 +1,4871 @@
+===== RUN 39 GOAL =====
+Find the exact binary/function that produces the local GetHostList request and recover the cmd_pub/cmd_sub argument flow.
+===== FILES CONTAINING GetHostList =====
+firmware-src/RootFS-unpacked/lib/libucapi.so
+firmware-src/RootFS-unpacked/bin/confsrv
+===== STRINGS / SYMBOLS PER CANDIDATE =====
+--- firmware-src/RootFS-unpacked/lib/libucapi.so ---
+  1fb94 GrantNodeDel
+  1fba4 CMD_MESH_NODE_DEL
+  1fbb8 SetNodeLocation
+  1fbc8 CMD_MESH_NODE_SET_LOCATION
+  1fbe4 SetLedStatus
+  1fbf4 CMD_MESH_NODE_SET_LED
+  1fc0c QuerryNodeRslt
+  1fc1c CMD_MESH_NODE_QUERY_RSLT
+  1fc38 MultiUpgradeStart
+  1fc4c CMD_MESH_NODE_MULTI_UPGRADE_START
+  1fc70 ManualNodeAdd
+  1fc80 CMD_MESH_NODE_MANUAL_ADD
+  1fc9c GetHostList
+  1fca8 M_MESH_HOSTS
+  1fcb8 CMD_MESH_HOSTS_GET
+  1fccc SetHostMarks
+  1fcdc CMD_MESH_HOSTS_MARK
+  1fcf0 GetRemarklist
+  1fd00 CMD_MESH_HOSTS_GET_REMARK
+  1fd1c GetMacfilter
+  1fd2c M_MESH_MACFILTER
+  1fd40 CMD_MESH_MF_GET
+  1fd50 SetMacfilter
+  1fd60 CMD_MESH_MF_SET
+  1fd70 GetTimeGrp
+  1fd7c M_MESH_FAMILY
+  1fd8c CMD_MESH_FAMILY_GET_TMGRP
+  1fda8 SetTimeGrp
+  1fdb4 CMD_MESH_FAMILY_SET_TMGRP
+  1fdd0 GetUsrGrp
+  1fddc CMD_MESH_FAMILY_GET_USRGRP
+    80: 0000a49c   140 FUNC    GLOBAL DEFAULT   10 eanble_inter_chk_request
+   352: 00009b98   120 FUNC    GLOBAL DEFAULT   10 command_exec_set_noreply
+--- firmware-src/RootFS-unpacked/bin/confsrv ---
+   43cd fclose
+   43d4 g_confctl_debug_list
+   43e9 putchar
+   43f1 confctl_report_map
+   4404 confctl_node_msg_init
+   441a conf_msg_define
+   442a confctl_hanle_assoc_report
+   4445 confctl_request_grp_info_handle
+   4465 confctl_restore_zero_report_handle
+   4488 confctl_device_list_upload
+   44a3 confctl_device_list_status_init
+   44c3 confctl_rqst_client_hostname
+   44e0 confctl_get_host_list
+   44f6 confctl_set_host_marks
+   450d confctl_get_remark_list
+   4525 confctl_update_remark_request_handle
+   454a confctl_set_dhcps_cfg
+   4560 confctl_get_dhcps_cfg
+   4576 ucloud_get_node_msg
+   458a ucloud_add_node
+   459a ucloud_add_node_init
+   45af ucloud_del_node
+   45bf ucloud_set_led
+   45ce ucloud_set_node_location
+   45e7 confctl_report_log
+   45fa confctl_log_report_init
+   4612 get_login_method
+   4623 do_login_check
+   4632 get_sys_basic
+   4640 confctl_get_master_wlan
+   4658 confctl_set_master_wlan
+--
+   594d ntohl
+   5953 uc_api_m_cloud_info_send_dev_device
+   5977 host_info__init
+   5987 netlink_get_statistic_info
+   59a2 g_ip_info
+   59ac __floatundisf
+   59ba __divsf3
+   59c3 __lesf2
+   59cb __extendsfdf2
+   59d9 inet_addr
+   59e3 __fixunssfdi
+   59f0 devic_marks__init
+   5a02 host_lists__descriptor
+   5a19 host_lists__get_packed_size
+   5a35 host_lists__pack
+   5a46 device_mark_list__descriptor
+   5a63 device_mark_list__get_packed_size
+   5a85 device_mark_list__pack
+   5a9c uc_api_m_cloud_info_send_dev_mark_list_u
+   5ac5 get_cloud_remark_hash_table
+   5ae1 update_all_client_remark_to_local
+   5b03 strtoul
+   5b0b mac_add
+   5b13 device_assistant__descriptor
+   5b30 device_assistant__unpack
+   5b49 device_assistant__free_unpacked
+   5b69 device_assistant__get_packed_size
+   5b8b device_assistant__pack
+   5ba2 del_colon_macaddr_srv
+   5bb8 conf_send_assistant_device_to_map
+   5bda del_client_assistant_device_srv
+   5bfa assistant_device_handle_error_time
+   5c1d getWanIfName
+--
+  665ac /var/auto_discover
+  665f0 device_list
+  66610 /var/device_list_socket
+  66654 ucloud_ctl
+  666b8 common_so
+  6671c ap_common_so
+  66780 prod_common_so
+  66844 oom at <../../device_list/include/extern/from_redis.h:32>
+  66880 Unsupport Event: %d
+  66898 [%s][%d][luminais] cmd is %s
+  668b8 SetConflictLanIp
+  668cc SetConflictGuestIp
+  668e0 confctl_cli_key
+  668f0 accept
+  668f8 socket:malloc
+  66908 [%s][%d][luminais] cm_new failed.
+  6692c /var/confsrv_socket
+  66940 [%s][%d][luminais] init_unix_socket_server %s failed.
+  66978 image_boot
+  66984 ****image_boot = 1,set image_boot=0********
+  669b4 *****image_boot = 0,set image_boot=1 *********
+  669e8 /dev/null
+  669f8 /dev/ttyS0
+  66a04 %s(%d)
+  66a0c test_sn
+  66a14 echo %s >> /proc/mesh/authorized
+  66a38 wl2g.lock.channel
+  66a4c wl2g.lock.bandwidth
+  66a68 op=%d,wl_rate=%d
+  66a7c TD_FINISH_TSTFLAG
+  66a90 highdevice_en
+  66aa0 [%s::%d] malloc fail.
+  66ab8 /tmp/log/crash
+  66ac8 confctl_srv.c
+  66ad8 Initialize AP MIB failed !
+  66af4 Initialize env failed !
+  66b0c [%s][%d][luminais] init_confctl_unix_sock failed
+  66b40 uc_api_init failed
+  66b54 confctl_srv_key
+  66b64 main
+  66b6c make_highdevice_list_cfg
+  66b88 confctl_force_upgrade
+  66ba0 init_confsrv_unix_sock
+  66bb8 confsrv_unix_accept_event_handle
+  66bdc confsrv_unix_read_event_handle
+  66c30 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  66cd8 monitor
+  66cf8 /var/pm_socket
+  66d3c timer
+  66d5c /var/tm_socket
+  66da0 cfms
+  66dc0 /var/cfm_socket
+  66e04 logserver
+  66e24 /var/plog_socket
+  66e68 netctrl
+  66e88 /var/nt_socket
+  66ecc multiWAN
+--
+  674b8      malloc failed      
+  674d4 [%s][%d][luminais] invalid param.
+  674f8 /var/mib.mem
+  67508 assist.dev.stime
+  6751c assist.dev.ltime
+  67530 assist.dev.mac
+  67540 echo "%s %d" > %s
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+  67654 client remark list recorded on cloud
+  6767c device list status
+  67690 all device list status uploaded by device_list
+  676c0 SetHostMarks
+  676d0 app set client remark
+  676e8 update grp map
+  676f8 update group config and node opt to MAP
+  67720 SetSysTimeZone
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+--
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67a8c GetNodeStatus
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+--
+  6fc48 /var/mib.mem
+  6fc58 role
+  6fc60 sys.model
+  6fc6c sys.model.ver
+  6fc7c up.soft.ver
+  6fc88 %s(%s)
+  6fc90 V1.0.0.28
+  6fc9c 5834
+  6fca4 sys.cfg.stamp
+  6fcb4 sys.led.en
+  6fcc0        malloc   failed !     
+  6fce0 map_report
+  6fcec confctl_srv_key
+  6fcfc %s[%d]      sn too short!        
+  6fd20 sys.mesh.groupsn
+  6fd38 [%s][%d][luminais] mpp is not in the mesh group config
+  6fd70 sys.comparison_version
+  6fd88 /var/node_version_infro
+  6fda4 [%s][%d] open /var/node_infro failed.
+  6fdcc %s,%s
+  6fdd4 old_version_num=%d,new_version_num=%d
+  6fdfc *************begin:%d**************
+  6fe24   sn:           %s     
+  6fe40   up_time:      %d     
+  6fe5c   role:         %d     
+  6fe78   status:       %d     
+  6fe94   location:     %s     
+  6feb0   led:          %d     
+  6fecc   mode:         %s     
+  6fee8   fwversion:    %s     
+  6ff04   ip:           %s     
+--
+  70b0b [1;35mdelete %s
+  70b20 [%s][%d][kg]del sn = %s
+  70b3d [1;32m[%s][%d] : 
+  70b53 [1;35mupdate %s
+  70b69 [1;32m[%s][%d] : 
+  70b7f [1;35madd %s
+  70b94 [%s][%d][luminais] malloc failed, (%d)%m
+  70bc1 [1;32m[%s][%d] : 
+  70bd7 [1;35mlocal_sn = %s
+  70bf0 update_grp_info
+  70c01 [1;32m[%s][%d] : 
+  70c17 [1;35mmsghr->length = %u
+  70c38 confctl_cli_key
+  70c49 [1;32m[%s][%d] : 
+  70c5f [1;35mmap_key = %s
+  70c78 wl2g.mesh.id
+  70c88 ucloud
+  70c90 [%s][%d]
+  70c9c [%s][%d][luminais] cloud has removed this mesh
+  70ccc 888888888
+  70cd8 [arainc][mib_cfg_stamp = %s]%s(%d)
+  70cfd [1;32m[%s][%d] : 
+  70d13 [1;35mprint cloud_node_hash_table
+  70d3d [1;32m[%s][%d] : 
+  70d53 [1;35mprint local_node_hash_table
+  70d7d [1;32m[%s][%d] : 
+  70d93 [1;35ms_timestamp = %s
+  70db1 [1;32m[%s][%d] : 
+  70dc7 [1;35mis_update_to_cloud = %d
+  70ded [1;32m[%s][%d] : 
+  70e03 [1;35mnot exist in cloud, upload %d
+--
+  72698 [%s][%d][luminais] malloc failed, (%d)%m
+  726c4 rsp_client_hostname
+  726d8 device_list@%s
+  726e8 [%s][%d][luminais] map_key = %s
+  7270c [%s][%d][luminais] strdup failed
+  72731 [1;32m[%s][%d] : 
+  72747 [1;35mnow - last_time < 500000
+  7276c [%s][%d][luminais] NULL == g_ip_info
+  72795 [1;32m[%s][%d] : 
+  727ab [1;35mnow : %llu, last_time : %llu, time_interval : %f
+  727e8 [%s][%d][luminais] ifaddrs_ethaddr_aton %s failed.
+  7281d [1;32m[%s][%d] : 
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+  728dc update_client_remark
+  728f4 confctl_cli_key
+  72905 [1;32m[%s][%d] : 
+  7291b [1;35msend client remark to map
+  72941 [1;32m[%s][%d] : 
+  72957 [1;35mprint cloud remark table
+  7297d [1;32m[%s][%d] : 
+  72993 [1;35mprint local remark table
+  729b9 [1;32m[%s][%d] : 
+  729cf [1;35mtimestamp : [cloud %llu], [local %llu]
+  72a05 [1;32m[%s][%d] : 
+  72a1b [1;35mis_update_to_cloud = %d
+  72a41 [1;32m[%s][%d] : 
+  72a57 [1;35mprint last remark table
+  72a7d [1;32m[%s][%d] : 
+  72a93 [1;35mprint upload remark table
+  72ab8 %s@%s
+  72ac0 confctl_cli
+  72acd [1;32m[%s][%d] : 
+  72ae3 [1;35mprint_upload_cloud_client_status
+--
+  72e18 conf_get_assistant_cfg
+  72e30 send_all_client_status_list
+  72e4c fill_cloud_info_device_lists_rate
+  72e70 fill_cloud_info_device_upload_all
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+--
+  76a2c wl5g.mesh.id
+  76a3c wl2g.mesh.keys
+  76a4c wl5g.mesh.keys
+  76a5c wl2g.mesh.enable
+  76a70 wl5g.mesh.enable
+  76a84 echo 2 > /proc/mesh/register
+  76aa4 /proc/meminfo
+  76ab8 %*s %d %*s
+  76ac4 download_info
+  76ad4 api/login.c
+  76ae0        malloc   failed !     
+  76b00 MultiDownloadInfoReq
+  76b18 confctl_cli_key
+  76b28 FwDownloadInfoT array alloc memory Failed
+  76b54 out malloc error%s(%d)
+  76b6c [FwDownloadInfoT array alloc memory Failed]%s(%d)
+  76ba0 [download_info->fw_size = %d][g_fw_size_all = %d]%s(%d)
+  76bdc [download_info->recved = %d][g_recved_size_all = %d]%s(%d)
+  76c18 [download_info->sec_left = %d][g_sec_left_all = %d]%s(%d)
+  76c54 [download_info->has_sec_left = %d]%s(%d)
+  76c80 [upgrade_state.op = %d]%s(%d)
+  76ca0 MapUpgradeStart
+  76cb0 recv value is null!%s(%d)
+  76ccc       fw_multi_upgrade_info_t__unpack error!      
+  76d00 /var/node_version_infro
+  76d1c fopen
+  76d24 %[^,]
+  76d2c [arainc][old map need upgrade : %s]%s(%d)
+  76d58 [arainc][new upgade %d]%s(%d)
+  76d78 [arainc][old upgade %d]%s(%d)
+  76d98 [arainc][upgrade_info->n_oom %d]%s(%d)
+--
+  78c9c 		band error !		
+  78cb0 djc___wlan_guest->timestamp = %llu_____%s(%d)
+  78ce0 wl2g.ssid1.enable
+  78cf4 wl5g.ssid1.enable
+  78d08 ifconfig br0:1 0.0.0.0
+  78d20 djc____timeout is %d____%s(%d)
+  78d40 djc____start____wl.guets.____%s(%d)
+  78d68       enable value is error!      
+  78d8c change__guest_wlan__iptables__rule___%s(%d)
+  78dbc op=%d
+  78dc8        malloc   failed !     
+  78de8 ChangeGuest
+  78df4 confctl_cli_key
+  78e04 map_time_letf is %s____%s(%d)
+  78e24 mpp_time_letf is %d____%s(%d)
+  78e44 time_error is %d_____%s(%d)
+  78e64 map need exchange___%s(%d)
+  78e80 map guest_wlan is alltime___%s(%d)
+  78ea4 mpp guest_wlan is not enable___%s(%d)
+  78ecc %d,%s,%s
+  78ed8 [%s::%d] malloc fail.
+  78ef0 ChangeChannelBandwidthMap
+  78f0c wl2g.lock.channel
+  78f20 TD_ATE_SN
+  78f30 %s+%d
+  78f38 highdevice_en
+  78f48 wl2g.lock.bandwidth
+  78f64 [%s][%d][kg] inbuf is NULL
+  78f80 [%s][%d][kg] high_device_config__unpack failed.
+  78fb4 [%s][%d][luminais] invalid param.
+  78fd8 highdevice_dbg_en
+--
+  7a358 Mesh MP_info
+  7a368 hwaddr
+  7a370 rssi:
+  7a378 MESH WIRED NEIGHBOR
+  7a38c %*s %[^ ] %[^ ] %[^ ]
+  7a3a4 %[^ ] %[^ ] %[^ ]
+  7a3b8 serial.number
+  7a3c8 /proc/wlan0/mesh_assoc_mpinfo
+  7a3e8 /proc/wlan1/mesh_assoc_mpinfo
+  7a408 /proc/link_loop
+  7a418        malloc   failed !     
+  7a438 ReportAssocMsg
+  7a448 confctl_srv_key
+  7a4c8 monitor
+  7a4e8 /var/pm_socket
+  7a52c timer
+  7a54c /var/tm_socket
+  7a590 cfms
+  7a5b0 /var/cfm_socket
+  7a5f4 logserver
+  7a614 /var/plog_socket
+  7a658 netctrl
+  7a678 /var/nt_socket
+  7a6bc multiWAN
+  7a6dc /var/mw_socket
+  7a720 network_check
+  7a740 /var/network_ck_socket
+  7a784 cfmc
+  7a7a4 /var/cfmc_socket
+  7a7e8 dhcpc
+  7a808 /var/dhcpc
+--
+  7c880 end:                %ld 
+  7c89c flow_update_time:   %ld 
+  7c8b8 last_check_time:    %ld 
+  7c8d4 last_up:            %lld 
+  7c8f0 last_down:          %lld 
+  7c90c sys.workmode
+  7c91c router
+  7c924 sched.reboot.debug.flag
+  7c940 ......come here..sched reboot.
+  7c960 reboot now!
+  7c96c        malloc   failed !     
+  7c98c MapReboot
+  7c998 confctl_cli_key
+  7c9a8 MapSchedReboot
+  7c9b8 date;reboot
+  7c9c4  invaild para ! 
+  7c9d8  unpackd failed ! 
+  7c9f4 %llu
+  7c9fc sys.cfg.stamp
+  7ca0c sched_boot_set_cfg
+  7ca98 monitor
+  7cab8 /var/pm_socket
+  7cafc timer
+  7cb1c /var/tm_socket
+  7cb60 cfms
+  7cb80 /var/cfm_socket
+  7cbc4 logserver
+  7cbe4 /var/plog_socket
+  7cc28 netctrl
+  7cc48 /var/nt_socket
+  7cc8c multiWAN
+--
+  7d8ec    set usrgroup failed.   
+  7d90c %llu
+  7d914 888888888
+  7d920 [%s][%d]sys.cfg.stamp:%s is rst some status, drop send_query_remote_config
+  7d96c %s[%d]=========upload config to cloud=========
+  7d99c  build all config failed. 
+  7d9b8    get cfg stamp failed.    
+  7d9d8 [%s][%d]rst_some_status send config to cloud!
+  7da0c   s_time :%s 
+  7da1c config_time :%lld    local_time:%lld    
+  7da48        malloc failed!      
+  7da68 SetAllConfig
+  7da78 confctl_cli_key
+  7da88 dev_config_time_a
+  7da9c send_upload_local_config
+  7dab8 send_query_remote_config
+  7dad4 confctl_set_allconfig
+  7daec allconfig_protobuf_data_build
+  7db10 ucloud.en
+  7db24 sys.manage.keys
+  7dba8 monitor
+  7dbc8 /var/pm_socket
+  7dc0c timer
+  7dc2c /var/tm_socket
+  7dc70 cfms
+  7dc90 /var/cfm_socket
+  7dcd4 logserver
+  7dcf4 /var/plog_socket
+  7dd38 netctrl
+  7dd58 /var/nt_socket
+  7dd9c multiWAN
+     5: 0040a028   308 FUNC    GLOBAL DEFAULT   12 conf_msg_define
+    37: 00409ee0   328 FUNC    GLOBAL DEFAULT   12 conf_msg_hander
+   130: 00436bc8  1036 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_request_handle
+   133: 0040a218   224 FUNC    GLOBAL DEFAULT   12 conf_msg_all_cmds_init
+   180: 0040a2f8   104 FUNC    GLOBAL DEFAULT   12 conf_msg_open
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   224: 0044803c   520 FUNC    GLOBAL DEFAULT   12 multi_upgrade_send_downloadinfo_request_to_map
+   328: 0042e48c   480 FUNC    GLOBAL DEFAULT   12 confctl_request_grp_info_handle
+   411: 00465a70     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   530: 004653f0     0 FUNC    GLOBAL DEFAULT  UND eanble_inter_chk_request
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   601: 00465000     0 FUNC    GLOBAL DEFAULT  UND check_get_new_ipaddr_by_hostid
+   630: 00464e90     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+===== CONFCLI COMMAND REGISTRATION / INIT WINDOW =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00407210 <conf_msg_hander@@Base>:
+  407210:	3c1c0005 	lui	gp,0x5
+  407214:	279c4f30 	addiu	gp,gp,20272
+  407218:	0399e021 	addu	gp,gp,t9
+  40721c:	27bdffa0 	addiu	sp,sp,-96
+  407220:	afbf005c 	sw	ra,92(sp)
+  407224:	afbe0058 	sw	s8,88(sp)
+  407228:	03a0f021 	move	s8,sp
+  40722c:	afbc0018 	sw	gp,24(sp)
+  407230:	afc40060 	sw	a0,96(s8)
+  407234:	afc50064 	sw	a1,100(s8)
+  407238:	afc60068 	sw	a2,104(s8)
+  40723c:	afc7006c 	sw	a3,108(s8)
+  407240:	afc0002c 	sw	zero,44(s8)
+  407244:	afc00028 	sw	zero,40(s8)
+  407248:	afc00024 	sw	zero,36(s8)
+  40724c:	afc00050 	sw	zero,80(s8)
+  407250:	afc00020 	sw	zero,32(s8)
+  407254:	8fc20064 	lw	v0,100(s8)
+  407258:	14400004 	bnez	v0,40726c <conf_msg_hander@@Base+0x5c>
+  40725c:	00000000 	nop
+  407260:	2402ffff 	li	v0,-1
+  407264:	10000036 	b	407340 <conf_msg_hander@@Base+0x130>
+  407268:	00000000 	nop
+  40726c:	8fc20064 	lw	v0,100(s8)
+  407270:	afc2002c 	sw	v0,44(s8)
+  407274:	8fc2002c 	lw	v0,44(s8)
+  407278:	afc20040 	sw	v0,64(s8)
+  40727c:	27c20034 	addiu	v0,s8,52
+  407280:	8f83805c 	lw	v1,-32676(gp)
+  407284:	246447b8 	addiu	a0,v1,18360
+  407288:	00402821 	move	a1,v0
+  40728c:	8f828060 	lw	v0,-32672(gp)
+  407290:	0040c821 	move	t9,v0
+  407294:	0320f809 	jalr	t9
+  407298:	00000000 	nop
+  40729c:	8fdc0018 	lw	gp,24(s8)
+  4072a0:	afc20030 	sw	v0,48(s8)
+  4072a4:	8fc20030 	lw	v0,48(s8)
+  4072a8:	10400024 	beqz	v0,40733c <conf_msg_hander@@Base+0x12c>
+  4072ac:	00000000 	nop
+  4072b0:	8fc20030 	lw	v0,48(s8)
+  4072b4:	8c420010 	lw	v0,16(v0)
+  4072b8:	10400020 	beqz	v0,40733c <conf_msg_hander@@Base+0x12c>
+  4072bc:	00000000 	nop
+  4072c0:	8fc20030 	lw	v0,48(s8)
+  4072c4:	8c420010 	lw	v0,16(v0)
+  4072c8:	8fc4002c 	lw	a0,44(s8)
+  4072cc:	8fc3002c 	lw	v1,44(s8)
+  4072d0:	24650024 	addiu	a1,v1,36
+  4072d4:	8fc30068 	lw	v1,104(s8)
+  4072d8:	2463ffdc 	addiu	v1,v1,-36
+  4072dc:	00603021 	move	a2,v1
+  4072e0:	27c30050 	addiu	v1,s8,80
+  4072e4:	27c70054 	addiu	a3,s8,84
+  4072e8:	afa70010 	sw	a3,16(sp)
+  4072ec:	00603821 	move	a3,v1
+  4072f0:	0040c821 	move	t9,v0
+  4072f4:	0320f809 	jalr	t9
+  4072f8:	00000000 	nop
+  4072fc:	8fdc0018 	lw	gp,24(s8)
+  407300:	afc20020 	sw	v0,32(s8)
+  407304:	8fc20050 	lw	v0,80(s8)
+  407308:	10400009 	beqz	v0,407330 <conf_msg_hander@@Base+0x120>
+  40730c:	00000000 	nop
+  407310:	8fc20050 	lw	v0,80(s8)
+  407314:	00402021 	move	a0,v0
+  407318:	8f828390 	lw	v0,-31856(gp)
+  40731c:	0040c821 	move	t9,v0
+  407320:	0320f809 	jalr	t9
+  407324:	00000000 	nop
+  407328:	8fdc0018 	lw	gp,24(s8)
+  40732c:	afc00050 	sw	zero,80(s8)
+  407330:	00001021 	move	v0,zero
+  407334:	10000002 	b	407340 <conf_msg_hander@@Base+0x130>
+  407338:	00000000 	nop
+  40733c:	2402ffff 	li	v0,-1
+  407340:	03c0e821 	move	sp,s8
+  407344:	8fbf005c 	lw	ra,92(sp)
+  407348:	8fbe0058 	lw	s8,88(sp)
+  40734c:	27bd0060 	addiu	sp,sp,96
+  407350:	03e00008 	jr	ra
+  407354:	00000000 	nop
+
+00407358 <conf_msg_define@@Base>:
+  407358:	3c1c0005 	lui	gp,0x5
+  40735c:	279c4de8 	addiu	gp,gp,19944
+  407360:	0399e021 	addu	gp,gp,t9
+  407364:	27bdffd8 	addiu	sp,sp,-40
+  407368:	afbf0024 	sw	ra,36(sp)
+  40736c:	afbe0020 	sw	s8,32(sp)
+  407370:	03a0f021 	move	s8,sp
+  407374:	afbc0010 	sw	gp,16(sp)
+  407378:	afc40028 	sw	a0,40(s8)
+  40737c:	afc5002c 	sw	a1,44(s8)
+  407380:	afc60030 	sw	a2,48(s8)
+  407384:	afc70034 	sw	a3,52(s8)
+  407388:	afc00018 	sw	zero,24(s8)
+  40738c:	2404001c 	li	a0,28
+  407390:	8f828594 	lw	v0,-31340(gp)
+  407394:	0040c821 	move	t9,v0
+  407398:	0320f809 	jalr	t9
+  40739c:	00000000 	nop
+  4073a0:	8fdc0010 	lw	gp,16(s8)
+  4073a4:	afc20018 	sw	v0,24(s8)
+  4073a8:	8fc20018 	lw	v0,24(s8)
+  4073ac:	1440000f 	bnez	v0,4073ec <conf_msg_define@@Base+0x94>
+  4073b0:	00000000 	nop
+  4073b4:	24040003 	li	a0,3
+  4073b8:	8f828024 	lw	v0,-32732(gp)
+  4073bc:	24452ec4 	addiu	a1,v0,11972
+  4073c0:	240600af 	li	a2,175
+  4073c4:	8f828024 	lw	v0,-32732(gp)
+  4073c8:	24472ed8 	addiu	a3,v0,11992
+  4073cc:	8f82802c 	lw	v0,-32724(gp)
+  4073d0:	0040c821 	move	t9,v0
+  4073d4:	0320f809 	jalr	t9
+  4073d8:	00000000 	nop
+  4073dc:	8fdc0010 	lw	gp,16(s8)
+  4073e0:	2402ffff 	li	v0,-1
+  4073e4:	10000023 	b	407474 <conf_msg_define@@Base+0x11c>
+  4073e8:	00000000 	nop
+  4073ec:	8fc40018 	lw	a0,24(s8)
+  4073f0:	00002821 	move	a1,zero
+  4073f4:	2406001c 	li	a2,28
+  4073f8:	8f8285ac 	lw	v0,-31316(gp)
+  4073fc:	0040c821 	move	t9,v0
+  407400:	0320f809 	jalr	t9
+  407404:	00000000 	nop
+  407408:	8fdc0010 	lw	gp,16(s8)
+  40740c:	8fc20018 	lw	v0,24(s8)
+  407410:	8fc3002c 	lw	v1,44(s8)
+  407414:	ac430010 	sw	v1,16(v0)
+  407418:	8fc40028 	lw	a0,40(s8)
+  40741c:	8f82854c 	lw	v0,-31412(gp)
+  407420:	0040c821 	move	t9,v0
+  407424:	0320f809 	jalr	t9
+  407428:	00000000 	nop
+  40742c:	8fdc0010 	lw	gp,16(s8)
+  407430:	00401821 	move	v1,v0
+  407434:	8fc20018 	lw	v0,24(s8)
+  407438:	ac43000c 	sw	v1,12(v0)
+  40743c:	8fc20018 	lw	v0,24(s8)
+  407440:	8fc30030 	lw	v1,48(s8)
+  407444:	ac430014 	sw	v1,20(v0)
+  407448:	8fc20018 	lw	v0,24(s8)
+  40744c:	8fc30034 	lw	v1,52(s8)
+  407450:	ac430018 	sw	v1,24(v0)
+  407454:	8fc40018 	lw	a0,24(s8)
+  407458:	8f828028 	lw	v0,-32728(gp)
+  40745c:	24427690 	addiu	v0,v0,30352
+  407460:	0040c821 	move	t9,v0
+  407464:	0320f809 	jalr	t9
+  407468:	00000000 	nop
+  40746c:	8fdc0010 	lw	gp,16(s8)
+  407470:	00001021 	move	v0,zero
+  407474:	03c0e821 	move	sp,s8
+  407478:	8fbf0024 	lw	ra,36(sp)
+  40747c:	8fbe0020 	lw	s8,32(sp)
+  407480:	27bd0028 	addiu	sp,sp,40
+  407484:	03e00008 	jr	ra
+  407488:	00000000 	nop
+  40748c:	3c1c0005 	lui	gp,0x5
+  407490:	279c4cb4 	addiu	gp,gp,19636
+  407494:	0399e021 	addu	gp,gp,t9
+  407498:	27bdffe0 	addiu	sp,sp,-32
+  40749c:	afbf001c 	sw	ra,28(sp)
+  4074a0:	afbe0018 	sw	s8,24(sp)
+  4074a4:	03a0f021 	move	s8,sp
+  4074a8:	afbc0010 	sw	gp,16(sp)
+  4074ac:	afc40020 	sw	a0,32(s8)
+  4074b0:	8fc20020 	lw	v0,32(s8)
+  4074b4:	1440000e 	bnez	v0,4074f0 <conf_msg_define@@Base+0x198>
+  4074b8:	00000000 	nop
+  4074bc:	8f828024 	lw	v0,-32732(gp)
+  4074c0:	24422ef4 	addiu	v0,v0,12020
+  4074c4:	00402021 	move	a0,v0
+  4074c8:	8f828024 	lw	v0,-32732(gp)
+  4074cc:	244533b0 	addiu	a1,v0,13232
+  4074d0:	240600cf 	li	a2,207
+  4074d4:	8f8284bc 	lw	v0,-31556(gp)
+  4074d8:	0040c821 	move	t9,v0
+  4074dc:	0320f809 	jalr	t9
+  4074e0:	00000000 	nop
+  4074e4:	8fdc0010 	lw	gp,16(s8)
+  4074e8:	10000011 	b	407530 <conf_msg_define@@Base+0x1d8>
+  4074ec:	00000000 	nop
+  4074f0:	8fc20020 	lw	v0,32(s8)
+  4074f4:	8c420014 	lw	v0,20(v0)
+  4074f8:	1040000c 	beqz	v0,40752c <conf_msg_define@@Base+0x1d4>
+  4074fc:	00000000 	nop
+  407500:	8fc20020 	lw	v0,32(s8)
+  407504:	8c420014 	lw	v0,20(v0)
+  407508:	8fc30020 	lw	v1,32(s8)
+  40750c:	8c630018 	lw	v1,24(v1)
+  407510:	00602021 	move	a0,v1
+  407514:	0040c821 	move	t9,v0
+  407518:	0320f809 	jalr	t9
+  40751c:	00000000 	nop
+  407520:	8fdc0010 	lw	gp,16(s8)
+  407524:	10000002 	b	407530 <conf_msg_define@@Base+0x1d8>
+  407528:	00000000 	nop
+  40752c:	00000000 	nop
+  407530:	03c0e821 	move	sp,s8
+  407534:	8fbf001c 	lw	ra,28(sp)
+  407538:	8fbe0018 	lw	s8,24(sp)
+  40753c:	27bd0020 	addiu	sp,sp,32
+  407540:	03e00008 	jr	ra
+  407544:	00000000 	nop
+
+00407548 <conf_msg_all_cmds_init@@Base>:
+  407548:	3c1c0005 	lui	gp,0x5
+  40754c:	279c4bf8 	addiu	gp,gp,19448
+  407550:	0399e021 	addu	gp,gp,t9
+  407554:	27bdffd8 	addiu	sp,sp,-40
+  407558:	afbf0024 	sw	ra,36(sp)
+  40755c:	afbe0020 	sw	s8,32(sp)
+  407560:	03a0f021 	move	s8,sp
+  407564:	afbc0010 	sw	gp,16(sp)
+  407568:	27c2001c 	addiu	v0,s8,28
+  40756c:	8f83805c 	lw	v1,-32676(gp)
+  407570:	246447b8 	addiu	a0,v1,18360
+  407574:	00402821 	move	a1,v0
+  407578:	8f828064 	lw	v0,-32668(gp)
+  40757c:	0040c821 	move	t9,v0
+  407580:	0320f809 	jalr	t9
+  407584:	00000000 	nop
+  407588:	8fdc0010 	lw	gp,16(s8)
+  40758c:	afc20018 	sw	v0,24(s8)
+  407590:	8fc20018 	lw	v0,24(s8)
+  407594:	1040001e 	beqz	v0,407610 <conf_msg_all_cmds_init@@Base+0xc8>
+  407598:	00000000 	nop
+  40759c:	8fc40018 	lw	a0,24(s8)
+  4075a0:	8f828028 	lw	v0,-32728(gp)
+  4075a4:	2442748c 	addiu	v0,v0,29836
+  4075a8:	0040c821 	move	t9,v0
+  4075ac:	0320f809 	jalr	t9
+  4075b0:	00000000 	nop
+  4075b4:	8fdc0010 	lw	gp,16(s8)
+  4075b8:	10000008 	b	4075dc <conf_msg_all_cmds_init@@Base+0x94>
+  4075bc:	00000000 	nop
+  4075c0:	8fc40018 	lw	a0,24(s8)
+  4075c4:	8f828028 	lw	v0,-32728(gp)
+  4075c8:	2442748c 	addiu	v0,v0,29836
+  4075cc:	0040c821 	move	t9,v0
+  4075d0:	0320f809 	jalr	t9
+  4075d4:	00000000 	nop
+  4075d8:	8fdc0010 	lw	gp,16(s8)
+  4075dc:	27c2001c 	addiu	v0,s8,28
+  4075e0:	8f83805c 	lw	v1,-32676(gp)
+  4075e4:	246447b8 	addiu	a0,v1,18360
+  4075e8:	00402821 	move	a1,v0
+  4075ec:	8f828068 	lw	v0,-32664(gp)
+  4075f0:	0040c821 	move	t9,v0
+  4075f4:	0320f809 	jalr	t9
+  4075f8:	00000000 	nop
+  4075fc:	8fdc0010 	lw	gp,16(s8)
+  407600:	afc20018 	sw	v0,24(s8)
+  407604:	8fc20018 	lw	v0,24(s8)
+  407608:	1440ffed 	bnez	v0,4075c0 <conf_msg_all_cmds_init@@Base+0x78>
+  40760c:	00000000 	nop
+  407610:	03c0e821 	move	sp,s8
+  407614:	8fbf0024 	lw	ra,36(sp)
+  407618:	8fbe0020 	lw	s8,32(sp)
+  40761c:	27bd0028 	addiu	sp,sp,40
+  407620:	03e00008 	jr	ra
+  407624:	00000000 	nop
+
+00407628 <conf_msg_open@@Base>:
+  407628:	3c1c0005 	lui	gp,0x5
+  40762c:	279c4b18 	addiu	gp,gp,19224
+  407630:	0399e021 	addu	gp,gp,t9
+  407634:	27bdffe0 	addiu	sp,sp,-32
+  407638:	afbf001c 	sw	ra,28(sp)
+  40763c:	afbe0018 	sw	s8,24(sp)
+  407640:	03a0f021 	move	s8,sp
+  407644:	afbc0010 	sw	gp,16(sp)
+  407648:	8f82805c 	lw	v0,-32676(gp)
+  40764c:	244447b8 	addiu	a0,v0,18360
+  407650:	00002821 	move	a1,zero
+  407654:	8f828028 	lw	v0,-32728(gp)
+  407658:	244670f0 	addiu	a2,v0,28912
+  40765c:	8f828028 	lw	v0,-32728(gp)
+  407660:	24477160 	addiu	a3,v0,29024
+  407664:	8f82806c 	lw	v0,-32660(gp)
+  407668:	0040c821 	move	t9,v0
+  40766c:	0320f809 	jalr	t9
+  407670:	00000000 	nop
+  407674:	8fdc0010 	lw	gp,16(s8)
+  407678:	03c0e821 	move	sp,s8
+  40767c:	8fbf001c 	lw	ra,28(sp)
+  407680:	8fbe0018 	lw	s8,24(sp)
+  407684:	27bd0020 	addiu	sp,sp,32
+  407688:	03e00008 	jr	ra
+  40768c:	00000000 	nop
+  407690:	3c1c0005 	lui	gp,0x5
+  407694:	279c4ab0 	addiu	gp,gp,19120
+  407698:	0399e021 	addu	gp,gp,t9
+  40769c:	27bdffd8 	addiu	sp,sp,-40
+  4076a0:	afbf0024 	sw	ra,36(sp)
+  4076a4:	afbe0020 	sw	s8,32(sp)
+  4076a8:	03a0f021 	move	s8,sp
+  4076ac:	afbc0010 	sw	gp,16(sp)
+  4076b0:	afc40028 	sw	a0,40(s8)
+  4076b4:	8fc20028 	lw	v0,40(s8)
+  4076b8:	14400004 	bnez	v0,4076cc <conf_msg_open@@Base+0xa4>
+  4076bc:	00000000 	nop
+  4076c0:	2402ffff 	li	v0,-1
+  4076c4:	10000027 	b	407764 <conf_msg_open@@Base+0x13c>
+  4076c8:	00000000 	nop
+  4076cc:	8fc20028 	lw	v0,40(s8)
+  4076d0:	afc2001c 	sw	v0,28(s8)
+  4076d4:	8f82805c 	lw	v0,-32676(gp)
+  4076d8:	244447b8 	addiu	a0,v0,18360
+  4076dc:	8fc5001c 	lw	a1,28(s8)
+  4076e0:	8f828060 	lw	v0,-32672(gp)
+  4076e4:	0040c821 	move	t9,v0
+  4076e8:	0320f809 	jalr	t9
+  4076ec:	00000000 	nop
+  4076f0:	8fdc0010 	lw	gp,16(s8)
+  4076f4:	afc20018 	sw	v0,24(s8)
+  4076f8:	8fc20018 	lw	v0,24(s8)
+  4076fc:	10400010 	beqz	v0,407740 <conf_msg_open@@Base+0x118>
+  407700:	00000000 	nop
+  407704:	8f82805c 	lw	v0,-32676(gp)
+  407708:	244447b8 	addiu	a0,v0,18360
+  40770c:	8fc50018 	lw	a1,24(s8)
+  407710:	8f828070 	lw	v0,-32656(gp)
+  407714:	0040c821 	move	t9,v0
+  407718:	0320f809 	jalr	t9
+  40771c:	00000000 	nop
+  407720:	8fdc0010 	lw	gp,16(s8)
+  407724:	8fc40018 	lw	a0,24(s8)
+  407728:	8f828028 	lw	v0,-32728(gp)
+  40772c:	2442777c 	addiu	v0,v0,30588
+  407730:	0040c821 	move	t9,v0
+  407734:	0320f809 	jalr	t9
+  407738:	00000000 	nop
+  40773c:	8fdc0010 	lw	gp,16(s8)
+  407740:	8f82805c 	lw	v0,-32676(gp)
+  407744:	244447b8 	addiu	a0,v0,18360
+  407748:	8fc5001c 	lw	a1,28(s8)
+  40774c:	8f828074 	lw	v0,-32652(gp)
+  407750:	0040c821 	move	t9,v0
+  407754:	0320f809 	jalr	t9
+  407758:	00000000 	nop
+  40775c:	8fdc0010 	lw	gp,16(s8)
+  407760:	00001021 	move	v0,zero
+  407764:	03c0e821 	move	sp,s8
+  407768:	8fbf0024 	lw	ra,36(sp)
+  40776c:	8fbe0020 	lw	s8,32(sp)
+  407770:	27bd0028 	addiu	sp,sp,40
+  407774:	03e00008 	jr	ra
+  407778:	00000000 	nop
+  40777c:	3c1c0005 	lui	gp,0x5
+  407780:	279c49c4 	addiu	gp,gp,18884
+  407784:	0399e021 	addu	gp,gp,t9
+  407788:	27bdffe0 	addiu	sp,sp,-32
+  40778c:	afbf001c 	sw	ra,28(sp)
+  407790:	afbe0018 	sw	s8,24(sp)
+  407794:	03a0f021 	move	s8,sp
+  407798:	afbc0010 	sw	gp,16(sp)
+  40779c:	afc40020 	sw	a0,32(s8)
+  4077a0:	8fc20020 	lw	v0,32(s8)
+  4077a4:	10400019 	beqz	v0,40780c <conf_msg_open@@Base+0x1e4>
+  4077a8:	00000000 	nop
+  4077ac:	8f82805c 	lw	v0,-32676(gp)
+  4077b0:	244447b8 	addiu	a0,v0,18360
+  4077b4:	8fc50020 	lw	a1,32(s8)
+  4077b8:	8f828060 	lw	v0,-32672(gp)
+  4077bc:	0040c821 	move	t9,v0
+  4077c0:	0320f809 	jalr	t9
+  4077c4:	00000000 	nop
+  4077c8:	8fdc0010 	lw	gp,16(s8)
+  4077cc:	1440000f 	bnez	v0,40780c <conf_msg_open@@Base+0x1e4>
+  4077d0:	00000000 	nop
+  4077d4:	8fc20020 	lw	v0,32(s8)
+  4077d8:	8c42000c 	lw	v0,12(v0)
+  4077dc:	00402021 	move	a0,v0
+  4077e0:	8f828390 	lw	v0,-31856(gp)
+  4077e4:	0040c821 	move	t9,v0
+  4077e8:	0320f809 	jalr	t9
+  4077ec:	00000000 	nop
+  4077f0:	8fdc0010 	lw	gp,16(s8)
+  4077f4:	8fc40020 	lw	a0,32(s8)
+  4077f8:	8f828390 	lw	v0,-31856(gp)
+  4077fc:	0040c821 	move	t9,v0
+  407800:	0320f809 	jalr	t9
+  407804:	00000000 	nop
+  407808:	8fdc0010 	lw	gp,16(s8)
+  40780c:	03c0e821 	move	sp,s8
+  407810:	8fbf001c 	lw	ra,28(sp)
+  407814:	8fbe0018 	lw	s8,24(sp)
+  407818:	27bd0020 	addiu	sp,sp,32
+  40781c:	03e00008 	jr	ra
+  407820:	00000000 	nop
+  407824:	3c1c0005 	lui	gp,0x5
+  407828:	279c491c 	addiu	gp,gp,18716
+  40782c:	0399e021 	addu	gp,gp,t9
+  407830:	27bdffd8 	addiu	sp,sp,-40
+  407834:	afbf0024 	sw	ra,36(sp)
+  407838:	afbe0020 	sw	s8,32(sp)
+  40783c:	03a0f021 	move	s8,sp
+  407840:	afbc0010 	sw	gp,16(sp)
+  407844:	27c2001c 	addiu	v0,s8,28
+  407848:	8f83805c 	lw	v1,-32676(gp)
+  40784c:	246447b8 	addiu	a0,v1,18360
+  407850:	00402821 	move	a1,v0
+  407854:	8f828064 	lw	v0,-32668(gp)
+  407858:	0040c821 	move	t9,v0
+  40785c:	0320f809 	jalr	t9
+  407860:	00000000 	nop
+  407864:	8fdc0010 	lw	gp,16(s8)
+  407868:	afc20018 	sw	v0,24(s8)
+  40786c:	8fc20018 	lw	v0,24(s8)
+  407870:	1040002e 	beqz	v0,40792c <conf_msg_open@@Base+0x304>
+  407874:	00000000 	nop
+  407878:	8f82805c 	lw	v0,-32676(gp)
+  40787c:	244447b8 	addiu	a0,v0,18360
+  407880:	8fc50018 	lw	a1,24(s8)
+  407884:	8f828070 	lw	v0,-32656(gp)
+  407888:	0040c821 	move	t9,v0
+  40788c:	0320f809 	jalr	t9
+  407890:	00000000 	nop
+  407894:	8fdc0010 	lw	gp,16(s8)
+  407898:	8fc40018 	lw	a0,24(s8)
+  40789c:	8f828028 	lw	v0,-32728(gp)
+  4078a0:	2442777c 	addiu	v0,v0,30588
+  4078a4:	0040c821 	move	t9,v0
+  4078a8:	0320f809 	jalr	t9
+  4078ac:	00000000 	nop
+  4078b0:	8fdc0010 	lw	gp,16(s8)
+  4078b4:	10000010 	b	4078f8 <conf_msg_open@@Base+0x2d0>
+  4078b8:	00000000 	nop
+  4078bc:	8f82805c 	lw	v0,-32676(gp)
+  4078c0:	244447b8 	addiu	a0,v0,18360
+  4078c4:	8fc50018 	lw	a1,24(s8)
+  4078c8:	8f828070 	lw	v0,-32656(gp)
+  4078cc:	0040c821 	move	t9,v0
+  4078d0:	0320f809 	jalr	t9
+  4078d4:	00000000 	nop
+  4078d8:	8fdc0010 	lw	gp,16(s8)
+  4078dc:	8fc40018 	lw	a0,24(s8)
+  4078e0:	8f828028 	lw	v0,-32728(gp)
+  4078e4:	2442777c 	addiu	v0,v0,30588
+  4078e8:	0040c821 	move	t9,v0
+  4078ec:	0320f809 	jalr	t9
+  4078f0:	00000000 	nop
+  4078f4:	8fdc0010 	lw	gp,16(s8)
+  4078f8:	27c2001c 	addiu	v0,s8,28
+  4078fc:	8f83805c 	lw	v1,-32676(gp)
+  407900:	246447b8 	addiu	a0,v1,18360
+  407904:	00402821 	move	a1,v0
+  407908:	8f828068 	lw	v0,-32664(gp)
+  40790c:	0040c821 	move	t9,v0
+  407910:	0320f809 	jalr	t9
+  407914:	00000000 	nop
+  407918:	8fdc0010 	lw	gp,16(s8)
+  40791c:	afc20018 	sw	v0,24(s8)
+  407920:	8fc20018 	lw	v0,24(s8)
+  407924:	1440ffe5 	bnez	v0,4078bc <conf_msg_open@@Base+0x294>
+  407928:	00000000 	nop
+  40792c:	03c0e821 	move	sp,s8
+  407930:	8fbf0024 	lw	ra,36(sp)
+  407934:	8fbe0020 	lw	s8,32(sp)
+  407938:	27bd0028 	addiu	sp,sp,40
+  40793c:	03e00008 	jr	ra
+  407940:	00000000 	nop
+
+00407944 <check_hw_enable_status@@Base>:
+  407944:	3c1c0005 	lui	gp,0x5
+  407948:	279c47fc 	addiu	gp,gp,18428
+  40794c:	0399e021 	addu	gp,gp,t9
+  407950:	27bdffe0 	addiu	sp,sp,-32
+  407954:	afbf001c 	sw	ra,28(sp)
+  407958:	afbe0018 	sw	s8,24(sp)
+  40795c:	03a0f021 	move	s8,sp
+  407960:	afbc0010 	sw	gp,16(sp)
+  407964:	8f828078 	lw	v0,-32648(gp)
+  407968:	24030001 	li	v1,1
+  40796c:	ac430000 	sw	v1,0(v0)
+  407970:	8f82807c 	lw	v0,-32644(gp)
+  407974:	8c420000 	lw	v0,0(v0)
+  407978:	14400006 	bnez	v0,407994 <check_hw_enable_status@@Base+0x50>
+  40797c:	00000000 	nop
+  407980:	8f828080 	lw	v0,-32640(gp)
+  407984:	0040c821 	move	t9,v0
+  407988:	0320f809 	jalr	t9
+  40798c:	00000000 	nop
+  407990:	8fdc0010 	lw	gp,16(s8)
+  407994:	8f828078 	lw	v0,-32648(gp)
+  407998:	8c430000 	lw	v1,0(v0)
+  40799c:	8f82807c 	lw	v0,-32644(gp)
+  4079a0:	ac430000 	sw	v1,0(v0)
+  4079a4:	03c0e821 	move	sp,s8
+  4079a8:	8fbf001c 	lw	ra,28(sp)
+  4079ac:	8fbe0018 	lw	s8,24(sp)
+  4079b0:	27bd0020 	addiu	sp,sp,32
+  4079b4:	03e00008 	jr	ra
+  4079b8:	00000000 	nop
+
+004079bc <change_hw_fastpath@@Base>:
+  4079bc:	3c1c0005 	lui	gp,0x5
+  4079c0:	279c4784 	addiu	gp,gp,18308
+  4079c4:	0399e021 	addu	gp,gp,t9
+  4079c8:	27bdffe0 	addiu	sp,sp,-32
+  4079cc:	afbf001c 	sw	ra,28(sp)
+  4079d0:	afbe0018 	sw	s8,24(sp)
+  4079d4:	03a0f021 	move	s8,sp
+  4079d8:	afbc0010 	sw	gp,16(sp)
+  4079dc:	afc40020 	sw	a0,32(s8)
+  4079e0:	8f828078 	lw	v0,-32648(gp)
+  4079e4:	8c420000 	lw	v0,0(v0)
+  4079e8:	1440000b 	bnez	v0,407a18 <change_hw_fastpath@@Base+0x5c>
+  4079ec:	00000000 	nop
+  4079f0:	8f82807c 	lw	v0,-32644(gp)
+  4079f4:	8c430000 	lw	v1,0(v0)
+  4079f8:	24020001 	li	v0,1
+  4079fc:	14620006 	bne	v1,v0,407a18 <change_hw_fastpath@@Base+0x5c>
+  407a00:	00000000 	nop
+  407a04:	8f828084 	lw	v0,-32636(gp)
+  407a08:	0040c821 	move	t9,v0
+  407a0c:	0320f809 	jalr	t9
+  407a10:	00000000 	nop
+  407a14:	8fdc0010 	lw	gp,16(s8)
+  407a18:	8f828078 	lw	v0,-32648(gp)
+  407a1c:	8c430000 	lw	v1,0(v0)
+  407a20:	8f82807c 	lw	v0,-32644(gp)
+  407a24:	ac430000 	sw	v1,0(v0)
+  407a28:	8f828078 	lw	v0,-32648(gp)
+  407a2c:	ac400000 	sw	zero,0(v0)
+  407a30:	8f828024 	lw	v0,-32732(gp)
+  407a34:	8c4333cc 	lw	v1,13260(v0)
+  407a38:	8c4233c8 	lw	v0,13256(v0)
+  407a3c:	00402021 	move	a0,v0
+  407a40:	00602821 	move	a1,v1
+  407a44:	8f868088 	lw	a2,-32632(gp)
+  407a48:	00003821 	move	a3,zero
+  407a4c:	8f828410 	lw	v0,-31728(gp)
+  407a50:	0040c821 	move	t9,v0
+  407a54:	0320f809 	jalr	t9
+  407a58:	00000000 	nop
+  407a5c:	8fdc0010 	lw	gp,16(s8)
+  407a60:	03c0e821 	move	sp,s8
+  407a64:	8fbf001c 	lw	ra,28(sp)
+  407a68:	8fbe0018 	lw	s8,24(sp)
+  407a6c:	27bd0020 	addiu	sp,sp,32
+  407a70:	03e00008 	jr	ra
+  407a74:	00000000 	nop
+
+00407a78 <confctl_assistant_device_left_time@@Base>:
+  407a78:	3c1c0005 	lui	gp,0x5
+  407a7c:	279c46c8 	addiu	gp,gp,18120
+  407a80:	0399e021 	addu	gp,gp,t9
+  407a84:	27bdfe98 	addiu	sp,sp,-360
+  407a88:	afbf0164 	sw	ra,356(sp)
+  407a8c:	afbe0160 	sw	s8,352(sp)
+  407a90:	afb0015c 	sw	s0,348(sp)
+  407a94:	03a0f021 	move	s8,sp
+  407a98:	afbc0010 	sw	gp,16(sp)
+  407a9c:	27c3001c 	addiu	v1,s8,28
+  407aa0:	24020080 	li	v0,128
+  407aa4:	00602021 	move	a0,v1
+  407aa8:	00002821 	move	a1,zero
+  407aac:	00403021 	move	a2,v0
+  407ab0:	8f8285ac 	lw	v0,-31316(gp)
+  407ab4:	0040c821 	move	t9,v0
+  407ab8:	0320f809 	jalr	t9
+  407abc:	00000000 	nop
+  407ac0:	8fdc0010 	lw	gp,16(s8)
+  407ac4:	27c3009c 	addiu	v1,s8,156
+  407ac8:	24020080 	li	v0,128
+  407acc:	00602021 	move	a0,v1
+  407ad0:	00002821 	move	a1,zero
+  407ad4:	00403021 	move	a2,v0
+  407ad8:	8f8285ac 	lw	v0,-31316(gp)
+  407adc:	0040c821 	move	t9,v0
+  407ae0:	0320f809 	jalr	t9
+  407ae4:	00000000 	nop
+  407ae8:	8fdc0010 	lw	gp,16(s8)
+  407aec:	afc0011c 	sw	zero,284(s8)
+  407af0:	afc00120 	sw	zero,288(s8)
+  407af4:	afc00124 	sw	zero,292(s8)
+  407af8:	afc00128 	sw	zero,296(s8)
+  407afc:	a7c0012c 	sh	zero,300(s8)
+  407b00:	afc00130 	sw	zero,304(s8)
+  407b04:	afc00134 	sw	zero,308(s8)
+  407b08:	afc00138 	sw	zero,312(s8)
+  407b0c:	afc0013c 	sw	zero,316(s8)
+  407b10:	a7c00140 	sh	zero,320(s8)
+  407b14:	afc00144 	sw	zero,324(s8)
+  407b18:	afc00148 	sw	zero,328(s8)
+  407b1c:	afc0014c 	sw	zero,332(s8)
+  407b20:	afc00150 	sw	zero,336(s8)
+  407b24:	a7c00154 	sh	zero,340(s8)
+  407b28:	afc00018 	sw	zero,24(s8)
+  407b2c:	8f828468 	lw	v0,-31640(gp)
+  407b30:	0040c821 	move	t9,v0
+  407b34:	0320f809 	jalr	t9
+  407b38:	00000000 	nop
+  407b3c:	8fdc0010 	lw	gp,16(s8)
+  407b40:	afc20018 	sw	v0,24(s8)
+  407b44:	27c2001c 	addiu	v0,s8,28
+  407b48:	8f838024 	lw	v1,-32732(gp)
+  407b4c:	24642f18 	addiu	a0,v1,12056
+  407b50:	8f838024 	lw	v1,-32732(gp)
+  407b54:	24652f28 	addiu	a1,v1,12072
+  407b58:	00403021 	move	a2,v0
+  407b5c:	8f82859c 	lw	v0,-31332(gp)
+  407b60:	0040c821 	move	t9,v0
+  407b64:	0320f809 	jalr	t9
+  407b68:	00000000 	nop
+  407b6c:	8fdc0010 	lw	gp,16(s8)
+  407b70:	14400057 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+  407b74:	00000000 	nop
+  407b78:	27c2009c 	addiu	v0,s8,156
+  407b7c:	8f838024 	lw	v1,-32732(gp)
+  407b80:	24642f18 	addiu	a0,v1,12056
+  407b84:	8f838024 	lw	v1,-32732(gp)
+  407b88:	24652f3c 	addiu	a1,v1,12092
+  407b8c:	00403021 	move	a2,v0
+  407b90:	8f82859c 	lw	v0,-31332(gp)
+  407b94:	0040c821 	move	t9,v0
+  407b98:	0320f809 	jalr	t9
+  407b9c:	00000000 	nop
+  407ba0:	8fdc0010 	lw	gp,16(s8)
+  407ba4:	1440004a 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+  407ba8:	00000000 	nop
+  407bac:	27c20144 	addiu	v0,s8,324
+  407bb0:	8f838024 	lw	v1,-32732(gp)
+  407bb4:	24642f18 	addiu	a0,v1,12056
+  407bb8:	8f838024 	lw	v1,-32732(gp)
+  407bbc:	24652f50 	addiu	a1,v1,12112
+  407bc0:	00403021 	move	a2,v0
+  407bc4:	8f82859c 	lw	v0,-31332(gp)
+  407bc8:	0040c821 	move	t9,v0
+  407bcc:	0320f809 	jalr	t9
+  407bd0:	00000000 	nop
+  407bd4:	8fdc0010 	lw	gp,16(s8)
+  407bd8:	1440003d 	bnez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+  407bdc:	00000000 	nop
+  407be0:	27c2009c 	addiu	v0,s8,156
+  407be4:	00402021 	move	a0,v0
+  407be8:	8f82838c 	lw	v0,-31860(gp)
+  407bec:	0040c821 	move	t9,v0
+  407bf0:	0320f809 	jalr	t9
+  407bf4:	00000000 	nop
+  407bf8:	8fdc0010 	lw	gp,16(s8)
+  407bfc:	18400034 	blez	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+  407c00:	00000000 	nop
+  407c04:	27c2001c 	addiu	v0,s8,28
+  407c08:	00402021 	move	a0,v0
+  407c0c:	8f82838c 	lw	v0,-31860(gp)
+  407c10:	0040c821 	move	t9,v0
+  407c14:	0320f809 	jalr	t9
+  407c18:	00000000 	nop
+  407c1c:	8fdc0010 	lw	gp,16(s8)
+  407c20:	8fc30018 	lw	v1,24(s8)
+  407c24:	00628023 	subu	s0,v1,v0
+  407c28:	27c2009c 	addiu	v0,s8,156
+  407c2c:	00402021 	move	a0,v0
+  407c30:	8f82838c 	lw	v0,-31860(gp)
+  407c34:	0040c821 	move	t9,v0
+  407c38:	0320f809 	jalr	t9
+  407c3c:	00000000 	nop
+  407c40:	8fdc0010 	lw	gp,16(s8)
+  407c44:	0050102a 	slt	v0,v0,s0
+  407c48:	10400021 	beqz	v0,407cd0 <confctl_assistant_device_left_time@@Base+0x258>
+  407c4c:	00000000 	nop
+  407c50:	27c30144 	addiu	v1,s8,324
+  407c54:	27c20130 	addiu	v0,s8,304
+  407c58:	00602021 	move	a0,v1
+  407c5c:	00402821 	move	a1,v0
+  407c60:	8f828478 	lw	v0,-31624(gp)
+  407c64:	0040c821 	move	t9,v0
+  407c68:	0320f809 	jalr	t9
+  407c6c:	00000000 	nop
+  407c70:	8fdc0010 	lw	gp,16(s8)
+  407c74:	27c20130 	addiu	v0,s8,304
+  407c78:	8f838024 	lw	v1,-32732(gp)
+  407c7c:	24642f60 	addiu	a0,v1,12128
+  407c80:	00402821 	move	a1,v0
+  407c84:	00003021 	move	a2,zero
+  407c88:	8f828024 	lw	v0,-32732(gp)
+  407c8c:	24472f74 	addiu	a3,v0,12148
+  407c90:	8f82833c 	lw	v0,-31940(gp)
+  407c94:	0040c821 	move	t9,v0
+  407c98:	0320f809 	jalr	t9
+  407c9c:	00000000 	nop
+  407ca0:	8fdc0010 	lw	gp,16(s8)
+  407ca4:	8f828024 	lw	v0,-32732(gp)
+  407ca8:	24442f18 	addiu	a0,v0,12056
+  407cac:	8f828024 	lw	v0,-32732(gp)
+  407cb0:	24452f3c 	addiu	a1,v0,12092
+  407cb4:	8f828024 	lw	v0,-32732(gp)
+  407cb8:	24462f94 	addiu	a2,v0,12180
+  407cbc:	8f82847c 	lw	v0,-31620(gp)
+  407cc0:	0040c821 	move	t9,v0
+  407cc4:	0320f809 	jalr	t9
+  407cc8:	00000000 	nop
+  407ccc:	8fdc0010 	lw	gp,16(s8)
+  407cd0:	8f868058 	lw	a2,-32680(gp)
+  407cd4:	8f828024 	lw	v0,-32732(gp)
+  407cd8:	8c4333d4 	lw	v1,13268(v0)
+  407cdc:	8c4233d0 	lw	v0,13264(v0)
+  407ce0:	00402021 	move	a0,v0
+  407ce4:	00602821 	move	a1,v1
+  407ce8:	00003821 	move	a3,zero
+  407cec:	8f828410 	lw	v0,-31728(gp)
+  407cf0:	0040c821 	move	t9,v0
+  407cf4:	0320f809 	jalr	t9
+  407cf8:	00000000 	nop
+  407cfc:	8fdc0010 	lw	gp,16(s8)
+  407d00:	03c0e821 	move	sp,s8
+  407d04:	8fbf0164 	lw	ra,356(sp)
+  407d08:	8fbe0160 	lw	s8,352(sp)
+  407d0c:	8fb0015c 	lw	s0,348(sp)
+  407d10:	27bd0168 	addiu	sp,sp,360
+  407d14:	03e00008 	jr	ra
+  407d18:	00000000 	nop
+  407d1c:	3c1c0005 	lui	gp,0x5
+  407d20:	279c4424 	addiu	gp,gp,17444
+  407d24:	0399e021 	addu	gp,gp,t9
+  407d28:	27bdffa8 	addiu	sp,sp,-88
+  407d2c:	afbf0054 	sw	ra,84(sp)
+  407d30:	afbe0050 	sw	s8,80(sp)
+  407d34:	03a0f021 	move	s8,sp
+  407d38:	afbc0018 	sw	gp,24(sp)
+  407d3c:	afc40058 	sw	a0,88(s8)
+  407d40:	afc5005c 	sw	a1,92(s8)
+  407d44:	afc60060 	sw	a2,96(s8)
+  407d48:	afc70064 	sw	a3,100(s8)
+  407d4c:	afc0002c 	sw	zero,44(s8)
+  407d50:	afc00028 	sw	zero,40(s8)
+  407d54:	afc00024 	sw	zero,36(s8)
+  407d58:	afc00020 	sw	zero,32(s8)
+  407d5c:	8fc20058 	lw	v0,88(s8)
+  407d60:	1440000f 	bnez	v0,407da0 <confctl_assistant_device_left_time@@Base+0x328>
+  407d64:	00000000 	nop
+  407d68:	24040003 	li	a0,3
+  407d6c:	8f828024 	lw	v0,-32732(gp)
+  407d70:	24452ec4 	addiu	a1,v0,11972
+  407d74:	240601b9 	li	a2,441
+  407d78:	8f828024 	lw	v0,-32732(gp)
+  407d7c:	24472f98 	addiu	a3,v0,12184
+  407d80:	8f82802c 	lw	v0,-32724(gp)
+  407d84:	0040c821 	move	t9,v0
+  407d88:	0320f809 	jalr	t9
+  407d8c:	00000000 	nop
+  407d90:	8fdc0018 	lw	gp,24(s8)
+  407d94:	2402ffff 	li	v0,-1
+  407d98:	10000094 	b	407fec <confctl_assistant_device_left_time@@Base+0x574>
+  407d9c:	00000000 	nop
+  407da0:	8fc40058 	lw	a0,88(s8)
+  407da4:	8f828024 	lw	v0,-32732(gp)
+  407da8:	24452fa8 	addiu	a1,v0,12200
+  407dac:	8f8285c4 	lw	v0,-31292(gp)
+  407db0:	0040c821 	move	t9,v0
+  407db4:	0320f809 	jalr	t9
+  407db8:	00000000 	nop
+  407dbc:	8fdc0018 	lw	gp,24(s8)
+  407dc0:	14400053 	bnez	v0,407f10 <confctl_assistant_device_left_time@@Base+0x498>
+  407dc4:	00000000 	nop
+  407dc8:	8fc20060 	lw	v0,96(s8)
+  407dcc:	24420024 	addiu	v0,v0,36
+  407dd0:	afc20020 	sw	v0,32(s8)
+  407dd4:	8fc20020 	lw	v0,32(s8)
+  407dd8:	00402021 	move	a0,v0
+  407ddc:	8f828594 	lw	v0,-31340(gp)
+  407de0:	0040c821 	move	t9,v0
+  407de4:	0320f809 	jalr	t9
+  407de8:	00000000 	nop
+  407dec:	8fdc0018 	lw	gp,24(s8)
+  407df0:	afc20024 	sw	v0,36(s8)
+  407df4:	8fc20024 	lw	v0,36(s8)
+  407df8:	1440000f 	bnez	v0,407e38 <confctl_assistant_device_left_time@@Base+0x3c0>
+  407dfc:	00000000 	nop
+  407e00:	24040003 	li	a0,3
+  407e04:	8f828024 	lw	v0,-32732(gp)
+  407e08:	24452ec4 	addiu	a1,v0,11972
+  407e0c:	240601c3 	li	a2,451
+  407e10:	8f828024 	lw	v0,-32732(gp)
+  407e14:	24472fb8 	addiu	a3,v0,12216
+  407e18:	8f82802c 	lw	v0,-32724(gp)
+  407e1c:	0040c821 	move	t9,v0
+  407e20:	0320f809 	jalr	t9
+  407e24:	00000000 	nop
+  407e28:	8fdc0018 	lw	gp,24(s8)
+  407e2c:	2402ffff 	li	v0,-1
+  407e30:	1000006e 	b	407fec <confctl_assistant_device_left_time@@Base+0x574>
+  407e34:	00000000 	nop
+  407e38:	8f828024 	lw	v0,-32732(gp)
+  407e3c:	24422fd8 	addiu	v0,v0,12248
+  407e40:	00402021 	move	a0,v0
+  407e44:	8f828024 	lw	v0,-32732(gp)
+  407e48:	24453390 	addiu	a1,v0,13200
+  407e4c:	240601c7 	li	a2,455
+  407e50:	8fc70058 	lw	a3,88(s8)
+  407e54:	8f8284bc 	lw	v0,-31556(gp)
+  407e58:	0040c821 	move	t9,v0
+  407e5c:	0320f809 	jalr	t9
+  407e60:	00000000 	nop
+  407e64:	8fdc0018 	lw	gp,24(s8)
+  407e68:	8fc20024 	lw	v0,36(s8)
+  407e6c:	afc20028 	sw	v0,40(s8)
+  407e70:	8fc30028 	lw	v1,40(s8)
+  407e74:	8fc20058 	lw	v0,88(s8)
+  407e78:	00602021 	move	a0,v1
+  407e7c:	00402821 	move	a1,v0
+  407e80:	8f82856c 	lw	v0,-31380(gp)
+  407e84:	0040c821 	move	t9,v0
+  407e88:	0320f809 	jalr	t9
+  407e8c:	00000000 	nop
+  407e90:	8fdc0018 	lw	gp,24(s8)
+  407e94:	8fc20028 	lw	v0,40(s8)
+  407e98:	24430024 	addiu	v1,v0,36
+  407e9c:	8fc20060 	lw	v0,96(s8)
+  407ea0:	00602021 	move	a0,v1
+  407ea4:	8fc5005c 	lw	a1,92(s8)
+  407ea8:	00403021 	move	a2,v0
+  407eac:	8f828338 	lw	v0,-31944(gp)
+  407eb0:	0040c821 	move	t9,v0
+  407eb4:	0320f809 	jalr	t9
+  407eb8:	00000000 	nop
+  407ebc:	8fdc0018 	lw	gp,24(s8)
+  407ec0:	8fc30020 	lw	v1,32(s8)
+  407ec4:	8fc20028 	lw	v0,40(s8)
+  407ec8:	a8430023 	swl	v1,35(v0)
+  407ecc:	b8430020 	swr	v1,32(v0)
+  407ed0:	8fc20020 	lw	v0,32(s8)
+  407ed4:	8f838024 	lw	v1,-32732(gp)
+  407ed8:	24642ff4 	addiu	a0,v1,12276
+  407edc:	8fc50024 	lw	a1,36(s8)
+  407ee0:	00403021 	move	a2,v0
+  407ee4:	8f828614 	lw	v0,-31212(gp)
+  407ee8:	0040c821 	move	t9,v0
+  407eec:	0320f809 	jalr	t9
+  407ef0:	00000000 	nop
+  407ef4:	8fdc0018 	lw	gp,24(s8)
+  407ef8:	8fc40024 	lw	a0,36(s8)
+  407efc:	8f828390 	lw	v0,-31856(gp)
+  407f00:	0040c821 	move	t9,v0
+  407f04:	0320f809 	jalr	t9
+  407f08:	00000000 	nop
+  407f0c:	8fdc0018 	lw	gp,24(s8)
+  407f10:	8fc20058 	lw	v0,88(s8)
+  407f14:	afc20040 	sw	v0,64(s8)
+  407f18:	27c20034 	addiu	v0,s8,52
+  407f1c:	8f83805c 	lw	v1,-32676(gp)
+  407f20:	246447b8 	addiu	a0,v1,18360
+  407f24:	00402821 	move	a1,v0
+  407f28:	8f828060 	lw	v0,-32672(gp)
+  407f2c:	0040c821 	move	t9,v0
+  407f30:	0320f809 	jalr	t9
+  407f34:	00000000 	nop
+  407f38:	8fdc0018 	lw	gp,24(s8)
+  407f3c:	afc20030 	sw	v0,48(s8)
+  407f40:	8fc20030 	lw	v0,48(s8)
+  407f44:	10400028 	beqz	v0,407fe8 <confctl_assistant_device_left_time@@Base+0x570>
+  407f48:	00000000 	nop
+  407f4c:	8fc20030 	lw	v0,48(s8)
+  407f50:	8c420010 	lw	v0,16(v0)
+  407f54:	10400024 	beqz	v0,407fe8 <confctl_assistant_device_left_time@@Base+0x570>
+  407f58:	00000000 	nop
+  407f5c:	8f82808c 	lw	v0,-32628(gp)
+  407f60:	0040c821 	move	t9,v0
+  407f64:	0320f809 	jalr	t9
+  407f68:	00000000 	nop
+  407f6c:	8fdc0018 	lw	gp,24(s8)
+  407f70:	8fc20030 	lw	v0,48(s8)
+  407f74:	8c420010 	lw	v0,16(v0)
+  407f78:	8fc30068 	lw	v1,104(s8)
+  407f7c:	afa30010 	sw	v1,16(sp)
+  407f80:	8fc40058 	lw	a0,88(s8)
+  407f84:	8fc5005c 	lw	a1,92(s8)
+  407f88:	8fc60060 	lw	a2,96(s8)
+  407f8c:	8fc70064 	lw	a3,100(s8)
+  407f90:	0040c821 	move	t9,v0
+  407f94:	0320f809 	jalr	t9
+  407f98:	00000000 	nop
+  407f9c:	8fdc0018 	lw	gp,24(s8)
+  407fa0:	afc2002c 	sw	v0,44(s8)
+  407fa4:	8f828024 	lw	v0,-32732(gp)
+  407fa8:	24423004 	addiu	v0,v0,12292
+  407fac:	8fc3002c 	lw	v1,44(s8)
+  407fb0:	afa30010 	sw	v1,16(sp)
+  407fb4:	00402021 	move	a0,v0
+  407fb8:	8f828024 	lw	v0,-32732(gp)
+  407fbc:	244533a0 	addiu	a1,v0,13216
+  407fc0:	240601d8 	li	a2,472
+  407fc4:	8fc70058 	lw	a3,88(s8)
+  407fc8:	8f8284bc 	lw	v0,-31556(gp)
+  407fcc:	0040c821 	move	t9,v0
+  407fd0:	0320f809 	jalr	t9
+  407fd4:	00000000 	nop
+  407fd8:	8fdc0018 	lw	gp,24(s8)
+  407fdc:	8fc2002c 	lw	v0,44(s8)
+  407fe0:	10000002 	b	407fec <confctl_assistant_device_left_time@@Base+0x574>
+  407fe4:	00000000 	nop
+  407fe8:	2402ffff 	li	v0,-1
+  407fec:	03c0e821 	move	sp,s8
+  407ff0:	8fbf0054 	lw	ra,84(sp)
+  407ff4:	8fbe0050 	lw	s8,80(sp)
+  407ff8:	27bd0058 	addiu	sp,sp,88
+  407ffc:	03e00008 	jr	ra
+  408000:	00000000 	nop
+  408004:	3c1c0005 	lui	gp,0x5
+  408008:	279c413c 	addiu	gp,gp,16700
+  40800c:	0399e021 	addu	gp,gp,t9
+  408010:	27bdffa8 	addiu	sp,sp,-88
+  408014:	afbf0054 	sw	ra,84(sp)
+  408018:	afbe0050 	sw	s8,80(sp)
+  40801c:	03a0f021 	move	s8,sp
+  408020:	afbc0018 	sw	gp,24(sp)
+  408024:	afc40058 	sw	a0,88(s8)
+  408028:	afc5005c 	sw	a1,92(s8)
+  40802c:	afc60060 	sw	a2,96(s8)
+  408030:	afc70064 	sw	a3,100(s8)
+  408034:	afc0002c 	sw	zero,44(s8)
+  408038:	afc00028 	sw	zero,40(s8)
+  40803c:	afc00024 	sw	zero,36(s8)
+  408040:	afc00020 	sw	zero,32(s8)
+  408044:	8fc20058 	lw	v0,88(s8)
+  408048:	14400004 	bnez	v0,40805c <confctl_assistant_device_left_time@@Base+0x5e4>
+  40804c:	00000000 	nop
+  408050:	2402ffff 	li	v0,-1
+  408054:	10000079 	b	40823c <confctl_assistant_device_left_time@@Base+0x7c4>
+  408058:	00000000 	nop
+  40805c:	8fc20060 	lw	v0,96(s8)
+  408060:	24420024 	addiu	v0,v0,36
+  408064:	afc20024 	sw	v0,36(s8)
+  408068:	8fc20024 	lw	v0,36(s8)
+  40806c:	00402021 	move	a0,v0
+  408070:	8f828594 	lw	v0,-31340(gp)
+  408074:	0040c821 	move	t9,v0
+  408078:	0320f809 	jalr	t9
+  40807c:	00000000 	nop
+  408080:	8fdc0018 	lw	gp,24(s8)
+  408084:	afc20028 	sw	v0,40(s8)
+  408088:	8fc20028 	lw	v0,40(s8)
+  40808c:	1440000f 	bnez	v0,4080cc <confctl_assistant_device_left_time@@Base+0x654>
+  408090:	00000000 	nop
+  408094:	24040003 	li	a0,3
+  408098:	8f828024 	lw	v0,-32732(gp)
+  40809c:	24452ec4 	addiu	a1,v0,11972
+  4080a0:	24060201 	li	a2,513
+  4080a4:	8f828024 	lw	v0,-32732(gp)
+  4080a8:	24472fb8 	addiu	a3,v0,12216
+  4080ac:	8f82802c 	lw	v0,-32724(gp)
+  4080b0:	0040c821 	move	t9,v0
+  4080b4:	0320f809 	jalr	t9
+  4080b8:	00000000 	nop
+  4080bc:	8fdc0018 	lw	gp,24(s8)
+  4080c0:	2402ffff 	li	v0,-1
+  4080c4:	1000005d 	b	40823c <confctl_assistant_device_left_time@@Base+0x7c4>
+  4080c8:	00000000 	nop
+  4080cc:	8fc20028 	lw	v0,40(s8)
+  4080d0:	afc2002c 	sw	v0,44(s8)
+  4080d4:	8fc3002c 	lw	v1,44(s8)
+  4080d8:	8fc20058 	lw	v0,88(s8)
+  4080dc:	00602021 	move	a0,v1
+  4080e0:	00402821 	move	a1,v0
+  4080e4:	8f82856c 	lw	v0,-31380(gp)
+  4080e8:	0040c821 	move	t9,v0
+  4080ec:	0320f809 	jalr	t9
+  4080f0:	00000000 	nop
+  4080f4:	8fdc0018 	lw	gp,24(s8)
+  4080f8:	8fc2002c 	lw	v0,44(s8)
+  4080fc:	24430024 	addiu	v1,v0,36
+  408100:	8fc20060 	lw	v0,96(s8)
+  408104:	00602021 	move	a0,v1
+  408108:	8fc5005c 	lw	a1,92(s8)
+  40810c:	00403021 	move	a2,v0
+  408110:	8f828338 	lw	v0,-31944(gp)
+  408114:	0040c821 	move	t9,v0
+  408118:	0320f809 	jalr	t9
+  40811c:	00000000 	nop
+  408120:	8fdc0018 	lw	gp,24(s8)
+  408124:	8fc30024 	lw	v1,36(s8)
+  408128:	8fc2002c 	lw	v0,44(s8)
+  40812c:	a8430023 	swl	v1,35(v0)
+  408130:	b8430020 	swr	v1,32(v0)
+  408134:	8fc20024 	lw	v0,36(s8)
+  408138:	8f838024 	lw	v1,-32732(gp)
+  40813c:	24642ff4 	addiu	a0,v1,12276
+  408140:	8fc50028 	lw	a1,40(s8)
+  408144:	00403021 	move	a2,v0
+  408148:	8f828614 	lw	v0,-31212(gp)
+  40814c:	0040c821 	move	t9,v0
+  408150:	0320f809 	jalr	t9
+  408154:	00000000 	nop
+  408158:	8fdc0018 	lw	gp,24(s8)
+  40815c:	8fc40028 	lw	a0,40(s8)
+  408160:	8f828390 	lw	v0,-31856(gp)
+  408164:	0040c821 	move	t9,v0
+  408168:	0320f809 	jalr	t9
+  40816c:	00000000 	nop
+  408170:	8fdc0018 	lw	gp,24(s8)
+  408174:	8fc20058 	lw	v0,88(s8)
+  408178:	afc20040 	sw	v0,64(s8)
+  40817c:	27c20034 	addiu	v0,s8,52
+  408180:	8f83805c 	lw	v1,-32676(gp)
+  408184:	246447b8 	addiu	a0,v1,18360
+  408188:	00402821 	move	a1,v0
+  40818c:	8f828060 	lw	v0,-32672(gp)
+  408190:	0040c821 	move	t9,v0
+  408194:	0320f809 	jalr	t9
+  408198:	00000000 	nop
+  40819c:	8fdc0018 	lw	gp,24(s8)
+  4081a0:	afc20030 	sw	v0,48(s8)
+  4081a4:	8fc20030 	lw	v0,48(s8)
+  4081a8:	10400023 	beqz	v0,408238 <confctl_assistant_device_left_time@@Base+0x7c0>
+  4081ac:	00000000 	nop
+  4081b0:	8fc20030 	lw	v0,48(s8)
+  4081b4:	8c420010 	lw	v0,16(v0)
+  4081b8:	1040001f 	beqz	v0,408238 <confctl_assistant_device_left_time@@Base+0x7c0>
+  4081bc:	00000000 	nop
+  4081c0:	8fc20030 	lw	v0,48(s8)
+  4081c4:	8c420010 	lw	v0,16(v0)
+  4081c8:	8fc30068 	lw	v1,104(s8)
+  4081cc:	afa30010 	sw	v1,16(sp)
+  4081d0:	8fc40058 	lw	a0,88(s8)
+  4081d4:	8fc5005c 	lw	a1,92(s8)
+  4081d8:	8fc60060 	lw	a2,96(s8)
+  4081dc:	8fc70064 	lw	a3,100(s8)
+  4081e0:	0040c821 	move	t9,v0
+  4081e4:	0320f809 	jalr	t9
+  4081e8:	00000000 	nop
+  4081ec:	8fdc0018 	lw	gp,24(s8)
+  4081f0:	afc20020 	sw	v0,32(s8)
+  4081f4:	8f828024 	lw	v0,-32732(gp)
+  4081f8:	24423004 	addiu	v0,v0,12292
+  4081fc:	8fc30020 	lw	v1,32(s8)
+  408200:	afa30010 	sw	v1,16(sp)
+  408204:	00402021 	move	a0,v0
+  408208:	8f828024 	lw	v0,-32732(gp)
+  40820c:	24453380 	addiu	a1,v0,13184
+  408210:	24060214 	li	a2,532
+  408214:	8fc70058 	lw	a3,88(s8)
+  408218:	8f8284bc 	lw	v0,-31556(gp)
+  40821c:	0040c821 	move	t9,v0
+  408220:	0320f809 	jalr	t9
+  408224:	00000000 	nop
+  408228:	8fdc0018 	lw	gp,24(s8)
+  40822c:	8fc20020 	lw	v0,32(s8)
+  408230:	10000002 	b	40823c <confctl_assistant_device_left_time@@Base+0x7c4>
+  408234:	00000000 	nop
+  408238:	2402ffff 	li	v0,-1
+  40823c:	03c0e821 	move	sp,s8
+  408240:	8fbf0054 	lw	ra,84(sp)
+  408244:	8fbe0050 	lw	s8,80(sp)
+  408248:	27bd0058 	addiu	sp,sp,88
+  40824c:	03e00008 	jr	ra
+  408250:	00000000 	nop
+
+00408254 <confctl_module_debug_en@@Base>:
+  408254:	3c1c0005 	lui	gp,0x5
+  408258:	279c3eec 	addiu	gp,gp,16108
+  40825c:	0399e021 	addu	gp,gp,t9
+  408260:	27bdff48 	addiu	sp,sp,-184
+  408264:	afbf00b4 	sw	ra,180(sp)
+  408268:	afbe00b0 	sw	s8,176(sp)
+  40826c:	03a0f021 	move	s8,sp
+  408270:	afbc0010 	sw	gp,16(sp)
+  408274:	afc400b8 	sw	a0,184(s8)
+  408278:	8fc200b8 	lw	v0,184(s8)
+  40827c:	10400005 	beqz	v0,408294 <confctl_module_debug_en@@Base+0x40>
+  408280:	00000000 	nop
+  408284:	8fc200b8 	lw	v0,184(s8)
+  408288:	2c420011 	sltiu	v0,v0,17
+  40828c:	14400004 	bnez	v0,4082a0 <confctl_module_debug_en@@Base+0x4c>
+  408290:	00000000 	nop
+  408294:	00001021 	move	v0,zero
+  408298:	1000006e 	b	408454 <confctl_module_debug_en@@Base+0x200>
+  40829c:	00000000 	nop
+  4082a0:	8f828024 	lw	v0,-32732(gp)
+  4082a4:	244432d8 	addiu	a0,v0,13016
+  4082a8:	24050004 	li	a1,4
+  4082ac:	8f8285f4 	lw	v0,-31244(gp)
+  4082b0:	0040c821 	move	t9,v0
+  4082b4:	0320f809 	jalr	t9
+  4082b8:	00000000 	nop
+  4082bc:	8fdc0010 	lw	gp,16(s8)
+  4082c0:	10400004 	beqz	v0,4082d4 <confctl_module_debug_en@@Base+0x80>
+  4082c4:	00000000 	nop
+  4082c8:	00001021 	move	v0,zero
+  4082cc:	10000061 	b	408454 <confctl_module_debug_en@@Base+0x200>
+  4082d0:	00000000 	nop
+  4082d4:	afc00028 	sw	zero,40(s8)
+  4082d8:	27c3002c 	addiu	v1,s8,44
+  4082dc:	24020080 	li	v0,128
+  4082e0:	00602021 	move	a0,v1
+  4082e4:	00002821 	move	a1,zero
+  4082e8:	00403021 	move	a2,v0
+  4082ec:	8f8285ac 	lw	v0,-31316(gp)
+  4082f0:	0040c821 	move	t9,v0
+  4082f4:	0320f809 	jalr	t9
+  4082f8:	00000000 	nop
+  4082fc:	8fdc0010 	lw	gp,16(s8)
+  408300:	8f828024 	lw	v0,-32732(gp)
+  408304:	244232ec 	addiu	v0,v0,13036
+  408308:	afc2001c 	sw	v0,28(s8)
+  40830c:	afc00018 	sw	zero,24(s8)
+  408310:	8f828024 	lw	v0,-32732(gp)
+  408314:	244332d8 	addiu	v1,v0,13016
+  408318:	8f828024 	lw	v0,-32732(gp)
+  40831c:	244232f0 	addiu	v0,v0,13040
+  408320:	00602021 	move	a0,v1
+  408324:	00402821 	move	a1,v0
+  408328:	8f828354 	lw	v0,-31916(gp)
+  40832c:	0040c821 	move	t9,v0
+  408330:	0320f809 	jalr	t9
+  408334:	00000000 	nop
+  408338:	8fdc0010 	lw	gp,16(s8)
+  40833c:	afc20028 	sw	v0,40(s8)
+  408340:	8fc20028 	lw	v0,40(s8)
+  408344:	14400004 	bnez	v0,408358 <confctl_module_debug_en@@Base+0x104>
+  408348:	00000000 	nop
+  40834c:	00001021 	move	v0,zero
+  408350:	10000040 	b	408454 <confctl_module_debug_en@@Base+0x200>
+  408354:	00000000 	nop
+  408358:	27c2002c 	addiu	v0,s8,44
+  40835c:	00402021 	move	a0,v0
+  408360:	24050080 	li	a1,128
+  408364:	8fc60028 	lw	a2,40(s8)
+  408368:	8f828448 	lw	v0,-31672(gp)
+  40836c:	0040c821 	move	t9,v0
+  408370:	0320f809 	jalr	t9
+  408374:	00000000 	nop
+  408378:	8fdc0010 	lw	gp,16(s8)
+  40837c:	afc20024 	sw	v0,36(s8)
+  408380:	8fc20024 	lw	v0,36(s8)
+  408384:	10400027 	beqz	v0,408424 <confctl_module_debug_en@@Base+0x1d0>
+  408388:	00000000 	nop
+  40838c:	27c2002c 	addiu	v0,s8,44
+  408390:	afc200ac 	sw	v0,172(s8)
+  408394:	10000014 	b	4083e8 <confctl_module_debug_en@@Base+0x194>
+  408398:	00000000 	nop
+  40839c:	8fc20020 	lw	v0,32(s8)
+  4083a0:	80420000 	lb	v0,0(v0)
+  4083a4:	1040000f 	beqz	v0,4083e4 <confctl_module_debug_en@@Base+0x190>
+  4083a8:	00000000 	nop
+  4083ac:	8fc40020 	lw	a0,32(s8)
+  4083b0:	8f82838c 	lw	v0,-31860(gp)
+  4083b4:	0040c821 	move	t9,v0
+  4083b8:	0320f809 	jalr	t9
+  4083bc:	00000000 	nop
+  4083c0:	8fdc0010 	lw	gp,16(s8)
+  4083c4:	00401821 	move	v1,v0
+  4083c8:	8fc200b8 	lw	v0,184(s8)
+  4083cc:	14620006 	bne	v1,v0,4083e8 <confctl_module_debug_en@@Base+0x194>
+  4083d0:	00000000 	nop
+  4083d4:	24020001 	li	v0,1
+  4083d8:	afc20018 	sw	v0,24(s8)
+  4083dc:	10000012 	b	408428 <confctl_module_debug_en@@Base+0x1d4>
+  4083e0:	00000000 	nop
+  4083e4:	00000000 	nop
+  4083e8:	8fc2001c 	lw	v0,28(s8)
+  4083ec:	27c300ac 	addiu	v1,s8,172
+  4083f0:	00602021 	move	a0,v1
+  4083f4:	00402821 	move	a1,v0
+  4083f8:	8f828318 	lw	v0,-31976(gp)
+  4083fc:	0040c821 	move	t9,v0
+  408400:	0320f809 	jalr	t9
+  408404:	00000000 	nop
+  408408:	8fdc0010 	lw	gp,16(s8)
+  40840c:	afc20020 	sw	v0,32(s8)
+  408410:	8fc20020 	lw	v0,32(s8)
+  408414:	1440ffe1 	bnez	v0,40839c <confctl_module_debug_en@@Base+0x148>
+  408418:	00000000 	nop
+  40841c:	10000002 	b	408428 <confctl_module_debug_en@@Base+0x1d4>
+  408420:	00000000 	nop
+  408424:	00000000 	nop
+  408428:	8fc20028 	lw	v0,40(s8)
+  40842c:	10400008 	beqz	v0,408450 <confctl_module_debug_en@@Base+0x1fc>
+  408430:	00000000 	nop
+  408434:	8fc40028 	lw	a0,40(s8)
+  408438:	8f828550 	lw	v0,-31408(gp)
+  40843c:	0040c821 	move	t9,v0
+  408440:	0320f809 	jalr	t9
+  408444:	00000000 	nop
+  408448:	8fdc0010 	lw	gp,16(s8)
+  40844c:	afc00028 	sw	zero,40(s8)
+  408450:	8fc20018 	lw	v0,24(s8)
+  408454:	03c0e821 	move	sp,s8
+  408458:	8fbf00b4 	lw	ra,180(sp)
+  40845c:	8fbe00b0 	lw	s8,176(sp)
+  408460:	27bd00b8 	addiu	sp,sp,184
+  408464:	03e00008 	jr	ra
+  408468:	00000000 	nop
+
+0040846c <print_confctl_debug_list@@Base>:
+  40846c:	3c1c0005 	lui	gp,0x5
+  408470:	279c3cd4 	addiu	gp,gp,15572
+  408474:	0399e021 	addu	gp,gp,t9
+  408478:	27bdffd8 	addiu	sp,sp,-40
+  40847c:	afbf0024 	sw	ra,36(sp)
+  408480:	afbe0020 	sw	s8,32(sp)
+  408484:	03a0f021 	move	s8,sp
+  408488:	afbc0010 	sw	gp,16(sp)
+  40848c:	afc40028 	sw	a0,40(s8)
+  408490:	24020010 	li	v0,16
+  408494:	afc2001c 	sw	v0,28(s8)
+  408498:	8f828024 	lw	v0,-32732(gp)
+  40849c:	244232f4 	addiu	v0,v0,13044
+  4084a0:	00402021 	move	a0,v0
+  4084a4:	8f828024 	lw	v0,-32732(gp)
+  4084a8:	24453310 	addiu	a1,v0,13072
+  4084ac:	8f828024 	lw	v0,-32732(gp)
+  4084b0:	2446331c 	addiu	a2,v0,13084
+  4084b4:	8f8284bc 	lw	v0,-31556(gp)
+  4084b8:	0040c821 	move	t9,v0
+  4084bc:	0320f809 	jalr	t9
+  4084c0:	00000000 	nop
+  4084c4:	8fdc0010 	lw	gp,16(s8)
+  4084c8:	afc00018 	sw	zero,24(s8)
+  4084cc:	1000004b 	b	4085fc <print_confctl_debug_list@@Base+0x190>
+  4084d0:	00000000 	nop
+  4084d4:	8f828024 	lw	v0,-32732(gp)
+  4084d8:	24443328 	addiu	a0,v0,13096
+  4084dc:	8fc20018 	lw	v0,24(s8)
+  4084e0:	8f858090 	lw	a1,-32624(gp)
+  4084e4:	00021080 	sll	v0,v0,0x2
+  4084e8:	00021880 	sll	v1,v0,0x2
+  4084ec:	00621823 	subu	v1,v1,v0
+  4084f0:	00a31021 	addu	v0,a1,v1
+  4084f4:	8c420000 	lw	v0,0(v0)
+  4084f8:	00402821 	move	a1,v0
+  4084fc:	8f8284bc 	lw	v0,-31556(gp)
+  408500:	0040c821 	move	t9,v0
+  408504:	0320f809 	jalr	t9
+  408508:	00000000 	nop
+  40850c:	8fdc0010 	lw	gp,16(s8)
+  408510:	8fc20018 	lw	v0,24(s8)
+  408514:	8f838090 	lw	v1,-32624(gp)
+  408518:	00021080 	sll	v0,v0,0x2
+  40851c:	00022080 	sll	a0,v0,0x2
+  408520:	00821023 	subu	v0,a0,v0
+  408524:	00621021 	addu	v0,v1,v0
+  408528:	8c420004 	lw	v0,4(v0)
+  40852c:	10400011 	beqz	v0,408574 <print_confctl_debug_list@@Base+0x108>
+  408530:	00000000 	nop
+  408534:	8f828024 	lw	v0,-32732(gp)
+  408538:	2443332c 	addiu	v1,v0,13100
+  40853c:	8fc20018 	lw	v0,24(s8)
+  408540:	8f848090 	lw	a0,-32624(gp)
+  408544:	00021080 	sll	v0,v0,0x2
+  408548:	00022880 	sll	a1,v0,0x2
+  40854c:	00a21023 	subu	v0,a1,v0
+  408550:	00821021 	addu	v0,a0,v0
+  408554:	8c420004 	lw	v0,4(v0)
+  408558:	00602021 	move	a0,v1
+  40855c:	00402821 	move	a1,v0
+  408560:	8f8284bc 	lw	v0,-31556(gp)
+  408564:	0040c821 	move	t9,v0
+  408568:	0320f809 	jalr	t9
+  40856c:	00000000 	nop
+  408570:	8fdc0010 	lw	gp,16(s8)
+  408574:	8fc20018 	lw	v0,24(s8)
+  408578:	8f838090 	lw	v1,-32624(gp)
+  40857c:	00021080 	sll	v0,v0,0x2
+  408580:	00022080 	sll	a0,v0,0x2
+  408584:	00821023 	subu	v0,a0,v0
+  408588:	00621021 	addu	v0,v1,v0
+  40858c:	8c420008 	lw	v0,8(v0)
+  408590:	10400011 	beqz	v0,4085d8 <print_confctl_debug_list@@Base+0x16c>
+  408594:	00000000 	nop
+  408598:	8f828024 	lw	v0,-32732(gp)
+  40859c:	2443332c 	addiu	v1,v0,13100
+  4085a0:	8fc20018 	lw	v0,24(s8)
+  4085a4:	8f848090 	lw	a0,-32624(gp)
+  4085a8:	00021080 	sll	v0,v0,0x2
+  4085ac:	00022880 	sll	a1,v0,0x2
+  4085b0:	00a21023 	subu	v0,a1,v0
+  4085b4:	00821021 	addu	v0,a0,v0
+  4085b8:	8c420008 	lw	v0,8(v0)
+  4085bc:	00602021 	move	a0,v1
+  4085c0:	00402821 	move	a1,v0
+  4085c4:	8f8284bc 	lw	v0,-31556(gp)
+  4085c8:	0040c821 	move	t9,v0
+  4085cc:	0320f809 	jalr	t9
+  4085d0:	00000000 	nop
+  4085d4:	8fdc0010 	lw	gp,16(s8)
+  4085d8:	2404000a 	li	a0,10
+  4085dc:	8f828484 	lw	v0,-31612(gp)
+  4085e0:	0040c821 	move	t9,v0
+  4085e4:	0320f809 	jalr	t9
+  4085e8:	00000000 	nop
+  4085ec:	8fdc0010 	lw	gp,16(s8)
+  4085f0:	8fc20018 	lw	v0,24(s8)
+  4085f4:	24420001 	addiu	v0,v0,1
+  4085f8:	afc20018 	sw	v0,24(s8)
+  4085fc:	8fc30018 	lw	v1,24(s8)
+  408600:	8fc2001c 	lw	v0,28(s8)
+  408604:	0062102a 	slt	v0,v1,v0
+  408608:	1440ffb2 	bnez	v0,4084d4 <print_confctl_debug_list@@Base+0x68>
+  40860c:	00000000 	nop
+  408610:	2404000a 	li	a0,10
+  408614:	8f828484 	lw	v0,-31612(gp)
+  408618:	0040c821 	move	t9,v0
+  40861c:	0320f809 	jalr	t9
+  408620:	00000000 	nop
+  408624:	8fdc0010 	lw	gp,16(s8)
+  408628:	8f828024 	lw	v0,-32732(gp)
+  40862c:	24443334 	addiu	a0,v0,13108
+  408630:	8f828360 	lw	v0,-31904(gp)
+  408634:	0040c821 	move	t9,v0
+  408638:	0320f809 	jalr	t9
+  40863c:	00000000 	nop
+  408640:	8fdc0010 	lw	gp,16(s8)
+  408644:	8f828024 	lw	v0,-32732(gp)
+  408648:	24423340 	addiu	v0,v0,13120
+  40864c:	00402021 	move	a0,v0
+  408650:	8f828024 	lw	v0,-32732(gp)
+  408654:	244532d8 	addiu	a1,v0,13016
+  408658:	8f8284bc 	lw	v0,-31556(gp)
+  40865c:	0040c821 	move	t9,v0
+  408660:	0320f809 	jalr	t9
+  408664:	00000000 	nop
+  408668:	8fdc0010 	lw	gp,16(s8)
+  40866c:	03c0e821 	move	sp,s8
+  408670:	8fbf0024 	lw	ra,36(sp)
+  408674:	8fbe0020 	lw	s8,32(sp)
+  408678:	27bd0028 	addiu	sp,sp,40
+  40867c:	03e00008 	jr	ra
+  408680:	00000000 	nop
+	...
+
+00408690 <confctl_define_callback@@Base>:
+  408690:	3c1c0005 	lui	gp,0x5
+  408694:	279c3ab0 	addiu	gp,gp,15024
+  408698:	0399e021 	addu	gp,gp,t9
+  40869c:	27bdffe0 	addiu	sp,sp,-32
+  4086a0:	afbf001c 	sw	ra,28(sp)
+  4086a4:	afbe0018 	sw	s8,24(sp)
+  4086a8:	03a0f021 	move	s8,sp
+  4086ac:	afbc0010 	sw	gp,16(sp)
+  4086b0:	8f828024 	lw	v0,-32732(gp)
+  4086b4:	244433e0 	addiu	a0,v0,13280
+  4086b8:	8f858094 	lw	a1,-32620(gp)
+  4086bc:	00003021 	move	a2,zero
+  4086c0:	00003821 	move	a3,zero
+  4086c4:	8f828098 	lw	v0,-32616(gp)
+  4086c8:	0040c821 	move	t9,v0
+  4086cc:	0320f809 	jalr	t9
+  4086d0:	00000000 	nop
+  4086d4:	8fdc0010 	lw	gp,16(s8)
+  4086d8:	8f828024 	lw	v0,-32732(gp)
+  4086dc:	244433ec 	addiu	a0,v0,13292
+  4086e0:	8f85809c 	lw	a1,-32612(gp)
+  4086e4:	00003021 	move	a2,zero
+  4086e8:	00003821 	move	a3,zero
+  4086ec:	8f828098 	lw	v0,-32616(gp)
+  4086f0:	0040c821 	move	t9,v0
+  4086f4:	0320f809 	jalr	t9
+  4086f8:	00000000 	nop
+  4086fc:	8fdc0010 	lw	gp,16(s8)
+  408700:	8f828024 	lw	v0,-32732(gp)
+  408704:	244433f8 	addiu	a0,v0,13304
+  408708:	8f8580a0 	lw	a1,-32608(gp)
+  40870c:	00003021 	move	a2,zero
+  408710:	00003821 	move	a3,zero
+  408714:	8f828098 	lw	v0,-32616(gp)
+  408718:	0040c821 	move	t9,v0
+  40871c:	0320f809 	jalr	t9
+  408720:	00000000 	nop
+  408724:	8fdc0010 	lw	gp,16(s8)
+  408728:	8f828024 	lw	v0,-32732(gp)
+  40872c:	24443404 	addiu	a0,v0,13316
+  408730:	8f8580a4 	lw	a1,-32604(gp)
+  408734:	00003021 	move	a2,zero
+  408738:	00003821 	move	a3,zero
+  40873c:	8f828098 	lw	v0,-32616(gp)
+  408740:	0040c821 	move	t9,v0
+  408744:	0320f809 	jalr	t9
+  408748:	00000000 	nop
+  40874c:	8fdc0010 	lw	gp,16(s8)
+  408750:	8f828024 	lw	v0,-32732(gp)
+  408754:	24443410 	addiu	a0,v0,13328
+  408758:	8f8580a8 	lw	a1,-32600(gp)
+  40875c:	00003021 	move	a2,zero
+  408760:	00003821 	move	a3,zero
+  408764:	8f828098 	lw	v0,-32616(gp)
+  408768:	0040c821 	move	t9,v0
+  40876c:	0320f809 	jalr	t9
+  408770:	00000000 	nop
+  408774:	8fdc0010 	lw	gp,16(s8)
+  408778:	8f828024 	lw	v0,-32732(gp)
+  40877c:	2444341c 	addiu	a0,v0,13340
+  408780:	8f8580ac 	lw	a1,-32596(gp)
+  408784:	00003021 	move	a2,zero
+  408788:	00003821 	move	a3,zero
+  40878c:	8f828098 	lw	v0,-32616(gp)
+  408790:	0040c821 	move	t9,v0
+  408794:	0320f809 	jalr	t9
+  408798:	00000000 	nop
+  40879c:	8fdc0010 	lw	gp,16(s8)
+  4087a0:	8f828024 	lw	v0,-32732(gp)
+  4087a4:	24443428 	addiu	a0,v0,13352
+  4087a8:	8f8580b0 	lw	a1,-32592(gp)
+  4087ac:	00003021 	move	a2,zero
+  4087b0:	00003821 	move	a3,zero
+  4087b4:	8f828098 	lw	v0,-32616(gp)
+  4087b8:	0040c821 	move	t9,v0
+  4087bc:	0320f809 	jalr	t9
+  4087c0:	00000000 	nop
+  4087c4:	8fdc0010 	lw	gp,16(s8)
+  4087c8:	8f828024 	lw	v0,-32732(gp)
+  4087cc:	2444343c 	addiu	a0,v0,13372
+  4087d0:	8f8580b4 	lw	a1,-32588(gp)
+  4087d4:	00003021 	move	a2,zero
+  4087d8:	00003821 	move	a3,zero
+  4087dc:	8f828098 	lw	v0,-32616(gp)
+  4087e0:	0040c821 	move	t9,v0
+  4087e4:	0320f809 	jalr	t9
+  4087e8:	00000000 	nop
+  4087ec:	8fdc0010 	lw	gp,16(s8)
+  4087f0:	8f828024 	lw	v0,-32732(gp)
+  4087f4:	24443450 	addiu	a0,v0,13392
+  4087f8:	8f8580b8 	lw	a1,-32584(gp)
+  4087fc:	00003021 	move	a2,zero
+===== CONFCLI DATA/RODATA AROUND COMMAND STRINGS =====
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+Contents of section .rodata:
+ 431a10 1b5b3b33 326d5b20 44656275 67205d20  .[;32m[ Debug ] 
+ 431a20 5b253973 3a253564 5d202573 1b5b306d  [%9s:%5d] %s.[0m
+ 431a30 00000000 1b5b3b33 336d5b20 496e666f  .....[;33m[ Info
+ 431a40 20205d20 5b253973 3a253564 5d202573    ] [%9s:%5d] %s
+ 431a50 1b5b306d 00000000 1b5b3b33 316d5b20  .[0m.....[;31m[ 
+ 431a60 4572726f 72205d20 5b253973 3a253564  Error ] [%9s:%5d
+ 431a70 5d202573 1b5b306d 00000000 1e5b3b33  ] %s.[0m.....[;3
+ 431a80 316d5b20 4572726f 72205d20 5b253973  1m[ Error ] [%9s
+ 431a90 3a253564 5d202573 1b5b306d 00000000  :%5d] %s.[0m....
+ 431aa0 6f6f6d20 6174203c 2e2e2f2e 2e2f636d  oom at <../../cm
+ 431ab0 646d6772 2f696e63 6c756465 2f636d2e  dmgr/include/cm.
+ 431ac0 683a3737 3e000000 00000000 64626700  h:77>.......dbg.
+ 431ad0 00000000 00000000 00000000 00000000  ................
+ 431ae0 00000000 00000000 00000000 20000000  ............ ...
+ 431af0 00000000 00000000 00000000 00000000  ................
+ 431b00 00000000 00000000 00000000 00000000  ................
+ 431b10 00000000 00000000 00000000 00000000  ................
+ 431b20 00000000 00000000 00000000 01000000  ................
+ 431b30 6d6f6e69 746f7200 00000000 00000000  monitor.........
+ 431b40 00000000 00000000 00000000 00000000  ................
+ 431b50 2f766172 2f706d5f 736f636b 65740000  /var/pm_socket..
+ 431b60 00000000 00000000 00000000 00000000  ................
+ 431b70 00000000 00000000 00000000 00000000  ................
+ 431b80 00000000 00000000 00000000 00000000  ................
+ 431b90 02000000 74696d65 72000000 00000000  ....timer.......
+ 431ba0 00000000 00000000 00000000 00000000  ................
+ 431bb0 00000000 2f766172 2f746d5f 736f636b  ..../var/tm_sock
+ 431bc0 65740000 00000000 00000000 00000000  et..............
+ 431bd0 00000000 00000000 00000000 00000000  ................
+ 431be0 00000000 00000000 00000000 00000000  ................
+ 431bf0 00000000 03000000 63666d73 00000000  ........cfms....
+ 431c00 00000000 00000000 00000000 00000000  ................
+ 431c10 00000000 00000000 2f766172 2f63666d  ......../var/cfm
+ 431c20 5f736f63 6b657400 00000000 00000000  _socket.........
+ 431c30 00000000 00000000 00000000 00000000  ................
+ 431c40 00000000 00000000 00000000 00000000  ................
+ 431c50 00000000 00000000 04000000 6c6f6773  ............logs
+ 431c60 65727665 72000000 00000000 00000000  erver...........
+ 431c70 00000000 00000000 00000000 2f766172  ............/var
+ 431c80 2f706c6f 675f736f 636b6574 00000000  /plog_socket....
+ 431c90 00000000 00000000 00000000 00000000  ................
+ 431ca0 00000000 00000000 00000000 00000000  ................
+ 431cb0 00000000 00000000 00000000 05000000  ................
+ 431cc0 6e657463 74726c00 00000000 00000000  netctrl.........
+ 431cd0 00000000 00000000 00000000 00000000  ................
+ 431ce0 2f766172 2f6e745f 736f636b 65740000  /var/nt_socket..
+ 431cf0 00000000 00000000 00000000 00000000  ................
+ 431d00 00000000 00000000 00000000 00000000  ................
+ 431d10 00000000 00000000 00000000 00000000  ................
+ 431d20 06000000 6d756c74 6957414e 00000000  ....multiWAN....
+ 431d30 00000000 00000000 00000000 00000000  ................
+ 431d40 00000000 2f766172 2f6d775f 736f636b  ..../var/mw_sock
+ 431d50 65740000 00000000 00000000 00000000  et..............
+ 431d60 00000000 00000000 00000000 00000000  ................
+ 431d70 00000000 00000000 00000000 00000000  ................
+ 431d80 00000000 07000000 6e657477 6f726b5f  ........network_
+ 431d90 63686563 6b000000 00000000 00000000  check...........
+ 431da0 00000000 00000000 2f766172 2f6e6574  ......../var/net
+ 431db0 776f726b 5f636b5f 736f636b 65740000  work_ck_socket..
+ 431dc0 00000000 00000000 00000000 00000000  ................
+ 431dd0 00000000 00000000 00000000 00000000  ................
+ 431de0 00000000 00000000 08000000 63666d63  ............cfmc
+ 431df0 00000000 00000000 00000000 00000000  ................
+ 431e00 00000000 00000000 00000000 2f766172  ............/var
+ 431e10 2f63666d 635f736f 636b6574 00000000  /cfmc_socket....
+ 431e20 00000000 00000000 00000000 00000000  ................
+ 431e30 00000000 00000000 00000000 00000000  ................
+ 431e40 00000000 00000000 00000000 21000000  ............!...
+ 431e50 64686370 63000000 00000000 00000000  dhcpc...........
+ 431e60 00000000 00000000 00000000 00000000  ................
+ 431e70 2f766172 2f646863 70630000 00000000  /var/dhcpc......
+ 431e80 00000000 00000000 00000000 00000000  ................
+ 431e90 00000000 00000000 00000000 00000000  ................
+ 431ea0 00000000 00000000 00000000 00000000  ................
+ 431eb0 41000000 68747470 64000000 00000000  A...httpd.......
+ 431ec0 00000000 00000000 00000000 00000000  ................
+ 431ed0 00000000 2f766172 2f687474 70640000  ..../var/httpd..
+ 431ee0 00000000 00000000 00000000 00000000  ................
+ 431ef0 00000000 00000000 00000000 00000000  ................
+ 431f00 00000000 00000000 00000000 00000000  ................
+ 431f10 00000000 42000000 61706d6e 675f7376  ....B...apmng_sv
+ 431f20 72000000 00000000 00000000 00000000  r...............
+ 431f30 00000000 00000000 2f766172 2f61706d  ......../var/apm
+ 431f40 6e675f73 76720000 00000000 00000000  ng_svr..........
+ 431f50 00000000 00000000 00000000 00000000  ................
+ 431f60 00000000 00000000 00000000 00000000  ................
+ 431f70 00000000 00000000 43000000 6172705f  ........C...arp_
+ 431f80 72656365 69766500 00000000 00000000  receive.........
+ 431f90 00000000 00000000 00000000 2f766172  ............/var
+ 431fa0 2f617270 5f726563 65697665 00000000  /arp_receive....
+ 431fb0 00000000 00000000 00000000 00000000  ................
+ 431fc0 00000000 00000000 00000000 00000000  ................
+ 431fd0 00000000 00000000 00000000 44000000  ............D...
+ 431fe0 61746500 00000000 00000000 00000000  ate.............
+ 431ff0 00000000 00000000 00000000 00000000  ................
+ 432000 2f766172 2f617465 00000000 00000000  /var/ate........
+ 432010 00000000 00000000 00000000 00000000  ................
+ 432020 00000000 00000000 00000000 00000000  ................
+ 432030 00000000 00000000 00000000 00000000  ................
+ 432040 45000000 6175746f 5f646973 636f7665  E...auto_discove
+ 432050 72000000 00000000 00000000 00000000  r...............
+ 432060 00000000 2f766172 2f617574 6f5f6469  ..../var/auto_di
+ 432070 73636f76 65720000 00000000 00000000  scover..........
+ 432080 00000000 00000000 00000000 00000000  ................
+ 432090 00000000 00000000 00000000 00000000  ................
+ 4320a0 00000000 46000000 64657669 63655f6c  ....F...device_l
+ 4320b0 69737400 00000000 00000000 00000000  ist.............
+ 4320c0 00000000 00000000 2f766172 2f646576  ......../var/dev
+ 4320d0 6963655f 6c697374 5f736f63 6b657400  ice_list_socket.
+ 4320e0 00000000 00000000 00000000 00000000  ................
+ 4320f0 00000000 00000000 00000000 00000000  ................
+ 432100 00000000 00000000 61000000 75636c6f  ........a...uclo
+ 432110 75645f63 746c0000 00000000 00000000  ud_ctl..........
+ 432120 00000000 00000000 00000000 20000000  ............ ...
+ 432130 00000000 00000000 00000000 00000000  ................
+ 432140 00000000 00000000 00000000 00000000  ................
+ 432150 00000000 00000000 00000000 00000000  ................
+ 432160 00000000 00000000 00000000 80000000  ................
+ 432170 636f6d6d 6f6e5f73 6f000000 00000000  common_so.......
+ 432180 00000000 00000000 00000000 00000000  ................
+ 432190 20000000 00000000 00000000 00000000   ...............
+ 4321a0 00000000 00000000 00000000 00000000  ................
+ 4321b0 00000000 00000000 00000000 00000000  ................
+ 4321c0 00000000 00000000 00000000 00000000  ................
+ 4321d0 81000000 61705f63 6f6d6d6f 6e5f736f  ....ap_common_so
+ 4321e0 00000000 00000000 00000000 00000000  ................
+ 4321f0 00000000 20000000 00000000 00000000  .... ...........
+ 432200 00000000 00000000 00000000 00000000  ................
+ 432210 00000000 00000000 00000000 00000000  ................
+ 432220 00000000 00000000 00000000 00000000  ................
+ 432230 00000000 82000000 70726f64 5f636f6d  ........prod_com
+ 432240 6d6f6e5f 736f0000 00000000 00000000  mon_so..........
+ 432250 00000000 00000000 20000000 00000000  ........ .......
+ 432260 00000000 00000000 00000000 00000000  ................
+ 432270 00000000 00000000 00000000 00000000  ................
+ 432280 00000000 00000000 00000000 00000000  ................
+ 432290 00000000 00000000 83000000 20000000  ............ ...
+ 4322a0 00000000 00000000 00000000 00000000  ................
+ 4322b0 00000000 00000000 00000000 20000000  ............ ...
+ 4322c0 00000000 00000000 00000000 00000000  ................
+ 4322d0 00000000 00000000 00000000 00000000  ................
+ 4322e0 00000000 00000000 00000000 00000000  ................
+ 4322f0 00000000 00000000 00000000 2f766172  ............/var
+ 432300 2f6d6962 2e6d656d 00000000 726f6c65  /mib.mem....role
+ 432310 00000000 73657269 616c2e6e 756d6265  ....serial.numbe
+ 432320 72000000 25732573 00000000 6e6f6465  r...%s%s....node
+ 432330 2e6c6f63 6174696f 6e400000 7379732e  .location@..sys.
+ 432340 6d6f6465 6c000000 7379732e 6d6f6465  model...sys.mode
+ 432350 6c2e7665 72000000 75702e73 6f66742e  l.ver...up.soft.
+ 432360 76657200 25732825 73290000 56312e30  ver.%s(%s)..V1.0
+ 432370 2e302e32 38000000 35383334 00000000  .0.28...5834....
+ 432380 7379732e 6366672e 7374616d 70000000  sys.cfg.stamp...
+ 432390 7379732e 6c65642e 656e0000 636f6e66  sys.led.en..conf
+ 4323a0 63746c5f 636c692e 63000000 20202020  ctl_cli.c...    
+ 4323b0 2020206d 616c6c6f 63202020 6661696c     malloc   fail
+ 4323c0 65642021 20202020 20000000 6d61705f  ed !     ...map_
+ 4323d0 7265706f 72740000 636f6e66 63746c5f  report..confctl_
+ 4323e0 7372765f 6b657900 776c2e67 75657374  srv_key.wl.guest
+ 4323f0 2e646863 70735f65 6e61626c 65000000  .dhcps_enable...
+ 432400 776c2e67 75657374 2e656666 65637469  wl.guest.effecti
+ 432410 76655f74 696d6500 30000000 67756573  ve_time.0...gues
+ 432420 742e7374 696d6500 25640000 2d310000  t.stime.%d..-1..
+ 432430 5265706f 72744775 65737400 61737369  ReportGuest.assi
+ 432440 73742e64 65762e73 74696d65 00000000  st.dev.stime....
+ 432450 61737369 73742e64 65762e6c 74696d65  assist.dev.ltime
+ 432460 00000000 61737369 73742e64 65762e6d  ....assist.dev.m
+ 432470 61630000 20092020 6d616c6c 6f632020  ac.. .  malloc  
+ 432480 20666169 6c656420 21200900 4d617041   failed ! ..MapA
+ 432490 73736973 74616e74 496e666f 00000000  ssistantInfo....
+ 4324a0 776c3267 2e6c6f63 6b2e6368 616e6e65  wl2g.lock.channe
+ 4324b0 6c000000 776c3267 2e6c6f63 6b2e6261  l...wl2g.lock.ba
+ 4324c0 6e647769 64746800 5b25735d 5b25645d  ndwidth.[%s][%d]
+ 4324d0 5b6b675d 206d616c 6c6f6320 6661696c  [kg] malloc fail
+ 4324e0 65640a00 55706461 74654869 67684465  ed..UpdateHighDe
+ 4324f0 76696365 4c697374 00000000 68696768  viceList....high
+ 432500 64657669 63655f65 6e000000 2f646576  device_en.../dev
+ 432510 2f6e756c 6c000000 77000000 2f646576  /null...w.../dev
+ 432520 2f747479 53300000 75636c6f 75640000  /ttyS0..ucloud..
+ 432530 25732825 64290a00 75636c6f 7564202d  %s(%d)..ucloud -
+ 432540 6c203000 556e7375 70706f72 74204576  l 0.Unsupport Ev
+ 432550 656e743a 2025640a 00000000 2f746d70  ent: %d...../tmp
+ 432560 2f6c6f67 2f637261 73680000 496e6974  /log/crash..Init
+ 432570 69616c69 7a652041 50204d49 42206661  ialize AP MIB fa
+ 432580 696c6564 2e000000 496e6974 69616c69  iled....Initiali
+ 432590 7a652065 6e762066 61696c65 64202100  ze env failed !.
+ 4325a0 25734025 73000000 636f6e66 63746c5f  %s@%s...confctl_
+ 4325b0 636c6900 75635f61 70695f69 6e697420  cli.uc_api_init 
+ 4325c0 6661696c 65640000 636f6e66 63746c5f  failed..confctl_
+ 4325d0 636c695f 6b657900 636f6e66 63746c5f  cli_key.confctl_
+ 4325e0 666f7263 655f7570 67726164 655f636c  force_upgrade_cl
+ 4325f0 69000000 63686563 6b5f6d70 705f6869  i...check_mpp_hi
+ 432600 67686465 76696365 5f636667 00000000  ghdevice_cfg....
+ 432610 00000000 00003440 00000000 00003e40  ......4@......>@
+ 432620 00000000 00c08240 00000000 0018f540  .......@.......@
+ 432630 00000000 0000f03f 00000000 00001440  .......?.......@
+ 432640 00000000 00002440 00000000 00000000  ......$@........
+ 432650 2449643a 20686173 682e632c 7620312e  $Id: hash.c,v 1.
+ 432660 312e312e 31203230 30372d30 382d3136  1.1.1 2007-08-16
+ 432670 2030303a 34313a33 39207374 6576656e   00:41:39 steven
+ 432680 20457870 20240000 00000000 00000000   Exp $..........
+ 432690 00000000 64626700 00000000 00000000  ....dbg.........
+ 4326a0 00000000 00000000 00000000 00000000  ................
+ 4326b0 00000000 20000000 00000000 00000000  .... ...........
+ 4326c0 00000000 00000000 00000000 00000000  ................
+ 4326d0 00000000 00000000 00000000 00000000  ................
+ 4326e0 00000000 00000000 00000000 00000000  ................
+ 4326f0 00000000 01000000 6d6f6e69 746f7200  ........monitor.
+ 432700 00000000 00000000 00000000 00000000  ................
+ 432710 00000000 00000000 2f766172 2f706d5f  ......../var/pm_
+ 432720 736f636b 65740000 00000000 00000000  socket..........
+ 432730 00000000 00000000 00000000 00000000  ................
+ 432740 00000000 00000000 00000000 00000000  ................
+ 432750 00000000 00000000 02000000 74696d65  ............time
+ 432760 72000000 00000000 00000000 00000000  r...............
+ 432770 00000000 00000000 00000000 2f766172  ............/var
+ 432780 2f746d5f 736f636b 65740000 00000000  /tm_socket......
+ 432790 00000000 00000000 00000000 00000000  ................
+ 4327a0 00000000 00000000 00000000 00000000  ................
+ 4327b0 00000000 00000000 00000000 03000000  ................
+ 4327c0 63666d73 00000000 00000000 00000000  cfms............
+ 4327d0 00000000 00000000 00000000 00000000  ................
+ 4327e0 2f766172 2f63666d 5f736f63 6b657400  /var/cfm_socket.
+ 4327f0 00000000 00000000 00000000 00000000  ................
+ 432800 00000000 00000000 00000000 00000000  ................
+ 432810 00000000 00000000 00000000 00000000  ................
+ 432820 04000000 6c6f6773 65727665 72000000  ....logserver...
+ 432830 00000000 00000000 00000000 00000000  ................
+ 432840 00000000 2f766172 2f706c6f 675f736f  ..../var/plog_so
+ 432850 636b6574 00000000 00000000 00000000  cket............
+ 432860 00000000 00000000 00000000 00000000  ................
+ 432870 00000000 00000000 00000000 00000000  ................
+ 432880 00000000 05000000 6e657463 74726c00  ........netctrl.
+ 432890 00000000 00000000 00000000 00000000  ................
+ 4328a0 00000000 00000000 2f766172 2f6e745f  ......../var/nt_
+ 4328b0 736f636b 65740000 00000000 00000000  socket..........
+ 4328c0 00000000 00000000 00000000 00000000  ................
+ 4328d0 00000000 00000000 00000000 00000000  ................
+ 4328e0 00000000 00000000 06000000 6d756c74  ............mult
+ 4328f0 6957414e 00000000 00000000 00000000  iWAN............
+ 432900 00000000 00000000 00000000 2f766172  ............/var
+ 432910 2f6d775f 736f636b 65740000 00000000  /mw_socket......
+ 432920 00000000 00000000 00000000 00000000  ................
+ 432930 00000000 00000000 00000000 00000000  ................
+ 432940 00000000 00000000 00000000 07000000  ................
+ 432950 6e657477 6f726b5f 63686563 6b000000  network_check...
+ 432960 00000000 00000000 00000000 00000000  ................
+ 432970 2f766172 2f6e6574 776f726b 5f636b5f  /var/network_ck_
+ 432980 736f636b 65740000 00000000 00000000  socket..........
+ 432990 00000000 00000000 00000000 00000000  ................
+ 4329a0 00000000 00000000 00000000 00000000  ................
+ 4329b0 08000000 63666d63 00000000 00000000  ....cfmc........
+ 4329c0 00000000 00000000 00000000 00000000  ................
+ 4329d0 00000000 2f766172 2f63666d 635f736f  ..../var/cfmc_so
+ 4329e0 636b6574 00000000 00000000 00000000  cket............
+ 4329f0 00000000 00000000 00000000 00000000  ................
+ 432a00 00000000 00000000 00000000 00000000  ................
+
+firmware-src/RootFS-unpacked/bin/confcli:     file format elf32-tradlittlemips
+
+Contents of section .data:
+ 454050 00000000 00000000 00000000 00000000  ................
+ 454060 01000000 20304300 00000000 02000000  .... 0C.........
+ 454070 2c304300 40304300 03000000 64304300  ,0C.@0C.....d0C.
+ 454080 74304300 04000000 9c304300 b0304300  t0C......0C..0C.
+ 454090 05000000 e0304300 f0304300 06000000  .....0C..0C.....
+ 4540a0 08314300 18314300 07000000 40314300  .1C..1C.....@1C.
+ 4540b0 50314300 08000000 64314300 70314300  P1C.....d1C.p1C.
+ 4540c0 09000000 84314300 98314300 0a000000  .....1C..1C.....
+ 4540d0 b0314300 c0314300 0b000000 d8314300  .1C..1C......1C.
+ 4540e0 00000000 0c000000 e4314300 00324300  .........1C..2C.
+ 4540f0 0d000000 20324300 2c324300 0e000000  .... 2C.,2C.....
+ 454100 50324300 00000000 0f000000 7c324300  P2C.........|2C.
+ 454110 00000000 10000000 9c324300 b0324300  .........2C..2C.
+ 454120 ffffffff ffffffff ffffffff 00000000  ................
+===== CONFSRV GetHostList FUNCTION =====
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   411: 00465a70     0 FUNC    GLOBAL DEFAULT  UND cmd_sub
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   630: 00464e90     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+confctl_get_host_list addr=0x434f9c
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00434f9c <confctl_get_host_list@@Base>:
+  434f9c:	3c1c0006 	lui	gp,0x6
+  434fa0:	279c21c4 	addiu	gp,gp,8644
+  434fa4:	0399e021 	addu	gp,gp,t9
+  434fa8:	27bdffb8 	addiu	sp,sp,-72
+  434fac:	afbf0044 	sw	ra,68(sp)
+  434fb0:	afbe0040 	sw	s8,64(sp)
+  434fb4:	afb0003c 	sw	s0,60(sp)
+  434fb8:	03a0f021 	move	s8,sp
+  434fbc:	afbc0010 	sw	gp,16(sp)
+  434fc0:	afc40048 	sw	a0,72(s8)
+  434fc4:	afc5004c 	sw	a1,76(s8)
+  434fc8:	afc60050 	sw	a2,80(s8)
+  434fcc:	afc70054 	sw	a3,84(s8)
+  434fd0:	8fc20054 	lw	v0,84(s8)
+  434fd4:	10400004 	beqz	v0,434fe8 <confctl_get_host_list@@Base+0x4c>
+  434fd8:	00000000 	nop
+  434fdc:	8fc20058 	lw	v0,88(s8)
+  434fe0:	1440000f 	bnez	v0,435020 <confctl_get_host_list@@Base+0x84>
+  434fe4:	00000000 	nop
+  434fe8:	8f82822c 	lw	v0,-32212(gp)
+  434fec:	2442237c 	addiu	v0,v0,9084
+  434ff0:	00402021 	move	a0,v0
+  434ff4:	8f82822c 	lw	v0,-32212(gp)
+  434ff8:	24452f98 	addiu	a1,v0,12184
+  434ffc:	24060793 	li	a2,1939
+  435000:	8f8287c8 	lw	v0,-30776(gp)
+  435004:	0040c821 	move	t9,v0
+  435008:	0320f809 	jalr	t9
+  43500c:	00000000 	nop
+  435010:	8fdc0010 	lw	gp,16(s8)
+  435014:	2402ffff 	li	v0,-1
+  435018:	100000fb 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  43501c:	00000000 	nop
+  435020:	8f8288d0 	lw	v0,-30512(gp)
+  435024:	afc20024 	sw	v0,36(s8)
+  435028:	afc00028 	sw	zero,40(s8)
+  43502c:	afc0002c 	sw	zero,44(s8)
+  435030:	afc00030 	sw	zero,48(s8)
+  435034:	afc00034 	sw	zero,52(s8)
+  435038:	afc0001c 	sw	zero,28(s8)
+  43503c:	8f82802c 	lw	v0,-32724(gp)
+  435040:	2442fdf0 	addiu	v0,v0,-528
+  435044:	8c42020c 	lw	v0,524(v0)
+  435048:	afc20030 	sw	v0,48(s8)
+  43504c:	8fc20030 	lw	v0,48(s8)
+  435050:	afc20020 	sw	v0,32(s8)
+  435054:	8fc20020 	lw	v0,32(s8)
+  435058:	00021080 	sll	v0,v0,0x2
+  43505c:	00402021 	move	a0,v0
+  435060:	8f828904 	lw	v0,-30460(gp)
+  435064:	0040c821 	move	t9,v0
+  435068:	0320f809 	jalr	t9
+  43506c:	00000000 	nop
+  435070:	8fdc0010 	lw	gp,16(s8)
+  435074:	afc20034 	sw	v0,52(s8)
+  435078:	8fc20034 	lw	v0,52(s8)
+  43507c:	14400016 	bnez	v0,4350d8 <confctl_get_host_list@@Base+0x13c>
+  435080:	00000000 	nop
+  435084:	8f82822c 	lw	v0,-32212(gp)
+  435088:	24502404 	addiu	s0,v0,9220
+  43508c:	8f828684 	lw	v0,-31100(gp)
+  435090:	0040c821 	move	t9,v0
+  435094:	0320f809 	jalr	t9
+  435098:	00000000 	nop
+  43509c:	8fdc0010 	lw	gp,16(s8)
+  4350a0:	8c420000 	lw	v0,0(v0)
+  4350a4:	02002021 	move	a0,s0
+  4350a8:	8f83822c 	lw	v1,-32212(gp)
+  4350ac:	24652f98 	addiu	a1,v1,12184
+  4350b0:	240607a3 	li	a2,1955
+  4350b4:	00403821 	move	a3,v0
+  4350b8:	8f8287c8 	lw	v0,-30776(gp)
+  4350bc:	0040c821 	move	t9,v0
+  4350c0:	0320f809 	jalr	t9
+  4350c4:	00000000 	nop
+  4350c8:	8fdc0010 	lw	gp,16(s8)
+  4350cc:	2402ffff 	li	v0,-1
+  4350d0:	100000cd 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4350d4:	00000000 	nop
+  4350d8:	8fc30034 	lw	v1,52(s8)
+  4350dc:	8fc20020 	lw	v0,32(s8)
+  4350e0:	00021080 	sll	v0,v0,0x2
+  4350e4:	00602021 	move	a0,v1
+  4350e8:	00002821 	move	a1,zero
+  4350ec:	00403021 	move	a2,v0
+  4350f0:	8f828930 	lw	v0,-30416(gp)
+  4350f4:	0040c821 	move	t9,v0
+  4350f8:	0320f809 	jalr	t9
+  4350fc:	00000000 	nop
+  435100:	8fdc0010 	lw	gp,16(s8)
+  435104:	8fc20020 	lw	v0,32(s8)
+  435108:	000210c0 	sll	v0,v0,0x3
+  43510c:	000218c0 	sll	v1,v0,0x3
+  435110:	00621023 	subu	v0,v1,v0
+  435114:	00402021 	move	a0,v0
+  435118:	8f828904 	lw	v0,-30460(gp)
+  43511c:	0040c821 	move	t9,v0
+  435120:	0320f809 	jalr	t9
+  435124:	00000000 	nop
+  435128:	8fdc0010 	lw	gp,16(s8)
+  43512c:	afc20018 	sw	v0,24(s8)
+  435130:	8fc20018 	lw	v0,24(s8)
+  435134:	1440001d 	bnez	v0,4351ac <confctl_get_host_list@@Base+0x210>
+  435138:	00000000 	nop
+  43513c:	8f82822c 	lw	v0,-32212(gp)
+  435140:	24502404 	addiu	s0,v0,9220
+  435144:	8f828684 	lw	v0,-31100(gp)
+  435148:	0040c821 	move	t9,v0
+  43514c:	0320f809 	jalr	t9
+  435150:	00000000 	nop
+  435154:	8fdc0010 	lw	gp,16(s8)
+  435158:	8c420000 	lw	v0,0(v0)
+  43515c:	02002021 	move	a0,s0
+  435160:	8f83822c 	lw	v1,-32212(gp)
+  435164:	24652f98 	addiu	a1,v1,12184
+  435168:	240607ab 	li	a2,1963
+  43516c:	00403821 	move	a3,v0
+  435170:	8f8287c8 	lw	v0,-30776(gp)
+  435174:	0040c821 	move	t9,v0
+  435178:	0320f809 	jalr	t9
+  43517c:	00000000 	nop
+  435180:	8fdc0010 	lw	gp,16(s8)
+  435184:	8fc20034 	lw	v0,52(s8)
+  435188:	00402021 	move	a0,v0
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  435190:	0040c821 	move	t9,v0
+  435194:	0320f809 	jalr	t9
+  435198:	00000000 	nop
+  43519c:	8fdc0010 	lw	gp,16(s8)
+  4351a0:	2402ffff 	li	v0,-1
+  4351a4:	10000098 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4351a8:	00000000 	nop
+  4351ac:	8fc20020 	lw	v0,32(s8)
+  4351b0:	000210c0 	sll	v0,v0,0x3
+  4351b4:	000218c0 	sll	v1,v0,0x3
+  4351b8:	00621023 	subu	v0,v1,v0
+  4351bc:	8fc40018 	lw	a0,24(s8)
+  4351c0:	00002821 	move	a1,zero
+  4351c4:	00403021 	move	a2,v0
+  4351c8:	8f828930 	lw	v0,-30416(gp)
+  4351cc:	0040c821 	move	t9,v0
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	nop
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	move	a0,v0
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	move	t9,v0
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	nop
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	nop
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	move	a0,v0
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	move	a0,v0
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	li	a2,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	move	a0,v0
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	move	t9,v0
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	nop
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+  4352c0:	27c20024 	addiu	v0,s8,36
+  4352c4:	00402021 	move	a0,v0
+  4352c8:	8f828700 	lw	v0,-30976(gp)
+  4352cc:	0040c821 	move	t9,v0
+  4352d0:	0320f809 	jalr	t9
+  4352d4:	00000000 	nop
+  4352d8:	8fdc0010 	lw	gp,16(s8)
+  4352dc:	00401821 	move	v1,v0
+  4352e0:	8fc20058 	lw	v0,88(s8)
+  4352e4:	ac430000 	sw	v1,0(v0)
+  4352e8:	8fc20058 	lw	v0,88(s8)
+  4352ec:	8c420000 	lw	v0,0(v0)
+  4352f0:	00402021 	move	a0,v0
+  4352f4:	8f828904 	lw	v0,-30460(gp)
+  4352f8:	0040c821 	move	t9,v0
+  4352fc:	0320f809 	jalr	t9
+  435300:	00000000 	nop
+  435304:	8fdc0010 	lw	gp,16(s8)
+  435308:	00401821 	move	v1,v0
+  43530c:	8fc20054 	lw	v0,84(s8)
+  435310:	ac430000 	sw	v1,0(v0)
+  435314:	8fc20054 	lw	v0,84(s8)
+  435318:	8c420000 	lw	v0,0(v0)
+  43531c:	14400017 	bnez	v0,43537c <confctl_get_host_list@@Base+0x3e0>
+  435320:	00000000 	nop
+  435324:	8f82822c 	lw	v0,-32212(gp)
+  435328:	24502404 	addiu	s0,v0,9220
+  43532c:	8f828684 	lw	v0,-31100(gp)
+  435330:	0040c821 	move	t9,v0
+  435334:	0320f809 	jalr	t9
+  435338:	00000000 	nop
+  43533c:	8fdc0010 	lw	gp,16(s8)
+  435340:	8c420000 	lw	v0,0(v0)
+  435344:	02002021 	move	a0,s0
+  435348:	8f83822c 	lw	v1,-32212(gp)
+  43534c:	24652f98 	addiu	a1,v1,12184
+  435350:	240607c2 	li	a2,1986
+  435354:	00403821 	move	a3,v0
+  435358:	8f8287c8 	lw	v0,-30776(gp)
+  43535c:	0040c821 	move	t9,v0
+  435360:	0320f809 	jalr	t9
+  435364:	00000000 	nop
+  435368:	8fdc0010 	lw	gp,16(s8)
+  43536c:	2402ffff 	li	v0,-1
+  435370:	afc2001c 	sw	v0,28(s8)
+  435374:	1000000e 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  435378:	00000000 	nop
+  43537c:	8fc20054 	lw	v0,84(s8)
+  435380:	8c420000 	lw	v0,0(v0)
+  435384:	27c30024 	addiu	v1,s8,36
+  435388:	00602021 	move	a0,v1
+  43538c:	00402821 	move	a1,v0
+  435390:	8f828740 	lw	v0,-30912(gp)
+  435394:	0040c821 	move	t9,v0
+  435398:	0320f809 	jalr	t9
+  43539c:	00000000 	nop
+  4353a0:	8fdc0010 	lw	gp,16(s8)
+  4353a4:	10000002 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  4353a8:	00000000 	nop
+  4353ac:	00000000 	nop
+  4353b0:	27c20024 	addiu	v0,s8,36
+  4353b4:	00402021 	move	a0,v0
+  4353b8:	8f82832c 	lw	v0,-31956(gp)
+  4353bc:	244239e4 	addiu	v0,v0,14820
+  4353c0:	0040c821 	move	t9,v0
+  4353c4:	0320f809 	jalr	t9
+  4353c8:	00000000 	nop
+  4353cc:	8fdc0010 	lw	gp,16(s8)
+  4353d0:	8fc20034 	lw	v0,52(s8)
+  4353d4:	00402021 	move	a0,v0
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353dc:	0040c821 	move	t9,v0
+  4353e0:	0320f809 	jalr	t9
+  4353e4:	00000000 	nop
+  4353e8:	8fdc0010 	lw	gp,16(s8)
+  4353ec:	8fc40018 	lw	a0,24(s8)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4353f4:	0040c821 	move	t9,v0
+  4353f8:	0320f809 	jalr	t9
+  4353fc:	00000000 	nop
+  435400:	8fdc0010 	lw	gp,16(s8)
+  435404:	8fc2001c 	lw	v0,28(s8)
+  435408:	03c0e821 	move	sp,s8
+  43540c:	8fbf0044 	lw	ra,68(sp)
+  435410:	8fbe0040 	lw	s8,64(sp)
+  435414:	8fb0003c 	lw	s0,60(sp)
+  435418:	27bd0048 	addiu	sp,sp,72
+  43541c:	03e00008 	jr	ra
+  435420:	00000000 	nop
+
+00435424 <confctl_get_remark_list@@Base>:
+  435424:	3c1c0006 	lui	gp,0x6
+  435428:	279c1d3c 	addiu	gp,gp,7484
+  43542c:	0399e021 	addu	gp,gp,t9
+  435430:	27bdfc98 	addiu	sp,sp,-872
+  435434:	afbf0364 	sw	ra,868(sp)
+  435438:	afbe0360 	sw	s8,864(sp)
+  43543c:	afb0035c 	sw	s0,860(sp)
+  435440:	03a0f021 	move	s8,sp
+  435444:	afbc0010 	sw	gp,16(sp)
+  435448:	afc40368 	sw	a0,872(s8)
+  43544c:	afc5036c 	sw	a1,876(s8)
+  435450:	afc60370 	sw	a2,880(s8)
+  435454:	afc70374 	sw	a3,884(s8)
+  435458:	8fc20374 	lw	v0,884(s8)
+  43545c:	10400004 	beqz	v0,435470 <confctl_get_remark_list@@Base+0x4c>
+  435460:	00000000 	nop
+  435464:	8fc20378 	lw	v0,888(s8)
+  435468:	1440000f 	bnez	v0,4354a8 <confctl_get_remark_list@@Base+0x84>
+  43546c:	00000000 	nop
+  435470:	8f82822c 	lw	v0,-32212(gp)
+  435474:	2442237c 	addiu	v0,v0,9084
+  435478:	00402021 	move	a0,v0
+  43547c:	8f82822c 	lw	v0,-32212(gp)
+  435480:	24452f80 	addiu	a1,v0,12160
+  435484:	240607e6 	li	a2,2022
+  435488:	8f8287c8 	lw	v0,-30776(gp)
+  43548c:	0040c821 	move	t9,v0
+  435490:	0320f809 	jalr	t9
+  435494:	00000000 	nop
+  435498:	8fdc0010 	lw	gp,16(s8)
+  43549c:	2402ffff 	li	v0,-1
+  4354a0:	10000163 	b	435a30 <confctl_get_remark_list@@Base+0x60c>
+  4354a4:	00000000 	nop
+  4354a8:	8f828914 	lw	v0,-30444(gp)
+  4354ac:	afc20028 	sw	v0,40(s8)
+  4354b0:	afc0002c 	sw	zero,44(s8)
+  4354b4:	afc00030 	sw	zero,48(s8)
+  4354b8:	afc00034 	sw	zero,52(s8)
+  4354bc:	afc00038 	sw	zero,56(s8)
+  4354c0:	afc0003c 	sw	zero,60(s8)
+  4354c4:	00001021 	move	v0,zero
+  4354c8:	00001821 	move	v1,zero
+  4354cc:	afc20040 	sw	v0,64(s8)
+  4354d0:	afc30044 	sw	v1,68(s8)
+  4354d4:	afc0001c 	sw	zero,28(s8)
+  4354d8:	27c30048 	addiu	v1,s8,72
+  4354dc:	24020210 	li	v0,528
+  4354e0:	00602021 	move	a0,v1
+  4354e4:	00002821 	move	a1,zero
+  4354e8:	00403021 	move	a2,v0
+  4354ec:	8f828930 	lw	v0,-30416(gp)
+  4354f0:	0040c821 	move	t9,v0
+  4354f4:	0320f809 	jalr	t9
+  4354f8:	00000000 	nop
+  4354fc:	8fdc0010 	lw	gp,16(s8)
+  435500:	27c30258 	addiu	v1,s8,600
+  435504:	24020100 	li	v0,256
+  435508:	00602021 	move	a0,v1
+  43550c:	00002821 	move	a1,zero
+  435510:	00403021 	move	a2,v0
+  435514:	8f828930 	lw	v0,-30416(gp)
+  435518:	0040c821 	move	t9,v0
+  43551c:	0320f809 	jalr	t9
+  435520:	00000000 	nop
+  435524:	8fdc0010 	lw	gp,16(s8)
+  435528:	27c20048 	addiu	v0,s8,72
+  43552c:	00402021 	move	a0,v0
+  435530:	8f828238 	lw	v0,-32200(gp)
+  435534:	0040c821 	move	t9,v0
+  435538:	0320f809 	jalr	t9
+  43553c:	00000000 	nop
+  435540:	8fdc0010 	lw	gp,16(s8)
+  435544:	27c20048 	addiu	v0,s8,72
+  435548:	00402021 	move	a0,v0
+  43554c:	8f82823c 	lw	v0,-32196(gp)
+  435550:	0040c821 	move	t9,v0
+  435554:	0320f809 	jalr	t9
+  435558:	00000000 	nop
+  43555c:	8fdc0010 	lw	gp,16(s8)
+  435560:	8fc20254 	lw	v0,596(s8)
+  435564:	afc20034 	sw	v0,52(s8)
+  435568:	8fc20034 	lw	v0,52(s8)
+  43556c:	1440003d 	bnez	v0,435664 <confctl_get_remark_list@@Base+0x240>
+  435570:	00000000 	nop
+  435574:	afc00038 	sw	zero,56(s8)
+  435578:	27c20028 	addiu	v0,s8,40
+  43557c:	00402021 	move	a0,v0
+  435580:	8f8288e8 	lw	v0,-30488(gp)
+  435584:	0040c821 	move	t9,v0
+  435588:	0320f809 	jalr	t9
+  43558c:	00000000 	nop
+  435590:	8fdc0010 	lw	gp,16(s8)
+  435594:	00401821 	move	v1,v0
+  435598:	8fc20378 	lw	v0,888(s8)
+  43559c:	ac430000 	sw	v1,0(v0)
+  4355a0:	8fc20378 	lw	v0,888(s8)
+  4355a4:	8c420000 	lw	v0,0(v0)
+  4355a8:	00402021 	move	a0,v0
+  4355ac:	8f828904 	lw	v0,-30460(gp)
+  4355b0:	0040c821 	move	t9,v0
+  4355b4:	0320f809 	jalr	t9
+  4355b8:	00000000 	nop
+  4355bc:	8fdc0010 	lw	gp,16(s8)
+  4355c0:	00401821 	move	v1,v0
+  4355c4:	8fc20374 	lw	v0,884(s8)
+  4355c8:	ac430000 	sw	v1,0(v0)
+  4355cc:	8fc20374 	lw	v0,884(s8)
+  4355d0:	8c420000 	lw	v0,0(v0)
+  4355d4:	14400016 	bnez	v0,435630 <confctl_get_remark_list@@Base+0x20c>
+  4355d8:	00000000 	nop
+  4355dc:	8f82822c 	lw	v0,-32212(gp)
+  4355e0:	24502404 	addiu	s0,v0,9220
+  4355e4:	8f828684 	lw	v0,-31100(gp)
+  4355e8:	0040c821 	move	t9,v0
+  4355ec:	0320f809 	jalr	t9
+  4355f0:	00000000 	nop
+  4355f4:	8fdc0010 	lw	gp,16(s8)
+  4355f8:	8c420000 	lw	v0,0(v0)
+  4355fc:	02002021 	move	a0,s0
+  435600:	8f83822c 	lw	v1,-32212(gp)
+  435604:	24652f80 	addiu	a1,v1,12160
+  435608:	24060800 	li	a2,2048
+  43560c:	00403821 	move	a3,v0
+  435610:	8f8287c8 	lw	v0,-30776(gp)
+  435614:	0040c821 	move	t9,v0
+  435618:	0320f809 	jalr	t9
+  43561c:	00000000 	nop
+  435620:	8fdc0010 	lw	gp,16(s8)
+  435624:	2402ffff 	li	v0,-1
+  435628:	10000101 	b	435a30 <confctl_get_remark_list@@Base+0x60c>
+  43562c:	00000000 	nop
+  435630:	8fc20374 	lw	v0,884(s8)
+  435634:	8c420000 	lw	v0,0(v0)
+  435638:	27c30028 	addiu	v1,s8,40
+  43563c:	00602021 	move	a0,v1
+  435640:	00402821 	move	a1,v0
+  435644:	8f8287e0 	lw	v0,-30752(gp)
+  435648:	0040c821 	move	t9,v0
+  43564c:	0320f809 	jalr	t9
+  435650:	00000000 	nop
+  435654:	8fdc0010 	lw	gp,16(s8)
+  435658:	00001021 	move	v0,zero
+  43565c:	100000f4 	b	435a30 <confctl_get_remark_list@@Base+0x60c>
+  435660:	00000000 	nop
+  435664:	8fc20034 	lw	v0,52(s8)
+  435668:	afc20020 	sw	v0,32(s8)
+  43566c:	8fc20020 	lw	v0,32(s8)
+  435670:	00021080 	sll	v0,v0,0x2
+  435674:	00402021 	move	a0,v0
+  435678:	8f828904 	lw	v0,-30460(gp)
+  43567c:	0040c821 	move	t9,v0
+  435680:	0320f809 	jalr	t9
+  435684:	00000000 	nop
+  435688:	8fdc0010 	lw	gp,16(s8)
+  43568c:	afc20038 	sw	v0,56(s8)
+  435690:	8fc20038 	lw	v0,56(s8)
+  435694:	1440001d 	bnez	v0,43570c <confctl_get_remark_list@@Base+0x2e8>
+  435698:	00000000 	nop
+  43569c:	8f82822c 	lw	v0,-32212(gp)
+  4356a0:	24502404 	addiu	s0,v0,9220
+===== ALL CONFCLI CMD_PUB/CMD_SUB CALLS WITH NEARBY ASCII OFFSETS =====
+697-  4052cc:	afc20094 	sw	v0,148(s8)
+698-  4052d0:	24020448 	li	v0,1096
+699-  4052d4:	afc2001c 	sw	v0,28(s8)
+700-  4052d8:	8fc2001c 	lw	v0,28(s8)
+701-  4052dc:	00402021 	move	a0,v0
+702-  4052e0:	8f828594 	lw	v0,-31340(gp)
+703-  4052e4:	0040c821 	move	t9,v0
+704-  4052e8:	0320f809 	jalr	t9
+705-  4052ec:	00000000 	nop
+706-  4052f0:	8fdc0010 	lw	gp,16(s8)
+707-  4052f4:	afc20020 	sw	v0,32(s8)
+708-  4052f8:	8fc20020 	lw	v0,32(s8)
+709-  4052fc:	1440000e 	bnez	v0,405338 <_td_snprintf@@Base+0x908>
+710-  405300:	00000000 	nop
+711-  405304:	24040003 	li	a0,3
+712-  405308:	8f828024 	lw	v0,-32732(gp)
+713-  40530c:	2445239c 	addiu	a1,v0,9116
+714-  405310:	2406005f 	li	a2,95
+715-  405314:	8f828024 	lw	v0,-32732(gp)
+716-  405318:	244723ac 	addiu	a3,v0,9132
+717-  40531c:	8f82802c 	lw	v0,-32724(gp)
+718-  405320:	0040c821 	move	t9,v0
+719-  405324:	0320f809 	jalr	t9
+720-  405328:	00000000 	nop
+721-  40532c:	8fdc0010 	lw	gp,16(s8)
+722-  405330:	1000003c 	b	405424 <_td_snprintf@@Base+0x9f4>
+723-  405334:	00000000 	nop
+724-  405338:	8fc20020 	lw	v0,32(s8)
+725-  40533c:	afc20018 	sw	v0,24(s8)
+726-  405340:	8fc30018 	lw	v1,24(s8)
+727-  405344:	8f828024 	lw	v0,-32732(gp)
+728-  405348:	244223cc 	addiu	v0,v0,9164
+729-  40534c:	00602021 	move	a0,v1
+730-  405350:	00402821 	move	a1,v0
+731-  405354:	2406000b 	li	a2,11
+732-  405358:	8f828338 	lw	v0,-31944(gp)
+733-  40535c:	0040c821 	move	t9,v0
+734-  405360:	0320f809 	jalr	t9
+735-  405364:	00000000 	nop
+736-  405368:	8fdc0010 	lw	gp,16(s8)
+737-  40536c:	8fc20018 	lw	v0,24(s8)
+738-  405370:	24030424 	li	v1,1060
+739-  405374:	a8430023 	swl	v1,35(v0)
+740-  405378:	b8430020 	swr	v1,32(v0)
+741-  40537c:	8fc20018 	lw	v0,24(s8)
+742-  405380:	24430024 	addiu	v1,v0,36
+743-  405384:	27c20024 	addiu	v0,s8,36
+744-  405388:	00602021 	move	a0,v1
+745-  40538c:	00402821 	move	a1,v0
+746-  405390:	24060424 	li	a2,1060
+747-  405394:	8f828338 	lw	v0,-31944(gp)
+748-  405398:	0040c821 	move	t9,v0
+749-  40539c:	0320f809 	jalr	t9
+750-  4053a0:	00000000 	nop
+751-  4053a4:	8fdc0010 	lw	gp,16(s8)
+752-  4053a8:	8fc2001c 	lw	v0,28(s8)
+753-  4053ac:	8f838024 	lw	v1,-32732(gp)
+754-  4053b0:	246423d8 	addiu	a0,v1,9176
+755-  4053b4:	8fc50020 	lw	a1,32(s8)
+756-  4053b8:	00403021 	move	a2,v0
+757:  4053bc:	8f828614 	lw	v0,-31212(gp)
+758-  4053c0:	0040c821 	move	t9,v0
+759-  4053c4:	0320f809 	jalr	t9
+760-  4053c8:	00000000 	nop
+761-  4053cc:	8fdc0010 	lw	gp,16(s8)
+762-  4053d0:	8fc40020 	lw	a0,32(s8)
+763-  4053d4:	8f828390 	lw	v0,-31856(gp)
+764-  4053d8:	0040c821 	move	t9,v0
+765-  4053dc:	0320f809 	jalr	t9
+766-  4053e0:	00000000 	nop
+767-  4053e4:	8fdc0010 	lw	gp,16(s8)
+768-  4053e8:	afc00020 	sw	zero,32(s8)
+769-  4053ec:	8f828024 	lw	v0,-32732(gp)
+770-  4053f0:	8c432614 	lw	v1,9748(v0)
+771-  4053f4:	8c422610 	lw	v0,9744(v0)
+772-  4053f8:	00402021 	move	a0,v0
+773-  4053fc:	00602821 	move	a1,v1
+774-  405400:	8f828028 	lw	v0,-32728(gp)
+775-  405404:	24464d4c 	addiu	a2,v0,19788
+776-  405408:	00003821 	move	a3,zero
+777-  40540c:	8f828410 	lw	v0,-31728(gp)
+778-  405410:	0040c821 	move	t9,v0
+779-  405414:	0320f809 	jalr	t9
+780-  405418:	00000000 	nop
+781-  40541c:	8fdc0010 	lw	gp,16(s8)
+782-  405420:	00000000 	nop
+783-  405424:	03c0e821 	move	sp,s8
+784-  405428:	8fbf06dc 	lw	ra,1756(sp)
+785-  40542c:	8fbe06d8 	lw	s8,1752(sp)
+786-  405430:	27bd06e0 	addiu	sp,sp,1760
+787-  405434:	03e00008 	jr	ra
+788-  405438:	00000000 	nop
+789-  40543c:	3c1c0005 	lui	gp,0x5
+790-  405440:	279c6d04 	addiu	gp,gp,27908
+791-  405444:	0399e021 	addu	gp,gp,t9
+792-  405448:	27bdfe80 	addiu	sp,sp,-384
+793-  40544c:	afbf017c 	sw	ra,380(sp)
+794-  405450:	afbe0178 	sw	s8,376(sp)
+795-  405454:	afb10174 	sw	s1,372(sp)
+796-  405458:	afb00170 	sw	s0,368(sp)
+797-  40545c:	03a0f021 	move	s8,sp
+798-  405460:	afbc0010 	sw	gp,16(sp)
+799-  405464:	afc40180 	sw	a0,384(s8)
+800-  405468:	afc00024 	sw	zero,36(s8)
+801-  40546c:	afc00020 	sw	zero,32(s8)
+802-  405470:	27c30028 	addiu	v1,s8,40
+803-  405474:	24020040 	li	v0,64
+804-  405478:	00602021 	move	a0,v1
+805-  40547c:	00002821 	move	a1,zero
+806-  405480:	00403021 	move	a2,v0
+807-  405484:	8f8285ac 	lw	v0,-31316(gp)
+808-  405488:	0040c821 	move	t9,v0
+809-  40548c:	0320f809 	jalr	t9
+810-  405490:	00000000 	nop
+811-  405494:	8fdc0010 	lw	gp,16(s8)
+812-  405498:	27c30068 	addiu	v1,s8,104
+813-  40549c:	24020040 	li	v0,64
+814-  4054a0:	00602021 	move	a0,v1
+815-  4054a4:	00002821 	move	a1,zero
+816-  4054a8:	00403021 	move	a2,v0
+817-  4054ac:	8f8285ac 	lw	v0,-31316(gp)
+818-  4054b0:	0040c821 	move	t9,v0
+819-  4054b4:	0320f809 	jalr	t9
+820-  4054b8:	00000000 	nop
+821-  4054bc:	8fdc0010 	lw	gp,16(s8)
+822-  4054c0:	27c300a8 	addiu	v1,s8,168
+823-  4054c4:	24020040 	li	v0,64
+824-  4054c8:	00602021 	move	a0,v1
+825-  4054cc:	00002821 	move	a1,zero
+826-  4054d0:	00403021 	move	a2,v0
+827-  4054d4:	8f8285ac 	lw	v0,-31316(gp)
+828-  4054d8:	0040c821 	move	t9,v0
+829-  4054dc:	0320f809 	jalr	t9
+830-  4054e0:	00000000 	nop
+831-  4054e4:	8fdc0010 	lw	gp,16(s8)
+832-  4054e8:	afc000e8 	sw	zero,232(s8)
+833-  4054ec:	afc00018 	sw	zero,24(s8)
+834-  4054f0:	27c300ec 	addiu	v1,s8,236
+835-  4054f4:	24020084 	li	v0,132
+836-  4054f8:	00602021 	move	a0,v1
+837-  4054fc:	00002821 	move	a1,zero
+838-  405500:	00403021 	move	a2,v0
+839-  405504:	8f8285ac 	lw	v0,-31316(gp)
+840-  405508:	0040c821 	move	t9,v0
+841-  40550c:	0320f809 	jalr	t9
+842-  405510:	00000000 	nop
+843-  405514:	8fdc0010 	lw	gp,16(s8)
+844-  405518:	27c200ec 	addiu	v0,s8,236
+845-  40551c:	00402021 	move	a0,v0
+846-  405520:	00002821 	move	a1,zero
+847-  405524:	24060084 	li	a2,132
+--
+986-  405750:	8fdc0010 	lw	gp,16(s8)
+987-  405754:	240200a8 	li	v0,168
+988-  405758:	afc20020 	sw	v0,32(s8)
+989-  40575c:	8fc20020 	lw	v0,32(s8)
+990-  405760:	00402021 	move	a0,v0
+991-  405764:	8f828594 	lw	v0,-31340(gp)
+992-  405768:	0040c821 	move	t9,v0
+993-  40576c:	0320f809 	jalr	t9
+994-  405770:	00000000 	nop
+995-  405774:	8fdc0010 	lw	gp,16(s8)
+996-  405778:	afc20024 	sw	v0,36(s8)
+997-  40577c:	8fc20024 	lw	v0,36(s8)
+998-  405780:	1440000e 	bnez	v0,4057bc <_td_snprintf@@Base+0xd8c>
+999-  405784:	00000000 	nop
+1000-  405788:	24040003 	li	a0,3
+1001-  40578c:	8f828024 	lw	v0,-32732(gp)
+1002-  405790:	2445239c 	addiu	a1,v0,9116
+1003-  405794:	240600ab 	li	a2,171
+1004-  405798:	8f828024 	lw	v0,-32732(gp)
+1005-  40579c:	244723ac 	addiu	a3,v0,9132
+1006-  4057a0:	8f82802c 	lw	v0,-32724(gp)
+1007-  4057a4:	0040c821 	move	t9,v0
+1008-  4057a8:	0320f809 	jalr	t9
+1009-  4057ac:	00000000 	nop
+1010-  4057b0:	8fdc0010 	lw	gp,16(s8)
+1011-  4057b4:	1000003c 	b	4058a8 <_td_snprintf@@Base+0xe78>
+1012-  4057b8:	00000000 	nop
+1013-  4057bc:	8fc20024 	lw	v0,36(s8)
+1014-  4057c0:	afc20018 	sw	v0,24(s8)
+1015-  4057c4:	8fc30018 	lw	v1,24(s8)
+1016-  4057c8:	8f828024 	lw	v0,-32732(gp)
+1017-  4057cc:	24422430 	addiu	v0,v0,9264
+1018-  4057d0:	00602021 	move	a0,v1
+1019-  4057d4:	00402821 	move	a1,v0
+1020-  4057d8:	2406000c 	li	a2,12
+1021-  4057dc:	8f828338 	lw	v0,-31944(gp)
+1022-  4057e0:	0040c821 	move	t9,v0
+1023-  4057e4:	0320f809 	jalr	t9
+1024-  4057e8:	00000000 	nop
+1025-  4057ec:	8fdc0010 	lw	gp,16(s8)
+1026-  4057f0:	8fc20018 	lw	v0,24(s8)
+1027-  4057f4:	24030084 	li	v1,132
+1028-  4057f8:	a8430023 	swl	v1,35(v0)
+1029-  4057fc:	b8430020 	swr	v1,32(v0)
+1030-  405800:	8fc20018 	lw	v0,24(s8)
+1031-  405804:	24430024 	addiu	v1,v0,36
+1032-  405808:	27c200ec 	addiu	v0,s8,236
+1033-  40580c:	00602021 	move	a0,v1
+1034-  405810:	00402821 	move	a1,v0
+1035-  405814:	24060084 	li	a2,132
+1036-  405818:	8f828338 	lw	v0,-31944(gp)
+1037-  40581c:	0040c821 	move	t9,v0
+1038-  405820:	0320f809 	jalr	t9
+1039-  405824:	00000000 	nop
+1040-  405828:	8fdc0010 	lw	gp,16(s8)
+1041-  40582c:	8fc20020 	lw	v0,32(s8)
+1042-  405830:	8f838024 	lw	v1,-32732(gp)
+1043-  405834:	246423d8 	addiu	a0,v1,9176
+1044-  405838:	8fc50024 	lw	a1,36(s8)
+1045-  40583c:	00403021 	move	a2,v0
+1046:  405840:	8f828614 	lw	v0,-31212(gp)
+1047-  405844:	0040c821 	move	t9,v0
+1048-  405848:	0320f809 	jalr	t9
+1049-  40584c:	00000000 	nop
+1050-  405850:	8fdc0010 	lw	gp,16(s8)
+1051-  405854:	8fc40024 	lw	a0,36(s8)
+1052-  405858:	8f828390 	lw	v0,-31856(gp)
+1053-  40585c:	0040c821 	move	t9,v0
+1054-  405860:	0320f809 	jalr	t9
+1055-  405864:	00000000 	nop
+1056-  405868:	8fdc0010 	lw	gp,16(s8)
+1057-  40586c:	afc00024 	sw	zero,36(s8)
+1058-  405870:	8f828024 	lw	v0,-32732(gp)
+1059-  405874:	8c432614 	lw	v1,9748(v0)
+1060-  405878:	8c422610 	lw	v0,9744(v0)
+1061-  40587c:	00402021 	move	a0,v0
+1062-  405880:	00602821 	move	a1,v1
+1063-  405884:	8f828028 	lw	v0,-32728(gp)
+1064-  405888:	2446543c 	addiu	a2,v0,21564
+1065-  40588c:	00003821 	move	a3,zero
+1066-  405890:	8f828410 	lw	v0,-31728(gp)
+1067-  405894:	0040c821 	move	t9,v0
+1068-  405898:	0320f809 	jalr	t9
+1069-  40589c:	00000000 	nop
+1070-  4058a0:	8fdc0010 	lw	gp,16(s8)
+1071-  4058a4:	00000000 	nop
+1072-  4058a8:	03c0e821 	move	sp,s8
+1073-  4058ac:	8fbf017c 	lw	ra,380(sp)
+1074-  4058b0:	8fbe0178 	lw	s8,376(sp)
+1075-  4058b4:	8fb10174 	lw	s1,372(sp)
+1076-  4058b8:	8fb00170 	lw	s0,368(sp)
+1077-  4058bc:	27bd0180 	addiu	sp,sp,384
+1078-  4058c0:	03e00008 	jr	ra
+1079-  4058c4:	00000000 	nop
+1080-  4058c8:	3c1c0005 	lui	gp,0x5
+1081-  4058cc:	279c6878 	addiu	gp,gp,26744
+1082-  4058d0:	0399e021 	addu	gp,gp,t9
+1083-  4058d4:	27bdfe10 	addiu	sp,sp,-496
+1084-  4058d8:	afbf01ec 	sw	ra,492(sp)
+1085-  4058dc:	afbe01e8 	sw	s8,488(sp)
+1086-  4058e0:	03a0f021 	move	s8,sp
+1087-  4058e4:	afbc0010 	sw	gp,16(sp)
+1088-  4058e8:	afc401f0 	sw	a0,496(s8)
+1089-  4058ec:	afc00030 	sw	zero,48(s8)
+1090-  4058f0:	afc0002c 	sw	zero,44(s8)
+1091-  4058f4:	27c30034 	addiu	v1,s8,52
+1092-  4058f8:	24020080 	li	v0,128
+1093-  4058fc:	00602021 	move	a0,v1
+1094-  405900:	00002821 	move	a1,zero
+1095-  405904:	00403021 	move	a2,v0
+1096-  405908:	8f8285ac 	lw	v0,-31316(gp)
+1097-  40590c:	0040c821 	move	t9,v0
+1098-  405910:	0320f809 	jalr	t9
+1099-  405914:	00000000 	nop
+1100-  405918:	8fdc0010 	lw	gp,16(s8)
+1101-  40591c:	27c300b4 	addiu	v1,s8,180
+1102-  405920:	24020080 	li	v0,128
+1103-  405924:	00602021 	move	a0,v1
+1104-  405928:	00002821 	move	a1,zero
+1105-  40592c:	00403021 	move	a2,v0
+1106-  405930:	8f8285ac 	lw	v0,-31316(gp)
+1107-  405934:	0040c821 	move	t9,v0
+1108-  405938:	0320f809 	jalr	t9
+1109-  40593c:	00000000 	nop
+1110-  405940:	8fdc0010 	lw	gp,16(s8)
+1111-  405944:	afc00134 	sw	zero,308(s8)
+1112-  405948:	afc00138 	sw	zero,312(s8)
+1113-  40594c:	afc0013c 	sw	zero,316(s8)
+1114-  405950:	afc00140 	sw	zero,320(s8)
+1115-  405954:	a7c00144 	sh	zero,324(s8)
+1116-  405958:	27c30148 	addiu	v1,s8,328
+1117-  40595c:	24020080 	li	v0,128
+1118-  405960:	00602021 	move	a0,v1
+1119-  405964:	00002821 	move	a1,zero
+1120-  405968:	00403021 	move	a2,v0
+1121-  40596c:	8f8285ac 	lw	v0,-31316(gp)
+1122-  405970:	0040c821 	move	t9,v0
+1123-  405974:	0320f809 	jalr	t9
+1124-  405978:	00000000 	nop
+1125-  40597c:	8fdc0010 	lw	gp,16(s8)
+1126-  405980:	afc00028 	sw	zero,40(s8)
+1127-  405984:	afc00024 	sw	zero,36(s8)
+1128-  405988:	afc00020 	sw	zero,32(s8)
+1129-  40598c:	afc001c8 	sw	zero,456(s8)
+1130-  405990:	afc001cc 	sw	zero,460(s8)
+1131-  405994:	afc001d0 	sw	zero,464(s8)
+1132-  405998:	afc001d4 	sw	zero,468(s8)
+1133-  40599c:	afc001d8 	sw	zero,472(s8)
+1134-  4059a0:	afc001dc 	sw	zero,476(s8)
+1135-  4059a4:	afc001e0 	sw	zero,480(s8)
+1136-  4059a8:	afc001e4 	sw	zero,484(s8)
+--
+1259-  405b94:	8fdc0010 	lw	gp,16(s8)
+1260-  405b98:	24020044 	li	v0,68
+1261-  405b9c:	afc20024 	sw	v0,36(s8)
+1262-  405ba0:	8fc20024 	lw	v0,36(s8)
+1263-  405ba4:	00402021 	move	a0,v0
+1264-  405ba8:	8f828594 	lw	v0,-31340(gp)
+1265-  405bac:	0040c821 	move	t9,v0
+1266-  405bb0:	0320f809 	jalr	t9
+1267-  405bb4:	00000000 	nop
+1268-  405bb8:	8fdc0010 	lw	gp,16(s8)
+1269-  405bbc:	afc2001c 	sw	v0,28(s8)
+1270-  405bc0:	8fc2001c 	lw	v0,28(s8)
+1271-  405bc4:	1440000e 	bnez	v0,405c00 <_td_snprintf@@Base+0x11d0>
+1272-  405bc8:	00000000 	nop
+1273-  405bcc:	24040003 	li	a0,3
+1274-  405bd0:	8f828024 	lw	v0,-32732(gp)
+1275-  405bd4:	2445239c 	addiu	a1,v0,9116
+1276-  405bd8:	240600f7 	li	a2,247
+1277-  405bdc:	8f828024 	lw	v0,-32732(gp)
+1278-  405be0:	24472474 	addiu	a3,v0,9332
+1279-  405be4:	8f82802c 	lw	v0,-32724(gp)
+1280-  405be8:	0040c821 	move	t9,v0
+1281-  405bec:	0320f809 	jalr	t9
+1282-  405bf0:	00000000 	nop
+1283-  405bf4:	8fdc0010 	lw	gp,16(s8)
+1284-  405bf8:	1000003b 	b	405ce8 <_td_snprintf@@Base+0x12b8>
+1285-  405bfc:	00000000 	nop
+1286-  405c00:	8fc2001c 	lw	v0,28(s8)
+1287-  405c04:	afc20018 	sw	v0,24(s8)
+1288-  405c08:	8fc30018 	lw	v1,24(s8)
+1289-  405c0c:	8f828024 	lw	v0,-32732(gp)
+1290-  405c10:	2442248c 	addiu	v0,v0,9356
+1291-  405c14:	00602021 	move	a0,v1
+1292-  405c18:	00402821 	move	a1,v0
+1293-  405c1c:	24060011 	li	a2,17
+1294-  405c20:	8f828338 	lw	v0,-31944(gp)
+1295-  405c24:	0040c821 	move	t9,v0
+1296-  405c28:	0320f809 	jalr	t9
+1297-  405c2c:	00000000 	nop
+1298-  405c30:	8fdc0010 	lw	gp,16(s8)
+1299-  405c34:	8fc20018 	lw	v0,24(s8)
+1300-  405c38:	24030020 	li	v1,32
+1301-  405c3c:	a8430023 	swl	v1,35(v0)
+1302-  405c40:	b8430020 	swr	v1,32(v0)
+1303-  405c44:	8fc20018 	lw	v0,24(s8)
+1304-  405c48:	24430024 	addiu	v1,v0,36
+1305-  405c4c:	27c201c8 	addiu	v0,s8,456
+1306-  405c50:	00602021 	move	a0,v1
+1307-  405c54:	00402821 	move	a1,v0
+1308-  405c58:	24060020 	li	a2,32
+1309-  405c5c:	8f828338 	lw	v0,-31944(gp)
+1310-  405c60:	0040c821 	move	t9,v0
+1311-  405c64:	0320f809 	jalr	t9
+1312-  405c68:	00000000 	nop
+1313-  405c6c:	8fdc0010 	lw	gp,16(s8)
+1314-  405c70:	8fc20024 	lw	v0,36(s8)
+1315-  405c74:	8f838024 	lw	v1,-32732(gp)
+1316-  405c78:	246423d8 	addiu	a0,v1,9176
+1317-  405c7c:	8fc5001c 	lw	a1,28(s8)
+1318-  405c80:	00403021 	move	a2,v0
+1319:  405c84:	8f828614 	lw	v0,-31212(gp)
+1320-  405c88:	0040c821 	move	t9,v0
+1321-  405c8c:	0320f809 	jalr	t9
+1322-  405c90:	00000000 	nop
+1323-  405c94:	8fdc0010 	lw	gp,16(s8)
+1324-  405c98:	8fc4001c 	lw	a0,28(s8)
+1325-  405c9c:	8f828390 	lw	v0,-31856(gp)
+1326-  405ca0:	0040c821 	move	t9,v0
+1327-  405ca4:	0320f809 	jalr	t9
+1328-  405ca8:	00000000 	nop
+1329-  405cac:	8fdc0010 	lw	gp,16(s8)
+1330-  405cb0:	afc0001c 	sw	zero,28(s8)
+1331-  405cb4:	8f828024 	lw	v0,-32732(gp)
+1332-  405cb8:	8c432614 	lw	v1,9748(v0)
+1333-  405cbc:	8c422610 	lw	v0,9744(v0)
+1334-  405cc0:	00402021 	move	a0,v0
+1335-  405cc4:	00602821 	move	a1,v1
+1336-  405cc8:	8f828028 	lw	v0,-32728(gp)
+1337-  405ccc:	244658c8 	addiu	a2,v0,22728
+1338-  405cd0:	00003821 	move	a3,zero
+1339-  405cd4:	8f828410 	lw	v0,-31728(gp)
+1340-  405cd8:	0040c821 	move	t9,v0
+1341-  405cdc:	0320f809 	jalr	t9
+1342-  405ce0:	00000000 	nop
+1343-  405ce4:	8fdc0010 	lw	gp,16(s8)
+1344-  405ce8:	03c0e821 	move	sp,s8
+1345-  405cec:	8fbf01ec 	lw	ra,492(sp)
+1346-  405cf0:	8fbe01e8 	lw	s8,488(sp)
+1347-  405cf4:	27bd01f0 	addiu	sp,sp,496
+1348-  405cf8:	03e00008 	jr	ra
+1349-  405cfc:	00000000 	nop
+1350-
+1351-00405d00 <check_mpp_highdevice_cfg@@Base>:
+1352-  405d00:	3c1c0005 	lui	gp,0x5
+1353-  405d04:	279c6440 	addiu	gp,gp,25664
+1354-  405d08:	0399e021 	addu	gp,gp,t9
+1355-  405d0c:	27bdff18 	addiu	sp,sp,-232
+1356-  405d10:	afbf00e4 	sw	ra,228(sp)
+1357-  405d14:	afbe00e0 	sw	s8,224(sp)
+1358-  405d18:	03a0f021 	move	s8,sp
+1359-  405d1c:	afbc0010 	sw	gp,16(sp)
+1360-  405d20:	afc0002c 	sw	zero,44(s8)
+1361-  405d24:	afc00030 	sw	zero,48(s8)
+1362-  405d28:	afc00034 	sw	zero,52(s8)
+1363-  405d2c:	afc00038 	sw	zero,56(s8)
+1364-  405d30:	afc0003c 	sw	zero,60(s8)
+1365-  405d34:	afc00040 	sw	zero,64(s8)
+1366-  405d38:	afc00044 	sw	zero,68(s8)
+1367-  405d3c:	afc00048 	sw	zero,72(s8)
+1368-  405d40:	afc0004c 	sw	zero,76(s8)
+1369-  405d44:	afc00050 	sw	zero,80(s8)
+1370-  405d48:	afc00054 	sw	zero,84(s8)
+1371-  405d4c:	afc00058 	sw	zero,88(s8)
+1372-  405d50:	afc0005c 	sw	zero,92(s8)
+1373-  405d54:	afc00060 	sw	zero,96(s8)
+1374-  405d58:	afc00064 	sw	zero,100(s8)
+1375-  405d5c:	afc00068 	sw	zero,104(s8)
+1376-  405d60:	afc00028 	sw	zero,40(s8)
+1377-  405d64:	afc0006c 	sw	zero,108(s8)
+1378-  405d68:	afc00070 	sw	zero,112(s8)
+1379-  405d6c:	afc00074 	sw	zero,116(s8)
+1380-  405d70:	afc00078 	sw	zero,120(s8)
+1381-  405d74:	afc0007c 	sw	zero,124(s8)
+1382-  405d78:	afc00080 	sw	zero,128(s8)
+1383-  405d7c:	afc00084 	sw	zero,132(s8)
+1384-  405d80:	afc00088 	sw	zero,136(s8)
+1385-  405d84:	afc00024 	sw	zero,36(s8)
+1386-  405d88:	afc0008c 	sw	zero,140(s8)
+1387-  405d8c:	afc00090 	sw	zero,144(s8)
+1388-  405d90:	afc00094 	sw	zero,148(s8)
+1389-  405d94:	afc00098 	sw	zero,152(s8)
+1390-  405d98:	afc0009c 	sw	zero,156(s8)
+1391-  405d9c:	afc000a0 	sw	zero,160(s8)
+1392-  405da0:	afc000a4 	sw	zero,164(s8)
+1393-  405da4:	afc000a8 	sw	zero,168(s8)
+1394-  405da8:	afc00020 	sw	zero,32(s8)
+1395-  405dac:	afc0001c 	sw	zero,28(s8)
+1396-  405db0:	afc000ac 	sw	zero,172(s8)
+1397-  405db4:	afc000b0 	sw	zero,176(s8)
+1398-  405db8:	afc000b4 	sw	zero,180(s8)
+1399-  405dbc:	afc000b8 	sw	zero,184(s8)
+1400-  405dc0:	afc000bc 	sw	zero,188(s8)
+1401-  405dc4:	afc000c0 	sw	zero,192(s8)
+1402-  405dc8:	afc000c4 	sw	zero,196(s8)
+1403-  405dcc:	afc000c8 	sw	zero,200(s8)
+1404-  405dd0:	afc000cc 	sw	zero,204(s8)
+1405-  405dd4:	afc000d0 	sw	zero,208(s8)
+1406-  405dd8:	afc000d4 	sw	zero,212(s8)
+1407-  405ddc:	afc000d8 	sw	zero,216(s8)
+1408-  405de0:	afc00018 	sw	zero,24(s8)
+1409-  405de4:	27c200ac 	addiu	v0,s8,172
+--
+1495-  405f3c:	8fdc0010 	lw	gp,16(s8)
+1496-  405f40:	10400011 	beqz	v0,405f88 <check_mpp_highdevice_cfg@@Base+0x288>
+1497-  405f44:	00000000 	nop
+1498-  405f48:	27c2004c 	addiu	v0,s8,76
+1499-  405f4c:	00402021 	move	a0,v0
+1500-  405f50:	8f82838c 	lw	v0,-31860(gp)
+1501-  405f54:	0040c821 	move	t9,v0
+1502-  405f58:	0320f809 	jalr	t9
+1503-  405f5c:	00000000 	nop
+1504-  405f60:	8fdc0010 	lw	gp,16(s8)
+1505-  405f64:	00401821 	move	v1,v0
+1506-  405f68:	24020001 	li	v0,1
+1507-  405f6c:	14620006 	bne	v1,v0,405f88 <check_mpp_highdevice_cfg@@Base+0x288>
+1508-  405f70:	00000000 	nop
+1509-  405f74:	8fc20018 	lw	v0,24(s8)
+1510-  405f78:	24030001 	li	v1,1
+1511-  405f7c:	ac430000 	sw	v1,0(v0)
+1512-  405f80:	10000003 	b	405f90 <check_mpp_highdevice_cfg@@Base+0x290>
+1513-  405f84:	00000000 	nop
+1514-  405f88:	8fc20018 	lw	v0,24(s8)
+1515-  405f8c:	ac400000 	sw	zero,0(v0)
+1516-  405f90:	27c200b4 	addiu	v0,s8,180
+1517-  405f94:	00402021 	move	a0,v0
+1518-  405f98:	8f82838c 	lw	v0,-31860(gp)
+1519-  405f9c:	0040c821 	move	t9,v0
+1520-  405fa0:	0320f809 	jalr	t9
+1521-  405fa4:	00000000 	nop
+1522-  405fa8:	8fdc0010 	lw	gp,16(s8)
+1523-  405fac:	00401821 	move	v1,v0
+1524-  405fb0:	8fc20018 	lw	v0,24(s8)
+1525-  405fb4:	ac43002c 	sw	v1,44(v0)
+1526-  405fb8:	27c200ac 	addiu	v0,s8,172
+1527-  405fbc:	00402021 	move	a0,v0
+1528-  405fc0:	8f82838c 	lw	v0,-31860(gp)
+1529-  405fc4:	0040c821 	move	t9,v0
+1530-  405fc8:	0320f809 	jalr	t9
+1531-  405fcc:	00000000 	nop
+1532-  405fd0:	8fdc0010 	lw	gp,16(s8)
+1533-  405fd4:	00401821 	move	v1,v0
+1534-  405fd8:	8fc20018 	lw	v0,24(s8)
+1535-  405fdc:	ac430028 	sw	v1,40(v0)
+1536-  405fe0:	8fc20018 	lw	v0,24(s8)
+1537-  405fe4:	24430004 	addiu	v1,v0,4
+1538-  405fe8:	27c200bc 	addiu	v0,s8,188
+1539-  405fec:	00602021 	move	a0,v1
+1540-  405ff0:	00402821 	move	a1,v0
+1541-  405ff4:	8f82856c 	lw	v0,-31380(gp)
+1542-  405ff8:	0040c821 	move	t9,v0
+1543-  405ffc:	0320f809 	jalr	t9
+1544-  406000:	00000000 	nop
+1545-  406004:	8fdc0010 	lw	gp,16(s8)
+1546-  406008:	8fc20020 	lw	v0,32(s8)
+1547-  40600c:	24030038 	li	v1,56
+1548-  406010:	a8430023 	swl	v1,35(v0)
+1549-  406014:	b8430020 	swr	v1,32(v0)
+1550-  406018:	8fc20028 	lw	v0,40(s8)
+1551-  40601c:	8f838024 	lw	v1,-32732(gp)
+1552-  406020:	246423d8 	addiu	a0,v1,9176
+1553-  406024:	8fc5001c 	lw	a1,28(s8)
+1554-  406028:	00403021 	move	a2,v0
+1555:  40602c:	8f828614 	lw	v0,-31212(gp)
+1556-  406030:	0040c821 	move	t9,v0
+1557-  406034:	0320f809 	jalr	t9
+1558-  406038:	00000000 	nop
+1559-  40603c:	8fdc0010 	lw	gp,16(s8)
+1560-  406040:	8fc4001c 	lw	a0,28(s8)
+1561-  406044:	8f828390 	lw	v0,-31856(gp)
+1562-  406048:	0040c821 	move	t9,v0
+1563-  40604c:	0320f809 	jalr	t9
+1564-  406050:	00000000 	nop
+1565-  406054:	8fdc0010 	lw	gp,16(s8)
+1566-  406058:	afc0001c 	sw	zero,28(s8)
+1567-  40605c:	8f868030 	lw	a2,-32720(gp)
+1568-  406060:	8f828024 	lw	v0,-32732(gp)
+1569-  406064:	8c43261c 	lw	v1,9756(v0)
+1570-  406068:	8c422618 	lw	v0,9752(v0)
+1571-  40606c:	00402021 	move	a0,v0
+1572-  406070:	00602821 	move	a1,v1
+1573-  406074:	00003821 	move	a3,zero
+1574-  406078:	8f828410 	lw	v0,-31728(gp)
+1575-  40607c:	0040c821 	move	t9,v0
+1576-  406080:	0320f809 	jalr	t9
+1577-  406084:	00000000 	nop
+1578-  406088:	8fdc0010 	lw	gp,16(s8)
+1579-  40608c:	00000000 	nop
+1580-  406090:	03c0e821 	move	sp,s8
+1581-  406094:	8fbf00e4 	lw	ra,228(sp)
+1582-  406098:	8fbe00e0 	lw	s8,224(sp)
+1583-  40609c:	27bd00e8 	addiu	sp,sp,232
+1584-  4060a0:	03e00008 	jr	ra
+1585-  4060a4:	00000000 	nop
+1586-  4060a8:	3c1c0005 	lui	gp,0x5
+1587-  4060ac:	279c6098 	addiu	gp,gp,24728
+1588-  4060b0:	0399e021 	addu	gp,gp,t9
+1589-  4060b4:	27bdffe0 	addiu	sp,sp,-32
+1590-  4060b8:	afbf001c 	sw	ra,28(sp)
+1591-  4060bc:	afbe0018 	sw	s8,24(sp)
+1592-  4060c0:	03a0f021 	move	s8,sp
+1593-  4060c4:	afbc0010 	sw	gp,16(sp)
+1594-  4060c8:	8f828024 	lw	v0,-32732(gp)
+1595-  4060cc:	2444250c 	addiu	a0,v0,9484
+1596-  4060d0:	8f828024 	lw	v0,-32732(gp)
+1597-  4060d4:	24432518 	addiu	v1,v0,9496
+1598-  4060d8:	8f828634 	lw	v0,-31180(gp)
+1599-  4060dc:	8c420000 	lw	v0,0(v0)
+1600-  4060e0:	00602821 	move	a1,v1
+1601-  4060e4:	00403021 	move	a2,v0
+1602-  4060e8:	8f8285c8 	lw	v0,-31288(gp)
+1603-  4060ec:	0040c821 	move	t9,v0
+1604-  4060f0:	0320f809 	jalr	t9
+1605-  4060f4:	00000000 	nop
+1606-  4060f8:	8fdc0010 	lw	gp,16(s8)
+1607-  4060fc:	03c0e821 	move	sp,s8
+1608-  406100:	8fbf001c 	lw	ra,28(sp)
+1609-  406104:	8fbe0018 	lw	s8,24(sp)
+1610-  406108:	27bd0020 	addiu	sp,sp,32
+1611-  40610c:	03e00008 	jr	ra
+1612-  406110:	00000000 	nop
+1613-  406114:	3c1c0005 	lui	gp,0x5
+1614-  406118:	279c602c 	addiu	gp,gp,24620
+1615-  40611c:	0399e021 	addu	gp,gp,t9
+1616-  406120:	27bdffe0 	addiu	sp,sp,-32
+1617-  406124:	afbf001c 	sw	ra,28(sp)
+1618-  406128:	afbe0018 	sw	s8,24(sp)
+1619-  40612c:	03a0f021 	move	s8,sp
+1620-  406130:	afbc0010 	sw	gp,16(sp)
+1621-  406134:	8f828024 	lw	v0,-32732(gp)
+1622-  406138:	2444251c 	addiu	a0,v0,9500
+1623-  40613c:	8f828024 	lw	v0,-32732(gp)
+1624-  406140:	24432518 	addiu	v1,v0,9496
+1625-  406144:	8f828634 	lw	v0,-31180(gp)
+1626-  406148:	8c420000 	lw	v0,0(v0)
+1627-  40614c:	00602821 	move	a1,v1
+1628-  406150:	00403021 	move	a2,v0
+1629-  406154:	8f8285c8 	lw	v0,-31288(gp)
+1630-  406158:	0040c821 	move	t9,v0
+1631-  40615c:	0320f809 	jalr	t9
+1632-  406160:	00000000 	nop
+1633-  406164:	8fdc0010 	lw	gp,16(s8)
+1634-  406168:	03c0e821 	move	sp,s8
+1635-  40616c:	8fbf001c 	lw	ra,28(sp)
+1636-  406170:	8fbe0018 	lw	s8,24(sp)
+1637-  406174:	27bd0020 	addiu	sp,sp,32
+1638-  406178:	03e00008 	jr	ra
+1639-  40617c:	00000000 	nop
+1640-  406180:	3c1c0005 	lui	gp,0x5
+1641-  406184:	279c5fc0 	addiu	gp,gp,24512
+1642-  406188:	0399e021 	addu	gp,gp,t9
+1643-  40618c:	27bdffe0 	addiu	sp,sp,-32
+1644-  406190:	afbf001c 	sw	ra,28(sp)
+1645-  406194:	afbe0018 	sw	s8,24(sp)
+--
+1984-  4066c8:	8f838024 	lw	v1,-32732(gp)
+1985-  4066cc:	246625a8 	addiu	a2,v1,9640
+1986-  4066d0:	00403821 	move	a3,v0
+1987-  4066d4:	8f828340 	lw	v0,-31936(gp)
+1988-  4066d8:	0040c821 	move	t9,v0
+1989-  4066dc:	0320f809 	jalr	t9
+1990-  4066e0:	00000000 	nop
+1991-  4066e4:	8fdc0010 	lw	gp,16(s8)
+1992-  4066e8:	8fc4001c 	lw	a0,28(s8)
+1993-  4066ec:	8f8283f0 	lw	v0,-31760(gp)
+1994-  4066f0:	0040c821 	move	t9,v0
+1995-  4066f4:	0320f809 	jalr	t9
+1996-  4066f8:	00000000 	nop
+1997-  4066fc:	8fdc0010 	lw	gp,16(s8)
+1998-  406700:	8f828040 	lw	v0,-32704(gp)
+1999-  406704:	00402021 	move	a0,v0
+2000-  406708:	8f828590 	lw	v0,-31344(gp)
+2001-  40670c:	0040c821 	move	t9,v0
+2002-  406710:	0320f809 	jalr	t9
+2003-  406714:	00000000 	nop
+2004-  406718:	8fdc0010 	lw	gp,16(s8)
+2005-  40671c:	8f848044 	lw	a0,-32700(gp)
+2006-  406720:	8f82848c 	lw	v0,-31604(gp)
+2007-  406724:	0040c821 	move	t9,v0
+2008-  406728:	0320f809 	jalr	t9
+2009-  40672c:	00000000 	nop
+2010-  406730:	8fdc0010 	lw	gp,16(s8)
+2011-  406734:	8f828048 	lw	v0,-32696(gp)
+2012-  406738:	0040c821 	move	t9,v0
+2013-  40673c:	0320f809 	jalr	t9
+2014-  406740:	00000000 	nop
+2015-  406744:	8fdc0010 	lw	gp,16(s8)
+2016-  406748:	8f828324 	lw	v0,-31964(gp)
+2017-  40674c:	0040c821 	move	t9,v0
+2018-  406750:	0320f809 	jalr	t9
+2019-  406754:	00000000 	nop
+2020-  406758:	8fdc0010 	lw	gp,16(s8)
+2021-  40675c:	afc20018 	sw	v0,24(s8)
+2022-  406760:	8fc20018 	lw	v0,24(s8)
+2023-  406764:	0441000a 	bgez	v0,406790 <main@@Base+0x2dc>
+2024-  406768:	00000000 	nop
+2025-  40676c:	8f828024 	lw	v0,-32732(gp)
+2026-  406770:	244425b4 	addiu	a0,v0,9652
+2027-  406774:	8f828360 	lw	v0,-31904(gp)
+2028-  406778:	0040c821 	move	t9,v0
+2029-  40677c:	0320f809 	jalr	t9
+2030-  406780:	00000000 	nop
+2031-  406784:	8fdc0010 	lw	gp,16(s8)
+2032-  406788:	10000084 	b	40699c <main@@Base+0x4e8>
+2033-  40678c:	00000000 	nop
+2034-  406790:	8f82804c 	lw	v0,-32692(gp)
+2035-  406794:	0040c821 	move	t9,v0
+2036-  406798:	0320f809 	jalr	t9
+2037-  40679c:	00000000 	nop
+2038-  4067a0:	8fdc0010 	lw	gp,16(s8)
+2039-  4067a4:	8f828050 	lw	v0,-32688(gp)
+2040-  4067a8:	27c30020 	addiu	v1,s8,32
+2041-  4067ac:	00602021 	move	a0,v1
+2042-  4067b0:	00402821 	move	a1,v0
+2043-  4067b4:	00003021 	move	a2,zero
+2044:  4067b8:	8f8283d8 	lw	v0,-31784(gp)
+2045-  4067bc:	0040c821 	move	t9,v0
+2046-  4067c0:	0320f809 	jalr	t9
+2047-  4067c4:	00000000 	nop
+2048-  4067c8:	8fdc0010 	lw	gp,16(s8)
+2049-  4067cc:	8f828050 	lw	v0,-32688(gp)
+2050-  4067d0:	8f838024 	lw	v1,-32732(gp)
+2051-  4067d4:	246425c8 	addiu	a0,v1,9672
+2052-  4067d8:	00402821 	move	a1,v0
+2053-  4067dc:	00003021 	move	a2,zero
+2054:  4067e0:	8f8283d8 	lw	v0,-31784(gp)
+2055-  4067e4:	0040c821 	move	t9,v0
+2056-  4067e8:	0320f809 	jalr	t9
+2057-  4067ec:	00000000 	nop
+2058-  4067f0:	8fdc0010 	lw	gp,16(s8)
+2059-  4067f4:	8f828374 	lw	v0,-31884(gp)
+2060-  4067f8:	0040c821 	move	t9,v0
+2061-  4067fc:	0320f809 	jalr	t9
+2062-  406800:	00000000 	nop
+2063-  406804:	8fdc0010 	lw	gp,16(s8)
+2064-  406808:	0441000e 	bgez	v0,406844 <main@@Base+0x390>
+2065-  40680c:	00000000 	nop
+2066-  406810:	8f828028 	lw	v0,-32728(gp)
+2067-  406814:	244661d4 	addiu	a2,v0,25044
+2068-  406818:	8f828024 	lw	v0,-32732(gp)
+2069-  40681c:	8c432624 	lw	v1,9764(v0)
+2070-  406820:	8c422620 	lw	v0,9760(v0)
+2071-  406824:	00402021 	move	a0,v0
+2072-  406828:	00602821 	move	a1,v1
+2073-  40682c:	00003821 	move	a3,zero
+2074-  406830:	8f828410 	lw	v0,-31728(gp)
+2075-  406834:	0040c821 	move	t9,v0
+2076-  406838:	0320f809 	jalr	t9
+2077-  40683c:	00000000 	nop
+2078-  406840:	8fdc0010 	lw	gp,16(s8)
+2079-  406844:	8f828024 	lw	v0,-32732(gp)
+2080-  406848:	8c432634 	lw	v1,9780(v0)
+2081-  40684c:	8c422630 	lw	v0,9776(v0)
+2082-  406850:	00402021 	move	a0,v0
+2083-  406854:	00602821 	move	a1,v1
+2084-  406858:	8f828028 	lw	v0,-32728(gp)
+2085-  40685c:	24464d4c 	addiu	a2,v0,19788
+2086-  406860:	00003821 	move	a3,zero
+2087-  406864:	8f828410 	lw	v0,-31728(gp)
+2088-  406868:	0040c821 	move	t9,v0
+2089-  40686c:	0320f809 	jalr	t9
+2090-  406870:	00000000 	nop
+2091-  406874:	8fdc0010 	lw	gp,16(s8)
+2092-  406878:	8f828024 	lw	v0,-32732(gp)
+2093-  40687c:	8c432634 	lw	v1,9780(v0)
+2094-  406880:	8c422630 	lw	v0,9776(v0)
+2095-  406884:	00402021 	move	a0,v0
+2096-  406888:	00602821 	move	a1,v1
+2097-  40688c:	8f868054 	lw	a2,-32684(gp)
+2098-  406890:	00003821 	move	a3,zero
+2099-  406894:	8f828410 	lw	v0,-31728(gp)
+2100-  406898:	0040c821 	move	t9,v0
+2101-  40689c:	0320f809 	jalr	t9
+2102-  4068a0:	00000000 	nop
+2103-  4068a4:	8fdc0010 	lw	gp,16(s8)
+2104-  4068a8:	8f828024 	lw	v0,-32732(gp)
+2105-  4068ac:	8c432634 	lw	v1,9780(v0)
+2106-  4068b0:	8c422630 	lw	v0,9776(v0)
+2107-  4068b4:	00402021 	move	a0,v0
+2108-  4068b8:	00602821 	move	a1,v1
+2109-  4068bc:	8f828028 	lw	v0,-32728(gp)
+2110-  4068c0:	2446543c 	addiu	a2,v0,21564
+2111-  4068c4:	00003821 	move	a3,zero
+2112-  4068c8:	8f828410 	lw	v0,-31728(gp)
+2113-  4068cc:	0040c821 	move	t9,v0
+2114-  4068d0:	0320f809 	jalr	t9
+2115-  4068d4:	00000000 	nop
+2116-  4068d8:	8fdc0010 	lw	gp,16(s8)
+2117-  4068dc:	8f868058 	lw	a2,-32680(gp)
+2118-  4068e0:	8f828024 	lw	v0,-32732(gp)
+2119-  4068e4:	8c43263c 	lw	v1,9788(v0)
+2120-  4068e8:	8c422638 	lw	v0,9784(v0)
+2121-  4068ec:	00402021 	move	a0,v0
+2122-  4068f0:	00602821 	move	a1,v1
+2123-  4068f4:	00003821 	move	a3,zero
+2124-  4068f8:	8f828410 	lw	v0,-31728(gp)
+2125-  4068fc:	0040c821 	move	t9,v0
+2126-  406900:	0320f809 	jalr	t9
+2127-  406904:	00000000 	nop
+2128-  406908:	8fdc0010 	lw	gp,16(s8)
+2129-  40690c:	8f828024 	lw	v0,-32732(gp)
+2130-  406910:	8c43263c 	lw	v1,9788(v0)
+2131-  406914:	8c422638 	lw	v0,9784(v0)
+2132-  406918:	00402021 	move	a0,v0
+2133-  40691c:	00602821 	move	a1,v1
+2134-  406920:	8f828028 	lw	v0,-32728(gp)
+2135-  406924:	244658c8 	addiu	a2,v0,22728
+2136-  406928:	00003821 	move	a3,zero
+2137-  40692c:	8f828410 	lw	v0,-31728(gp)
+2138-  406930:	0040c821 	move	t9,v0
+2139-  406934:	0320f809 	jalr	t9
+2140-  406938:	00000000 	nop
+2141-  40693c:	8fdc0010 	lw	gp,16(s8)
+2142-  406940:	8f868030 	lw	a2,-32720(gp)
+2143-  406944:	8f828024 	lw	v0,-32732(gp)
+2144-  406948:	8c432644 	lw	v1,9796(v0)
+--
+3497-  407df4:	8fc20024 	lw	v0,36(s8)
+3498-  407df8:	1440000f 	bnez	v0,407e38 <confctl_assistant_device_left_time@@Base+0x3c0>
+3499-  407dfc:	00000000 	nop
+3500-  407e00:	24040003 	li	a0,3
+3501-  407e04:	8f828024 	lw	v0,-32732(gp)
+3502-  407e08:	24452ec4 	addiu	a1,v0,11972
+3503-  407e0c:	240601c3 	li	a2,451
+3504-  407e10:	8f828024 	lw	v0,-32732(gp)
+3505-  407e14:	24472fb8 	addiu	a3,v0,12216
+3506-  407e18:	8f82802c 	lw	v0,-32724(gp)
+3507-  407e1c:	0040c821 	move	t9,v0
+3508-  407e20:	0320f809 	jalr	t9
+3509-  407e24:	00000000 	nop
+3510-  407e28:	8fdc0018 	lw	gp,24(s8)
+3511-  407e2c:	2402ffff 	li	v0,-1
+3512-  407e30:	1000006e 	b	407fec <confctl_assistant_device_left_time@@Base+0x574>
+3513-  407e34:	00000000 	nop
+3514-  407e38:	8f828024 	lw	v0,-32732(gp)
+3515-  407e3c:	24422fd8 	addiu	v0,v0,12248
+3516-  407e40:	00402021 	move	a0,v0
+3517-  407e44:	8f828024 	lw	v0,-32732(gp)
+3518-  407e48:	24453390 	addiu	a1,v0,13200
+3519-  407e4c:	240601c7 	li	a2,455
+3520-  407e50:	8fc70058 	lw	a3,88(s8)
+3521-  407e54:	8f8284bc 	lw	v0,-31556(gp)
+3522-  407e58:	0040c821 	move	t9,v0
+3523-  407e5c:	0320f809 	jalr	t9
+3524-  407e60:	00000000 	nop
+3525-  407e64:	8fdc0018 	lw	gp,24(s8)
+3526-  407e68:	8fc20024 	lw	v0,36(s8)
+3527-  407e6c:	afc20028 	sw	v0,40(s8)
+3528-  407e70:	8fc30028 	lw	v1,40(s8)
+3529-  407e74:	8fc20058 	lw	v0,88(s8)
+3530-  407e78:	00602021 	move	a0,v1
+3531-  407e7c:	00402821 	move	a1,v0
+3532-  407e80:	8f82856c 	lw	v0,-31380(gp)
+3533-  407e84:	0040c821 	move	t9,v0
+3534-  407e88:	0320f809 	jalr	t9
+3535-  407e8c:	00000000 	nop
+3536-  407e90:	8fdc0018 	lw	gp,24(s8)
+3537-  407e94:	8fc20028 	lw	v0,40(s8)
+3538-  407e98:	24430024 	addiu	v1,v0,36
+3539-  407e9c:	8fc20060 	lw	v0,96(s8)
+3540-  407ea0:	00602021 	move	a0,v1
+3541-  407ea4:	8fc5005c 	lw	a1,92(s8)
+3542-  407ea8:	00403021 	move	a2,v0
+3543-  407eac:	8f828338 	lw	v0,-31944(gp)
+3544-  407eb0:	0040c821 	move	t9,v0
+3545-  407eb4:	0320f809 	jalr	t9
+3546-  407eb8:	00000000 	nop
+3547-  407ebc:	8fdc0018 	lw	gp,24(s8)
+3548-  407ec0:	8fc30020 	lw	v1,32(s8)
+3549-  407ec4:	8fc20028 	lw	v0,40(s8)
+3550-  407ec8:	a8430023 	swl	v1,35(v0)
+3551-  407ecc:	b8430020 	swr	v1,32(v0)
+3552-  407ed0:	8fc20020 	lw	v0,32(s8)
+3553-  407ed4:	8f838024 	lw	v1,-32732(gp)
+3554-  407ed8:	24642ff4 	addiu	a0,v1,12276
+3555-  407edc:	8fc50024 	lw	a1,36(s8)
+3556-  407ee0:	00403021 	move	a2,v0
+3557:  407ee4:	8f828614 	lw	v0,-31212(gp)
+3558-  407ee8:	0040c821 	move	t9,v0
+3559-  407eec:	0320f809 	jalr	t9
+3560-  407ef0:	00000000 	nop
+3561-  407ef4:	8fdc0018 	lw	gp,24(s8)
+3562-  407ef8:	8fc40024 	lw	a0,36(s8)
+3563-  407efc:	8f828390 	lw	v0,-31856(gp)
+3564-  407f00:	0040c821 	move	t9,v0
+3565-  407f04:	0320f809 	jalr	t9
+3566-  407f08:	00000000 	nop
+3567-  407f0c:	8fdc0018 	lw	gp,24(s8)
+3568-  407f10:	8fc20058 	lw	v0,88(s8)
+3569-  407f14:	afc20040 	sw	v0,64(s8)
+3570-  407f18:	27c20034 	addiu	v0,s8,52
+3571-  407f1c:	8f83805c 	lw	v1,-32676(gp)
+3572-  407f20:	246447b8 	addiu	a0,v1,18360
+3573-  407f24:	00402821 	move	a1,v0
+3574-  407f28:	8f828060 	lw	v0,-32672(gp)
+3575-  407f2c:	0040c821 	move	t9,v0
+3576-  407f30:	0320f809 	jalr	t9
+3577-  407f34:	00000000 	nop
+3578-  407f38:	8fdc0018 	lw	gp,24(s8)
+3579-  407f3c:	afc20030 	sw	v0,48(s8)
+3580-  407f40:	8fc20030 	lw	v0,48(s8)
+3581-  407f44:	10400028 	beqz	v0,407fe8 <confctl_assistant_device_left_time@@Base+0x570>
+3582-  407f48:	00000000 	nop
+3583-  407f4c:	8fc20030 	lw	v0,48(s8)
+3584-  407f50:	8c420010 	lw	v0,16(v0)
+3585-  407f54:	10400024 	beqz	v0,407fe8 <confctl_assistant_device_left_time@@Base+0x570>
+3586-  407f58:	00000000 	nop
+3587-  407f5c:	8f82808c 	lw	v0,-32628(gp)
+3588-  407f60:	0040c821 	move	t9,v0
+3589-  407f64:	0320f809 	jalr	t9
+3590-  407f68:	00000000 	nop
+3591-  407f6c:	8fdc0018 	lw	gp,24(s8)
+3592-  407f70:	8fc20030 	lw	v0,48(s8)
+3593-  407f74:	8c420010 	lw	v0,16(v0)
+3594-  407f78:	8fc30068 	lw	v1,104(s8)
+3595-  407f7c:	afa30010 	sw	v1,16(sp)
+3596-  407f80:	8fc40058 	lw	a0,88(s8)
+3597-  407f84:	8fc5005c 	lw	a1,92(s8)
+3598-  407f88:	8fc60060 	lw	a2,96(s8)
+3599-  407f8c:	8fc70064 	lw	a3,100(s8)
+3600-  407f90:	0040c821 	move	t9,v0
+3601-  407f94:	0320f809 	jalr	t9
+3602-  407f98:	00000000 	nop
+3603-  407f9c:	8fdc0018 	lw	gp,24(s8)
+3604-  407fa0:	afc2002c 	sw	v0,44(s8)
+3605-  407fa4:	8f828024 	lw	v0,-32732(gp)
+3606-  407fa8:	24423004 	addiu	v0,v0,12292
+3607-  407fac:	8fc3002c 	lw	v1,44(s8)
+3608-  407fb0:	afa30010 	sw	v1,16(sp)
+3609-  407fb4:	00402021 	move	a0,v0
+3610-  407fb8:	8f828024 	lw	v0,-32732(gp)
+3611-  407fbc:	244533a0 	addiu	a1,v0,13216
+3612-  407fc0:	240601d8 	li	a2,472
+3613-  407fc4:	8fc70058 	lw	a3,88(s8)
+3614-  407fc8:	8f8284bc 	lw	v0,-31556(gp)
+3615-  407fcc:	0040c821 	move	t9,v0
+3616-  407fd0:	0320f809 	jalr	t9
+3617-  407fd4:	00000000 	nop
+3618-  407fd8:	8fdc0018 	lw	gp,24(s8)
+3619-  407fdc:	8fc2002c 	lw	v0,44(s8)
+3620-  407fe0:	10000002 	b	407fec <confctl_assistant_device_left_time@@Base+0x574>
+3621-  407fe4:	00000000 	nop
+3622-  407fe8:	2402ffff 	li	v0,-1
+3623-  407fec:	03c0e821 	move	sp,s8
+3624-  407ff0:	8fbf0054 	lw	ra,84(sp)
+3625-  407ff4:	8fbe0050 	lw	s8,80(sp)
+3626-  407ff8:	27bd0058 	addiu	sp,sp,88
+3627-  407ffc:	03e00008 	jr	ra
+3628-  408000:	00000000 	nop
+3629-  408004:	3c1c0005 	lui	gp,0x5
+3630-  408008:	279c413c 	addiu	gp,gp,16700
+3631-  40800c:	0399e021 	addu	gp,gp,t9
+3632-  408010:	27bdffa8 	addiu	sp,sp,-88
+3633-  408014:	afbf0054 	sw	ra,84(sp)
+3634-  408018:	afbe0050 	sw	s8,80(sp)
+3635-  40801c:	03a0f021 	move	s8,sp
+3636-  408020:	afbc0018 	sw	gp,24(sp)
+3637-  408024:	afc40058 	sw	a0,88(s8)
+3638-  408028:	afc5005c 	sw	a1,92(s8)
+3639-  40802c:	afc60060 	sw	a2,96(s8)
+3640-  408030:	afc70064 	sw	a3,100(s8)
+3641-  408034:	afc0002c 	sw	zero,44(s8)
+3642-  408038:	afc00028 	sw	zero,40(s8)
+3643-  40803c:	afc00024 	sw	zero,36(s8)
+3644-  408040:	afc00020 	sw	zero,32(s8)
+3645-  408044:	8fc20058 	lw	v0,88(s8)
+3646-  408048:	14400004 	bnez	v0,40805c <confctl_assistant_device_left_time@@Base+0x5e4>
+3647-  40804c:	00000000 	nop
+--
+3650-  408058:	00000000 	nop
+3651-  40805c:	8fc20060 	lw	v0,96(s8)
+3652-  408060:	24420024 	addiu	v0,v0,36
+3653-  408064:	afc20024 	sw	v0,36(s8)
+3654-  408068:	8fc20024 	lw	v0,36(s8)
+3655-  40806c:	00402021 	move	a0,v0
+3656-  408070:	8f828594 	lw	v0,-31340(gp)
+3657-  408074:	0040c821 	move	t9,v0
+3658-  408078:	0320f809 	jalr	t9
+3659-  40807c:	00000000 	nop
+3660-  408080:	8fdc0018 	lw	gp,24(s8)
+3661-  408084:	afc20028 	sw	v0,40(s8)
+3662-  408088:	8fc20028 	lw	v0,40(s8)
+3663-  40808c:	1440000f 	bnez	v0,4080cc <confctl_assistant_device_left_time@@Base+0x654>
+3664-  408090:	00000000 	nop
+3665-  408094:	24040003 	li	a0,3
+3666-  408098:	8f828024 	lw	v0,-32732(gp)
+3667-  40809c:	24452ec4 	addiu	a1,v0,11972
+3668-  4080a0:	24060201 	li	a2,513
+3669-  4080a4:	8f828024 	lw	v0,-32732(gp)
+3670-  4080a8:	24472fb8 	addiu	a3,v0,12216
+3671-  4080ac:	8f82802c 	lw	v0,-32724(gp)
+3672-  4080b0:	0040c821 	move	t9,v0
+3673-  4080b4:	0320f809 	jalr	t9
+3674-  4080b8:	00000000 	nop
+3675-  4080bc:	8fdc0018 	lw	gp,24(s8)
+3676-  4080c0:	2402ffff 	li	v0,-1
+3677-  4080c4:	1000005d 	b	40823c <confctl_assistant_device_left_time@@Base+0x7c4>
+3678-  4080c8:	00000000 	nop
+3679-  4080cc:	8fc20028 	lw	v0,40(s8)
+3680-  4080d0:	afc2002c 	sw	v0,44(s8)
+3681-  4080d4:	8fc3002c 	lw	v1,44(s8)
+3682-  4080d8:	8fc20058 	lw	v0,88(s8)
+3683-  4080dc:	00602021 	move	a0,v1
+3684-  4080e0:	00402821 	move	a1,v0
+3685-  4080e4:	8f82856c 	lw	v0,-31380(gp)
+3686-  4080e8:	0040c821 	move	t9,v0
+3687-  4080ec:	0320f809 	jalr	t9
+3688-  4080f0:	00000000 	nop
+3689-  4080f4:	8fdc0018 	lw	gp,24(s8)
+3690-  4080f8:	8fc2002c 	lw	v0,44(s8)
+3691-  4080fc:	24430024 	addiu	v1,v0,36
+3692-  408100:	8fc20060 	lw	v0,96(s8)
+3693-  408104:	00602021 	move	a0,v1
+3694-  408108:	8fc5005c 	lw	a1,92(s8)
+3695-  40810c:	00403021 	move	a2,v0
+3696-  408110:	8f828338 	lw	v0,-31944(gp)
+3697-  408114:	0040c821 	move	t9,v0
+3698-  408118:	0320f809 	jalr	t9
+3699-  40811c:	00000000 	nop
+3700-  408120:	8fdc0018 	lw	gp,24(s8)
+3701-  408124:	8fc30024 	lw	v1,36(s8)
+3702-  408128:	8fc2002c 	lw	v0,44(s8)
+3703-  40812c:	a8430023 	swl	v1,35(v0)
+3704-  408130:	b8430020 	swr	v1,32(v0)
+3705-  408134:	8fc20024 	lw	v0,36(s8)
+3706-  408138:	8f838024 	lw	v1,-32732(gp)
+3707-  40813c:	24642ff4 	addiu	a0,v1,12276
+3708-  408140:	8fc50028 	lw	a1,40(s8)
+3709-  408144:	00403021 	move	a2,v0
+3710:  408148:	8f828614 	lw	v0,-31212(gp)
+3711-  40814c:	0040c821 	move	t9,v0
+3712-  408150:	0320f809 	jalr	t9
+3713-  408154:	00000000 	nop
+3714-  408158:	8fdc0018 	lw	gp,24(s8)
+3715-  40815c:	8fc40028 	lw	a0,40(s8)
+3716-  408160:	8f828390 	lw	v0,-31856(gp)
+3717-  408164:	0040c821 	move	t9,v0
+3718-  408168:	0320f809 	jalr	t9
+3719-  40816c:	00000000 	nop
+3720-  408170:	8fdc0018 	lw	gp,24(s8)
+3721-  408174:	8fc20058 	lw	v0,88(s8)
+3722-  408178:	afc20040 	sw	v0,64(s8)
+3723-  40817c:	27c20034 	addiu	v0,s8,52
+3724-  408180:	8f83805c 	lw	v1,-32676(gp)
+3725-  408184:	246447b8 	addiu	a0,v1,18360
+3726-  408188:	00402821 	move	a1,v0
+3727-  40818c:	8f828060 	lw	v0,-32672(gp)
+3728-  408190:	0040c821 	move	t9,v0
+3729-  408194:	0320f809 	jalr	t9
+3730-  408198:	00000000 	nop
+3731-  40819c:	8fdc0018 	lw	gp,24(s8)
+3732-  4081a0:	afc20030 	sw	v0,48(s8)
+3733-  4081a4:	8fc20030 	lw	v0,48(s8)
+3734-  4081a8:	10400023 	beqz	v0,408238 <confctl_assistant_device_left_time@@Base+0x7c0>
+3735-  4081ac:	00000000 	nop
+3736-  4081b0:	8fc20030 	lw	v0,48(s8)
+3737-  4081b4:	8c420010 	lw	v0,16(v0)
+3738-  4081b8:	1040001f 	beqz	v0,408238 <confctl_assistant_device_left_time@@Base+0x7c0>
+3739-  4081bc:	00000000 	nop
+3740-  4081c0:	8fc20030 	lw	v0,48(s8)
+3741-  4081c4:	8c420010 	lw	v0,16(v0)
+3742-  4081c8:	8fc30068 	lw	v1,104(s8)
+3743-  4081cc:	afa30010 	sw	v1,16(sp)
+3744-  4081d0:	8fc40058 	lw	a0,88(s8)
+3745-  4081d4:	8fc5005c 	lw	a1,92(s8)
+3746-  4081d8:	8fc60060 	lw	a2,96(s8)
+3747-  4081dc:	8fc70064 	lw	a3,100(s8)
+3748-  4081e0:	0040c821 	move	t9,v0
+3749-  4081e4:	0320f809 	jalr	t9
+3750-  4081e8:	00000000 	nop
+3751-  4081ec:	8fdc0018 	lw	gp,24(s8)
+3752-  4081f0:	afc20020 	sw	v0,32(s8)
+3753-  4081f4:	8f828024 	lw	v0,-32732(gp)
+3754-  4081f8:	24423004 	addiu	v0,v0,12292
+3755-  4081fc:	8fc30020 	lw	v1,32(s8)
+3756-  408200:	afa30010 	sw	v1,16(sp)
+3757-  408204:	00402021 	move	a0,v0
+3758-  408208:	8f828024 	lw	v0,-32732(gp)
+3759-  40820c:	24453380 	addiu	a1,v0,13184
+3760-  408210:	24060214 	li	a2,532
+3761-  408214:	8fc70058 	lw	a3,88(s8)
+3762-  408218:	8f8284bc 	lw	v0,-31556(gp)
+3763-  40821c:	0040c821 	move	t9,v0
+3764-  408220:	0320f809 	jalr	t9
+3765-  408224:	00000000 	nop
+3766-  408228:	8fdc0018 	lw	gp,24(s8)
+3767-  40822c:	8fc20020 	lw	v0,32(s8)
+3768-  408230:	10000002 	b	40823c <confctl_assistant_device_left_time@@Base+0x7c4>
+3769-  408234:	00000000 	nop
+3770-  408238:	2402ffff 	li	v0,-1
+3771-  40823c:	03c0e821 	move	sp,s8
+3772-  408240:	8fbf0054 	lw	ra,84(sp)
+3773-  408244:	8fbe0050 	lw	s8,80(sp)
+3774-  408248:	27bd0058 	addiu	sp,sp,88
+3775-  40824c:	03e00008 	jr	ra
+3776-  408250:	00000000 	nop
+3777-
+3778-00408254 <confctl_module_debug_en@@Base>:
+3779-  408254:	3c1c0005 	lui	gp,0x5
+3780-  408258:	279c3eec 	addiu	gp,gp,16108
+3781-  40825c:	0399e021 	addu	gp,gp,t9
+3782-  408260:	27bdff48 	addiu	sp,sp,-184
+3783-  408264:	afbf00b4 	sw	ra,180(sp)
+3784-  408268:	afbe00b0 	sw	s8,176(sp)
+3785-  40826c:	03a0f021 	move	s8,sp
+3786-  408270:	afbc0010 	sw	gp,16(sp)
+3787-  408274:	afc400b8 	sw	a0,184(s8)
+3788-  408278:	8fc200b8 	lw	v0,184(s8)
+3789-  40827c:	10400005 	beqz	v0,408294 <confctl_module_debug_en@@Base+0x40>
+3790-  408280:	00000000 	nop
+3791-  408284:	8fc200b8 	lw	v0,184(s8)
+3792-  408288:	2c420011 	sltiu	v0,v0,17
+3793-  40828c:	14400004 	bnez	v0,4082a0 <confctl_module_debug_en@@Base+0x4c>
+3794-  408290:	00000000 	nop
+3795-  408294:	00001021 	move	v0,zero
+3796-  408298:	1000006e 	b	408454 <confctl_module_debug_en@@Base+0x200>
+3797-  40829c:	00000000 	nop
+3798-  4082a0:	8f828024 	lw	v0,-32732(gp)
+3799-  4082a4:	244432d8 	addiu	a0,v0,13016
+3800-  4082a8:	24050004 	li	a1,4
+--
+27577-  41f364:	afc00034 	sw	zero,52(s8)
+27578-  41f368:	afc00038 	sw	zero,56(s8)
+27579-  41f36c:	afc0003c 	sw	zero,60(s8)
+27580-  41f370:	27c30040 	addiu	v1,s8,64
+27581-  41f374:	24020100 	li	v0,256
+27582-  41f378:	00602021 	move	a0,v1
+27583-  41f37c:	00002821 	move	a1,zero
+27584-  41f380:	00403021 	move	a2,v0
+27585-  41f384:	8f8285ac 	lw	v0,-31316(gp)
+27586-  41f388:	0040c821 	move	t9,v0
+27587-  41f38c:	0320f809 	jalr	t9
+27588-  41f390:	00000000 	nop
+27589-  41f394:	8fdc0010 	lw	gp,16(s8)
+27590-  41f398:	27c20020 	addiu	v0,s8,32
+27591-  41f39c:	8f8381c8 	lw	v1,-32312(gp)
+27592-  41f3a0:	2464b3f8 	addiu	a0,v1,-19464
+27593-  41f3a4:	00402821 	move	a1,v0
+27594-  41f3a8:	8f8283a4 	lw	v0,-31836(gp)
+27595-  41f3ac:	0040c821 	move	t9,v0
+27596-  41f3b0:	0320f809 	jalr	t9
+27597-  41f3b4:	00000000 	nop
+27598-  41f3b8:	8fdc0010 	lw	gp,16(s8)
+27599-  41f3bc:	1040002c 	beqz	v0,41f470 <confctl_update_grp_info_from_mpp@@Base+0x8c0>
+27600-  41f3c0:	00000000 	nop
+27601-  41f3c4:	24020044 	li	v0,68
+27602-  41f3c8:	afc20018 	sw	v0,24(s8)
+27603-  41f3cc:	27c20040 	addiu	v0,s8,64
+27604-  41f3d0:	afc2001c 	sw	v0,28(s8)
+27605-  41f3d4:	8fc3001c 	lw	v1,28(s8)
+27606-  41f3d8:	8f8281c8 	lw	v0,-32312(gp)
+27607-  41f3dc:	2442b6d0 	addiu	v0,v0,-18736
+27608-  41f3e0:	00602021 	move	a0,v1
+27609-  41f3e4:	00402821 	move	a1,v0
+27610-  41f3e8:	24060020 	li	a2,32
+27611-  41f3ec:	8f82849c 	lw	v0,-31588(gp)
+27612-  41f3f0:	0040c821 	move	t9,v0
+27613-  41f3f4:	0320f809 	jalr	t9
+27614-  41f3f8:	00000000 	nop
+27615-  41f3fc:	8fdc0010 	lw	gp,16(s8)
+27616-  41f400:	8fc2001c 	lw	v0,28(s8)
+27617-  41f404:	24430024 	addiu	v1,v0,36
+27618-  41f408:	27c20020 	addiu	v0,s8,32
+27619-  41f40c:	00602021 	move	a0,v1
+27620-  41f410:	00402821 	move	a1,v0
+27621-  41f414:	24060020 	li	a2,32
+27622-  41f418:	8f828338 	lw	v0,-31944(gp)
+27623-  41f41c:	0040c821 	move	t9,v0
+27624-  41f420:	0320f809 	jalr	t9
+27625-  41f424:	00000000 	nop
+27626-  41f428:	8fdc0010 	lw	gp,16(s8)
+27627-  41f42c:	8fc2001c 	lw	v0,28(s8)
+27628-  41f430:	24030020 	li	v1,32
+27629-  41f434:	a8430023 	swl	v1,35(v0)
+27630-  41f438:	b8430020 	swr	v1,32(v0)
+27631-  41f43c:	8fc20018 	lw	v0,24(s8)
+27632-  41f440:	27c30040 	addiu	v1,s8,64
+27633-  41f444:	8f8481c8 	lw	a0,-32312(gp)
+27634-  41f448:	2484b6e4 	addiu	a0,a0,-18716
+27635-  41f44c:	00602821 	move	a1,v1
+27636-  41f450:	00403021 	move	a2,v0
+27637:  41f454:	8f828614 	lw	v0,-31212(gp)
+27638-  41f458:	0040c821 	move	t9,v0
+27639-  41f45c:	0320f809 	jalr	t9
+27640-  41f460:	00000000 	nop
+27641-  41f464:	8fdc0010 	lw	gp,16(s8)
+27642-  41f468:	1000000c 	b	41f49c <confctl_update_grp_info_from_mpp@@Base+0x8ec>
+27643-  41f46c:	00000000 	nop
+27644-  41f470:	8f8281c8 	lw	v0,-32312(gp)
+27645-  41f474:	2442b6f4 	addiu	v0,v0,-18700
+27646-  41f478:	00402021 	move	a0,v0
+27647-  41f47c:	8f8281c8 	lw	v0,-32312(gp)
+27648-  41f480:	2445b7d8 	addiu	a1,v0,-18472
+27649-  41f484:	240601ec 	li	a2,492
+27650-  41f488:	8f8284bc 	lw	v0,-31556(gp)
+27651-  41f48c:	0040c821 	move	t9,v0
+27652-  41f490:	0320f809 	jalr	t9
+27653-  41f494:	00000000 	nop
+27654-  41f498:	8fdc0010 	lw	gp,16(s8)
+27655-  41f49c:	8f82805c 	lw	v0,-32676(gp)
+27656-  41f4a0:	8c4249d0 	lw	v0,18896(v0)
+27657-  41f4a4:	1440000e 	bnez	v0,41f4e0 <confctl_update_grp_info_from_mpp@@Base+0x930>
+27658-  41f4a8:	00000000 	nop
+27659-  41f4ac:	8f8281c8 	lw	v0,-32312(gp)
+27660-  41f4b0:	8c43b87c 	lw	v1,-18308(v0)
+27661-  41f4b4:	8c42b878 	lw	v0,-18312(v0)
+27662-  41f4b8:	00402021 	move	a0,v0
+27663-  41f4bc:	00602821 	move	a1,v1
+27664-  41f4c0:	8f828204 	lw	v0,-32252(gp)
+27665-  41f4c4:	2446f32c 	addiu	a2,v0,-3284
+27666-  41f4c8:	00003821 	move	a3,zero
+27667-  41f4cc:	8f828410 	lw	v0,-31728(gp)
+27668-  41f4d0:	0040c821 	move	t9,v0
+27669-  41f4d4:	0320f809 	jalr	t9
+27670-  41f4d8:	00000000 	nop
+27671-  41f4dc:	8fdc0010 	lw	gp,16(s8)
+27672-  41f4e0:	03c0e821 	move	sp,s8
+27673-  41f4e4:	8fbf0144 	lw	ra,324(sp)
+27674-  41f4e8:	8fbe0140 	lw	s8,320(sp)
+27675-  41f4ec:	27bd0148 	addiu	sp,sp,328
+27676-  41f4f0:	03e00008 	jr	ra
+27677-  41f4f4:	00000000 	nop
+27678-
+27679-0041f4f8 <confctl_update_grp_info_request_init@@Base>:
+27680-  41f4f8:	3c1c0004 	lui	gp,0x4
+27681-  41f4fc:	279ccc48 	addiu	gp,gp,-13240
+27682-  41f500:	0399e021 	addu	gp,gp,t9
+27683-  41f504:	27bdffe0 	addiu	sp,sp,-32
+27684-  41f508:	afbf001c 	sw	ra,28(sp)
+27685-  41f50c:	afbe0018 	sw	s8,24(sp)
+27686-  41f510:	03a0f021 	move	s8,sp
+27687-  41f514:	afbc0010 	sw	gp,16(sp)
+27688-  41f518:	afc40020 	sw	a0,32(s8)
+27689-  41f51c:	8f8281c8 	lw	v0,-32312(gp)
+27690-  41f520:	8c43b87c 	lw	v1,-18308(v0)
+27691-  41f524:	8c42b878 	lw	v0,-18312(v0)
+27692-  41f528:	00402021 	move	a0,v0
+27693-  41f52c:	00602821 	move	a1,v1
+27694-  41f530:	8f828204 	lw	v0,-32252(gp)
+27695-  41f534:	2446f32c 	addiu	a2,v0,-3284
+27696-  41f538:	00003821 	move	a3,zero
+27697-  41f53c:	8f828410 	lw	v0,-31728(gp)
+27698-  41f540:	0040c821 	move	t9,v0
+27699-  41f544:	0320f809 	jalr	t9
+27700-  41f548:	00000000 	nop
+27701-  41f54c:	8fdc0010 	lw	gp,16(s8)
+27702-  41f550:	00001021 	move	v0,zero
+27703-  41f554:	03c0e821 	move	sp,s8
+27704-  41f558:	8fbf001c 	lw	ra,28(sp)
+27705-  41f55c:	8fbe0018 	lw	s8,24(sp)
+27706-  41f560:	27bd0020 	addiu	sp,sp,32
+27707-  41f564:	03e00008 	jr	ra
+27708-  41f568:	00000000 	nop
+27709-
+27710-0041f56c <confctl_do_restore_some_map@@Base>:
+27711-  41f56c:	3c1c0004 	lui	gp,0x4
+27712-  41f570:	279ccbd4 	addiu	gp,gp,-13356
+27713-  41f574:	0399e021 	addu	gp,gp,t9
+27714-  41f578:	27bdffd8 	addiu	sp,sp,-40
+27715-  41f57c:	afbf0024 	sw	ra,36(sp)
+27716-  41f580:	afbe0020 	sw	s8,32(sp)
+27717-  41f584:	03a0f021 	move	s8,sp
+27718-  41f588:	afbc0010 	sw	gp,16(sp)
+27719-  41f58c:	afc40028 	sw	a0,40(s8)
+27720-  41f590:	afc5002c 	sw	a1,44(s8)
+27721-  41f594:	afc60030 	sw	a2,48(s8)
+27722-  41f598:	afc70034 	sw	a3,52(s8)
+27723-  41f59c:	afc00018 	sw	zero,24(s8)
+27724-  41f5a0:	8fc2002c 	lw	v0,44(s8)
+27725-  41f5a4:	14400011 	bnez	v0,41f5ec <confctl_do_restore_some_map@@Base+0x80>
+27726-  41f5a8:	00000000 	nop
+27727-  41f5ac:	8f8281c8 	lw	v0,-32312(gp)
+--
+28503-  4201ac:	8fdc0010 	lw	gp,16(s8)
+28504-  4201b0:	24020488 	li	v0,1160
+28505-  4201b4:	afc20020 	sw	v0,32(s8)
+28506-  4201b8:	8fc20020 	lw	v0,32(s8)
+28507-  4201bc:	00402021 	move	a0,v0
+28508-  4201c0:	8f828594 	lw	v0,-31340(gp)
+28509-  4201c4:	0040c821 	move	t9,v0
+28510-  4201c8:	0320f809 	jalr	t9
+28511-  4201cc:	00000000 	nop
+28512-  4201d0:	8fdc0010 	lw	gp,16(s8)
+28513-  4201d4:	afc2001c 	sw	v0,28(s8)
+28514-  4201d8:	8fc2001c 	lw	v0,28(s8)
+28515-  4201dc:	1440000e 	bnez	v0,420218 <confctl_report_assoc_msg@@Base+0x15c>
+28516-  4201e0:	00000000 	nop
+28517-  4201e4:	24040003 	li	a0,3
+28518-  4201e8:	8f8281c8 	lw	v0,-32312(gp)
+28519-  4201ec:	2445c0b4 	addiu	a1,v0,-16204
+28520-  4201f0:	240600fd 	li	a2,253
+28521-  4201f4:	8f8281c8 	lw	v0,-32312(gp)
+28522-  4201f8:	2447c1b8 	addiu	a3,v0,-15944
+28523-  4201fc:	8f82802c 	lw	v0,-32724(gp)
+28524-  420200:	0040c821 	move	t9,v0
+28525-  420204:	0320f809 	jalr	t9
+28526-  420208:	00000000 	nop
+28527-  42020c:	8fdc0010 	lw	gp,16(s8)
+28528-  420210:	1000003b 	b	420300 <confctl_report_assoc_msg@@Base+0x244>
+28529-  420214:	00000000 	nop
+28530-  420218:	8fc2001c 	lw	v0,28(s8)
+28531-  42021c:	afc20018 	sw	v0,24(s8)
+28532-  420220:	8fc30018 	lw	v1,24(s8)
+28533-  420224:	8f8281c8 	lw	v0,-32312(gp)
+28534-  420228:	2442c1d8 	addiu	v0,v0,-15912
+28535-  42022c:	00602021 	move	a0,v1
+28536-  420230:	00402821 	move	a1,v0
+28537-  420234:	2406000f 	li	a2,15
+28538-  420238:	8f828338 	lw	v0,-31944(gp)
+28539-  42023c:	0040c821 	move	t9,v0
+28540-  420240:	0320f809 	jalr	t9
+28541-  420244:	00000000 	nop
+28542-  420248:	8fdc0010 	lw	gp,16(s8)
+28543-  42024c:	8fc20018 	lw	v0,24(s8)
+28544-  420250:	24030464 	li	v1,1124
+28545-  420254:	a8430023 	swl	v1,35(v0)
+28546-  420258:	b8430020 	swr	v1,32(v0)
+28547-  42025c:	8fc20018 	lw	v0,24(s8)
+28548-  420260:	24430024 	addiu	v1,v0,36
+28549-  420264:	27c20024 	addiu	v0,s8,36
+28550-  420268:	00602021 	move	a0,v1
+28551-  42026c:	00402821 	move	a1,v0
+28552-  420270:	24060464 	li	a2,1124
+28553-  420274:	8f828338 	lw	v0,-31944(gp)
+28554-  420278:	0040c821 	move	t9,v0
+28555-  42027c:	0320f809 	jalr	t9
+28556-  420280:	00000000 	nop
+28557-  420284:	8fdc0010 	lw	gp,16(s8)
+28558-  420288:	8fc20020 	lw	v0,32(s8)
+28559-  42028c:	8f8381c8 	lw	v1,-32312(gp)
+28560-  420290:	2464c1e8 	addiu	a0,v1,-15896
+28561-  420294:	8fc5001c 	lw	a1,28(s8)
+28562-  420298:	00403021 	move	a2,v0
+28563:  42029c:	8f828614 	lw	v0,-31212(gp)
+28564-  4202a0:	0040c821 	move	t9,v0
+28565-  4202a4:	0320f809 	jalr	t9
+28566-  4202a8:	00000000 	nop
+28567-  4202ac:	8fdc0010 	lw	gp,16(s8)
+28568-  4202b0:	8fc4001c 	lw	a0,28(s8)
+28569-  4202b4:	8f828390 	lw	v0,-31856(gp)
+28570-  4202b8:	0040c821 	move	t9,v0
+28571-  4202bc:	0320f809 	jalr	t9
+28572-  4202c0:	00000000 	nop
+28573-  4202c4:	8fdc0010 	lw	gp,16(s8)
+28574-  4202c8:	afc0001c 	sw	zero,28(s8)
+28575-  4202cc:	8f8281c8 	lw	v0,-32312(gp)
+28576-  4202d0:	8c43c1fc 	lw	v1,-15876(v0)
+28577-  4202d4:	8c42c1f8 	lw	v0,-15880(v0)
+28578-  4202d8:	00402021 	move	a0,v0
+28579-  4202dc:	00602821 	move	a1,v1
+28580-  4202e0:	8f868054 	lw	a2,-32684(gp)
+28581-  4202e4:	00003821 	move	a3,zero
+28582-  4202e8:	8f828410 	lw	v0,-31728(gp)
+28583-  4202ec:	0040c821 	move	t9,v0
+28584-  4202f0:	0320f809 	jalr	t9
+28585-  4202f4:	00000000 	nop
+28586-  4202f8:	8fdc0010 	lw	gp,16(s8)
+28587-  4202fc:	00000000 	nop
+28588-  420300:	03c0e821 	move	sp,s8
+28589-  420304:	8fbf048c 	lw	ra,1164(sp)
+28590-  420308:	8fbe0488 	lw	s8,1160(sp)
+28591-  42030c:	27bd0490 	addiu	sp,sp,1168
+28592-  420310:	03e00008 	jr	ra
+28593-  420314:	00000000 	nop
+28594-	...
+28595-  420320:	3c1c0004 	lui	gp,0x4
+28596-  420324:	279cbe20 	addiu	gp,gp,-16864
+28597-  420328:	0399e021 	addu	gp,gp,t9
+28598-  42032c:	27bdffe0 	addiu	sp,sp,-32
+28599-  420330:	afbf001c 	sw	ra,28(sp)
+28600-  420334:	afbe0018 	sw	s8,24(sp)
+28601-  420338:	03a0f021 	move	s8,sp
+28602-  42033c:	afbc0010 	sw	gp,16(sp)
+28603-  420340:	afc40020 	sw	a0,32(s8)
+28604-  420344:	8fc20020 	lw	v0,32(s8)
+28605-  420348:	1040001f 	beqz	v0,4203c8 <confctl_report_assoc_msg@@Base+0x30c>
+28606-  42034c:	00000000 	nop
+28607-  420350:	8fc20020 	lw	v0,32(s8)
+28608-  420354:	8c420010 	lw	v0,16(v0)
+28609-  420358:	1040000b 	beqz	v0,420388 <confctl_report_assoc_msg@@Base+0x2cc>
+28610-  42035c:	00000000 	nop
+28611-  420360:	8fc20020 	lw	v0,32(s8)
+28612-  420364:	8c420010 	lw	v0,16(v0)
+28613-  420368:	00402021 	move	a0,v0
+28614-  42036c:	8f828390 	lw	v0,-31856(gp)
+28615-  420370:	0040c821 	move	t9,v0
+28616-  420374:	0320f809 	jalr	t9
+28617-  420378:	00000000 	nop
+28618-  42037c:	8fdc0010 	lw	gp,16(s8)
+28619-  420380:	8fc20020 	lw	v0,32(s8)
+28620-  420384:	ac400010 	sw	zero,16(v0)
+28621-  420388:	8fc20020 	lw	v0,32(s8)
+28622-  42038c:	8c420014 	lw	v0,20(v0)
+28623-  420390:	10400010 	beqz	v0,4203d4 <confctl_report_assoc_msg@@Base+0x318>
+28624-  420394:	00000000 	nop
+28625-  420398:	8fc20020 	lw	v0,32(s8)
+28626-  42039c:	8c420014 	lw	v0,20(v0)
+28627-  4203a0:	00402021 	move	a0,v0
+28628-  4203a4:	8f828390 	lw	v0,-31856(gp)
+28629-  4203a8:	0040c821 	move	t9,v0
+28630-  4203ac:	0320f809 	jalr	t9
+28631-  4203b0:	00000000 	nop
+28632-  4203b4:	8fdc0010 	lw	gp,16(s8)
+28633-  4203b8:	8fc20020 	lw	v0,32(s8)
+28634-  4203bc:	ac400014 	sw	zero,20(v0)
+28635-  4203c0:	10000005 	b	4203d8 <confctl_report_assoc_msg@@Base+0x31c>
+28636-  4203c4:	00000000 	nop
+28637-  4203c8:	00000000 	nop
+28638-  4203cc:	10000002 	b	4203d8 <confctl_report_assoc_msg@@Base+0x31c>
+28639-  4203d0:	00000000 	nop
+28640-  4203d4:	00000000 	nop
+28641-  4203d8:	03c0e821 	move	sp,s8
+28642-  4203dc:	8fbf001c 	lw	ra,28(sp)
+28643-  4203e0:	8fbe0018 	lw	s8,24(sp)
+28644-  4203e4:	27bd0020 	addiu	sp,sp,32
+28645-  4203e8:	03e00008 	jr	ra
+28646-  4203ec:	00000000 	nop
+28647-  4203f0:	3c1c0004 	lui	gp,0x4
+28648-  4203f4:	279cbd50 	addiu	gp,gp,-17072
+28649-  4203f8:	0399e021 	addu	gp,gp,t9
+28650-  4203fc:	27bdffd8 	addiu	sp,sp,-40
+28651-  420400:	afbf0024 	sw	ra,36(sp)
+28652-  420404:	afbe0020 	sw	s8,32(sp)
+28653-  420408:	03a0f021 	move	s8,sp
+--
+34944-  42660c:	afc00034 	sw	zero,52(s8)
+34945-  426610:	afc00038 	sw	zero,56(s8)
+34946-  426614:	afc0003c 	sw	zero,60(s8)
+34947-  426618:	27c30040 	addiu	v1,s8,64
+34948-  42661c:	24020100 	li	v0,256
+34949-  426620:	00602021 	move	a0,v1
+34950-  426624:	00002821 	move	a1,zero
+34951-  426628:	00403021 	move	a2,v0
+34952-  42662c:	8f8285ac 	lw	v0,-31316(gp)
+34953-  426630:	0040c821 	move	t9,v0
+34954-  426634:	0320f809 	jalr	t9
+34955-  426638:	00000000 	nop
+34956-  42663c:	8fdc0010 	lw	gp,16(s8)
+34957-  426640:	27c20020 	addiu	v0,s8,32
+34958-  426644:	8f8381c8 	lw	v1,-32312(gp)
+34959-  426648:	2464f148 	addiu	a0,v1,-3768
+34960-  42664c:	00402821 	move	a1,v0
+34961-  426650:	8f8283a4 	lw	v0,-31836(gp)
+34962-  426654:	0040c821 	move	t9,v0
+34963-  426658:	0320f809 	jalr	t9
+34964-  42665c:	00000000 	nop
+34965-  426660:	8fdc0010 	lw	gp,16(s8)
+34966-  426664:	1040002c 	beqz	v0,426718 <confctl_update_remark_from_mpp@@Base+0x418>
+34967-  426668:	00000000 	nop
+34968-  42666c:	24020044 	li	v0,68
+34969-  426670:	afc20018 	sw	v0,24(s8)
+34970-  426674:	27c20040 	addiu	v0,s8,64
+34971-  426678:	afc2001c 	sw	v0,28(s8)
+34972-  42667c:	8fc3001c 	lw	v1,28(s8)
+34973-  426680:	8f8281c8 	lw	v0,-32312(gp)
+34974-  426684:	2442f158 	addiu	v0,v0,-3752
+34975-  426688:	00602021 	move	a0,v1
+34976-  42668c:	00402821 	move	a1,v0
+34977-  426690:	24060020 	li	a2,32
+34978-  426694:	8f82849c 	lw	v0,-31588(gp)
+34979-  426698:	0040c821 	move	t9,v0
+34980-  42669c:	0320f809 	jalr	t9
+34981-  4266a0:	00000000 	nop
+34982-  4266a4:	8fdc0010 	lw	gp,16(s8)
+34983-  4266a8:	8fc2001c 	lw	v0,28(s8)
+34984-  4266ac:	24430024 	addiu	v1,v0,36
+34985-  4266b0:	27c20020 	addiu	v0,s8,32
+34986-  4266b4:	00602021 	move	a0,v1
+34987-  4266b8:	00402821 	move	a1,v0
+34988-  4266bc:	24060020 	li	a2,32
+34989-  4266c0:	8f828338 	lw	v0,-31944(gp)
+34990-  4266c4:	0040c821 	move	t9,v0
+34991-  4266c8:	0320f809 	jalr	t9
+34992-  4266cc:	00000000 	nop
+34993-  4266d0:	8fdc0010 	lw	gp,16(s8)
+34994-  4266d4:	8fc2001c 	lw	v0,28(s8)
+34995-  4266d8:	24030020 	li	v1,32
+34996-  4266dc:	a8430023 	swl	v1,35(v0)
+34997-  4266e0:	b8430020 	swr	v1,32(v0)
+34998-  4266e4:	8fc20018 	lw	v0,24(s8)
+34999-  4266e8:	27c30040 	addiu	v1,s8,64
+35000-  4266ec:	8f8481c8 	lw	a0,-32312(gp)
+35001-  4266f0:	2484f170 	addiu	a0,a0,-3728
+35002-  4266f4:	00602821 	move	a1,v1
+35003-  4266f8:	00403021 	move	a2,v0
+35004:  4266fc:	8f828614 	lw	v0,-31212(gp)
+35005-  426700:	0040c821 	move	t9,v0
+35006-  426704:	0320f809 	jalr	t9
+35007-  426708:	00000000 	nop
+35008-  42670c:	8fdc0010 	lw	gp,16(s8)
+35009-  426710:	1000000c 	b	426744 <confctl_update_remark_from_mpp@@Base+0x444>
+35010-  426714:	00000000 	nop
+35011-  426718:	8f8281c8 	lw	v0,-32312(gp)
+35012-  42671c:	2442f180 	addiu	v0,v0,-3712
+35013-  426720:	00402021 	move	a0,v0
+35014-  426724:	8f8281c8 	lw	v0,-32312(gp)
+35015-  426728:	2445f2b4 	addiu	a1,v0,-3404
+35016-  42672c:	24060075 	li	a2,117
+35017-  426730:	8f8284bc 	lw	v0,-31556(gp)
+35018-  426734:	0040c821 	move	t9,v0
+35019-  426738:	0320f809 	jalr	t9
+35020-  42673c:	00000000 	nop
+35021-  426740:	8fdc0010 	lw	gp,16(s8)
+35022-  426744:	8f82805c 	lw	v0,-32676(gp)
+35023-  426748:	8c4249f0 	lw	v0,18928(v0)
+35024-  42674c:	1440000e 	bnez	v0,426788 <confctl_update_remark_from_mpp@@Base+0x488>
+35025-  426750:	00000000 	nop
+35026-  426754:	8f8281c8 	lw	v0,-32312(gp)
+35027-  426758:	8c43f2f4 	lw	v1,-3340(v0)
+35028-  42675c:	8c42f2f0 	lw	v0,-3344(v0)
+35029-  426760:	00402021 	move	a0,v0
+35030-  426764:	00602821 	move	a1,v1
+35031-  426768:	8f828204 	lw	v0,-32252(gp)
+35032-  42676c:	244665d4 	addiu	a2,v0,26068
+35033-  426770:	00003821 	move	a3,zero
+35034-  426774:	8f828410 	lw	v0,-31728(gp)
+35035-  426778:	0040c821 	move	t9,v0
+35036-  42677c:	0320f809 	jalr	t9
+35037-  426780:	00000000 	nop
+35038-  426784:	8fdc0010 	lw	gp,16(s8)
+35039-  426788:	03c0e821 	move	sp,s8
+35040-  42678c:	8fbf0144 	lw	ra,324(sp)
+35041-  426790:	8fbe0140 	lw	s8,320(sp)
+35042-  426794:	27bd0148 	addiu	sp,sp,328
+35043-  426798:	03e00008 	jr	ra
+35044-  42679c:	00000000 	nop
+35045-
+35046-004267a0 <confctl_update_remark_request_init@@Base>:
+35047-  4267a0:	3c1c0003 	lui	gp,0x3
+35048-  4267a4:	279c59a0 	addiu	gp,gp,22944
+35049-  4267a8:	0399e021 	addu	gp,gp,t9
+35050-  4267ac:	27bdffe0 	addiu	sp,sp,-32
+35051-  4267b0:	afbf001c 	sw	ra,28(sp)
+35052-  4267b4:	afbe0018 	sw	s8,24(sp)
+35053-  4267b8:	03a0f021 	move	s8,sp
+35054-  4267bc:	afbc0010 	sw	gp,16(sp)
+35055-  4267c0:	afc40020 	sw	a0,32(s8)
+35056-  4267c4:	8f8281c8 	lw	v0,-32312(gp)
+35057-  4267c8:	8c43f2f4 	lw	v1,-3340(v0)
+35058-  4267cc:	8c42f2f0 	lw	v0,-3344(v0)
+35059-  4267d0:	00402021 	move	a0,v0
+35060-  4267d4:	00602821 	move	a1,v1
+35061-  4267d8:	8f828204 	lw	v0,-32252(gp)
+35062-  4267dc:	244665d4 	addiu	a2,v0,26068
+35063-  4267e0:	00003821 	move	a3,zero
+35064-  4267e4:	8f828410 	lw	v0,-31728(gp)
+35065-  4267e8:	0040c821 	move	t9,v0
+35066-  4267ec:	0320f809 	jalr	t9
+35067-  4267f0:	00000000 	nop
+35068-  4267f4:	8fdc0010 	lw	gp,16(s8)
+35069-  4267f8:	00001021 	move	v0,zero
+35070-  4267fc:	03c0e821 	move	sp,s8
+35071-  426800:	8fbf001c 	lw	ra,28(sp)
+35072-  426804:	8fbe0018 	lw	s8,24(sp)
+35073-  426808:	27bd0020 	addiu	sp,sp,32
+35074-  42680c:	03e00008 	jr	ra
+35075-  426810:	00000000 	nop
+35076-  426814:	3c1c0003 	lui	gp,0x3
+35077-  426818:	279c592c 	addiu	gp,gp,22828
+35078-  42681c:	0399e021 	addu	gp,gp,t9
+35079-  426820:	27bdff48 	addiu	sp,sp,-184
+35080-  426824:	afbf00b4 	sw	ra,180(sp)
+35081-  426828:	afbe00b0 	sw	s8,176(sp)
+35082-  42682c:	03a0f021 	move	s8,sp
+35083-  426830:	afbc0010 	sw	gp,16(sp)
+35084-  426834:	afc400b8 	sw	a0,184(s8)
+35085-  426838:	afc500bc 	sw	a1,188(s8)
+35086-  42683c:	afc00020 	sw	zero,32(s8)
+35087-  426840:	afc00024 	sw	zero,36(s8)
+35088-  426844:	afc00028 	sw	zero,40(s8)
+35089-  426848:	a3c0002c 	sb	zero,44(s8)
+35090-  42684c:	8fc200bc 	lw	v0,188(s8)
+35091-  426850:	afc2001c 	sw	v0,28(s8)
+35092-  426854:	27c30030 	addiu	v1,s8,48
+35093-  426858:	24020080 	li	v0,128
+35094-  42685c:	00602021 	move	a0,v1
+--
+38721-  42a0b8:	00000000 	nop
+38722-  42a0bc:	8fdc0010 	lw	gp,16(s8)
+38723-  42a0c0:	afc2001c 	sw	v0,28(s8)
+38724-  42a0c4:	8fc2001c 	lw	v0,28(s8)
+38725-  42a0c8:	1440000b 	bnez	v0,42a0f8 <upgrade_image_to_flash@@Base+0x6fc>
+38726-  42a0cc:	00000000 	nop
+38727-  42a0d0:	8f8281c8 	lw	v0,-32312(gp)
+38728-  42a0d4:	24422260 	addiu	v0,v0,8800
+38729-  42a0d8:	00402021 	move	a0,v0
+38730-  42a0dc:	8f8284bc 	lw	v0,-31556(gp)
+38731-  42a0e0:	0040c821 	move	t9,v0
+38732-  42a0e4:	0320f809 	jalr	t9
+38733-  42a0e8:	00000000 	nop
+38734-  42a0ec:	8fdc0010 	lw	gp,16(s8)
+38735-  42a0f0:	10000046 	b	42a20c <upgrade_image_to_flash@@Base+0x810>
+38736-  42a0f4:	00000000 	nop
+38737-  42a0f8:	8fc2001c 	lw	v0,28(s8)
+38738-  42a0fc:	afc20024 	sw	v0,36(s8)
+38739-  42a100:	8fc30024 	lw	v1,36(s8)
+38740-  42a104:	8f8281c8 	lw	v0,-32312(gp)
+38741-  42a108:	24422280 	addiu	v0,v0,8832
+38742-  42a10c:	00602021 	move	a0,v1
+38743-  42a110:	00402821 	move	a1,v0
+38744-  42a114:	2406000f 	li	a2,15
+38745-  42a118:	8f828338 	lw	v0,-31944(gp)
+38746-  42a11c:	0040c821 	move	t9,v0
+38747-  42a120:	0320f809 	jalr	t9
+38748-  42a124:	00000000 	nop
+38749-  42a128:	8fdc0010 	lw	gp,16(s8)
+38750-  42a12c:	8fc40028 	lw	a0,40(s8)
+38751-  42a130:	8f828330 	lw	v0,-31952(gp)
+38752-  42a134:	0040c821 	move	t9,v0
+38753-  42a138:	0320f809 	jalr	t9
+38754-  42a13c:	00000000 	nop
+38755-  42a140:	8fdc0010 	lw	gp,16(s8)
+38756-  42a144:	00401821 	move	v1,v0
+38757-  42a148:	8fc20024 	lw	v0,36(s8)
+38758-  42a14c:	a8430023 	swl	v1,35(v0)
+38759-  42a150:	b8430020 	swr	v1,32(v0)
+38760-  42a154:	8fc20024 	lw	v0,36(s8)
+38761-  42a158:	24500024 	addiu	s0,v0,36
+38762-  42a15c:	8fc40028 	lw	a0,40(s8)
+38763-  42a160:	8f828330 	lw	v0,-31952(gp)
+38764-  42a164:	0040c821 	move	t9,v0
+38765-  42a168:	0320f809 	jalr	t9
+38766-  42a16c:	00000000 	nop
+38767-  42a170:	8fdc0010 	lw	gp,16(s8)
+38768-  42a174:	02002021 	move	a0,s0
+38769-  42a178:	8fc50028 	lw	a1,40(s8)
+38770-  42a17c:	00403021 	move	a2,v0
+38771-  42a180:	8f828338 	lw	v0,-31944(gp)
+38772-  42a184:	0040c821 	move	t9,v0
+38773-  42a188:	0320f809 	jalr	t9
+38774-  42a18c:	00000000 	nop
+38775-  42a190:	8fdc0010 	lw	gp,16(s8)
+38776-  42a194:	8fc20020 	lw	v0,32(s8)
+38777-  42a198:	8f8381c8 	lw	v1,-32312(gp)
+38778-  42a19c:	24642290 	addiu	a0,v1,8848
+38779-  42a1a0:	8fc5001c 	lw	a1,28(s8)
+38780-  42a1a4:	00403021 	move	a2,v0
+38781:  42a1a8:	8f828614 	lw	v0,-31212(gp)
+38782-  42a1ac:	0040c821 	move	t9,v0
+38783-  42a1b0:	0320f809 	jalr	t9
+38784-  42a1b4:	00000000 	nop
+38785-  42a1b8:	8fdc0010 	lw	gp,16(s8)
+38786-  42a1bc:	afc20018 	sw	v0,24(s8)
+38787-  42a1c0:	8f8281c8 	lw	v0,-32312(gp)
+38788-  42a1c4:	244222a0 	addiu	v0,v0,8864
+38789-  42a1c8:	00402021 	move	a0,v0
+38790-  42a1cc:	8fc50018 	lw	a1,24(s8)
+38791-  42a1d0:	8f8281c8 	lw	v0,-32312(gp)
+38792-  42a1d4:	24462b30 	addiu	a2,v0,11056
+38793-  42a1d8:	2407013d 	li	a3,317
+38794-  42a1dc:	8f8284bc 	lw	v0,-31556(gp)
+38795-  42a1e0:	0040c821 	move	t9,v0
+38796-  42a1e4:	0320f809 	jalr	t9
+38797-  42a1e8:	00000000 	nop
+38798-  42a1ec:	8fdc0010 	lw	gp,16(s8)
+38799-  42a1f0:	8fc4001c 	lw	a0,28(s8)
+38800-  42a1f4:	8f828390 	lw	v0,-31856(gp)
+38801-  42a1f8:	0040c821 	move	t9,v0
+38802-  42a1fc:	0320f809 	jalr	t9
+38803-  42a200:	00000000 	nop
+38804-  42a204:	8fdc0010 	lw	gp,16(s8)
+38805-  42a208:	afc0001c 	sw	zero,28(s8)
+38806-  42a20c:	03c0e821 	move	sp,s8
+38807-  42a210:	8fbf003c 	lw	ra,60(sp)
+38808-  42a214:	8fbe0038 	lw	s8,56(sp)
+38809-  42a218:	8fb00034 	lw	s0,52(sp)
+38810-  42a21c:	27bd0040 	addiu	sp,sp,64
+38811-  42a220:	03e00008 	jr	ra
+38812-  42a224:	00000000 	nop
+38813-
+38814-0042a228 <print_for_debug_cli@@Base>:
+38815-  42a228:	3c1c0003 	lui	gp,0x3
+38816-  42a22c:	279c1f18 	addiu	gp,gp,7960
+38817-  42a230:	0399e021 	addu	gp,gp,t9
+38818-  42a234:	27bdffd8 	addiu	sp,sp,-40
+38819-  42a238:	afbf0024 	sw	ra,36(sp)
+38820-  42a23c:	afbe0020 	sw	s8,32(sp)
+38821-  42a240:	03a0f021 	move	s8,sp
+38822-  42a244:	afbc0018 	sw	gp,24(sp)
+38823-  42a248:	8f8282a8 	lw	v0,-32088(gp)
+38824-  42a24c:	8c420000 	lw	v0,0(v0)
+38825-  42a250:	afa20010 	sw	v0,16(sp)
+38826-  42a254:	24040001 	li	a0,1
+38827-  42a258:	8f8281c8 	lw	v0,-32312(gp)
+38828-  42a25c:	244522b4 	addiu	a1,v0,8884
+38829-  42a260:	24060146 	li	a2,326
+38830-  42a264:	8f8281c8 	lw	v0,-32312(gp)
+38831-  42a268:	244722c8 	addiu	a3,v0,8904
+38832-  42a26c:	8f82802c 	lw	v0,-32724(gp)
+38833-  42a270:	0040c821 	move	t9,v0
+38834-  42a274:	0320f809 	jalr	t9
+38835-  42a278:	00000000 	nop
+38836-  42a27c:	8fdc0018 	lw	gp,24(s8)
+38837-  42a280:	8f8282a8 	lw	v0,-32088(gp)
+38838-  42a284:	8c420004 	lw	v0,4(v0)
+38839-  42a288:	afa20010 	sw	v0,16(sp)
+38840-  42a28c:	24040001 	li	a0,1
+38841-  42a290:	8f8281c8 	lw	v0,-32312(gp)
+38842-  42a294:	244522b4 	addiu	a1,v0,8884
+38843-  42a298:	24060147 	li	a2,327
+38844-  42a29c:	8f8281c8 	lw	v0,-32312(gp)
+38845-  42a2a0:	244722e4 	addiu	a3,v0,8932
+38846-  42a2a4:	8f82802c 	lw	v0,-32724(gp)
+38847-  42a2a8:	0040c821 	move	t9,v0
+38848-  42a2ac:	0320f809 	jalr	t9
+38849-  42a2b0:	00000000 	nop
+38850-  42a2b4:	8fdc0018 	lw	gp,24(s8)
+38851-  42a2b8:	8f8282a8 	lw	v0,-32088(gp)
+38852-  42a2bc:	8c420024 	lw	v0,36(v0)
+38853-  42a2c0:	afa20010 	sw	v0,16(sp)
+38854-  42a2c4:	24040001 	li	a0,1
+38855-  42a2c8:	8f8281c8 	lw	v0,-32312(gp)
+38856-  42a2cc:	244522b4 	addiu	a1,v0,8884
+38857-  42a2d0:	24060148 	li	a2,328
+38858-  42a2d4:	8f8281c8 	lw	v0,-32312(gp)
+38859-  42a2d8:	24472300 	addiu	a3,v0,8960
+38860-  42a2dc:	8f82802c 	lw	v0,-32724(gp)
+38861-  42a2e0:	0040c821 	move	t9,v0
+38862-  42a2e4:	0320f809 	jalr	t9
+38863-  42a2e8:	00000000 	nop
+38864-  42a2ec:	8fdc0018 	lw	gp,24(s8)
+38865-  42a2f0:	8f8282a8 	lw	v0,-32088(gp)
+38866-  42a2f4:	8c420028 	lw	v0,40(v0)
+38867-  42a2f8:	afa20010 	sw	v0,16(sp)
+38868-  42a2fc:	24040001 	li	a0,1
+38869-  42a300:	8f8281c8 	lw	v0,-32312(gp)
+38870-  42a304:	244522b4 	addiu	a1,v0,8884
+38871-  42a308:	24060149 	li	a2,329
+--
+39741-  42b088:	240200a4 	li	v0,164
+39742-  42b08c:	afc20028 	sw	v0,40(s8)
+39743-  42b090:	8fc20028 	lw	v0,40(s8)
+39744-  42b094:	00402021 	move	a0,v0
+39745-  42b098:	8f828594 	lw	v0,-31340(gp)
+39746-  42b09c:	0040c821 	move	t9,v0
+39747-  42b0a0:	0320f809 	jalr	t9
+39748-  42b0a4:	00000000 	nop
+39749-  42b0a8:	8fdc0018 	lw	gp,24(s8)
+39750-  42b0ac:	afc2002c 	sw	v0,44(s8)
+39751-  42b0b0:	8fc2002c 	lw	v0,44(s8)
+39752-  42b0b4:	1440000f 	bnez	v0,42b0f4 <conf_get_download_info_from_mpp@@Base+0x328>
+39753-  42b0b8:	00000000 	nop
+39754-  42b0bc:	24040003 	li	a0,3
+39755-  42b0c0:	8f8281c8 	lw	v0,-32312(gp)
+39756-  42b0c4:	244522b4 	addiu	a1,v0,8884
+39757-  42b0c8:	240602fa 	li	a2,762
+39758-  42b0cc:	8f8281c8 	lw	v0,-32312(gp)
+39759-  42b0d0:	24472260 	addiu	a3,v0,8800
+39760-  42b0d4:	8f82802c 	lw	v0,-32724(gp)
+39761-  42b0d8:	0040c821 	move	t9,v0
+39762-  42b0dc:	0320f809 	jalr	t9
+39763-  42b0e0:	00000000 	nop
+39764-  42b0e4:	8fdc0018 	lw	gp,24(s8)
+39765-  42b0e8:	2402ffff 	li	v0,-1
+39766-  42b0ec:	1000002f 	b	42b1ac <conf_get_download_info_from_mpp@@Base+0x3e0>
+39767-  42b0f0:	00000000 	nop
+39768-  42b0f4:	8fc2002c 	lw	v0,44(s8)
+39769-  42b0f8:	afc20030 	sw	v0,48(s8)
+39770-  42b0fc:	8fc30030 	lw	v1,48(s8)
+39771-  42b100:	8f8281c8 	lw	v0,-32312(gp)
+39772-  42b104:	24422548 	addiu	v0,v0,9544
+39773-  42b108:	00602021 	move	a0,v1
+39774-  42b10c:	00402821 	move	a1,v0
+39775-  42b110:	24060013 	li	a2,19
+39776-  42b114:	8f828338 	lw	v0,-31944(gp)
+39777-  42b118:	0040c821 	move	t9,v0
+39778-  42b11c:	0320f809 	jalr	t9
+39779-  42b120:	00000000 	nop
+39780-  42b124:	8fdc0018 	lw	gp,24(s8)
+39781-  42b128:	8fc20030 	lw	v0,48(s8)
+39782-  42b12c:	24030080 	li	v1,128
+39783-  42b130:	a8430023 	swl	v1,35(v0)
+39784-  42b134:	b8430020 	swr	v1,32(v0)
+39785-  42b138:	8fc20030 	lw	v0,48(s8)
+39786-  42b13c:	24430024 	addiu	v1,v0,36
+39787-  42b140:	27c20034 	addiu	v0,s8,52
+39788-  42b144:	00602021 	move	a0,v1
+39789-  42b148:	00402821 	move	a1,v0
+39790-  42b14c:	24060080 	li	a2,128
+39791-  42b150:	8f828338 	lw	v0,-31944(gp)
+39792-  42b154:	0040c821 	move	t9,v0
+39793-  42b158:	0320f809 	jalr	t9
+39794-  42b15c:	00000000 	nop
+39795-  42b160:	8fdc0018 	lw	gp,24(s8)
+39796-  42b164:	8fc20028 	lw	v0,40(s8)
+39797-  42b168:	8f8381c8 	lw	v1,-32312(gp)
+39798-  42b16c:	24642290 	addiu	a0,v1,8848
+39799-  42b170:	8fc5002c 	lw	a1,44(s8)
+39800-  42b174:	00403021 	move	a2,v0
+39801:  42b178:	8f828614 	lw	v0,-31212(gp)
+39802-  42b17c:	0040c821 	move	t9,v0
+39803-  42b180:	0320f809 	jalr	t9
+39804-  42b184:	00000000 	nop
+39805-  42b188:	8fdc0018 	lw	gp,24(s8)
+39806-  42b18c:	8fc4002c 	lw	a0,44(s8)
+39807-  42b190:	8f828390 	lw	v0,-31856(gp)
+39808-  42b194:	0040c821 	move	t9,v0
+39809-  42b198:	0320f809 	jalr	t9
+39810-  42b19c:	00000000 	nop
+39811-  42b1a0:	8fdc0018 	lw	gp,24(s8)
+39812-  42b1a4:	afc0002c 	sw	zero,44(s8)
+39813-  42b1a8:	00001021 	move	v0,zero
+39814-  42b1ac:	03c0e821 	move	sp,s8
+39815-  42b1b0:	8fbf0194 	lw	ra,404(sp)
+39816-  42b1b4:	8fbe0190 	lw	s8,400(sp)
+39817-  42b1b8:	27bd0198 	addiu	sp,sp,408
+39818-  42b1bc:	03e00008 	jr	ra
+39819-  42b1c0:	00000000 	nop
+39820-
+39821-0042b1c4 <upgrade_msg_to_ucloud@@Base>:
+39822-  42b1c4:	3c1c0003 	lui	gp,0x3
+39823-  42b1c8:	279c0f7c 	addiu	gp,gp,3964
+39824-  42b1cc:	0399e021 	addu	gp,gp,t9
+39825-  42b1d0:	27bdffe0 	addiu	sp,sp,-32
+39826-  42b1d4:	afbf001c 	sw	ra,28(sp)
+39827-  42b1d8:	afbe0018 	sw	s8,24(sp)
+39828-  42b1dc:	03a0f021 	move	s8,sp
+39829-  42b1e0:	afbc0010 	sw	gp,16(sp)
+39830-  42b1e4:	8f8281c8 	lw	v0,-32312(gp)
+39831-  42b1e8:	2442216c 	addiu	v0,v0,8556
+39832-  42b1ec:	00402021 	move	a0,v0
+39833-  42b1f0:	8f8281c8 	lw	v0,-32312(gp)
+39834-  42b1f4:	24452a98 	addiu	a1,v0,10904
+39835-  42b1f8:	2406030d 	li	a2,781
+39836-  42b1fc:	8f8284bc 	lw	v0,-31556(gp)
+39837-  42b200:	0040c821 	move	t9,v0
+39838-  42b204:	0320f809 	jalr	t9
+39839-  42b208:	00000000 	nop
+39840-  42b20c:	8fdc0010 	lw	gp,16(s8)
+39841-  42b210:	8f82863c 	lw	v0,-31172(gp)
+39842-  42b214:	0040c821 	move	t9,v0
+39843-  42b218:	0320f809 	jalr	t9
+39844-  42b21c:	00000000 	nop
+39845-  42b220:	8fdc0010 	lw	gp,16(s8)
+39846-  42b224:	03c0e821 	move	sp,s8
+39847-  42b228:	8fbf001c 	lw	ra,28(sp)
+39848-  42b22c:	8fbe0018 	lw	s8,24(sp)
+39849-  42b230:	27bd0020 	addiu	sp,sp,32
+39850-  42b234:	03e00008 	jr	ra
+39851-  42b238:	00000000 	nop
+39852-
+39853-0042b23c <conf_get_upgrade_info_from_mpp@@Base>:
+39854-  42b23c:	3c1c0003 	lui	gp,0x3
+39855-  42b240:	279c0f04 	addiu	gp,gp,3844
+39856-  42b244:	0399e021 	addu	gp,gp,t9
+39857-  42b248:	27bdff90 	addiu	sp,sp,-112
+39858-  42b24c:	afbf006c 	sw	ra,108(sp)
+39859-  42b250:	afbe0068 	sw	s8,104(sp)
+39860-  42b254:	03a0f021 	move	s8,sp
+39861-  42b258:	afbc0010 	sw	gp,16(sp)
+39862-  42b25c:	afc40070 	sw	a0,112(s8)
+39863-  42b260:	afc50074 	sw	a1,116(s8)
+39864-  42b264:	afc60078 	sw	a2,120(s8)
+39865-  42b268:	afc7007c 	sw	a3,124(s8)
+39866-  42b26c:	afc00024 	sw	zero,36(s8)
+39867-  42b270:	27c30028 	addiu	v1,s8,40
+39868-  42b274:	24020040 	li	v0,64
+39869-  42b278:	00602021 	move	a0,v1
+39870-  42b27c:	00002821 	move	a1,zero
+39871-  42b280:	00403021 	move	a2,v0
+39872-  42b284:	8f8285ac 	lw	v0,-31316(gp)
+39873-  42b288:	0040c821 	move	t9,v0
+39874-  42b28c:	0320f809 	jalr	t9
+39875-  42b290:	00000000 	nop
+39876-  42b294:	8fdc0010 	lw	gp,16(s8)
+39877-  42b298:	2402ffff 	li	v0,-1
+39878-  42b29c:	afc20020 	sw	v0,32(s8)
+39879-  42b2a0:	2402ffff 	li	v0,-1
+39880-  42b2a4:	afc2001c 	sw	v0,28(s8)
+39881-  42b2a8:	8fc20074 	lw	v0,116(s8)
+39882-  42b2ac:	1440000f 	bnez	v0,42b2ec <conf_get_upgrade_info_from_mpp@@Base+0xb0>
+39883-  42b2b0:	00000000 	nop
+39884-  42b2b4:	8f8281c8 	lw	v0,-32312(gp)
+39885-  42b2b8:	2442255c 	addiu	v0,v0,9564
+39886-  42b2bc:	00402021 	move	a0,v0
+39887-  42b2c0:	8f8281c8 	lw	v0,-32312(gp)
+39888-  42b2c4:	24452a78 	addiu	a1,v0,10872
+39889-  42b2c8:	2406032a 	li	a2,810
+39890-  42b2cc:	8f8284bc 	lw	v0,-31556(gp)
+39891-  42b2d0:	0040c821 	move	t9,v0
+--
+40740-  42bff4:	8fdc0010 	lw	gp,16(s8)
+40741-  42bff8:	240200a4 	li	v0,164
+40742-  42bffc:	afc20018 	sw	v0,24(s8)
+40743-  42c000:	8fc20018 	lw	v0,24(s8)
+40744-  42c004:	00402021 	move	a0,v0
+40745-  42c008:	8f828594 	lw	v0,-31340(gp)
+40746-  42c00c:	0040c821 	move	t9,v0
+40747-  42c010:	0320f809 	jalr	t9
+40748-  42c014:	00000000 	nop
+40749-  42c018:	8fdc0010 	lw	gp,16(s8)
+40750-  42c01c:	afc2001c 	sw	v0,28(s8)
+40751-  42c020:	8fc2001c 	lw	v0,28(s8)
+40752-  42c024:	1440000e 	bnez	v0,42c060 <multi_upgrade_send_mem_enough_to_mpp@@Base+0x168>
+40753-  42c028:	00000000 	nop
+40754-  42c02c:	24040003 	li	a0,3
+40755-  42c030:	8f8281c8 	lw	v0,-32312(gp)
+40756-  42c034:	244522b4 	addiu	a1,v0,8884
+40757-  42c038:	24060429 	li	a2,1065
+40758-  42c03c:	8f8281c8 	lw	v0,-32312(gp)
+40759-  42c040:	24472260 	addiu	a3,v0,8800
+40760-  42c044:	8f82802c 	lw	v0,-32724(gp)
+40761-  42c048:	0040c821 	move	t9,v0
+40762-  42c04c:	0320f809 	jalr	t9
+40763-  42c050:	00000000 	nop
+40764-  42c054:	8fdc0010 	lw	gp,16(s8)
+40765-  42c058:	1000002e 	b	42c114 <multi_upgrade_send_mem_enough_to_mpp@@Base+0x21c>
+40766-  42c05c:	00000000 	nop
+40767-  42c060:	8fc2001c 	lw	v0,28(s8)
+40768-  42c064:	afc20020 	sw	v0,32(s8)
+40769-  42c068:	8fc30020 	lw	v1,32(s8)
+40770-  42c06c:	8f8281c8 	lw	v0,-32312(gp)
+40771-  42c070:	24422640 	addiu	v0,v0,9792
+40772-  42c074:	00602021 	move	a0,v1
+40773-  42c078:	00402821 	move	a1,v0
+40774-  42c07c:	2406000c 	li	a2,12
+40775-  42c080:	8f828338 	lw	v0,-31944(gp)
+40776-  42c084:	0040c821 	move	t9,v0
+40777-  42c088:	0320f809 	jalr	t9
+40778-  42c08c:	00000000 	nop
+40779-  42c090:	8fdc0010 	lw	gp,16(s8)
+40780-  42c094:	8fc20020 	lw	v0,32(s8)
+40781-  42c098:	24030080 	li	v1,128
+40782-  42c09c:	a8430023 	swl	v1,35(v0)
+40783-  42c0a0:	b8430020 	swr	v1,32(v0)
+40784-  42c0a4:	8fc20020 	lw	v0,32(s8)
+40785-  42c0a8:	24430024 	addiu	v1,v0,36
+40786-  42c0ac:	27c20024 	addiu	v0,s8,36
+40787-  42c0b0:	00602021 	move	a0,v1
+40788-  42c0b4:	00402821 	move	a1,v0
+40789-  42c0b8:	24060080 	li	a2,128
+40790-  42c0bc:	8f828338 	lw	v0,-31944(gp)
+40791-  42c0c0:	0040c821 	move	t9,v0
+40792-  42c0c4:	0320f809 	jalr	t9
+40793-  42c0c8:	00000000 	nop
+40794-  42c0cc:	8fdc0010 	lw	gp,16(s8)
+40795-  42c0d0:	8fc20018 	lw	v0,24(s8)
+40796-  42c0d4:	8f8381c8 	lw	v1,-32312(gp)
+40797-  42c0d8:	24642290 	addiu	a0,v1,8848
+40798-  42c0dc:	8fc5001c 	lw	a1,28(s8)
+40799-  42c0e0:	00403021 	move	a2,v0
+40800:  42c0e4:	8f828614 	lw	v0,-31212(gp)
+40801-  42c0e8:	0040c821 	move	t9,v0
+40802-  42c0ec:	0320f809 	jalr	t9
+40803-  42c0f0:	00000000 	nop
+40804-  42c0f4:	8fdc0010 	lw	gp,16(s8)
+40805-  42c0f8:	8fc4001c 	lw	a0,28(s8)
+40806-  42c0fc:	8f828390 	lw	v0,-31856(gp)
+40807-  42c100:	0040c821 	move	t9,v0
+40808-  42c104:	0320f809 	jalr	t9
+40809-  42c108:	00000000 	nop
+40810-  42c10c:	8fdc0010 	lw	gp,16(s8)
+40811-  42c110:	afc0001c 	sw	zero,28(s8)
+40812-  42c114:	03c0e821 	move	sp,s8
+40813-  42c118:	8fbf00ec 	lw	ra,236(sp)
+40814-  42c11c:	8fbe00e8 	lw	s8,232(sp)
+40815-  42c120:	27bd00f0 	addiu	sp,sp,240
+40816-  42c124:	03e00008 	jr	ra
+40817-  42c128:	00000000 	nop
+40818-
+40819-0042c12c <conf_write_flash_from_mpp@@Base>:
+40820-  42c12c:	3c1c0003 	lui	gp,0x3
+40821-  42c130:	279c0014 	addiu	gp,gp,20
+40822-  42c134:	0399e021 	addu	gp,gp,t9
+40823-  42c138:	27bdffe0 	addiu	sp,sp,-32
+40824-  42c13c:	afbf001c 	sw	ra,28(sp)
+40825-  42c140:	afbe0018 	sw	s8,24(sp)
+40826-  42c144:	03a0f021 	move	s8,sp
+40827-  42c148:	afbc0010 	sw	gp,16(sp)
+40828-  42c14c:	afc40020 	sw	a0,32(s8)
+40829-  42c150:	afc50024 	sw	a1,36(s8)
+40830-  42c154:	afc60028 	sw	a2,40(s8)
+40831-  42c158:	afc7002c 	sw	a3,44(s8)
+40832-  42c15c:	8f82805c 	lw	v0,-32676(gp)
+40833-  42c160:	8c424128 	lw	v0,16680(v0)
+40834-  42c164:	1040000f 	beqz	v0,42c1a4 <conf_write_flash_from_mpp@@Base+0x78>
+40835-  42c168:	00000000 	nop
+40836-  42c16c:	8f8281c8 	lw	v0,-32312(gp)
+40837-  42c170:	244224ac 	addiu	v0,v0,9388
+40838-  42c174:	00402021 	move	a0,v0
+40839-  42c178:	8f8281c8 	lw	v0,-32312(gp)
+40840-  42c17c:	24452a14 	addiu	a1,v0,10772
+40841-  42c180:	2406044d 	li	a2,1101
+40842-  42c184:	8f8284bc 	lw	v0,-31556(gp)
+40843-  42c188:	0040c821 	move	t9,v0
+40844-  42c18c:	0320f809 	jalr	t9
+40845-  42c190:	00000000 	nop
+40846-  42c194:	8fdc0010 	lw	gp,16(s8)
+40847-  42c198:	00001021 	move	v0,zero
+40848-  42c19c:	10000044 	b	42c2b0 <conf_write_flash_from_mpp@@Base+0x184>
+40849-  42c1a0:	00000000 	nop
+40850-  42c1a4:	8f82805c 	lw	v0,-32676(gp)
+40851-  42c1a8:	8c434a6c 	lw	v1,19052(v0)
+40852-  42c1ac:	24020001 	li	v0,1
+40853-  42c1b0:	1462000f 	bne	v1,v0,42c1f0 <conf_write_flash_from_mpp@@Base+0xc4>
+40854-  42c1b4:	00000000 	nop
+40855-  42c1b8:	8f8281c8 	lw	v0,-32312(gp)
+40856-  42c1bc:	2442264c 	addiu	v0,v0,9804
+40857-  42c1c0:	00402021 	move	a0,v0
+40858-  42c1c4:	8f8281c8 	lw	v0,-32312(gp)
+40859-  42c1c8:	24452a14 	addiu	a1,v0,10772
+40860-  42c1cc:	24060453 	li	a2,1107
+40861-  42c1d0:	8f8284bc 	lw	v0,-31556(gp)
+40862-  42c1d4:	0040c821 	move	t9,v0
+40863-  42c1d8:	0320f809 	jalr	t9
+40864-  42c1dc:	00000000 	nop
+40865-  42c1e0:	8fdc0010 	lw	gp,16(s8)
+40866-  42c1e4:	00001021 	move	v0,zero
+40867-  42c1e8:	10000031 	b	42c2b0 <conf_write_flash_from_mpp@@Base+0x184>
+40868-  42c1ec:	00000000 	nop
+40869-  42c1f0:	8f828024 	lw	v0,-32732(gp)
+40870-  42c1f4:	24429e18 	addiu	v0,v0,-25064
+40871-  42c1f8:	0040c821 	move	t9,v0
+40872-  42c1fc:	0320f809 	jalr	t9
+40873-  42c200:	00000000 	nop
+40874-  42c204:	8fdc0010 	lw	gp,16(s8)
+40875-  42c208:	10400016 	beqz	v0,42c264 <conf_write_flash_from_mpp@@Base+0x138>
+40876-  42c20c:	00000000 	nop
+40877-  42c210:	8f8281c8 	lw	v0,-32312(gp)
+40878-  42c214:	244226a4 	addiu	v0,v0,9892
+40879-  42c218:	00402021 	move	a0,v0
+40880-  42c21c:	8f8281c8 	lw	v0,-32312(gp)
+40881-  42c220:	24452a14 	addiu	a1,v0,10772
+40882-  42c224:	2406045a 	li	a2,1114
+40883-  42c228:	8f8284bc 	lw	v0,-31556(gp)
+40884-  42c22c:	0040c821 	move	t9,v0
+40885-  42c230:	0320f809 	jalr	t9
+40886-  42c234:	00000000 	nop
+40887-  42c238:	8fdc0010 	lw	gp,16(s8)
+40888-  42c23c:	8f8281c8 	lw	v0,-32312(gp)
+40889-  42c240:	24442440 	addiu	a0,v0,9280
+40890-  42c244:	8f82833c 	lw	v0,-31940(gp)
+--
+41193-  42c6f0:	8fdc0010 	lw	gp,16(s8)
+41194-  42c6f4:	240200a4 	li	v0,164
+41195-  42c6f8:	afc20018 	sw	v0,24(s8)
+41196-  42c6fc:	8fc20018 	lw	v0,24(s8)
+41197-  42c700:	00402021 	move	a0,v0
+41198-  42c704:	8f828594 	lw	v0,-31340(gp)
+41199-  42c708:	0040c821 	move	t9,v0
+41200-  42c70c:	0320f809 	jalr	t9
+41201-  42c710:	00000000 	nop
+41202-  42c714:	8fdc0010 	lw	gp,16(s8)
+41203-  42c718:	afc2001c 	sw	v0,28(s8)
+41204-  42c71c:	8fc2001c 	lw	v0,28(s8)
+41205-  42c720:	1440000e 	bnez	v0,42c75c <upgrade_map_mulst_reboot@@Base+0x3a4>
+41206-  42c724:	00000000 	nop
+41207-  42c728:	24040003 	li	a0,3
+41208-  42c72c:	8f8281c8 	lw	v0,-32312(gp)
+41209-  42c730:	244522b4 	addiu	a1,v0,8884
+41210-  42c734:	240604cb 	li	a2,1227
+41211-  42c738:	8f8281c8 	lw	v0,-32312(gp)
+41212-  42c73c:	24472260 	addiu	a3,v0,8800
+41213-  42c740:	8f82802c 	lw	v0,-32724(gp)
+41214-  42c744:	0040c821 	move	t9,v0
+41215-  42c748:	0320f809 	jalr	t9
+41216-  42c74c:	00000000 	nop
+41217-  42c750:	8fdc0010 	lw	gp,16(s8)
+41218-  42c754:	1000002e 	b	42c810 <upgrade_map_mulst_reboot@@Base+0x458>
+41219-  42c758:	00000000 	nop
+41220-  42c75c:	8fc2001c 	lw	v0,28(s8)
+41221-  42c760:	afc20020 	sw	v0,32(s8)
+41222-  42c764:	8fc30020 	lw	v1,32(s8)
+41223-  42c768:	8f8281c8 	lw	v0,-32312(gp)
+41224-  42c76c:	244227a4 	addiu	v0,v0,10148
+41225-  42c770:	00602021 	move	a0,v1
+41226-  42c774:	00402821 	move	a1,v0
+41227-  42c778:	2406000d 	li	a2,13
+41228-  42c77c:	8f828338 	lw	v0,-31944(gp)
+41229-  42c780:	0040c821 	move	t9,v0
+41230-  42c784:	0320f809 	jalr	t9
+41231-  42c788:	00000000 	nop
+41232-  42c78c:	8fdc0010 	lw	gp,16(s8)
+41233-  42c790:	8fc20020 	lw	v0,32(s8)
+41234-  42c794:	24030080 	li	v1,128
+41235-  42c798:	a8430023 	swl	v1,35(v0)
+41236-  42c79c:	b8430020 	swr	v1,32(v0)
+41237-  42c7a0:	8fc20020 	lw	v0,32(s8)
+41238-  42c7a4:	24430024 	addiu	v1,v0,36
+41239-  42c7a8:	27c20024 	addiu	v0,s8,36
+41240-  42c7ac:	00602021 	move	a0,v1
+41241-  42c7b0:	00402821 	move	a1,v0
+41242-  42c7b4:	24060080 	li	a2,128
+41243-  42c7b8:	8f828338 	lw	v0,-31944(gp)
+41244-  42c7bc:	0040c821 	move	t9,v0
+41245-  42c7c0:	0320f809 	jalr	t9
+41246-  42c7c4:	00000000 	nop
+41247-  42c7c8:	8fdc0010 	lw	gp,16(s8)
+41248-  42c7cc:	8fc20018 	lw	v0,24(s8)
+41249-  42c7d0:	8f8381c8 	lw	v1,-32312(gp)
+41250-  42c7d4:	24642290 	addiu	a0,v1,8848
+41251-  42c7d8:	8fc5001c 	lw	a1,28(s8)
+41252-  42c7dc:	00403021 	move	a2,v0
+41253:  42c7e0:	8f828614 	lw	v0,-31212(gp)
+41254-  42c7e4:	0040c821 	move	t9,v0
+41255-  42c7e8:	0320f809 	jalr	t9
+41256-  42c7ec:	00000000 	nop
+41257-  42c7f0:	8fdc0010 	lw	gp,16(s8)
+41258-  42c7f4:	8fc4001c 	lw	a0,28(s8)
+41259-  42c7f8:	8f828390 	lw	v0,-31856(gp)
+41260-  42c7fc:	0040c821 	move	t9,v0
+41261-  42c800:	0320f809 	jalr	t9
+41262-  42c804:	00000000 	nop
+41263-  42c808:	8fdc0010 	lw	gp,16(s8)
+41264-  42c80c:	afc0001c 	sw	zero,28(s8)
+41265-  42c810:	03c0e821 	move	sp,s8
+41266-  42c814:	8fbf00ec 	lw	ra,236(sp)
+41267-  42c818:	8fbe00e8 	lw	s8,232(sp)
+41268-  42c81c:	27bd00f0 	addiu	sp,sp,240
+41269-  42c820:	03e00008 	jr	ra
+41270-  42c824:	00000000 	nop
+41271-
+41272-0042c828 <upgrade_map_disptach_mulst@@Base>:
+41273-  42c828:	3c1c0003 	lui	gp,0x3
+41274-  42c82c:	279cf918 	addiu	gp,gp,-1768
+41275-  42c830:	0399e021 	addu	gp,gp,t9
+41276-  42c834:	27bdffe0 	addiu	sp,sp,-32
+41277-  42c838:	afbf001c 	sw	ra,28(sp)
+41278-  42c83c:	afbe0018 	sw	s8,24(sp)
+41279-  42c840:	03a0f021 	move	s8,sp
+41280-  42c844:	afbc0010 	sw	gp,16(sp)
+41281-  42c848:	afc40020 	sw	a0,32(s8)
+41282-  42c84c:	8f828024 	lw	v0,-32732(gp)
+41283-  42c850:	24429e18 	addiu	v0,v0,-25064
+41284-  42c854:	0040c821 	move	t9,v0
+41285-  42c858:	0320f809 	jalr	t9
+41286-  42c85c:	00000000 	nop
+41287-  42c860:	8fdc0010 	lw	gp,16(s8)
+41288-  42c864:	10400015 	beqz	v0,42c8bc <upgrade_map_disptach_mulst@@Base+0x94>
+41289-  42c868:	00000000 	nop
+41290-  42c86c:	8f8281c8 	lw	v0,-32312(gp)
+41291-  42c870:	244227b4 	addiu	v0,v0,10164
+41292-  42c874:	00402021 	move	a0,v0
+41293-  42c878:	8f8281c8 	lw	v0,-32312(gp)
+41294-  42c87c:	244529b8 	addiu	a1,v0,10680
+41295-  42c880:	240604de 	li	a2,1246
+41296-  42c884:	8f8284bc 	lw	v0,-31556(gp)
+41297-  42c888:	0040c821 	move	t9,v0
+41298-  42c88c:	0320f809 	jalr	t9
+41299-  42c890:	00000000 	nop
+41300-  42c894:	8fdc0010 	lw	gp,16(s8)
+41301-  42c898:	8f8281c8 	lw	v0,-32312(gp)
+41302-  42c89c:	24442440 	addiu	a0,v0,9280
+41303-  42c8a0:	8f82833c 	lw	v0,-31940(gp)
+41304-  42c8a4:	0040c821 	move	t9,v0
+41305-  42c8a8:	0320f809 	jalr	t9
+41306-  42c8ac:	00000000 	nop
+41307-  42c8b0:	8fdc0010 	lw	gp,16(s8)
+41308-  42c8b4:	10000013 	b	42c904 <upgrade_map_disptach_mulst@@Base+0xdc>
+41309-  42c8b8:	00000000 	nop
+41310-  42c8bc:	8f8281c8 	lw	v0,-32312(gp)
+41311-  42c8c0:	244226c4 	addiu	v0,v0,9924
+41312-  42c8c4:	00402021 	move	a0,v0
+41313-  42c8c8:	8f8281c8 	lw	v0,-32312(gp)
+41314-  42c8cc:	244529b8 	addiu	a1,v0,10680
+41315-  42c8d0:	240604e3 	li	a2,1251
+41316-  42c8d4:	8f8284bc 	lw	v0,-31556(gp)
+41317-  42c8d8:	0040c821 	move	t9,v0
+41318-  42c8dc:	0320f809 	jalr	t9
+41319-  42c8e0:	00000000 	nop
+41320-  42c8e4:	8fdc0010 	lw	gp,16(s8)
+41321-  42c8e8:	8f8281c8 	lw	v0,-32312(gp)
+41322-  42c8ec:	24442440 	addiu	a0,v0,9280
+41323-  42c8f0:	8f82833c 	lw	v0,-31940(gp)
+41324-  42c8f4:	0040c821 	move	t9,v0
+41325-  42c8f8:	0320f809 	jalr	t9
+41326-  42c8fc:	00000000 	nop
+41327-  42c900:	8fdc0010 	lw	gp,16(s8)
+41328-  42c904:	03c0e821 	move	sp,s8
+41329-  42c908:	8fbf001c 	lw	ra,28(sp)
+41330-  42c90c:	8fbe0018 	lw	s8,24(sp)
+41331-  42c910:	27bd0020 	addiu	sp,sp,32
+41332-  42c914:	03e00008 	jr	ra
+41333-  42c918:	00000000 	nop
+41334-
+41335-0042c91c <init_mesh_upgrade_cli@@Base>:
+41336-  42c91c:	3c1c0003 	lui	gp,0x3
+41337-  42c920:	279cf824 	addiu	gp,gp,-2012
+41338-  42c924:	0399e021 	addu	gp,gp,t9
+41339-  42c928:	27bdffe0 	addiu	sp,sp,-32
+41340-  42c92c:	afbf001c 	sw	ra,28(sp)
+41341-  42c930:	afbe0018 	sw	s8,24(sp)
+41342-  42c934:	03a0f021 	move	s8,sp
+41343-  42c938:	afbc0010 	sw	gp,16(sp)

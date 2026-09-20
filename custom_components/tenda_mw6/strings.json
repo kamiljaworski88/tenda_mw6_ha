@@ -1,0 +1,44 @@
+{
+  "title": "Tenda MW6",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Tenda MW6",
+        "description": "Connect directly to the local Tenda MW6 TCP/9000 service. No Tenda cloud is used.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "login_account": "Login account"
+        },
+        "data_description": {
+          "login_account": "32-character account value extracted from a successful official-app LOGIN capture. Use tools/mw6_auth_extract.py; do not publish this value."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the router or read the client list.",
+      "invalid_auth": "The router rejected the login account.",
+      "invalid_account": "The login account must contain exactly 32 hexadecimal characters."
+    },
+    "abort": {
+      "already_configured": "This Tenda MW6 host is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Device map",
+        "description": "The integration listed every device currently known to the router. Each line contains its IP, MAC and name. Edit the text after =. Leave it empty to display the IP.",
+        "data": {
+          "device_aliases": "IP | MAC = name"
+        },
+        "data_description": {
+          "device_aliases": "Keep the IP and MAC. An empty name after = forces the IP to be displayed. Removing the entire line restores the name reported by the router."
+        }
+      }
+    },
+    "error": {
+      "invalid_aliases": "Each line must use the IP | MAC = name format. The name may be empty."
+    }
+  }
+}

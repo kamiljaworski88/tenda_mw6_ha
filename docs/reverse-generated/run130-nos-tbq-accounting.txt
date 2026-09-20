@@ -1,0 +1,4050 @@
+===== RUN 130: NOS/TBQ and online_ip accounting =====
+
+===== MODULE IDENTIFICATION =====
+firmware-src/RootFS-unpacked/lib/modules/bm.ko: online_ip_hash, online_ip_hash_size, clear_online_ip_flag
+firmware-src/RootFS-unpacked/lib/modules/nos.ko: tbq_online_ip_track_alloc, wan_rx_bytes, wan_tx_bytes, nos_track_event_register, nos_track_event_unregister
+firmware-src/RootFS-unpacked/lib/modules/port_filter.ko: online_ip_hash, online_ip_hash_size, clear_online_ip_flag
+firmware-src/RootFS-unpacked/lib/modules/portal.ko: online_ip_hash, online_ip_hash_size
+
+
+===== MODULE bm.ko =====
+
+--- RELEVANT SYMBOLS ---
+         U clear_online_ip_flag
+         U nf_register_hooks
+         U nf_unregister_hooks
+         U online_ip_hash
+         U online_ip_hash_size
+00000000 B auto_qos_enable
+
+--- FUNCTION/OWNER (807, 3188, 'register_bm_class') triggered by: cc4:	3c190000 	lui	t9,0x0	cc4: R_MIPS_HI16	clear_online_ip_flag ---
+     c70:	2412fff4 	li	s2,-12
+
+00000c74 <register_bm_class>:
+     c74:	00041180 	sll	v0,a0,0x6
+     c78:	00041900 	sll	v1,a0,0x4
+     c7c:	00431823 	subu	v1,v0,v1
+     c80:	3c020000 	lui	v0,0x0	c80: R_MIPS_HI16	bm_class_vec
+     c84:	24420000 	addiu	v0,v0,0	c84: R_MIPS_LO16	bm_class_vec
+     c88:	00431021 	addu	v0,v0,v1
+     c8c:	00401821 	move	v1,v0
+     c90:	00a03021 	move	a2,a1
+     c94:	90c10000 	lbu	at,0(a2)
+     c98:	24c60001 	addiu	a2,a2,1
+     c9c:	a0610000 	sb	at,0(v1)
+     ca0:	1420fffc 	bnez	at,c94 <register_bm_class+0x20>
+     ca4:	24630001 	addiu	v1,v1,1
+     ca8:	8ca3002c 	lw	v1,44(a1)
+     cac:	ac43002c 	sw	v1,44(v0)
+     cb0:	8ca30020 	lw	v1,32(a1)
+     cb4:	ac430020 	sw	v1,32(v0)
+     cb8:	8ca30024 	lw	v1,36(a1)
+     cbc:	ac430024 	sw	v1,36(v0)
+     cc0:	8ca30028 	lw	v1,40(a1)
+     cc4:	3c190000 	lui	t9,0x0	cc4: R_MIPS_HI16	clear_online_ip_flag
+     cc8:	27390000 	addiu	t9,t9,0	cc8: R_MIPS_LO16	clear_online_ip_flag
+     ccc:	03200008 	jr	t9
+     cd0:	ac430028 	sw	v1,40(v0)
+
+
+--- FUNCTION/OWNER (1034, 4064, 'init_log') triggered by: 12d4:	3c160000 	lui	s6,0x0	12d4: R_MIPS_HI16	online_ip_hash_size ---
+    1264:	94a30000 	lhu	v1,0(a1)
+    1268:	3c020000 	lui	v0,0x0	1268: R_MIPS_HI16	account_global
+    126c:	24440000 	addiu	a0,v0,0	126c: R_MIPS_LO16	account_global
+    1270:	a4430000 	sh	v1,0(v0)	1270: R_MIPS_LO16	account_global
+    1274:	94a20002 	lhu	v0,2(a1)
+    1278:	1060015a 	beqz	v1,17e4 <init_log+0x804>
+    127c:	a4820002 	sh	v0,2(a0)
+    1280:	3c030000 	lui	v1,0x0	1280: R_MIPS_HI16	$LC8
+    1284:	24630000 	addiu	v1,v1,0	1284: R_MIPS_LO16	$LC8
+    1288:	10400154 	beqz	v0,17dc <init_log+0x7fc>
+    128c:	3c020000 	lui	v0,0x0	128c: R_MIPS_HI16	$LC11
+    1290:	3c020000 	lui	v0,0x0	1290: R_MIPS_HI16	$LC10
+    1294:	24420000 	addiu	v0,v0,0	1294: R_MIPS_LO16	$LC10
+    1298:	afa20014 	sw	v0,20(sp)
+    129c:	3c040000 	lui	a0,0x0	129c: R_MIPS_HI16	.rodata
+    12a0:	3c070000 	lui	a3,0x0	12a0: R_MIPS_HI16	$LC12
+    12a4:	3c020000 	lui	v0,0x0	12a4: R_MIPS_HI16	bm_k_info
+    12a8:	3c110000 	lui	s1,0x0	12a8: R_MIPS_HI16	local_bh_disable
+    12ac:	24840190 	addiu	a0,a0,400	12ac: R_MIPS_LO16	.rodata
+    12b0:	24e70000 	addiu	a3,a3,0	12b0: R_MIPS_LO16	$LC12
+    12b4:	240501b4 	li	a1,436
+    12b8:	2406000c 	li	a2,12
+    12bc:	afa30010 	sw	v1,16(sp)
+    12c0:	24420000 	addiu	v0,v0,0	12c0: R_MIPS_LO16	bm_k_info
+    12c4:	0040f809 	jalr	v0
+    12c8:	26310000 	addiu	s1,s1,0	12c8: R_MIPS_LO16	local_bh_disable
+    12cc:	0220f809 	jalr	s1
+    12d0:	00000000 	nop
+    12d4:	3c160000 	lui	s6,0x0	12d4: R_MIPS_HI16	online_ip_hash_size
+    12d8:	8ec20000 	lw	v0,0(s6)	12d8: R_MIPS_LO16	online_ip_hash_size
+    12dc:	10400174 	beqz	v0,18b0 <init_log+0x8d0>
+    12e0:	0000b821 	move	s7,zero
+    12e4:	3c100000 	lui	s0,0x0	12e4: R_MIPS_HI16	local_bh_enable
+    12e8:	26100000 	addiu	s0,s0,0	12e8: R_MIPS_LO16	local_bh_enable
+    12ec:	3c130000 	lui	s3,0x0	12ec: R_MIPS_HI16	online_ip_hash
+    12f0:	2415fdff 	li	s5,-513
+    12f4:	8e620000 	lw	v0,0(s3)	12f4: R_MIPS_LO16	online_ip_hash
+    12f8:	0017a0c0 	sll	s4,s7,0x3
+    12fc:	00541021 	addu	v0,v0,s4
+    1300:	8c520000 	lw	s2,0(v0)
+    1304:	10520016 	beq	v0,s2,1360 <init_log+0x380>
+    1308:	8ec20000 	lw	v0,0(s6)	1308: R_MIPS_LO16	online_ip_hash_size
+    130c:	8e42000c 	lw	v0,12(s2)
+    1310:	00551024 	and	v0,v0,s5
+    1314:	0220f809 	jalr	s1
+    1318:	ae42000c 	sw	v0,12(s2)
+    131c:	8e420038 	lw	v0,56(s2)
+    1320:	26450038 	addiu	a1,s2,56
+    1324:	10a20007 	beq	a1,v0,1344 <init_log+0x364>
+    1328:	2442ff70 	addiu	v0,v0,-144
+    132c:	8c4400a0 	lw	a0,160(v0)
+    1330:	8c430090 	lw	v1,144(v0)
+    1334:	34840008 	ori	a0,a0,0x8
+    1338:	ac4400a0 	sw	a0,160(v0)
+    133c:	14a3fffb 	bne	a1,v1,132c <init_log+0x34c>
+    1340:	2462ff70 	addiu	v0,v1,-144
+    1344:	0200f809 	jalr	s0
+    1348:	00000000 	nop
+    134c:	8e620000 	lw	v0,0(s3)	134c: R_MIPS_LO16	online_ip_hash
+    1350:	8e520000 	lw	s2,0(s2)
+    1354:	00541021 	addu	v0,v0,s4
+    1358:	1642ffec 	bne	s2,v0,130c <init_log+0x32c>
+    135c:	8ec20000 	lw	v0,0(s6)	135c: R_MIPS_LO16	online_ip_hash_size
+    1360:	26f70001 	addiu	s7,s7,1
+    1364:	02e2102b 	sltu	v0,s7,v0
+    1368:	1440ffe3 	bnez	v0,12f8 <init_log+0x318>
+    136c:	8e620000 	lw	v0,0(s3)	136c: R_MIPS_LO16	online_ip_hash
+    1370:	0200f809 	jalr	s0
+    1374:	0000f021 	move	s8,zero
+    1378:	03c01021 	move	v0,s8
+    137c:	8fbf0044 	lw	ra,68(sp)
+    1380:	8fbe0040 	lw	s8,64(sp)
+    1384:	8fb7003c 	lw	s7,60(sp)
+    1388:	8fb60038 	lw	s6,56(sp)
+    138c:	8fb50034 	lw	s5,52(sp)
+    1390:	8fb40030 	lw	s4,48(sp)
+    1394:	8fb3002c 	lw	s3,44(sp)
+    1398:	8fb20028 	lw	s2,40(sp)
+    139c:	8fb10024 	lw	s1,36(sp)
+    13a0:	8fb00020 	lw	s0,32(sp)
+    13a4:	03e00008 	jr	ra
+    13a8:	27bd0048 	addiu	sp,sp,72
+    13ac:	3c110000 	lui	s1,0x0	13ac: R_MIPS_HI16	local_bh_disable
+    13b0:	26310000 	addiu	s1,s1,0	13b0: R_MIPS_LO16	local_bh_disable
+    13b4:	0220f809 	jalr	s1
+    13b8:	00000000 	nop
+    13bc:	3c130000 	lui	s3,0x0	13bc: R_MIPS_HI16	account_list
+    13c0:	8e740000 	lw	s4,0(s3)	13c0: R_MIPS_LO16	account_list
+    13c4:	26720000 	addiu	s2,s3,0	13c4: R_MIPS_LO16	account_list
+    13c8:	1292000d 	beq	s4,s2,1400 <init_log+0x420>
+    13cc:	00000000 	nop
+    13d0:	8ea30000 	lw	v1,0(s5)
+    13d4:	8e820008 	lw	v0,8(s4)
+    13d8:	14430006 	bne	v0,v1,13f4 <init_log+0x414>
+    13dc:	00000000 	nop
+    13e0:	08000501 	j	1404 <init_log+0x424>	13e0: R_MIPS_26	.text
+    13e4:	00000000 	nop
+    13e8:	8e820008 	lw	v0,8(s4)
+    13ec:	10620005 	beq	v1,v0,1404 <init_log+0x424>
+    13f0:	00000000 	nop
+    13f4:	8e940000 	lw	s4,0(s4)
+    13f8:	1692fffb 	bne	s4,s2,13e8 <init_log+0x408>
+    13fc:	00000000 	nop
+    1400:	0000a021 	move	s4,zero
+    1404:	3c100000 	lui	s0,0x0	1404: R_MIPS_HI16	local_bh_enable
+    1408:	26100000 	addiu	s0,s0,0	1408: R_MIPS_LO16	local_bh_enable
+    140c:	0200f809 	jalr	s0
+    1410:	00000000 	nop
+    1414:	12800129 	beqz	s4,18bc <init_log+0x8dc>
+    1418:	3c040000 	lui	a0,0x0	1418: R_MIPS_HI16	.rodata
+    141c:	8ea20000 	lw	v0,0(s5)
+    1420:	3c070000 	lui	a3,0x0	1420: R_MIPS_HI16	$LC6
+    1424:	afa20010 	sw	v0,16(sp)
+    1428:	3c020000 	lui	v0,0x0	1428: R_MIPS_HI16	bm_k_error
+    142c:	24840174 	addiu	a0,a0,372	142c: R_MIPS_LO16	.rodata
+    1430:	24e70000 	addiu	a3,a3,0	1430: R_MIPS_LO16	$LC6
+    1434:	24050179 	li	a1,377
+    1438:	24420000 	addiu	v0,v0,0	1438: R_MIPS_LO16	bm_k_error
+    143c:	0040f809 	jalr	v0
+    1440:	2406000c 	li	a2,12
+    1444:	241e0005 	li	s8,5
+    1448:	0220f809 	jalr	s1
+    144c:	00000000 	nop
+    1450:	3c160000 	lui	s6,0x0	1450: R_MIPS_HI16	online_ip_hash_size
+    1454:	8ec20000 	lw	v0,0(s6)	1454: R_MIPS_LO16	online_ip_hash_size
+    1458:	10400022 	beqz	v0,14e4 <init_log+0x504>
+    145c:	0000b821 	move	s7,zero
+    1460:	3c130000 	lui	s3,0x0	1460: R_MIPS_HI16	online_ip_hash
+    1464:	2415fdff 	li	s5,-513
+    1468:	8e620000 	lw	v0,0(s3)	1468: R_MIPS_LO16	online_ip_hash
+    146c:	0017a0c0 	sll	s4,s7,0x3
+    1470:	00541021 	addu	v0,v0,s4
+    1474:	8c520000 	lw	s2,0(v0)
+    1478:	10520016 	beq	v0,s2,14d4 <init_log+0x4f4>
+    147c:	8ec20000 	lw	v0,0(s6)	147c: R_MIPS_LO16	online_ip_hash_size
+    1480:	8e42000c 	lw	v0,12(s2)
+    1484:	00551024 	and	v0,v0,s5
+    1488:	0220f809 	jalr	s1
+    148c:	ae42000c 	sw	v0,12(s2)
+    1490:	8e420038 	lw	v0,56(s2)
+    1494:	26450038 	addiu	a1,s2,56
+    1498:	10a20007 	beq	a1,v0,14b8 <init_log+0x4d8>
+    149c:	2442ff70 	addiu	v0,v0,-144
+    14a0:	8c4400a0 	lw	a0,160(v0)
+    14a4:	8c430090 	lw	v1,144(v0)
+    14a8:	34840008 	ori	a0,a0,0x8
+    14ac:	ac4400a0 	sw	a0,160(v0)
+    14b0:	14a3fffb 	bne	a1,v1,14a0 <init_log+0x4c0>
+    14b4:	2462ff70 	addiu	v0,v1,-144
+    14b8:	0200f809 	jalr	s0
+    14bc:	00000000 	nop
+    14c0:	8e620000 	lw	v0,0(s3)	14c0: R_MIPS_LO16	online_ip_hash
+    14c4:	8e520000 	lw	s2,0(s2)
+    14c8:	00541021 	addu	v0,v0,s4
+    14cc:	1642ffec 	bne	s2,v0,1480 <init_log+0x4a0>
+    14d0:	8ec20000 	lw	v0,0(s6)	14d0: R_MIPS_LO16	online_ip_hash_size
+    14d4:	26f70001 	addiu	s7,s7,1
+    14d8:	02e2102b 	sltu	v0,s7,v0
+    14dc:	1440ffe3 	bnez	v0,146c <init_log+0x48c>
+    14e0:	8e620000 	lw	v0,0(s3)	14e0: R_MIPS_LO16	online_ip_hash
+    14e4:	0200f809 	jalr	s0
+    14e8:	00000000 	nop
+    14ec:	03c01021 	move	v0,s8
+    14f0:	8fbf0044 	lw	ra,68(sp)
+    14f4:	8fbe0040 	lw	s8,64(sp)
+    14f8:	8fb7003c 	lw	s7,60(sp)
+    14fc:	8fb60038 	lw	s6,56(sp)
+    1500:	8fb50034 	lw	s5,52(sp)
+    1504:	8fb40030 	lw	s4,48(sp)
+    1508:	8fb3002c 	lw	s3,44(sp)
+    150c:	8fb20028 	lw	s2,40(sp)
+    1510:	8fb10024 	lw	s1,36(sp)
+    1514:	8fb00020 	lw	s0,32(sp)
+    1518:	03e00008 	jr	ra
+    151c:	27bd0048 	addiu	sp,sp,72
+    1520:	3c110000 	lui	s1,0x0	1520: R_MIPS_HI16	local_bh_disable
+    1524:	26310000 	addiu	s1,s1,0	1524: R_MIPS_LO16	local_bh_disable
+    1528:	0220f809 	jalr	s1
+    152c:	00000000 	nop
+    1530:	3c130000 	lui	s3,0x0	1530: R_MIPS_HI16	account_list
+    1534:	8e700000 	lw	s0,0(s3)	1534: R_MIPS_LO16	account_list
+    1538:	26720000 	addiu	s2,s3,0	1538: R_MIPS_LO16	account_list
+    153c:	1212000d 	beq	s0,s2,1574 <init_log+0x594>
+    1540:	00000000 	nop
+    1544:	8ea30000 	lw	v1,0(s5)
+    1548:	8e020008 	lw	v0,8(s0)
+    154c:	14430006 	bne	v0,v1,1568 <init_log+0x588>
+    1550:	00000000 	nop
+    1554:	080005fc 	j	17f0 <init_log+0x810>	1554: R_MIPS_26	.text
+    1558:	00000000 	nop
+    155c:	8e020008 	lw	v0,8(s0)
+    1560:	104300a3 	beq	v0,v1,17f0 <init_log+0x810>
+    1564:	00000000 	nop
+    1568:	8e100000 	lw	s0,0(s0)
+    156c:	1612fffb 	bne	s0,s2,155c <init_log+0x57c>
+    1570:	00000000 	nop
+    1574:	3c100000 	lui	s0,0x0	1574: R_MIPS_HI16	local_bh_enable
+    1578:	26100000 	addiu	s0,s0,0	1578: R_MIPS_LO16	local_bh_enable
+    157c:	0200f809 	jalr	s0
+    1580:	241e0006 	li	s8,6
+    1584:	8ea20000 	lw	v0,0(s5)
+    1588:	3c040000 	lui	a0,0x0	1588: R_MIPS_HI16	.rodata
+    158c:	3c070000 	lui	a3,0x0	158c: R_MIPS_HI16	$LC2
+    1590:	afa20010 	sw	v0,16(sp)
+    1594:	3c020000 	lui	v0,0x0	1594: R_MIPS_HI16	bm_k_error
+    1598:	24840168 	addiu	a0,a0,360	1598: R_MIPS_LO16	.rodata
+    159c:	24e70000 	addiu	a3,a3,0	159c: R_MIPS_LO16	$LC2
+    15a0:	2405019c 	li	a1,412
+    15a4:	24420000 	addiu	v0,v0,0	15a4: R_MIPS_LO16	bm_k_error
+    15a8:	0040f809 	jalr	v0
+    15ac:	2406000c 	li	a2,12
+    15b0:	0220f809 	jalr	s1
+    15b4:	00000000 	nop
+    15b8:	3c160000 	lui	s6,0x0	15b8: R_MIPS_HI16	online_ip_hash_size
+    15bc:	8ec20000 	lw	v0,0(s6)	15bc: R_MIPS_LO16	online_ip_hash_size
+    15c0:	1040ffc8 	beqz	v0,14e4 <init_log+0x504>
+    15c4:	0000b821 	move	s7,zero
+    15c8:	3c130000 	lui	s3,0x0	15c8: R_MIPS_HI16	online_ip_hash
+    15cc:	2415fdff 	li	s5,-513
+    15d0:	8e620000 	lw	v0,0(s3)	15d0: R_MIPS_LO16	online_ip_hash
+    15d4:	0017a0c0 	sll	s4,s7,0x3
+    15d8:	00541021 	addu	v0,v0,s4
+    15dc:	8c520000 	lw	s2,0(v0)
+    15e0:	10520016 	beq	v0,s2,163c <init_log+0x65c>
+    15e4:	8ec20000 	lw	v0,0(s6)	15e4: R_MIPS_LO16	online_ip_hash_size
+    15e8:	8e42000c 	lw	v0,12(s2)
+    15ec:	00551024 	and	v0,v0,s5
+    15f0:	0220f809 	jalr	s1
+    15f4:	ae42000c 	sw	v0,12(s2)
+    15f8:	8e420038 	lw	v0,56(s2)
+    15fc:	26450038 	addiu	a1,s2,56
+    1600:	10a20007 	beq	a1,v0,1620 <init_log+0x640>
+    1604:	2442ff70 	addiu	v0,v0,-144
+    1608:	8c4400a0 	lw	a0,160(v0)
+    160c:	8c430090 	lw	v1,144(v0)
+    1610:	34840008 	ori	a0,a0,0x8
+    1614:	ac4400a0 	sw	a0,160(v0)
+    1618:	14a3fffb 	bne	a1,v1,1608 <init_log+0x628>
+    161c:	2462ff70 	addiu	v0,v1,-144
+    1620:	0200f809 	jalr	s0
+    1624:	00000000 	nop
+    1628:	8e620000 	lw	v0,0(s3)	1628: R_MIPS_LO16	online_ip_hash
+    162c:	8e520000 	lw	s2,0(s2)
+    1630:	00541021 	addu	v0,v0,s4
+    1634:	1642ffec 	bne	s2,v0,15e8 <init_log+0x608>
+    1638:	8ec20000 	lw	v0,0(s6)	1638: R_MIPS_LO16	online_ip_hash_size
+    163c:	26f70001 	addiu	s7,s7,1
+    1640:	02e2102b 	sltu	v0,s7,v0
+    1644:	1440ffe2 	bnez	v0,15d0 <init_log+0x5f0>
+    1648:	00000000 	nop
+    164c:	0200f809 	jalr	s0
+    1650:	00000000 	nop
+    1654:	0800053c 	j	14f0 <init_log+0x510>	1654: R_MIPS_26	.text
+    1658:	03c01021 	move	v0,s8
+    165c:	3c110000 	lui	s1,0x0	165c: R_MIPS_HI16	local_bh_disable
+    1660:	26310000 	addiu	s1,s1,0	1660: R_MIPS_LO16	local_bh_disable
+    1664:	0220f809 	jalr	s1
+    1668:	00000000 	nop
+    166c:	3c130000 	lui	s3,0x0	166c: R_MIPS_HI16	account_list
+    1670:	8e620000 	lw	v0,0(s3)	1670: R_MIPS_LO16	account_list
+    1674:	26720000 	addiu	s2,s3,0	1674: R_MIPS_LO16	account_list
+    1678:	1052000d 	beq	v0,s2,16b0 <init_log+0x6d0>
+    167c:	00409821 	move	s3,v0
+    1680:	8ea30000 	lw	v1,0(s5)
+    1684:	8c420008 	lw	v0,8(v0)
+    1688:	14430006 	bne	v0,v1,16a4 <init_log+0x6c4>
+    168c:	00000000 	nop
+    1690:	080005ad 	j	16b4 <init_log+0x6d4>	1690: R_MIPS_26	.text
+    1694:	00000000 	nop
+    1698:	8e620008 	lw	v0,8(s3)
+    169c:	10430005 	beq	v0,v1,16b4 <init_log+0x6d4>
+    16a0:	00000000 	nop
+    16a4:	8e730000 	lw	s3,0(s3)
+    16a8:	1672fffb 	bne	s3,s2,1698 <init_log+0x6b8>
+    16ac:	00000000 	nop
+    16b0:	00009821 	move	s3,zero
+    16b4:	3c100000 	lui	s0,0x0	16b4: R_MIPS_HI16	local_bh_enable
+    16b8:	26100000 	addiu	s0,s0,0	16b8: R_MIPS_LO16	local_bh_enable
+    16bc:	0200f809 	jalr	s0
+    16c0:	00000000 	nop
+    16c4:	1260006e 	beqz	s3,1880 <init_log+0x8a0>
+    16c8:	3c040000 	lui	a0,0x0	16c8: R_MIPS_HI16	.rodata
+    16cc:	0220f809 	jalr	s1
+    16d0:	00000000 	nop
+    16d4:	3c020000 	lui	v0,0x0	16d4: R_MIPS_HI16	memcpy
+    16d8:	02a02821 	move	a1,s5
+    16dc:	26640008 	addiu	a0,s3,8
+    16e0:	24420000 	addiu	v0,v0,0	16e0: R_MIPS_LO16	memcpy
+    16e4:	0040f809 	jalr	v0
+    16e8:	24060098 	li	a2,152
+    16ec:	0200f809 	jalr	s0
+    16f0:	0000f021 	move	s8,zero
+    16f4:	8e620008 	lw	v0,8(s3)
+    16f8:	3c040000 	lui	a0,0x0	16f8: R_MIPS_HI16	.rodata
+    16fc:	3c070000 	lui	a3,0x0	16fc: R_MIPS_HI16	$LC7
+    1700:	afa20010 	sw	v0,16(sp)
+    1704:	8e620058 	lw	v0,88(s3)
+    1708:	2673005c 	addiu	s3,s3,92
+    170c:	24840180 	addiu	a0,a0,384	170c: R_MIPS_LO16	.rodata
+    1710:	afa20014 	sw	v0,20(sp)
+    1714:	3c020000 	lui	v0,0x0	1714: R_MIPS_HI16	bm_k_debug
+    1718:	24e70000 	addiu	a3,a3,0	1718: R_MIPS_LO16	$LC7
+    171c:	2405018f 	li	a1,399
+    1720:	2406000c 	li	a2,12
+    1724:	24420000 	addiu	v0,v0,0	1724: R_MIPS_LO16	bm_k_debug
+    1728:	0040f809 	jalr	v0
+    172c:	afb30018 	sw	s3,24(sp)
+    1730:	0220f809 	jalr	s1
+    1734:	00000000 	nop
+    1738:	3c160000 	lui	s6,0x0	1738: R_MIPS_HI16	online_ip_hash_size
+    173c:	8ec20000 	lw	v0,0(s6)	173c: R_MIPS_LO16	online_ip_hash_size
+    1740:	1040ff68 	beqz	v0,14e4 <init_log+0x504>
+    1744:	0000b821 	move	s7,zero
+    1748:	3c130000 	lui	s3,0x0	1748: R_MIPS_HI16	online_ip_hash
+    174c:	2415fdff 	li	s5,-513
+    1750:	8e620000 	lw	v0,0(s3)	1750: R_MIPS_LO16	online_ip_hash
+    1754:	0017a0c0 	sll	s4,s7,0x3
+    1758:	00541021 	addu	v0,v0,s4
+    175c:	8c520000 	lw	s2,0(v0)
+    1760:	10520016 	beq	v0,s2,17bc <init_log+0x7dc>
+    1764:	8ec20000 	lw	v0,0(s6)	1764: R_MIPS_LO16	online_ip_hash_size
+    1768:	8e42000c 	lw	v0,12(s2)
+    176c:	00551024 	and	v0,v0,s5
+    1770:	0220f809 	jalr	s1
+    1774:	ae42000c 	sw	v0,12(s2)
+    1778:	8e420038 	lw	v0,56(s2)
+    177c:	26450038 	addiu	a1,s2,56
+    1780:	10a20007 	beq	a1,v0,17a0 <init_log+0x7c0>
+    1784:	2442ff70 	addiu	v0,v0,-144
+    1788:	8c4400a0 	lw	a0,160(v0)
+    178c:	8c430090 	lw	v1,144(v0)
+    1790:	34840008 	ori	a0,a0,0x8
+    1794:	ac4400a0 	sw	a0,160(v0)
+    1798:	14a3fffb 	bne	a1,v1,1788 <init_log+0x7a8>
+    179c:	2462ff70 	addiu	v0,v1,-144
+    17a0:	0200f809 	jalr	s0
+    17a4:	00000000 	nop
+    17a8:	8e620000 	lw	v0,0(s3)	17a8: R_MIPS_LO16	online_ip_hash
+    17ac:	8e520000 	lw	s2,0(s2)
+    17b0:	00541021 	addu	v0,v0,s4
+    17b4:	1642ffec 	bne	s2,v0,1768 <init_log+0x788>
+    17b8:	8ec20000 	lw	v0,0(s6)	17b8: R_MIPS_LO16	online_ip_hash_size
+    17bc:	26f70001 	addiu	s7,s7,1
+    17c0:	02e2102b 	sltu	v0,s7,v0
+    17c4:	1440ffe2 	bnez	v0,1750 <init_log+0x770>
+    17c8:	00000000 	nop
+    17cc:	0200f809 	jalr	s0
+    17d0:	00000000 	nop
+    17d4:	0800053c 	j	14f0 <init_log+0x510>	17d4: R_MIPS_26	.text
+    17d8:	03c01021 	move	v0,s8
+    17dc:	080004a6 	j	1298 <init_log+0x2b8>	17dc: R_MIPS_26	.text
+    17e0:	24420000 	addiu	v0,v0,0	17e0: R_MIPS_LO16	$LC11
+    17e4:	3c030000 	lui	v1,0x0	17e4: R_MIPS_HI16	$LC9
+    17e8:	080004a2 	j	1288 <init_log+0x2a8>	17e8: R_MIPS_26	.text
+    17ec:	24630000 	addiu	v1,v1,0	17ec: R_MIPS_LO16	$LC9
+    17f0:	1200ff60 	beqz	s0,1574 <init_log+0x594>
+    17f4:	3c070000 	lui	a3,0x0	17f4: R_MIPS_HI16	$LC3
+    17f8:	8e020004 	lw	v0,4(s0)
+    17fc:	8e030000 	lw	v1,0(s0)
+    1800:	3c040000 	lui	a0,0x0	1800: R_MIPS_HI16	.rodata
+    1804:	ac620004 	sw	v0,4(v1)
+    1808:	ac430000 	sw	v1,0(v0)
+    180c:	3c030010 	lui	v1,0x10
+    1810:	8e020008 	lw	v0,8(s0)
+    1814:	34630100 	ori	v1,v1,0x100
+    1818:	ae030000 	sw	v1,0(s0)
+    181c:	3c030020 	lui	v1,0x20
+    1820:	34630200 	ori	v1,v1,0x200
+    1824:	ae030004 	sw	v1,4(s0)
+    1828:	afa20010 	sw	v0,16(sp)
+    182c:	8e030058 	lw	v1,88(s0)
+    1830:	2602005c 	addiu	v0,s0,92
+    1834:	afa20018 	sw	v0,24(sp)
+    1838:	3c020000 	lui	v0,0x0	1838: R_MIPS_HI16	bm_k_debug
+    183c:	24e70000 	addiu	a3,a3,0	183c: R_MIPS_LO16	$LC3
+    1840:	240501a2 	li	a1,418
+    1844:	2406000c 	li	a2,12
+    1848:	afa30014 	sw	v1,20(sp)
+    184c:	24420000 	addiu	v0,v0,0	184c: R_MIPS_LO16	bm_k_debug
+    1850:	0040f809 	jalr	v0
+    1854:	24840168 	addiu	a0,a0,360	1854: R_MIPS_LO16	.rodata
+    1858:	3c020000 	lui	v0,0x0	1858: R_MIPS_HI16	kfree
+    185c:	24420000 	addiu	v0,v0,0	185c: R_MIPS_LO16	kfree
+    1860:	0040f809 	jalr	v0
+    1864:	02002021 	move	a0,s0
+    1868:	3c100000 	lui	s0,0x0	1868: R_MIPS_HI16	local_bh_enable
+    186c:	26100000 	addiu	s0,s0,0	186c: R_MIPS_LO16	local_bh_enable
+    1870:	0200f809 	jalr	s0
+    1874:	0000f021 	move	s8,zero
+    1878:	0800056c 	j	15b0 <init_log+0x5d0>	1878: R_MIPS_26	.text
+    187c:	00000000 	nop
+    1880:	8ea20000 	lw	v0,0(s5)
+    1884:	3c070000 	lui	a3,0x0	1884: R_MIPS_HI16	$LC2
+    1888:	afa20010 	sw	v0,16(sp)
+    188c:	3c020000 	lui	v0,0x0	188c: R_MIPS_HI16	bm_k_error
+    1890:	24840180 	addiu	a0,a0,384	1890: R_MIPS_LO16	.rodata
+...
+    1b04:	0040f809 	jalr	v0
+    1b08:	8e450004 	lw	a1,4(s2)
+    1b0c:	3c020000 	lui	v0,0x0	1b0c: R_MIPS_HI16	cl_ip_obj_updata
+    1b10:	8c420000 	lw	v0,0(v0)	1b10: R_MIPS_LO16	cl_ip_obj_updata
+    1b14:	10400015 	beqz	v0,1b6c <init_log+0xb8c>
+    1b18:	00009821 	move	s3,zero
+    1b1c:	8e440000 	lw	a0,0(s2)
+    1b20:	0040f809 	jalr	v0
+    1b24:	8e450004 	lw	a1,4(s2)
+    1b28:	080006db 	j	1b6c <init_log+0xb8c>	1b28: R_MIPS_26	.text
+    1b2c:	00000000 	nop
+    1b30:	26100000 	addiu	s0,s0,0	1b30: R_MIPS_LO16	local_bh_disable
+    1b34:	0200f809 	jalr	s0
+    1b38:	00000000 	nop
+    1b3c:	3c040000 	lui	a0,0x0	1b3c: R_MIPS_HI16	ip_group_array
+    1b40:	3c020000 	lui	v0,0x0	1b40: R_MIPS_HI16	memset
+    1b44:	24840000 	addiu	a0,a0,0	1b44: R_MIPS_LO16	ip_group_array
+    1b48:	00002821 	move	a1,zero
+    1b4c:	24061458 	li	a2,5208
+    1b50:	24420000 	addiu	v0,v0,0	1b50: R_MIPS_LO16	memset
+    1b54:	0040f809 	jalr	v0
+    1b58:	00000000 	nop
+    1b5c:	3c110000 	lui	s1,0x0	1b5c: R_MIPS_HI16	local_bh_enable
+    1b60:	26310000 	addiu	s1,s1,0	1b60: R_MIPS_LO16	local_bh_enable
+    1b64:	0220f809 	jalr	s1
+    1b68:	00009821 	move	s3,zero
+    1b6c:	0200f809 	jalr	s0
+    1b70:	00000000 	nop
+    1b74:	3c1e0000 	lui	s8,0x0	1b74: R_MIPS_HI16	online_ip_hash_size
+    1b78:	8fc20000 	lw	v0,0(s8)	1b78: R_MIPS_LO16	online_ip_hash_size
+    1b7c:	10400021 	beqz	v0,1c04 <init_log+0xc24>
+    1b80:	0000b821 	move	s7,zero
+    1b84:	3c160000 	lui	s6,0x0	1b84: R_MIPS_HI16	online_ip_hash
+    1b88:	2412ffff 	li	s2,-1
+    1b8c:	8ec20000 	lw	v0,0(s6)	1b8c: R_MIPS_LO16	online_ip_hash
+    1b90:	0017a8c0 	sll	s5,s7,0x3
+    1b94:	00551021 	addu	v0,v0,s5
+    1b98:	8c540000 	lw	s4,0(v0)
+    1b9c:	10540014 	beq	v0,s4,1bf0 <init_log+0xc10>
+    1ba0:	00000000 	nop
+    1ba4:	12820013 	beq	s4,v0,1bf4 <init_log+0xc14>
+    1ba8:	8fc20000 	lw	v0,0(s8)	1ba8: R_MIPS_LO16	online_ip_hash_size
+    1bac:	0200f809 	jalr	s0
+    1bb0:	00000000 	nop
+    1bb4:	8e820038 	lw	v0,56(s4)
+    1bb8:	26840038 	addiu	a0,s4,56
+    1bbc:	10820005 	beq	a0,v0,1bd4 <init_log+0xbf4>
+    1bc0:	2442ff70 	addiu	v0,v0,-144
+    1bc4:	8c430090 	lw	v1,144(v0)
+    1bc8:	a05200fe 	sb	s2,254(v0)
+    1bcc:	1483fffd 	bne	a0,v1,1bc4 <init_log+0xbe4>
+    1bd0:	2462ff70 	addiu	v0,v1,-144
+    1bd4:	0220f809 	jalr	s1
+    1bd8:	00000000 	nop
+    1bdc:	8ec20000 	lw	v0,0(s6)	1bdc: R_MIPS_LO16	online_ip_hash
+    1be0:	8e940000 	lw	s4,0(s4)
+    1be4:	00551021 	addu	v0,v0,s5
+    1be8:	1682fff0 	bne	s4,v0,1bac <init_log+0xbcc>
+    1bec:	00000000 	nop
+    1bf0:	8fc20000 	lw	v0,0(s8)	1bf0: R_MIPS_LO16	online_ip_hash_size
+    1bf4:	26f70001 	addiu	s7,s7,1
+    1bf8:	02e2102b 	sltu	v0,s7,v0
+    1bfc:	1440ffe4 	bnez	v0,1b90 <init_log+0xbb0>
+    1c00:	8ec20000 	lw	v0,0(s6)	1c00: R_MIPS_LO16	online_ip_hash
+    1c04:	0220f809 	jalr	s1
+    1c08:	00000000 	nop
+    1c0c:	02601021 	move	v0,s3
+    1c10:	8fbf003c 	lw	ra,60(sp)
+    1c14:	8fbe0038 	lw	s8,56(sp)
+    1c18:	8fb70034 	lw	s7,52(sp)
+    1c1c:	8fb60030 	lw	s6,48(sp)
+    1c20:	8fb5002c 	lw	s5,44(sp)
+    1c24:	8fb40028 	lw	s4,40(sp)
+    1c28:	8fb30024 	lw	s3,36(sp)
+    1c2c:	8fb20020 	lw	s2,32(sp)
+    1c30:	8fb1001c 	lw	s1,28(sp)
+    1c34:	8fb00018 	lw	s0,24(sp)
+    1c38:	03e00008 	jr	ra
+    1c3c:	27bd0040 	addiu	sp,sp,64
+    1c40:	3c100000 	lui	s0,0x0	1c40: R_MIPS_HI16	local_bh_disable
+    1c44:	26100000 	addiu	s0,s0,0	1c44: R_MIPS_LO16	local_bh_disable
+    1c48:	0200f809 	jalr	s0
+    1c4c:	8cb20000 	lw	s2,0(a1)
+    1c50:	00121100 	sll	v0,s2,0x4
+    1c54:	00121880 	sll	v1,s2,0x2
+    1c58:	00621821 	addu	v1,v1,v0
+    1c5c:	00721821 	addu	v1,v1,s2
+    1c60:	24630001 	addiu	v1,v1,1
+    1c64:	3c020000 	lui	v0,0x0	1c64: R_MIPS_HI16	ip_group_array
+    1c68:	000318c0 	sll	v1,v1,0x3
+    1c6c:	24420000 	addiu	v0,v0,0	1c6c: R_MIPS_LO16	ip_group_array
+    1c70:	00621821 	addu	v1,v1,v0
+    1c74:	8c630000 	lw	v1,0(v1)
+    1c78:	1060000b 	beqz	v1,1ca8 <init_log+0xcc8>
+    1c7c:	00121940 	sll	v1,s2,0x5
+    1c80:	001290c0 	sll	s2,s2,0x3
+    1c84:	00729023 	subu	s2,v1,s2
+    1c88:	001220c0 	sll	a0,s2,0x3
+    1c8c:	00922023 	subu	a0,a0,s2
+    1c90:	00442021 	addu	a0,v0,a0
+    1c94:	3c020000 	lui	v0,0x0	1c94: R_MIPS_HI16	memset
+    1c98:	00002821 	move	a1,zero
+    1c9c:	240600a8 	li	a2,168
+    1ca0:	080006d5 	j	1b54 <init_log+0xb74>	1ca0: R_MIPS_26	.text
+    1ca4:	24420000 	addiu	v0,v0,0	1ca4: R_MIPS_LO16	memset
+    1ca8:	3c110000 	lui	s1,0x0	1ca8: R_MIPS_HI16	local_bh_enable
+    1cac:	26310000 	addiu	s1,s1,0	1cac: R_MIPS_LO16	local_bh_enable
+    1cb0:	0220f809 	jalr	s1
+    1cb4:	24130006 	li	s3,6
+    1cb8:	3c040000 	lui	a0,0x0	1cb8: R_MIPS_HI16	.rodata
+    1cbc:	3c070000 	lui	a3,0x0	1cbc: R_MIPS_HI16	$LC14
+    1cc0:	3c020000 	lui	v0,0x0	1cc0: R_MIPS_HI16	bm_k_error
+    1cc4:	248401dc 	addiu	a0,a0,476	1cc4: R_MIPS_LO16	.rodata
+    1cc8:	24e70000 	addiu	a3,a3,0	1cc8: R_MIPS_LO16	$LC14
+    1ccc:	240500bb 	li	a1,187
+    1cd0:	2406000c 	li	a2,12
+    1cd4:	24420000 	addiu	v0,v0,0	1cd4: R_MIPS_LO16	bm_k_error
+    1cd8:	0040f809 	jalr	v0
+...
+
+--- FUNCTION/OWNER (2632, 0, 'init_module') triggered by: 84:	3c020000 	lui	v0,0x0	84: R_MIPS_HI16	nf_register_hooks ---
+Disassembly of section .init.text:
+
+00000000 <init_module>:
+   0:	27bdffe8 	addiu	sp,sp,-24
+   4:	afbf0014 	sw	ra,20(sp)
+   8:	3c040000 	lui	a0,0x0	8: R_MIPS_HI16	bm_module_debug
+   c:	3c020000 	lui	v0,0x0	c: R_MIPS_HI16	memset
+  10:	24840000 	addiu	a0,a0,0	10: R_MIPS_LO16	bm_module_debug
+  14:	00002821 	move	a1,zero
+  18:	24420000 	addiu	v0,v0,0	18: R_MIPS_LO16	memset
+  1c:	0040f809 	jalr	v0
+  20:	24060080 	li	a2,128
+  24:	3c040000 	lui	a0,0x0	24: R_MIPS_HI16	.rodata
+  28:	3c070000 	lui	a3,0x0	28: R_MIPS_HI16	$LC28
+  2c:	3c020000 	lui	v0,0x0	2c: R_MIPS_HI16	bm_k_info
+  30:	24e70000 	addiu	a3,a3,0	30: R_MIPS_LO16	$LC28
+  34:	24840088 	addiu	a0,a0,136	34: R_MIPS_LO16	.rodata
+  38:	24050359 	li	a1,857
+  3c:	24420000 	addiu	v0,v0,0	3c: R_MIPS_LO16	bm_k_info
+  40:	0040f809 	jalr	v0
+  44:	2406000c 	li	a2,12
+  48:	3c040000 	lui	a0,0x0	48: R_MIPS_HI16	.data
+  4c:	3c060000 	lui	a2,0x0	4c: R_MIPS_HI16	$LC24
+  50:	3c020000 	lui	v0,0x0	50: R_MIPS_HI16	bm_register_debug_proc_entry
+  54:	24840000 	addiu	a0,a0,0	54: R_MIPS_LO16	.data
+  58:	24c60000 	addiu	a2,a2,0	58: R_MIPS_LO16	$LC24
+  5c:	24420000 	addiu	v0,v0,0	5c: R_MIPS_LO16	bm_register_debug_proc_entry
+  60:	0040f809 	jalr	v0
+  64:	24050004 	li	a1,4
+  68:	3c030000 	lui	v1,0x0	68: R_MIPS_HI16	.bss
+  6c:	ac620258 	sw	v0,600(v1)	6c: R_MIPS_LO16	.bss
+  70:	3c020000 	lui	v0,0x0	70: R_MIPS_HI16	ai_fun
+  74:	ac400000 	sw	zero,0(v0)	74: R_MIPS_LO16	ai_fun
+  78:	24420000 	addiu	v0,v0,0	78: R_MIPS_LO16	ai_fun
+  7c:	ac400004 	sw	zero,4(v0)
+  80:	3c040000 	lui	a0,0x0	80: R_MIPS_HI16	.data..read_mostly
+  84:	3c020000 	lui	v0,0x0	84: R_MIPS_HI16	nf_register_hooks
+  88:	24840000 	addiu	a0,a0,0	88: R_MIPS_LO16	.data..read_mostly
+  8c:	24420000 	addiu	v0,v0,0	8c: R_MIPS_LO16	nf_register_hooks
+  90:	0040f809 	jalr	v0
+  94:	24050001 	li	a1,1
+  98:	3c020000 	lui	v0,0x0	98: R_MIPS_HI16	bm_u2k_info_init
+  9c:	24420000 	addiu	v0,v0,0	9c: R_MIPS_LO16	bm_u2k_info_init
+  a0:	0040f809 	jalr	v0
+  a4:	00000000 	nop
+  a8:	8fbf0014 	lw	ra,20(sp)
+  ac:	00001021 	move	v0,zero
+  b0:	03e00008 	jr	ra
+  b4:	27bd0018 	addiu	sp,sp,24
+
+--- RELOCATIONS RELEVANT TO TRACKING ---
+00000cc4  00005105 R_MIPS_HI16            00000000   clear_online_ip_flag
+00000cc8  00005106 R_MIPS_LO16            00000000   clear_online_ip_flag
+000012d4  00007605 R_MIPS_HI16            00000000   online_ip_hash_size
+000012d8  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+000012ec  00007305 R_MIPS_HI16            00000000   online_ip_hash
+000012f4  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001308  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+0000134c  00007306 R_MIPS_LO16            00000000   online_ip_hash
+0000135c  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+0000136c  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001450  00007605 R_MIPS_HI16            00000000   online_ip_hash_size
+00001454  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001460  00007305 R_MIPS_HI16            00000000   online_ip_hash
+00001468  00007306 R_MIPS_LO16            00000000   online_ip_hash
+0000147c  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+000014c0  00007306 R_MIPS_LO16            00000000   online_ip_hash
+000014d0  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+000014e0  00007306 R_MIPS_LO16            00000000   online_ip_hash
+000015b8  00007605 R_MIPS_HI16            00000000   online_ip_hash_size
+000015bc  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+000015c8  00007305 R_MIPS_HI16            00000000   online_ip_hash
+000015d0  00007306 R_MIPS_LO16            00000000   online_ip_hash
+000015e4  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001628  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001638  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001738  00007605 R_MIPS_HI16            00000000   online_ip_hash_size
+0000173c  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001748  00007305 R_MIPS_HI16            00000000   online_ip_hash
+00001750  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001764  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+000017a8  00007306 R_MIPS_LO16            00000000   online_ip_hash
+000017b8  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001b74  00007605 R_MIPS_HI16            00000000   online_ip_hash_size
+00001b78  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001b84  00007305 R_MIPS_HI16            00000000   online_ip_hash
+00001b8c  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001ba8  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001bdc  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00001bf0  00007606 R_MIPS_LO16            00000000   online_ip_hash_size
+00001c00  00007306 R_MIPS_LO16            00000000   online_ip_hash
+00000084  00005905 R_MIPS_HI16            00000000   nf_register_hooks
+0000008c  00005906 R_MIPS_LO16            00000000   nf_register_hooks
+
+--- RELEVANT STRINGS ---
+clear_online_ip_flag
+online_ip_hash
+online_ip_hash_size
+
+
+===== MODULE nos.ko =====
+
+--- RELEVANT SYMBOLS ---
+         U ___ratelimit
+         U nos_tbq_enqueue
+         U nos_track_event_register
+         U nos_track_event_unregister
+         U tbq_p2p_limit
+00000010 B tbq_prio_count
+00000030 B tbq
+00000360 D tbq_weight_table
+00000670 D tbq_version
+000006e0 T tbq_get_prio_by_weight
+00000724 T tbq_get_real_tokens
+00000790 T tbq_track_set_weight
+000007bc T tbq_token_ctrl_init
+000007fc T tbq_token_ctrl_assert_unused
+00000804 T tbq_bucket_init
+0000085c T tbq_bucket_cleanup
+00000864 T tbq_user_backlog_update
+000008d0 T tbq_packet_ctrl_backlog_update
+000009f8 T tbq_user_sched_update
+00000a80 T tbq_flow_base_analyse
+00000b4c T tbq_fsm_rate_confirm
+00000cb8 T tbq_fsm_finish
+00000cc0 T tbq_fsm_idle
+00000d0c T tbq_get_prio_by_avg_pkt_size
+00000d30 T tbq_fsm_rate_prepare
+00000da0 T tbq_flow_reach_max
+00000e1c T tbq_drop_lower_flow_packet
+00000e44 T tbq_get_max_p2p_flow_num
+00000e78 T tbq_bucket_sched_cleanup
+00001084 T tbq_match_weixin_flow
+000011e4 T tbq_match_cyhx_flow
+000012ac T tbq_match_lol_flow
+00001374 T tbq_match_mhxy_flow
+000013fc T tbq_match_hyxd_flow
+000014b4 T tbq_match_wz_flow
+0000155c T tbq_match_qq_flow
+00001628 T tbq_match_iqiyi_flow
+00001698 B wan_tx_bytes
+000016a0 B wan_rx_bytes
+000016bc T tbq_match_thunder_flow
+00001710 B user_tbq_hash_table
+00001758 T tbq_dump_prio_count
+00001828 T tbq_bucket_sched_init
+00001984 T tbq_flow_backlog_enqueue
+00001a88 T tbq_flow_backlog_attach
+00001bfc T tbq_flow_backlog_max_octets
+00001d34 T tbq_flow_backlog_dequeue
+00001df0 T tbq_flow_backlog_drop
+00001ee0 T tbq_flow_backlog_detach
+00001fe4 T tbq_flow_backlog_drr_schedule
+00002248 T tbq_user_cleanup
+00002264 T tbq_user_sched_cleanup
+000023dc T tbq_user_track_free
+00002450 T tbq_on_user_free
+00002498 T tbq_token_ctrl_feed
+00002538 T tbq_token_ctrl_consume
+00002594 T tbq_token_ctrl_deactivate
+00002660 T tbq_user_consume
+0000278c T tbq_packet_ctrl_consume
+000028f4 T tbq_flow_backlog_try_dequeue
+00002aa4 T tbq_bucket_dequeue
+00002ba4 T tbq_user_dequeue
+00002cbc T tbq_timer_assert_unused
+00002d08 T tbq_parse_ct_info
+00002fa4 T __tbq_p2p_limit
+00003170 T tbq_on_flow_free
+00003210 T tbq_allow_privilege_flow
+00003290 T tbq_is_priv_flow
+00003328 T tbq_analyse_packet
+00003438 T tbq_global_set_config
+00003740 T tbq_enqueue
+00003958 T tbq_token_ctrl_activate
+00003a88 T tbq_timer_feed
+00003bd4 T tbq_timer_func
+00003eb0 T tbq_resume_user_group_token
+000040a8 T tbq_update_user_token
+000041a4 T tbq_get_prio_by_server_name
+00004254 T tbq_get_http_prio
+00004358 T tbq_parse_https_info
+0000450c T tbq_match_https_flow
+000045ec T tbq_get_http_header_value
+00004684 T tbq_parse_http_info
+000048d0 T tbq_match_http_flow
+00004abc T tbq_match_p2p_flow
+00004b14 T tbq_init_p2p_port
+00004b48 T tbq_dump_tc_info
+00004d88 T tbq_user_init
+00004f34 T tbq_user_sched_init
+00005058 T tbq_online_ip_track_alloc
+000051ac T tbq_filter_packet_by_nf_conn
+00005720 T tbq_timer_cleanup
+00005758 T tbq_global_cleanup
+0000578c T nos_tbq_fini
+0000583c T tbq_timer_init
+000058e4 T tbq_global_init
+000059a4 T nos_tbq_init
+00006430 T tbq_app_match
+00006c30 T tbq_device_unregister
+00006f60 T tbq_sysfs_unregister
+00007c94 T tbq_config_cleanup
+00007e8c T tbq_sysfs_register
+00007edc T tbq_device_register
+0000a890 T init_user_tbq
+0000a90c T fini_user_tbq
+0000a9f4 T user_tbq_show_all_rule
+0000ac34 T user_tbq_list_flush
+0000af3c T user_tbq_list_add
+0000b37c T user_tbq_list_del
+0000b4a0 T update_user_tbq_info
+
+--- FUNCTION/OWNER (6, 0, 'nos_debug_cleanup_proc') triggered by: f4:	3c020000 	lui	v0,0x0	f4: R_MIPS_HI16	wan_rx_bytes ---
+      84:	02402821 	move	a1,s2
+      88:	24420000 	addiu	v0,v0,0	88: R_MIPS_LO16	simple_read_from_buffer
+      8c:	0040f809 	jalr	v0
+      90:	02003821 	move	a3,s0
+      94:	8fbf402c 	lw	ra,16428(sp)
+      98:	8fb24028 	lw	s2,16424(sp)
+      9c:	8fb14024 	lw	s1,16420(sp)
+      a0:	8fb04020 	lw	s0,16416(sp)
+      a4:	03e00008 	jr	ra
+      a8:	27bd4030 	addiu	sp,sp,16432
+      ac:	27bdff08 	addiu	sp,sp,-248
+      b0:	afbf00f4 	sw	ra,244(sp)
+      b4:	afb500f0 	sw	s5,240(sp)
+      b8:	afb400ec 	sw	s4,236(sp)
+      bc:	afb300e8 	sw	s3,232(sp)
+      c0:	afb200e4 	sw	s2,228(sp)
+      c4:	afb100e0 	sw	s1,224(sp)
+      c8:	afb000dc 	sw	s0,220(sp)
+      cc:	3c020000 	lui	v0,0x0	cc: R_MIPS_HI16	memset
+      d0:	27b00018 	addiu	s0,sp,24
+      d4:	00a0a821 	move	s5,a1
+      d8:	00c0a021 	move	s4,a2
+      dc:	02002021 	move	a0,s0
+      e0:	00002821 	move	a1,zero
+      e4:	24060040 	li	a2,64
+      e8:	24420000 	addiu	v0,v0,0	e8: R_MIPS_LO16	memset
+      ec:	0040f809 	jalr	v0
+      f0:	00e09821 	move	s3,a3
+      f4:	3c020000 	lui	v0,0x0	f4: R_MIPS_HI16	wan_rx_bytes
+      f8:	8c430004 	lw	v1,4(v0)	f8: R_MIPS_LO16	wan_rx_bytes
+      fc:	8c420000 	lw	v0,0(v0)	fc: R_MIPS_LO16	wan_rx_bytes
+     100:	3c060000 	lui	a2,0x0	100: R_MIPS_HI16	$LC1
+     104:	3c120000 	lui	s2,0x0	104: R_MIPS_HI16	snprintf
+     108:	26520000 	addiu	s2,s2,0	108: R_MIPS_LO16	snprintf
+     10c:	02002021 	move	a0,s0
+     110:	24c60000 	addiu	a2,a2,0	110: R_MIPS_LO16	$LC1
+     114:	24050040 	li	a1,64
+     118:	afa30014 	sw	v1,20(sp)
+     11c:	27b10058 	addiu	s1,sp,88
+     120:	0240f809 	jalr	s2
+     124:	afa20010 	sw	v0,16(sp)
+     128:	3c060000 	lui	a2,0x0	128: R_MIPS_HI16	$LC2
+     12c:	02003821 	move	a3,s0
+     130:	02202021 	move	a0,s1
+     134:	24c60000 	addiu	a2,a2,0	134: R_MIPS_LO16	$LC2
+     138:	0240f809 	jalr	s2
+     13c:	24050080 	li	a1,128
+     140:	afa20010 	sw	v0,16(sp)
+     144:	3c020000 	lui	v0,0x0	144: R_MIPS_HI16	simple_read_from_buffer
+     148:	02a02021 	move	a0,s5
+     14c:	02802821 	move	a1,s4
+     150:	02603021 	move	a2,s3
+     154:	24420000 	addiu	v0,v0,0	154: R_MIPS_LO16	simple_read_from_buffer
+     158:	0040f809 	jalr	v0
+     15c:	02203821 	move	a3,s1
+     160:	8fbf00f4 	lw	ra,244(sp)
+     164:	8fb500f0 	lw	s5,240(sp)
+     168:	8fb400ec 	lw	s4,236(sp)
+     16c:	8fb300e8 	lw	s3,232(sp)
+     170:	8fb200e4 	lw	s2,228(sp)
+     174:	8fb100e0 	lw	s1,224(sp)
+     178:	8fb000dc 	lw	s0,220(sp)
+     17c:	03e00008 	jr	ra
+     180:	27bd00f8 	addiu	sp,sp,248
+     184:	27bdff08 	addiu	sp,sp,-248
+     188:	afbf00f4 	sw	ra,244(sp)
+     18c:	afb500f0 	sw	s5,240(sp)
+     190:	afb400ec 	sw	s4,236(sp)
+     194:	afb300e8 	sw	s3,232(sp)
+     198:	afb200e4 	sw	s2,228(sp)
+     19c:	afb100e0 	sw	s1,224(sp)
+     1a0:	afb000dc 	sw	s0,220(sp)
+     1a4:	3c020000 	lui	v0,0x0	1a4: R_MIPS_HI16	memset
+     1a8:	27b00018 	addiu	s0,sp,24
+     1ac:	00a0a821 	move	s5,a1
+     1b0:	00c0a021 	move	s4,a2
+     1b4:	02002021 	move	a0,s0
+     1b8:	00002821 	move	a1,zero
+     1bc:	24060040 	li	a2,64
+     1c0:	24420000 	addiu	v0,v0,0	1c0: R_MIPS_LO16	memset
+     1c4:	0040f809 	jalr	v0
+     1c8:	00e09821 	move	s3,a3
+     1cc:	3c020000 	lui	v0,0x0	1cc: R_MIPS_HI16	wan_tx_bytes
+     1d0:	8c430004 	lw	v1,4(v0)	1d0: R_MIPS_LO16	wan_tx_bytes
+     1d4:	8c420000 	lw	v0,0(v0)	1d4: R_MIPS_LO16	wan_tx_bytes
+     1d8:	3c060000 	lui	a2,0x0	1d8: R_MIPS_HI16	$LC1
+     1dc:	3c120000 	lui	s2,0x0	1dc: R_MIPS_HI16	snprintf
+     1e0:	26520000 	addiu	s2,s2,0	1e0: R_MIPS_LO16	snprintf
+     1e4:	02002021 	move	a0,s0
+     1e8:	24c60000 	addiu	a2,a2,0	1e8: R_MIPS_LO16	$LC1
+     1ec:	24050040 	li	a1,64
+     1f0:	afa30014 	sw	v1,20(sp)
+     1f4:	27b10058 	addiu	s1,sp,88
+     1f8:	0240f809 	jalr	s2
+     1fc:	afa20010 	sw	v0,16(sp)
+     200:	3c060000 	lui	a2,0x0	200: R_MIPS_HI16	$LC2
+     204:	02003821 	move	a3,s0
+     208:	02202021 	move	a0,s1
+     20c:	24c60000 	addiu	a2,a2,0	20c: R_MIPS_LO16	$LC2
+     210:	0240f809 	jalr	s2
+     214:	24050080 	li	a1,128
+     218:	afa20010 	sw	v0,16(sp)
+     21c:	3c020000 	lui	v0,0x0	21c: R_MIPS_HI16	simple_read_from_buffer
+     220:	02a02021 	move	a0,s5
+     224:	02802821 	move	a1,s4
+     228:	02603021 	move	a2,s3
+     22c:	24420000 	addiu	v0,v0,0	22c: R_MIPS_LO16	simple_read_from_buffer
+     230:	0040f809 	jalr	v0
+     234:	02203821 	move	a3,s1
+     238:	8fbf00f4 	lw	ra,244(sp)
+     23c:	8fb500f0 	lw	s5,240(sp)
+     240:	8fb400ec 	lw	s4,236(sp)
+     244:	8fb300e8 	lw	s3,232(sp)
+     248:	8fb200e4 	lw	s2,228(sp)
+     24c:	8fb100e0 	lw	s1,224(sp)
+     250:	8fb000dc 	lw	s0,220(sp)
+     254:	03e00008 	jr	ra
+     258:	27bd00f8 	addiu	sp,sp,248
+     25c:	27bdff50 	addiu	sp,sp,-176
+     260:	afbf00ac 	sw	ra,172(sp)
+     264:	afb300a8 	sw	s3,168(sp)
+     268:	afb200a4 	sw	s2,164(sp)
+     26c:	afb100a0 	sw	s1,160(sp)
+     270:	afb0009c 	sw	s0,156(sp)
+     274:	3c020000 	lui	v0,0x0	274: R_MIPS_HI16	$LC5
+     278:	24420000 	addiu	v0,v0,0	278: R_MIPS_LO16	$LC5
+     27c:	afa20010 	sw	v0,16(sp)
+     280:	3c020000 	lui	v0,0x0	280: R_MIPS_HI16	$LC6
+     284:	24420000 	addiu	v0,v0,0	284: R_MIPS_LO16	$LC6
+     288:	27b00018 	addiu	s0,sp,24
+     28c:	00c09021 	move	s2,a2
+     290:	00e08821 	move	s1,a3
+     294:	afa20014 	sw	v0,20(sp)
+     298:	3c060000 	lui	a2,0x0	298: R_MIPS_HI16	$LC3
+     29c:	3c070000 	lui	a3,0x0	29c: R_MIPS_HI16	$LC4
+     2a0:	3c020000 	lui	v0,0x0	2a0: R_MIPS_HI16	snprintf
+     2a4:	00a09821 	move	s3,a1
+     2a8:	02002021 	move	a0,s0
+     2ac:	24c60000 	addiu	a2,a2,0	2ac: R_MIPS_LO16	$LC3
+...
+
+--- FUNCTION/OWNER (3963, 15316, 'tbq_timer_func') triggered by: 3c88:	3c160000 	lui	s6,0x0	3c88: R_MIPS_HI16	wan_rx_bytes ---
+    3bd0:	2474fff0 	addiu	s4,v1,-16
+
+00003bd4 <tbq_timer_func>:
+    3bd4:	27bdffb0 	addiu	sp,sp,-80
+    3bd8:	afbf004c 	sw	ra,76(sp)
+    3bdc:	afb70048 	sw	s7,72(sp)
+    3be0:	afb60044 	sw	s6,68(sp)
+    3be4:	afb50040 	sw	s5,64(sp)
+    3be8:	afb4003c 	sw	s4,60(sp)
+    3bec:	afb30038 	sw	s3,56(sp)
+    3bf0:	afb20034 	sw	s2,52(sp)
+    3bf4:	afb10030 	sw	s1,48(sp)
+    3bf8:	afb0002c 	sw	s0,44(sp)
+    3bfc:	3c020000 	lui	v0,0x0	3bfc: R_MIPS_HI16	local_bh_disable
+    3c00:	27b40010 	addiu	s4,sp,16
+    3c04:	27b50018 	addiu	s5,sp,24
+    3c08:	afb40010 	sw	s4,16(sp)
+    3c0c:	afb40014 	sw	s4,20(sp)
+    3c10:	afb50018 	sw	s5,24(sp)
+    3c14:	afb5001c 	sw	s5,28(sp)
+    3c18:	afa00020 	sw	zero,32(sp)
+    3c1c:	24420000 	addiu	v0,v0,0	3c1c: R_MIPS_LO16	local_bh_disable
+    3c20:	0040f809 	jalr	v0
+    3c24:	afa00024 	sw	zero,36(sp)
+    3c28:	3c100000 	lui	s0,0x0	3c28: R_MIPS_HI16	tbq
+    3c2c:	3c020000 	lui	v0,0x0	3c2c: R_MIPS_HI16	tbq_timer_feed
+    3c30:	26040e40 	addiu	a0,s0,3648	3c30: R_MIPS_LO16	tbq
+    3c34:	24420000 	addiu	v0,v0,0	3c34: R_MIPS_LO16	tbq_timer_feed
+    3c38:	0040f809 	jalr	v0
+    3c3c:	02802821 	move	a1,s4
+    3c40:	3c170000 	lui	s7,0x0	3c40: R_MIPS_HI16	tbq
+    3c44:	8fa20024 	lw	v0,36(sp)
+    3c48:	26f70000 	addiu	s7,s7,0	3c48: R_MIPS_LO16	tbq
+    3c4c:	8fa40020 	lw	a0,32(sp)
+    3c50:	8ee30e2c 	lw	v1,3628(s7)
+    3c54:	00021023 	negu	v0,v0
+    3c58:	00441023 	subu	v0,v0,a0
+    3c5c:	00431021 	addu	v0,v0,v1
+    3c60:	aee20e2c 	sw	v0,3628(s7)
+    3c64:	3c020000 	lui	v0,0x0	3c64: R_MIPS_HI16	local_bh_enable
+    3c68:	24420000 	addiu	v0,v0,0	3c68: R_MIPS_LO16	local_bh_enable
+    3c6c:	0040f809 	jalr	v0
+    3c70:	00000000 	nop
+    3c74:	8fa40010 	lw	a0,16(sp)
+    3c78:	12840051 	beq	s4,a0,3dc0 <tbq_timer_func+0x1ec>
+    3c7c:	8c910000 	lw	s1,0(a0)
+    3c80:	3c120000 	lui	s2,0x0	3c80: R_MIPS_HI16	.text
+    3c84:	26523650 	addiu	s2,s2,13904	3c84: R_MIPS_LO16	.text
+    3c88:	3c160000 	lui	s6,0x0	3c88: R_MIPS_HI16	wan_rx_bytes
+    3c8c:	08000f44 	j	3d10 <tbq_timer_func+0x13c>	3c8c: R_MIPS_26	.text
+    3c90:	3c130000 	lui	s3,0x0	3c90: R_MIPS_HI16	wan_tx_bytes
+    3c94:	8ca50050 	lw	a1,80(a1)
+    3c98:	8c460050 	lw	a2,80(v0)
+    3c9c:	8c470054 	lw	a3,84(v0)
+    3ca0:	00c52821 	addu	a1,a2,a1
+    3ca4:	00a6302b 	sltu	a2,a1,a2
+    3ca8:	00c73021 	addu	a2,a2,a3
+    3cac:	ac460054 	sw	a2,84(v0)
+    3cb0:	ac450050 	sw	a1,80(v0)
+    3cb4:	8c62008c 	lw	v0,140(v1)
+    3cb8:	8c450070 	lw	a1,112(v0)
+    3cbc:	8c460074 	lw	a2,116(v0)
+    3cc0:	24a30001 	addiu	v1,a1,1
+    3cc4:	0065282b 	sltu	a1,v1,a1
+    3cc8:	00a62821 	addu	a1,a1,a2
+    3ccc:	ac450074 	sw	a1,116(v0)
+    3cd0:	ac430070 	sw	v1,112(v0)
+    3cd4:	8c830008 	lw	v1,8(a0)
+    3cd8:	8e620000 	lw	v0,0(s3)	3cd8: R_MIPS_LO16	wan_tx_bytes
+    3cdc:	8e650004 	lw	a1,4(s3)	3cdc: R_MIPS_LO16	wan_tx_bytes
+    3ce0:	8c630050 	lw	v1,80(v1)
+    3ce4:	00621021 	addu	v0,v1,v0
+    3ce8:	0043182b 	sltu	v1,v0,v1
+    3cec:	00651821 	addu	v1,v1,a1
+    3cf0:	ae620000 	sw	v0,0(s3)	3cf0: R_MIPS_LO16	wan_tx_bytes
+    3cf4:	ae630004 	sw	v1,4(s3)	3cf4: R_MIPS_LO16	wan_tx_bytes
+    3cf8:	0240f809 	jalr	s2
+    3cfc:	24050001 	li	a1,1
+    3d00:	02202021 	move	a0,s1
+    3d04:	1291002e 	beq	s4,s1,3dc0 <tbq_timer_func+0x1ec>
+    3d08:	8e220000 	lw	v0,0(s1)
+    3d0c:	00408821 	move	s1,v0
+    3d10:	8c850008 	lw	a1,8(a0)
+    3d14:	8ca3006c 	lw	v1,108(a1)
+    3d18:	1060fff7 	beqz	v1,3cf8 <tbq_timer_func+0x124>
+    3d1c:	00000000 	nop
+    3d20:	8c62008c 	lw	v0,140(v1)
+    3d24:	1040fff4 	beqz	v0,3cf8 <tbq_timer_func+0x124>
+    3d28:	00000000 	nop
+    3d2c:	8ca60078 	lw	a2,120(a1)
+    3d30:	30c70001 	andi	a3,a2,0x1
+    3d34:	30c60002 	andi	a2,a2,0x2
+    3d38:	14c0ffd6 	bnez	a2,3c94 <tbq_timer_func+0xc0>
+    3d3c:	00000000 	nop
+    3d40:	10e0ffed 	beqz	a3,3cf8 <tbq_timer_func+0x124>
+    3d44:	00000000 	nop
+    3d48:	8ca50050 	lw	a1,80(a1)
+    3d4c:	8c460060 	lw	a2,96(v0)
+    3d50:	8c470064 	lw	a3,100(v0)
+    3d54:	00c52821 	addu	a1,a2,a1
+    3d58:	00a6302b 	sltu	a2,a1,a2
+    3d5c:	00c73021 	addu	a2,a2,a3
+    3d60:	ac460064 	sw	a2,100(v0)
+    3d64:	ac450060 	sw	a1,96(v0)
+    3d68:	8c62008c 	lw	v0,140(v1)
+    3d6c:	8c450078 	lw	a1,120(v0)
+    3d70:	8c46007c 	lw	a2,124(v0)
+    3d74:	24a30001 	addiu	v1,a1,1
+    3d78:	0065282b 	sltu	a1,v1,a1
+    3d7c:	00a62821 	addu	a1,a1,a2
+    3d80:	ac45007c 	sw	a1,124(v0)
+    3d84:	ac430078 	sw	v1,120(v0)
+    3d88:	8c830008 	lw	v1,8(a0)
+    3d8c:	8ec20000 	lw	v0,0(s6)	3d8c: R_MIPS_LO16	wan_rx_bytes
+    3d90:	8ec50004 	lw	a1,4(s6)	3d90: R_MIPS_LO16	wan_rx_bytes
+    3d94:	8c630050 	lw	v1,80(v1)
+    3d98:	00621021 	addu	v0,v1,v0
+    3d9c:	0043182b 	sltu	v1,v0,v1
+    3da0:	00651821 	addu	v1,v1,a1
+    3da4:	24050001 	li	a1,1
+    3da8:	aec20000 	sw	v0,0(s6)	3da8: R_MIPS_LO16	wan_rx_bytes
+    3dac:	0240f809 	jalr	s2
+    3db0:	aec30004 	sw	v1,4(s6)	3db0: R_MIPS_LO16	wan_rx_bytes
+    3db4:	02202021 	move	a0,s1
+    3db8:	1691ffd4 	bne	s4,s1,3d0c <tbq_timer_func+0x138>
+    3dbc:	8e220000 	lw	v0,0(s1)
+    3dc0:	8fa40018 	lw	a0,24(sp)
+    3dc4:	1095000a 	beq	a0,s5,3df0 <tbq_timer_func+0x21c>
+    3dc8:	8c910000 	lw	s1,0(a0)
+    3dcc:	3c120000 	lui	s2,0x0	3dcc: R_MIPS_HI16	.text
+    3dd0:	08000f77 	j	3ddc <tbq_timer_func+0x208>	3dd0: R_MIPS_26	.text
+    3dd4:	26523650 	addiu	s2,s2,13904	3dd4: R_MIPS_LO16	.text
+    3dd8:	00408821 	move	s1,v0
+    3ddc:	0240f809 	jalr	s2
+    3de0:	00002821 	move	a1,zero
+    3de4:	8e220000 	lw	v0,0(s1)
+    3de8:	1635fffb 	bne	s1,s5,3dd8 <tbq_timer_func+0x204>
+    3dec:	02202021 	move	a0,s1
+    3df0:	8ee30e30 	lw	v1,3632(s7)
+    3df4:	24020003 	li	v0,3
+    3df8:	10620013 	beq	v1,v0,3e48 <tbq_timer_func+0x274>
+    3dfc:	00000000 	nop
+    3e00:	3c020000 	lui	v0,0x0	3e00: R_MIPS_HI16	jiffies
+    3e04:	8c450000 	lw	a1,0(v0)	3e04: R_MIPS_LO16	jiffies
+    3e08:	3c020000 	lui	v0,0x0	3e08: R_MIPS_HI16	mod_timer
+    3e0c:	26040e40 	addiu	a0,s0,3648	3e0c: R_MIPS_LO16	tbq
+    3e10:	24420000 	addiu	v0,v0,0	3e10: R_MIPS_LO16	mod_timer
+    3e14:	0040f809 	jalr	v0
+    3e18:	24a50001 	addiu	a1,a1,1
+    3e1c:	8fbf004c 	lw	ra,76(sp)
+    3e20:	8fb70048 	lw	s7,72(sp)
+    3e24:	8fb60044 	lw	s6,68(sp)
+    3e28:	8fb50040 	lw	s5,64(sp)
+    3e2c:	8fb4003c 	lw	s4,60(sp)
+    3e30:	8fb30038 	lw	s3,56(sp)
+    3e34:	8fb20034 	lw	s2,52(sp)
+    3e38:	8fb10030 	lw	s1,48(sp)
+    3e3c:	8fb0002c 	lw	s0,44(sp)
+    3e40:	03e00008 	jr	ra
+    3e44:	27bd0050 	addiu	sp,sp,80
+    3e48:	8ee20e60 	lw	v0,3680(s7)
+    3e4c:	1440ffec 	bnez	v0,3e00 <tbq_timer_func+0x22c>
+    3e50:	3c020000 	lui	v0,0x0	3e50: R_MIPS_HI16	tbq_timer_assert_unused
+    3e54:	24420000 	addiu	v0,v0,0	3e54: R_MIPS_LO16	tbq_timer_assert_unused
+    3e58:	0040f809 	jalr	v0
+    3e5c:	26040e40 	addiu	a0,s0,3648	3e5c: R_MIPS_LO16	tbq
+    3e60:	3c040000 	lui	a0,0x0	3e60: R_MIPS_HI16	tbq
+    3e64:	3c020000 	lui	v0,0x0	3e64: R_MIPS_HI16	complete
+    3e68:	24420000 	addiu	v0,v0,0	3e68: R_MIPS_LO16	complete
+    3e6c:	0040f809 	jalr	v0
+    3e70:	24840e34 	addiu	a0,a0,3636	3e70: R_MIPS_LO16	tbq
+    3e74:	3c040000 	lui	a0,0x0	3e74: R_MIPS_HI16	.data
+    3e78:	3c050000 	lui	a1,0x0	3e78: R_MIPS_HI16	.rodata
+    3e7c:	3c020000 	lui	v0,0x0	3e7c: R_MIPS_HI16	___ratelimit
+    3e80:	248405e4 	addiu	a0,a0,1508	3e80: R_MIPS_LO16	.data
+    3e84:	24420000 	addiu	v0,v0,0	3e84: R_MIPS_LO16	___ratelimit
+    3e88:	0040f809 	jalr	v0
+    3e8c:	24a50044 	addiu	a1,a1,68	3e8c: R_MIPS_LO16	.rodata
+    3e90:	1040ffdb 	beqz	v0,3e00 <tbq_timer_func+0x22c>
+    3e94:	3c040000 	lui	a0,0x0	3e94: R_MIPS_HI16	$LC15
+    3e98:	3c020000 	lui	v0,0x0	3e98: R_MIPS_HI16	printk
+    3e9c:	24420000 	addiu	v0,v0,0	3e9c: R_MIPS_LO16	printk
+    3ea0:	0040f809 	jalr	v0
+    3ea4:	24840000 	addiu	a0,a0,0	3ea4: R_MIPS_LO16	$LC15
+    3ea8:	08000f80 	j	3e00 <tbq_timer_func+0x22c>	3ea8: R_MIPS_26	.text
+    3eac:	00000000 	nop
+
+
+--- FUNCTION/OWNER (5306, 20568, 'tbq_online_ip_track_alloc') triggered by: 00005058 <tbq_online_ip_track_alloc>: ---
+    5054:	8fbf0034 	lw	ra,52(sp)
+
+00005058 <tbq_online_ip_track_alloc>:
+    5058:	27bdff48 	addiu	sp,sp,-184
+    505c:	afbf00b4 	sw	ra,180(sp)
+    5060:	afb500b0 	sw	s5,176(sp)
+    5064:	afb400ac 	sw	s4,172(sp)
+    5068:	afb300a8 	sw	s3,168(sp)
+    506c:	afb200a4 	sw	s2,164(sp)
+    5070:	afb100a0 	sw	s1,160(sp)
+    5074:	afb0009c 	sw	s0,156(sp)
+    5078:	3c020000 	lui	v0,0x0	5078: R_MIPS_HI16	memset
+    507c:	27b20018 	addiu	s2,sp,24
+    5080:	00808821 	move	s1,a0
+    5084:	00002821 	move	a1,zero
+    5088:	02402021 	move	a0,s2
+    508c:	24420000 	addiu	v0,v0,0	508c: R_MIPS_LO16	memset
+    5090:	0040f809 	jalr	v0
+    5094:	24060080 	li	a2,128
+    5098:	8e30008c 	lw	s0,140(s1)
+    509c:	3c130000 	lui	s3,0x0	509c: R_MIPS_HI16	tbq
+    50a0:	24060006 	li	a2,6
+    50a4:	26020018 	addiu	v0,s0,24
+    50a8:	ae0202fc 	sw	v0,764(s0)
+    50ac:	8e25008c 	lw	a1,140(s1)
+    50b0:	26140300 	addiu	s4,s0,768
+    50b4:	3c020000 	lui	v0,0x0	50b4: R_MIPS_HI16	memcpy
+    50b8:	24a5002c 	addiu	a1,a1,44
+    50bc:	02802021 	move	a0,s4
+    50c0:	24420000 	addiu	v0,v0,0	50c0: R_MIPS_LO16	memcpy
+    50c4:	0040f809 	jalr	v0
+    50c8:	26730000 	addiu	s3,s3,0	50c8: R_MIPS_LO16	tbq
+    50cc:	8e620018 	lw	v0,24(s3)
+    50d0:	3c040000 	lui	a0,0x0	50d0: R_MIPS_HI16	tbq
+    50d4:	26030308 	addiu	v1,s0,776
+    50d8:	24840014 	addiu	a0,a0,20	50d8: R_MIPS_LO16	tbq
+    50dc:	ae630018 	sw	v1,24(s3)
+    50e0:	ae040308 	sw	a0,776(s0)
+    50e4:	ae02030c 	sw	v0,780(s0)
+    50e8:	ac430000 	sw	v1,0(v0)
+    50ec:	8e22008c 	lw	v0,140(s1)
+    50f0:	02402821 	move	a1,s2
+    50f4:	8c440018 	lw	a0,24(v0)
+    50f8:	3c020000 	lui	v0,0x0	50f8: R_MIPS_HI16	.text
+    50fc:	24422eb8 	addiu	v0,v0,11960	50fc: R_MIPS_LO16	.text
+    5100:	0040f809 	jalr	v0
+    5104:	3c150000 	lui	s5,0x0	5104: R_MIPS_HI16	tbq_user_sched_init
+    5108:	ae021430 	sw	v0,5168(s0)
+    510c:	8e27008c 	lw	a3,140(s1)
+    5110:	3c050000 	lui	a1,0x0	5110: R_MIPS_HI16	tbq
+    5114:	24a50024 	addiu	a1,a1,36	5114: R_MIPS_LO16	tbq
+    5118:	8ce60018 	lw	a2,24(a3)
+    511c:	26b50000 	addiu	s5,s5,0	511c: R_MIPS_LO16	tbq_user_sched_init
+    5120:	24e7002c 	addiu	a3,a3,44
+    5124:	26040310 	addiu	a0,s0,784
+    5128:	afa20010 	sw	v0,16(sp)
+    512c:	02a0f809 	jalr	s5
+    5130:	afb20014 	sw	s2,20(sp)
+    5134:	8e27008c 	lw	a3,140(s1)
+    5138:	8e021430 	lw	v0,5168(s0)
+    513c:	3c050000 	lui	a1,0x0	513c: R_MIPS_HI16	tbq
+    5140:	8ce60018 	lw	a2,24(a3)
+    5144:	26040ba0 	addiu	a0,s0,2976
+    5148:	24a50728 	addiu	a1,a1,1832	5148: R_MIPS_LO16	tbq
+    514c:	24e7002c 	addiu	a3,a3,44
+    5150:	afa20010 	sw	v0,16(sp)
+    5154:	02a0f809 	jalr	s5
+    5158:	afb20014 	sw	s2,20(sp)
+    515c:	3c020000 	lui	v0,0x0	515c: R_MIPS_HI16	find_hnode_by_mac
+    5160:	24420000 	addiu	v0,v0,0	5160: R_MIPS_LO16	find_hnode_by_mac
+    5164:	0040f809 	jalr	v0
+    5168:	02802021 	move	a0,s4
+    516c:	10400006 	beqz	v0,5188 <tbq_online_ip_track_alloc+0x130>
+    5170:	260202f8 	addiu	v0,s0,760
+    5174:	8e620004 	lw	v0,4(s3)
+    5178:	10400002 	beqz	v0,5184 <tbq_online_ip_track_alloc+0x12c>
+    517c:	24020001 	li	v0,1
+    5180:	ae021430 	sw	v0,5168(s0)
+    5184:	260202f8 	addiu	v0,s0,760
+    5188:	8fbf00b4 	lw	ra,180(sp)
+    518c:	8fb500b0 	lw	s5,176(sp)
+    5190:	8fb400ac 	lw	s4,172(sp)
+    5194:	8fb300a8 	lw	s3,168(sp)
+    5198:	8fb200a4 	lw	s2,164(sp)
+    519c:	8fb100a0 	lw	s1,160(sp)
+    51a0:	8fb0009c 	lw	s0,156(sp)
+    51a4:	03e00008 	jr	ra
+    51a8:	27bd00b8 	addiu	sp,sp,184
+
+
+--- FUNCTION/OWNER (5393, 20908, 'tbq_filter_packet_by_nf_conn') triggered by: 54e0:	3c020000 	lui	v0,0x0	54e0: R_MIPS_HI16	tbq_online_ip_track_alloc ---
+    51a8:	27bd00b8 	addiu	sp,sp,184
+
+000051ac <tbq_filter_packet_by_nf_conn>:
+    51ac:	27bdffc8 	addiu	sp,sp,-56
+    51b0:	afbf0034 	sw	ra,52(sp)
+    51b4:	afb60030 	sw	s6,48(sp)
+    51b8:	afb5002c 	sw	s5,44(sp)
+    51bc:	afb40028 	sw	s4,40(sp)
+    51c0:	afb30024 	sw	s3,36(sp)
+    51c4:	afb20020 	sw	s2,32(sp)
+    51c8:	afb1001c 	sw	s1,28(sp)
+    51cc:	afb00018 	sw	s0,24(sp)
+    51d0:	2402ffff 	li	v0,-1
+    51d4:	afa20010 	sw	v0,16(sp)
+    51d8:	3c020000 	lui	v0,0x0	51d8: R_MIPS_HI16	tbq_is_priv_flow
+    51dc:	24420000 	addiu	v0,v0,0	51dc: R_MIPS_LO16	tbq_is_priv_flow
+    51e0:	00809021 	move	s2,a0
+    51e4:	00a08021 	move	s0,a1
+    51e8:	0040f809 	jalr	v0
+    51ec:	00c08821 	move	s1,a2
+    51f0:	144000c2 	bnez	v0,54fc <tbq_filter_packet_by_nf_conn+0x350>
+    51f4:	24020001 	li	v0,1
+    51f8:	8e13008c 	lw	s3,140(s0)
+    51fc:	8e6202fc 	lw	v0,764(s3)
+    5200:	104000b7 	beqz	v0,54e0 <tbq_filter_packet_by_nf_conn+0x334>
+    5204:	267302f8 	addiu	s3,s3,760
+    5208:	8e02010c 	lw	v0,268(s0)
+    520c:	104000ce 	beqz	v0,5548 <tbq_filter_packet_by_nf_conn+0x39c>
+    5210:	2615010c 	addiu	s5,s0,268
+    5214:	8e14011c 	lw	s4,284(s0)
+    5218:	8e020118 	lw	v0,280(s0)
+    521c:	0282a024 	and	s4,s4,v0
+    5220:	92040032 	lbu	a0,50(s0)
+    5224:	96020114 	lhu	v0,276(s0)
+    5228:	10440007 	beq	v0,a0,5248 <tbq_filter_packet_by_nf_conn+0x9c>
+    522c:	3c020000 	lui	v0,0x0	522c: R_MIPS_HI16	tbq_app_match
+    5230:	a6040114 	sh	a0,276(s0)
+    5234:	8e651138 	lw	a1,4408(s3)
+    5238:	24420000 	addiu	v0,v0,0	5238: R_MIPS_LO16	tbq_app_match
+    523c:	0040f809 	jalr	v0
+    5240:	26060128 	addiu	a2,s0,296
+    5244:	ae020118 	sw	v0,280(s0)
+    5248:	3c020000 	lui	v0,0x0	5248: R_MIPS_HI16	tbq_analyse_packet
+    524c:	02402021 	move	a0,s2
+    5250:	02202821 	move	a1,s1
+    5254:	24420000 	addiu	v0,v0,0	5254: R_MIPS_LO16	tbq_analyse_packet
+    5258:	0040f809 	jalr	v0
+    525c:	27a60010 	addiu	a2,sp,16
+    5260:	8fa30010 	lw	v1,16(sp)
+    5264:	18600039 	blez	v1,534c <tbq_filter_packet_by_nf_conn+0x1a0>
+    5268:	00000000 	nop
+    526c:	8e0401f4 	lw	a0,500(s0)
+    5270:	10830036 	beq	a0,v1,534c <tbq_filter_packet_by_nf_conn+0x1a0>
+    5274:	00000000 	nop
+    5278:	3c040000 	lui	a0,0x0	5278: R_MIPS_HI16	tbq_weight_table
+    527c:	00033080 	sll	a2,v1,0x2
+    5280:	24850000 	addiu	a1,a0,0	5280: R_MIPS_LO16	tbq_weight_table
+    5284:	ae0301f4 	sw	v1,500(s0)
+    5288:	00c52821 	addu	a1,a2,a1
+    528c:	8ca50000 	lw	a1,0(a1)
+    5290:	8c890000 	lw	t1,0(a0)	5290: R_MIPS_LO16	tbq_weight_table
+    5294:	10a9000a 	beq	a1,t1,52c0 <tbq_filter_packet_by_nf_conn+0x114>
+    5298:	3c030000 	lui	v1,0x0	5298: R_MIPS_HI16	tbq_weight_table
+    529c:	24630004 	addiu	v1,v1,4	529c: R_MIPS_LO16	tbq_weight_table
+    52a0:	24040001 	li	a0,1
+    52a4:	24070009 	li	a3,9
+    52a8:	8c660000 	lw	a2,0(v1)
+    52ac:	10a60005 	beq	a1,a2,52c4 <tbq_filter_packet_by_nf_conn+0x118>
+    52b0:	24630004 	addiu	v1,v1,4
+    52b4:	24840001 	addiu	a0,a0,1
+    52b8:	1487fffb 	bne	a0,a3,52a8 <tbq_filter_packet_by_nf_conn+0xfc>
+    52bc:	00000000 	nop
+    52c0:	00002021 	move	a0,zero
+    52c4:	3c0a0000 	lui	t2,0x0	52c4: R_MIPS_HI16	tbq_prio_count
+    52c8:	00042080 	sll	a0,a0,0x2
+    52cc:	254a0000 	addiu	t2,t2,0	52cc: R_MIPS_LO16	tbq_prio_count
+    52d0:	01442021 	addu	a0,t2,a0
+    52d4:	8c830000 	lw	v1,0(a0)
+    52d8:	24630001 	addiu	v1,v1,1
+    52dc:	ac830000 	sw	v1,0(a0)
+    52e0:	8e080128 	lw	t0,296(s0)
+    52e4:	1109000a 	beq	t0,t1,5310 <tbq_filter_packet_by_nf_conn+0x164>
+    52e8:	3c040000 	lui	a0,0x0	52e8: R_MIPS_HI16	tbq_weight_table
+    52ec:	24840004 	addiu	a0,a0,4	52ec: R_MIPS_LO16	tbq_weight_table
+    52f0:	24030001 	li	v1,1
+    52f4:	24070009 	li	a3,9
+    52f8:	8c860000 	lw	a2,0(a0)
+    52fc:	11060005 	beq	t0,a2,5314 <tbq_filter_packet_by_nf_conn+0x168>
+    5300:	24840004 	addiu	a0,a0,4
+    5304:	24630001 	addiu	v1,v1,1
+    5308:	1467fffb 	bne	v1,a3,52f8 <tbq_filter_packet_by_nf_conn+0x14c>
+    530c:	00000000 	nop
+    5310:	00001821 	move	v1,zero
+    5314:	00031880 	sll	v1,v1,0x2
+    5318:	01431821 	addu	v1,t2,v1
+    531c:	8c640000 	lw	a0,0(v1)
+    5320:	2484ffff 	addiu	a0,a0,-1
+    5324:	12a00009 	beqz	s5,534c <tbq_filter_packet_by_nf_conn+0x1a0>
+    5328:	ac640000 	sw	a0,0(v1)
+    532c:	04a00007 	bltz	a1,534c <tbq_filter_packet_by_nf_conn+0x1a0>
+    5330:	00000000 	nop
+    5334:	00001821 	move	v1,zero
+    5338:	24060080 	li	a2,128
+    533c:	02032021 	addu	a0,s0,v1
+    5340:	24630004 	addiu	v1,v1,4
+    5344:	1466fffd 	bne	v1,a2,533c <tbq_filter_packet_by_nf_conn+0x190>
+    5348:	ac850128 	sw	a1,296(a0)
+    534c:	1440005a 	bnez	v0,54b8 <tbq_filter_packet_by_nf_conn+0x30c>
+    5350:	00001021 	move	v0,zero
+    5354:	8e16011c 	lw	s6,284(s0)
+    5358:	8e020118 	lw	v0,280(s0)
+    535c:	02c2b024 	and	s6,s6,v0
+    5360:	12d40010 	beq	s6,s4,53a4 <tbq_filter_packet_by_nf_conn+0x1f8>
+    5364:	00141827 	nor	v1,zero,s4
+    5368:	00161027 	nor	v0,zero,s6
+    536c:	0282a024 	and	s4,s4,v0
+    5370:	0076b024 	and	s6,v1,s6
+    5374:	3c150000 	lui	s5,0x0	5374: R_MIPS_HI16	.text
+    5378:	260401a8 	addiu	a0,s0,424
+    537c:	26650018 	addiu	a1,s3,24
+    5380:	02803021 	move	a2,s4
+    5384:	26b52198 	addiu	s5,s5,8600	5384: R_MIPS_LO16	.text
+    5388:	02a0f809 	jalr	s5
+    538c:	02c03821 	move	a3,s6
+    5390:	02803021 	move	a2,s4
+    5394:	02c03821 	move	a3,s6
+    5398:	260401cc 	addiu	a0,s0,460
+    539c:	02a0f809 	jalr	s5
+    53a0:	266508a8 	addiu	a1,s3,2216
+    53a4:	8e4200b8 	lw	v0,184(s2)
+    53a8:	10400019 	beqz	v0,5410 <tbq_filter_packet_by_nf_conn+0x264>
+    53ac:	3c030000 	lui	v1,0x0	53ac: R_MIPS_HI16	dscp_weight_table
+    53b0:	8e0401f4 	lw	a0,500(s0)
+    53b4:	24630000 	addiu	v1,v1,0	53b4: R_MIPS_LO16	dscp_weight_table
+    53b8:	00042080 	sll	a0,a0,0x2
+    53bc:	90460001 	lbu	a2,1(v0)
+    53c0:	00831821 	addu	v1,a0,v1
+    53c4:	8c640000 	lw	a0,0(v1)
+    53c8:	9443000a 	lhu	v1,10(v0)
+    53cc:	7c0318a0 	wsbh	v1,v1
+    53d0:	3063ffff 	andi	v1,v1,0xffff
+    53d4:	00661821 	addu	v1,v1,a2
+    53d8:	24650001 	addiu	a1,v1,1
+    53dc:	30c60003 	andi	a2,a2,0x3
+    53e0:	00042080 	sll	a0,a0,0x2
+    53e4:	00862025 	or	a0,a0,a2
+    53e8:	30a6ffff 	andi	a2,a1,0xffff
+    53ec:	00052c02 	srl	a1,a1,0x10
+    53f0:	00c5180b 	movn	v1,a2,a1
+    53f4:	308400ff 	andi	a0,a0,0xff
+    53f8:	00641823 	subu	v1,v1,a0
+    53fc:	00032c02 	srl	a1,v1,0x10
+    5400:	00a31821 	addu	v1,a1,v1
+    5404:	a0440001 	sb	a0,1(v0)
+    5408:	7c0318a0 	wsbh	v1,v1
+    540c:	a443000a 	sh	v1,10(v0)
+    5410:	001111c0 	sll	v0,s1,0x7
+    5414:	001120c0 	sll	a0,s1,0x3
+    5418:	00822021 	addu	a0,a0,v0
+    541c:	00112a40 	sll	a1,s1,0x9
+    5420:	00111180 	sll	v0,s1,0x6
+    5424:	00a22823 	subu	a1,a1,v0
+    5428:	00912021 	addu	a0,a0,s1
+    542c:	8e420050 	lw	v0,80(s2)
+    5430:	00b12821 	addu	a1,a1,s1
+    5434:	00042100 	sll	a0,a0,0x4
+    5438:	3c030000 	lui	v1,0x0	5438: R_MIPS_HI16	tbq
+    543c:	24840018 	addiu	a0,a0,24
+    5440:	00052880 	sll	a1,a1,0x2
+    5444:	24630024 	addiu	v1,v1,36	5444: R_MIPS_LO16	tbq
+    5448:	00651821 	addu	v1,v1,a1
+    544c:	02649821 	addu	s3,s3,a0
+    5450:	2404ffff 	li	a0,-1
+    5454:	ae4400e0 	sw	a0,224(s2)
+    5458:	ae4300d8 	sw	v1,216(s2)
+    545c:	ae5300dc 	sw	s3,220(s2)
+    5460:	ae4200e4 	sw	v0,228(s2)
+    5464:	8e020128 	lw	v0,296(s0)
+    5468:	00111940 	sll	v1,s1,0x5
+    546c:	00118880 	sll	s1,s1,0x2
+    5470:	02238821 	addu	s1,s1,v1
+    5474:	02112021 	addu	a0,s0,s1
+    5478:	ac8201b8 	sw	v0,440(a0)
+    547c:	3c020000 	lui	v0,0x0	547c: R_MIPS_HI16	.text
+    5480:	00808021 	move	s0,a0
+    5484:	244217e4 	addiu	v0,v0,6116	5484: R_MIPS_LO16	.text
+    5488:	0040f809 	jalr	v0
+    548c:	248401a8 	addiu	a0,a0,424
+    5490:	14400024 	bnez	v0,5524 <tbq_filter_packet_by_nf_conn+0x378>
+    5494:	00000000 	nop
+    5498:	3c020000 	lui	v0,0x0	5498: R_MIPS_HI16	tbq
+    549c:	24420000 	addiu	v0,v0,0	549c: R_MIPS_LO16	tbq
+    54a0:	8c430008 	lw	v1,8(v0)
+    54a4:	8c440e2c 	lw	a0,3628(v0)
+    54a8:	0083182b 	sltu	v1,a0,v1
+    54ac:	14600002 	bnez	v1,54b8 <tbq_filter_packet_by_nf_conn+0x30c>
+    54b0:	24020003 	li	v0,3
+    54b4:	00001021 	move	v0,zero
+    54b8:	8fbf0034 	lw	ra,52(sp)
+    54bc:	8fb60030 	lw	s6,48(sp)
+    54c0:	8fb5002c 	lw	s5,44(sp)
+    54c4:	8fb40028 	lw	s4,40(sp)
+    54c8:	8fb30024 	lw	s3,36(sp)
+    54cc:	8fb20020 	lw	s2,32(sp)
+    54d0:	8fb1001c 	lw	s1,28(sp)
+    54d4:	8fb00018 	lw	s0,24(sp)
+    54d8:	03e00008 	jr	ra
+    54dc:	27bd0038 	addiu	sp,sp,56
+    54e0:	3c020000 	lui	v0,0x0	54e0: R_MIPS_HI16	tbq_online_ip_track_alloc
+    54e4:	24420000 	addiu	v0,v0,0	54e4: R_MIPS_LO16	tbq_online_ip_track_alloc
+    54e8:	0040f809 	jalr	v0
+    54ec:	02002021 	move	a0,s0
+    54f0:	1440ff45 	bnez	v0,5208 <tbq_filter_packet_by_nf_conn+0x5c>
+    54f4:	00409821 	move	s3,v0
+    54f8:	24020001 	li	v0,1
+    54fc:	8fbf0034 	lw	ra,52(sp)
+    5500:	8fb60030 	lw	s6,48(sp)
+    5504:	8fb5002c 	lw	s5,44(sp)
+    5508:	8fb40028 	lw	s4,40(sp)
+    550c:	8fb30024 	lw	s3,36(sp)
+    5510:	8fb20020 	lw	s2,32(sp)
+    5514:	8fb1001c 	lw	s1,28(sp)
+    5518:	8fb00018 	lw	s0,24(sp)
+    551c:	03e00008 	jr	ra
+    5520:	27bd0038 	addiu	sp,sp,56
+    5524:	8e0501c8 	lw	a1,456(s0)
+    5528:	3c020000 	lui	v0,0x0	5528: R_MIPS_HI16	tbq_packet_ctrl_consume
+    552c:	24420000 	addiu	v0,v0,0	552c: R_MIPS_LO16	tbq_packet_ctrl_consume
+    5530:	0040f809 	jalr	v0
+    5534:	264400d8 	addiu	a0,s2,216
+    5538:	1440ffd7 	bnez	v0,5498 <tbq_filter_packet_by_nf_conn+0x2ec>
+    553c:	00000000 	nop
+    5540:	0800153f 	j	54fc <tbq_filter_packet_by_nf_conn+0x350>	5540: R_MIPS_26	.text
+    5544:	24020001 	li	v0,1
+    5548:	3c160000 	lui	s6,0x0	5548: R_MIPS_HI16	tbq
+    554c:	ae0001f4 	sw	zero,500(s0)
+    5550:	ae0001f0 	sw	zero,496(s0)
+    5554:	ae000200 	sw	zero,512(s0)
+    5558:	ae0001fc 	sw	zero,508(s0)
+    555c:	ae000214 	sw	zero,532(s0)
+    5560:	ae000210 	sw	zero,528(s0)
+    5564:	26c30000 	addiu	v1,s6,0	5564: R_MIPS_LO16	tbq
+    5568:	8c620020 	lw	v0,32(v1)
+    556c:	ac750020 	sw	s5,32(v1)
+    5570:	3c030000 	lui	v1,0x0	5570: R_MIPS_HI16	tbq
+    5574:	2463001c 	addiu	v1,v1,28	5574: R_MIPS_LO16	tbq
+    5578:	ae03010c 	sw	v1,268(s0)
+    557c:	ae020110 	sw	v0,272(s0)
+    5580:	ac550000 	sw	s5,0(v0)
+    5584:	a6000114 	sh	zero,276(s0)
+    5588:	a6000116 	sh	zero,278(s0)
+    558c:	ae000118 	sw	zero,280(s0)
+    5590:	ae00011c 	sw	zero,284(s0)
+    5594:	12a00008 	beqz	s5,55b8 <tbq_filter_packet_by_nf_conn+0x40c>
+    5598:	ae000120 	sw	zero,288(s0)
+    559c:	00001021 	move	v0,zero
+    55a0:	2405012c 	li	a1,300
+    55a4:	24040080 	li	a0,128
+    55a8:	02021821 	addu	v1,s0,v0
+    55ac:	24420004 	addiu	v0,v0,4
+    55b0:	1444fffd 	bne	v0,a0,55a8 <tbq_filter_packet_by_nf_conn+0x3fc>
+    55b4:	ac650128 	sw	a1,296(v1)
+    55b8:	260301cc 	addiu	v1,s0,460
+    55bc:	260201e4 	addiu	v0,s0,484
+    55c0:	260501a8 	addiu	a1,s0,424
+    55c4:	260401c0 	addiu	a0,s0,448
+    55c8:	ae0201e8 	sw	v0,488(s0)
+    55cc:	ae0201e4 	sw	v0,484(s0)
+    55d0:	ae0501ac 	sw	a1,428(s0)
+    55d4:	3c020000 	lui	v0,0x0	55d4: R_MIPS_HI16	tbq_weight_table
+    55d8:	ae0401c4 	sw	a0,452(s0)
+    55dc:	ae0301d0 	sw	v1,464(s0)
+    55e0:	ae0501a8 	sw	a1,424(s0)
+    55e4:	ae0001b0 	sw	zero,432(s0)
+    55e8:	ae0001b4 	sw	zero,436(s0)
+    55ec:	ae0001b8 	sw	zero,440(s0)
+    55f0:	ae0401c0 	sw	a0,448(s0)
+    55f4:	ae1501c8 	sw	s5,456(s0)
+    55f8:	ae0301cc 	sw	v1,460(s0)
+    55fc:	ae0001d4 	sw	zero,468(s0)
+    5600:	ae0001d8 	sw	zero,472(s0)
+    5604:	ae0001dc 	sw	zero,476(s0)
+    5608:	ae1501ec 	sw	s5,492(s0)
+    560c:	8c430000 	lw	v1,0(v0)	560c: R_MIPS_LO16	tbq_weight_table
+    5610:	2402012c 	li	v0,300
+    5614:	1062000b 	beq	v1,v0,5644 <tbq_filter_packet_by_nf_conn+0x498>
+    5618:	3c030000 	lui	v1,0x0	5618: R_MIPS_HI16	tbq_weight_table
+    561c:	24630004 	addiu	v1,v1,4	561c: R_MIPS_LO16	tbq_weight_table
+    5620:	24020001 	li	v0,1
+    5624:	2405012c 	li	a1,300
+    5628:	24060009 	li	a2,9
+    562c:	8c640000 	lw	a0,0(v1)
+    5630:	10850005 	beq	a0,a1,5648 <tbq_filter_packet_by_nf_conn+0x49c>
+    5634:	24630004 	addiu	v1,v1,4
+    5638:	24420001 	addiu	v0,v0,1
+    563c:	1446fffb 	bne	v0,a2,562c <tbq_filter_packet_by_nf_conn+0x480>
+    5640:	00000000 	nop
+    5644:	00001021 	move	v0,zero
+    5648:	3c030000 	lui	v1,0x0	5648: R_MIPS_HI16	tbq_prio_count
+    564c:	24630000 	addiu	v1,v1,0	564c: R_MIPS_LO16	tbq_prio_count
+    5650:	00021080 	sll	v0,v0,0x2
+    5654:	00431021 	addu	v0,v0,v1
+    5658:	8c430000 	lw	v1,0(v0)
+    565c:	240400ff 	li	a0,255
+    5660:	26060128 	addiu	a2,s0,296
+    5664:	24630001 	addiu	v1,v1,1
+    5668:	ac430000 	sw	v1,0(v0)
+    566c:	3c020000 	lui	v0,0x0	566c: R_MIPS_HI16	tbq_app_match
+    5670:	24420000 	addiu	v0,v0,0	5670: R_MIPS_LO16	tbq_app_match
+    5674:	0040f809 	jalr	v0
+    5678:	8e651138 	lw	a1,4408(s3)
+    567c:	ae020118 	sw	v0,280(s0)
+    5680:	8e641138 	lw	a0,4408(s3)
+    5684:	10800023 	beqz	a0,5714 <tbq_filter_packet_by_nf_conn+0x568>
+    5688:	00003821 	move	a3,zero
+    568c:	2405001f 	li	a1,31
+    5690:	00041823 	negu	v1,a0
+    5694:	00641824 	and	v1,v1,a0
+    5698:	70631820 	clz	v1,v1
+    569c:	00a31823 	subu	v1,a1,v1
+    56a0:	2405ffff 	li	a1,-1
+    56a4:	1065001b 	beq	v1,a1,5714 <tbq_filter_packet_by_nf_conn+0x568>
+    56a8:	8ec90000 	lw	t1,0(s6)	56a8: R_MIPS_LO16	tbq
+    56ac:	00003821 	move	a3,zero
+    56b0:	24080001 	li	t0,1
+    56b4:	240b001f 	li	t3,31
+    56b8:	240affff 	li	t2,-1
+    56bc:	00033100 	sll	a2,v1,0x4
+    56c0:	00032880 	sll	a1,v1,0x2
+    56c4:	00c52823 	subu	a1,a2,a1
+    56c8:	00a32821 	addu	a1,a1,v1
+    56cc:	00052880 	sll	a1,a1,0x2
+    56d0:	01252821 	addu	a1,t1,a1
+    56d4:	8ca60018 	lw	a2,24(a1)
+    56d8:	14c00002 	bnez	a2,56e4 <tbq_filter_packet_by_nf_conn+0x538>
+    56dc:	00682804 	sllv	a1,t0,v1
+    56e0:	00e53825 	or	a3,a3,a1
+    56e4:	00052827 	nor	a1,zero,a1
+    56e8:	00852024 	and	a0,a0,a1
+    56ec:	00041823 	negu	v1,a0
+    56f0:	10800005 	beqz	a0,5708 <tbq_filter_packet_by_nf_conn+0x55c>
+    56f4:	00641824 	and	v1,v1,a0
+    56f8:	70631820 	clz	v1,v1
+    56fc:	01631823 	subu	v1,t3,v1
+    5700:	146affef 	bne	v1,t2,56c0 <tbq_filter_packet_by_nf_conn+0x514>
+    5704:	00033100 	sll	a2,v1,0x4
+    5708:	00e2a024 	and	s4,a3,v0
+    570c:	08001488 	j	5220 <tbq_filter_packet_by_nf_conn+0x74>	570c: R_MIPS_26	.text
+    5710:	ae07011c 	sw	a3,284(s0)
+    5714:	0000a021 	move	s4,zero
+    5718:	08001488 	j	5220 <tbq_filter_packet_by_nf_conn+0x74>	5718: R_MIPS_26	.text
+    571c:	ae07011c 	sw	a3,284(s0)
+
+
+--- FUNCTION/OWNER (5775, 22412, 'cleanup_module') triggered by: 57c8:	3c020000 	lui	v0,0x0	57c8: R_MIPS_HI16	nos_track_event_unregister ---
+    5788:	27bd0018 	addiu	sp,sp,24
+
+0000578c <cleanup_module>:
+    578c:	27bdffe8 	addiu	sp,sp,-24
+    5790:	afbf0014 	sw	ra,20(sp)
+    5794:	3c020000 	lui	v0,0x0	5794: R_MIPS_HI16	tbq_sysfs_unregister
+    5798:	24420000 	addiu	v0,v0,0	5798: R_MIPS_LO16	tbq_sysfs_unregister
+    579c:	0040f809 	jalr	v0
+    57a0:	00000000 	nop
+    57a4:	3c020000 	lui	v0,0x0	57a4: R_MIPS_HI16	tbq_device_unregister
+    57a8:	24420000 	addiu	v0,v0,0	57a8: R_MIPS_LO16	tbq_device_unregister
+    57ac:	0040f809 	jalr	v0
+    57b0:	00000000 	nop
+    57b4:	3c020000 	lui	v0,0x0	57b4: R_MIPS_HI16	nos_tbq_enqueue
+    57b8:	ac400000 	sw	zero,0(v0)	57b8: R_MIPS_LO16	nos_tbq_enqueue
+    57bc:	3c020000 	lui	v0,0x0	57bc: R_MIPS_HI16	tbq_p2p_limit
+    57c0:	ac400000 	sw	zero,0(v0)	57c0: R_MIPS_LO16	tbq_p2p_limit
+    57c4:	3c040000 	lui	a0,0x0	57c4: R_MIPS_HI16	.data
+    57c8:	3c020000 	lui	v0,0x0	57c8: R_MIPS_HI16	nos_track_event_unregister
+    57cc:	24420000 	addiu	v0,v0,0	57cc: R_MIPS_LO16	nos_track_event_unregister
+    57d0:	0040f809 	jalr	v0
+    57d4:	24840408 	addiu	a0,a0,1032	57d4: R_MIPS_LO16	.data
+    57d8:	3c020000 	lui	v0,0x0	57d8: R_MIPS_HI16	tbq_global_cleanup
+    57dc:	24420000 	addiu	v0,v0,0	57dc: R_MIPS_LO16	tbq_global_cleanup
+    57e0:	0040f809 	jalr	v0
+    57e4:	00000000 	nop
+    57e8:	3c020000 	lui	v0,0x0	57e8: R_MIPS_HI16	nos_debug_cleanup_proc
+    57ec:	24420000 	addiu	v0,v0,0	57ec: R_MIPS_LO16	nos_debug_cleanup_proc
+    57f0:	0040f809 	jalr	v0
+    57f4:	00000000 	nop
+    57f8:	3c040000 	lui	a0,0x0	57f8: R_MIPS_HI16	.data
+    57fc:	3c050000 	lui	a1,0x0	57fc: R_MIPS_HI16	.rodata
+    5800:	3c020000 	lui	v0,0x0	5800: R_MIPS_HI16	___ratelimit
+    5804:	24840418 	addiu	a0,a0,1048	5804: R_MIPS_LO16	.data
+    5808:	24420000 	addiu	v0,v0,0	5808: R_MIPS_LO16	___ratelimit
+    580c:	0040f809 	jalr	v0
+    5810:	24a50000 	addiu	a1,a1,0	5810: R_MIPS_LO16	.rodata
+    5814:	14400003 	bnez	v0,5824 <cleanup_module+0x98>
+    5818:	8fbf0014 	lw	ra,20(sp)
+    581c:	03e00008 	jr	ra
+    5820:	27bd0018 	addiu	sp,sp,24
+    5824:	3c040000 	lui	a0,0x0	5824: R_MIPS_HI16	$LC50
+    5828:	3c190000 	lui	t9,0x0	5828: R_MIPS_HI16	printk
+    582c:	24840000 	addiu	a0,a0,0	582c: R_MIPS_LO16	$LC50
+    5830:	27390000 	addiu	t9,t9,0	5830: R_MIPS_LO16	printk
+    5834:	03200008 	jr	t9
+    5838:	27bd0018 	addiu	sp,sp,24
+
+
+--- FUNCTION/OWNER (5915, 22948, 'init_module') triggered by: 5b80:	3c020000 	lui	v0,0x0	5b80: R_MIPS_HI16	nos_track_event_register ---
+    5b10:	144000b0 	bnez	v0,5dd4 <init_module+0x430>
+    5b14:	3c040000 	lui	a0,0x0	5b14: R_MIPS_HI16	$LC65
+    5b18:	3c040000 	lui	a0,0x0	5b18: R_MIPS_HI16	.data
+    5b1c:	2484047c 	addiu	a0,a0,1148	5b1c: R_MIPS_LO16	.data
+    5b20:	0200f809 	jalr	s0
+    5b24:	26250010 	addiu	a1,s1,16	5b24: R_MIPS_LO16	.rodata
+    5b28:	144000a3 	bnez	v0,5db8 <init_module+0x414>
+    5b2c:	3c040000 	lui	a0,0x0	5b2c: R_MIPS_HI16	$LC66
+    5b30:	3c040000 	lui	a0,0x0	5b30: R_MIPS_HI16	.data
+    5b34:	24840468 	addiu	a0,a0,1128	5b34: R_MIPS_LO16	.data
+    5b38:	0200f809 	jalr	s0
+    5b3c:	26250010 	addiu	a1,s1,16	5b3c: R_MIPS_LO16	.rodata
+    5b40:	1440006c 	bnez	v0,5cf4 <init_module+0x350>
+    5b44:	3c040000 	lui	a0,0x0	5b44: R_MIPS_HI16	$LC67
+    5b48:	3c040000 	lui	a0,0x0	5b48: R_MIPS_HI16	.data
+    5b4c:	24840454 	addiu	a0,a0,1108	5b4c: R_MIPS_LO16	.data
+    5b50:	0200f809 	jalr	s0
+    5b54:	26250010 	addiu	a1,s1,16	5b54: R_MIPS_LO16	.rodata
+    5b58:	1440005f 	bnez	v0,5cd8 <init_module+0x334>
+    5b5c:	3c040000 	lui	a0,0x0	5b5c: R_MIPS_HI16	$LC68
+    5b60:	3c020000 	lui	v0,0x0	5b60: R_MIPS_HI16	tbq_global_init
+    5b64:	24420000 	addiu	v0,v0,0	5b64: R_MIPS_LO16	tbq_global_init
+    5b68:	0040f809 	jalr	v0
+    5b6c:	3c130000 	lui	s3,0x0	5b6c: R_MIPS_HI16	.data
+    5b70:	3c020000 	lui	v0,0x0	5b70: R_MIPS_HI16	init_user_tbq
+    5b74:	24420000 	addiu	v0,v0,0	5b74: R_MIPS_LO16	init_user_tbq
+    5b78:	0040f809 	jalr	v0
+    5b7c:	00000000 	nop
+    5b80:	3c020000 	lui	v0,0x0	5b80: R_MIPS_HI16	nos_track_event_register
+    5b84:	24420000 	addiu	v0,v0,0	5b84: R_MIPS_LO16	nos_track_event_register
+    5b88:	0040f809 	jalr	v0
+    5b8c:	26640408 	addiu	a0,s3,1032	5b8c: R_MIPS_LO16	.data
+    5b90:	3c020000 	lui	v0,0x0	5b90: R_MIPS_HI16	tbq_device_register
+    5b94:	24420000 	addiu	v0,v0,0	5b94: R_MIPS_LO16	tbq_device_register
+    5b98:	0040f809 	jalr	v0
+    5b9c:	00000000 	nop
+    5ba0:	10400017 	beqz	v0,5c00 <init_module+0x25c>
+    5ba4:	00409021 	move	s2,v0
+    5ba8:	3c040000 	lui	a0,0x0	5ba8: R_MIPS_HI16	.data
+    5bac:	24840440 	addiu	a0,a0,1088	5bac: R_MIPS_LO16	.data
+    5bb0:	0200f809 	jalr	s0
+    5bb4:	26250010 	addiu	a1,s1,16	5bb4: R_MIPS_LO16	.rodata
+    5bb8:	14400039 	bnez	v0,5ca0 <init_module+0x2fc>
+    5bbc:	3c040000 	lui	a0,0x0	5bbc: R_MIPS_HI16	$LC69
+    5bc0:	3c020000 	lui	v0,0x0	5bc0: R_MIPS_HI16	nos_track_event_unregister
+    5bc4:	24420000 	addiu	v0,v0,0	5bc4: R_MIPS_LO16	nos_track_event_unregister
+    5bc8:	0040f809 	jalr	v0
+    5bcc:	26640408 	addiu	a0,s3,1032	5bcc: R_MIPS_LO16	.data
+    5bd0:	3c020000 	lui	v0,0x0	5bd0: R_MIPS_HI16	tbq_global_cleanup
+    5bd4:	24420000 	addiu	v0,v0,0	5bd4: R_MIPS_LO16	tbq_global_cleanup
+    5bd8:	0040f809 	jalr	v0
+    5bdc:	00000000 	nop
+    5be0:	02401021 	move	v0,s2
+    5be4:	8fbf0024 	lw	ra,36(sp)
+    5be8:	8fb30020 	lw	s3,32(sp)
+    5bec:	8fb2001c 	lw	s2,28(sp)
+    5bf0:	8fb10018 	lw	s1,24(sp)
+    5bf4:	8fb00014 	lw	s0,20(sp)
+    5bf8:	03e00008 	jr	ra
+    5bfc:	27bd0028 	addiu	sp,sp,40
+    5c00:	3c020000 	lui	v0,0x0	5c00: R_MIPS_HI16	tbq_sysfs_register
+    5c04:	24420000 	addiu	v0,v0,0	5c04: R_MIPS_LO16	tbq_sysfs_register
+    5c08:	0040f809 	jalr	v0
+    5c0c:	00000000 	nop
+    5c10:	10400007 	beqz	v0,5c30 <init_module+0x28c>
+    5c14:	00409021 	move	s2,v0
+    5c18:	3c020000 	lui	v0,0x0	5c18: R_MIPS_HI16	tbq_device_unregister
+    5c1c:	24420000 	addiu	v0,v0,0	5c1c: R_MIPS_LO16	tbq_device_unregister
+    5c20:	0040f809 	jalr	v0
+    5c24:	00000000 	nop
+    5c28:	080016f1 	j	5bc4 <init_module+0x220>	5c28: R_MIPS_26	.text
+    5c2c:	3c020000 	lui	v0,0x0	5c2c: R_MIPS_HI16	nos_track_event_unregister
+    5c30:	3c030000 	lui	v1,0x0	5c30: R_MIPS_HI16	.text
+    5c34:	24635e9c 	addiu	v1,v1,24220	5c34: R_MIPS_LO16	.text
+    5c38:	3c020000 	lui	v0,0x0	5c38: R_MIPS_HI16	nos_tbq_enqueue
+    5c3c:	ac430000 	sw	v1,0(v0)	5c3c: R_MIPS_LO16	nos_tbq_enqueue
+    5c40:	3c020000 	lui	v0,0x0	5c40: R_MIPS_HI16	nos_debug_init_proc
+    5c44:	24420000 	addiu	v0,v0,0	5c44: R_MIPS_LO16	nos_debug_init_proc
+    5c48:	0040f809 	jalr	v0
+    5c4c:	00000000 	nop
+    5c50:	3c020000 	lui	v0,0x0	5c50: R_MIPS_HI16	tbq_init_p2p_port
+    5c54:	24420000 	addiu	v0,v0,0	5c54: R_MIPS_LO16	tbq_init_p2p_port
+    5c58:	0040f809 	jalr	v0
+    5c5c:	00000000 	nop
+    5c60:	3c040000 	lui	a0,0x0	5c60: R_MIPS_HI16	.data
+    5c64:	3c030000 	lui	v1,0x0	5c64: R_MIPS_HI16	__tbq_p2p_limit
+    5c68:	24630000 	addiu	v1,v1,0	5c68: R_MIPS_LO16	__tbq_p2p_limit
+    5c6c:	3c020000 	lui	v0,0x0	5c6c: R_MIPS_HI16	tbq_p2p_limit
+    5c70:	2484042c 	addiu	a0,a0,1068	5c70: R_MIPS_LO16	.data
+    5c74:	26250010 	addiu	a1,s1,16	5c74: R_MIPS_LO16	.rodata
+    5c78:	0200f809 	jalr	s0
+    5c7c:	ac430000 	sw	v1,0(v0)	5c7c: R_MIPS_LO16	tbq_p2p_limit
+    5c80:	1040ffd7 	beqz	v0,5be0 <init_module+0x23c>
+    5c84:	3c040000 	lui	a0,0x0	5c84: R_MIPS_HI16	$LC70
+    5c88:	3c020000 	lui	v0,0x0	5c88: R_MIPS_HI16	printk
+    5c8c:	24420000 	addiu	v0,v0,0	5c8c: R_MIPS_LO16	printk
+    5c90:	0040f809 	jalr	v0
+    5c94:	24840000 	addiu	a0,a0,0	5c94: R_MIPS_LO16	$LC70
+    5c98:	080016f9 	j	5be4 <init_module+0x240>	5c98: R_MIPS_26	.text
+    5c9c:	02401021 	move	v0,s2
+    5ca0:	3c020000 	lui	v0,0x0	5ca0: R_MIPS_HI16	printk
+    5ca4:	24840000 	addiu	a0,a0,0	5ca4: R_MIPS_LO16	$LC69
+    5ca8:	24420000 	addiu	v0,v0,0	5ca8: R_MIPS_LO16	printk
+    5cac:	0040f809 	jalr	v0
+    5cb0:	02402821 	move	a1,s2
+    5cb4:	080016f1 	j	5bc4 <init_module+0x220>	5cb4: R_MIPS_26	.text
+    5cb8:	3c020000 	lui	v0,0x0	5cb8: R_MIPS_HI16	nos_track_event_unregister
+    5cbc:	3c020000 	lui	v0,0x0	5cbc: R_MIPS_HI16	printk
+    5cc0:	24840000 	addiu	a0,a0,0	5cc0: R_MIPS_LO16	$LC52
+    5cc4:	24420000 	addiu	v0,v0,0	5cc4: R_MIPS_LO16	printk
+    5cc8:	0040f809 	jalr	v0
+    5ccc:	24050028 	li	a1,40
+    5cd0:	08001679 	j	59e4 <init_module+0x40>	5cd0: R_MIPS_26	.text
+    5cd4:	3c040000 	lui	a0,0x0	5cd4: R_MIPS_HI16	.data
+    5cd8:	3c020000 	lui	v0,0x0	5cd8: R_MIPS_HI16	printk
+    5cdc:	24840000 	addiu	a0,a0,0	5cdc: R_MIPS_LO16	$LC68
+    5ce0:	24420000 	addiu	v0,v0,0	5ce0: R_MIPS_LO16	printk
+    5ce4:	0040f809 	jalr	v0
+    5ce8:	24050064 	li	a1,100
+    5cec:	080016d9 	j	5b64 <init_module+0x1c0>	5cec: R_MIPS_26	.text
+    5cf0:	3c020000 	lui	v0,0x0	5cf0: R_MIPS_HI16	tbq_global_init
+    5cf4:	3c020000 	lui	v0,0x0	5cf4: R_MIPS_HI16	printk
+    5cf8:	24840000 	addiu	a0,a0,0	5cf8: R_MIPS_LO16	$LC67
+    5cfc:	24420000 	addiu	v0,v0,0	5cfc: R_MIPS_LO16	printk
+    5d00:	0040f809 	jalr	v0
+    5d04:	2405003c 	li	a1,60
+    5d08:	080016d3 	j	5b4c <init_module+0x1a8>	5d08: R_MIPS_26	.text
+    5d0c:	3c040000 	lui	a0,0x0	5d0c: R_MIPS_HI16	.data
+    5d10:	3c020000 	lui	v0,0x0	5d10: R_MIPS_HI16	printk
+    5d14:	24840000 	addiu	a0,a0,0	5d14: R_MIPS_LO16	$LC54
+    5d18:	24420000 	addiu	v0,v0,0	5d18: R_MIPS_LO16	printk
+    5d1c:	0040f809 	jalr	v0
+    5d20:	24050890 	li	a1,2192
+    5d24:	08001685 	j	5a14 <init_module+0x70>	5d24: R_MIPS_26	.text
+    5d28:	3c040000 	lui	a0,0x0	5d28: R_MIPS_HI16	.data
+    5d2c:	3c020000 	lui	v0,0x0	5d2c: R_MIPS_HI16	printk
+    5d30:	24840000 	addiu	a0,a0,0	5d30: R_MIPS_LO16	$LC53
+    5d34:	24420000 	addiu	v0,v0,0	5d34: R_MIPS_LO16	printk
+    5d38:	0040f809 	jalr	v0
+    5d3c:	24050044 	li	a1,68
+    5d40:	0800167f 	j	59fc <init_module+0x58>	5d40: R_MIPS_26	.text
+    5d44:	3c040000 	lui	a0,0x0	5d44: R_MIPS_HI16	.data
+    5d48:	3c020000 	lui	v0,0x0	5d48: R_MIPS_HI16	printk
+    5d4c:	24840000 	addiu	a0,a0,0	5d4c: R_MIPS_LO16	$LC58
+    5d50:	24420000 	addiu	v0,v0,0	5d50: R_MIPS_LO16	printk
+    5d54:	0040f809 	jalr	v0
+    5d58:	2405113c 	li	a1,4412
+    5d5c:	0800169d 	j	5a74 <init_module+0xd0>	5d5c: R_MIPS_26	.text
+    5d60:	3c040000 	lui	a0,0x0	5d60: R_MIPS_HI16	.data
+    5d64:	3c020000 	lui	v0,0x0	5d64: R_MIPS_HI16	printk
+    5d68:	24840000 	addiu	a0,a0,0	5d68: R_MIPS_LO16	$LC57
+    5d6c:	24420000 	addiu	v0,v0,0	5d6c: R_MIPS_LO16	printk
+    5d70:	0040f809 	jalr	v0
+    5d74:	240500e4 	li	a1,228
+    5d78:	08001697 	j	5a5c <init_module+0xb8>	5d78: R_MIPS_26	.text
+    5d7c:	3c040000 	lui	a0,0x0	5d7c: R_MIPS_HI16	.data
+    5d80:	3c020000 	lui	v0,0x0	5d80: R_MIPS_HI16	printk
+    5d84:	24840000 	addiu	a0,a0,0	5d84: R_MIPS_LO16	$LC56
+    5d88:	24420000 	addiu	v0,v0,0	5d88: R_MIPS_LO16	printk
+    5d8c:	0040f809 	jalr	v0
+    5d90:	24050704 	li	a1,1796
+...
+    5ef4:	8c4301fc 	lw	v1,508(v0)
+    5ef8:	8c440200 	lw	a0,512(v0)
+    5efc:	00a31821 	addu	v1,a1,v1
+    5f00:	24840001 	addiu	a0,a0,1
+    5f04:	ac4301fc 	sw	v1,508(v0)
+    5f08:	ac440200 	sw	a0,512(v0)
+    5f0c:	824200b0 	lb	v0,176(s2)
+    5f10:	2403ffff 	li	v1,-1
+    5f14:	1043003d 	beq	v0,v1,600c <init_module+0x668>
+    5f18:	00000000 	nop
+    5f1c:	3c020000 	lui	v0,0x0	5f1c: R_MIPS_HI16	tbq_allow_privilege_flow
+    5f20:	02002021 	move	a0,s0
+    5f24:	24420000 	addiu	v0,v0,0	5f24: R_MIPS_LO16	tbq_allow_privilege_flow
+    5f28:	0040f809 	jalr	v0
+    5f2c:	02602821 	move	a1,s3
+    5f30:	10400047 	beqz	v0,6050 <init_module+0x6ac>
+    5f34:	00000000 	nop
+    5f38:	8e03006c 	lw	v1,108(s0)
+    5f3c:	10600023 	beqz	v1,5fcc <init_module+0x628>
+    5f40:	24020010 	li	v0,16
+    5f44:	8c62008c 	lw	v0,140(v1)
+    5f48:	1040001f 	beqz	v0,5fc8 <init_module+0x624>
+    5f4c:	00000000 	nop
+    5f50:	8e040078 	lw	a0,120(s0)
+    5f54:	30850002 	andi	a1,a0,0x2
+    5f58:	14a000a3 	bnez	a1,61e8 <init_module+0x844>
+    5f5c:	30840001 	andi	a0,a0,0x1
+    5f60:	10800019 	beqz	a0,5fc8 <init_module+0x624>
+    5f64:	3c040000 	lui	a0,0x0	5f64: R_MIPS_HI16	wan_rx_bytes
+    5f68:	8e050050 	lw	a1,80(s0)
+    5f6c:	8c460060 	lw	a2,96(v0)
+    5f70:	8c470064 	lw	a3,100(v0)
+    5f74:	00c52821 	addu	a1,a2,a1
+    5f78:	00a6302b 	sltu	a2,a1,a2
+    5f7c:	00c73021 	addu	a2,a2,a3
+    5f80:	ac460064 	sw	a2,100(v0)
+    5f84:	ac450060 	sw	a1,96(v0)
+    5f88:	8c62008c 	lw	v0,140(v1)
+    5f8c:	8c450078 	lw	a1,120(v0)
+    5f90:	8c46007c 	lw	a2,124(v0)
+    5f94:	24a30001 	addiu	v1,a1,1
+    5f98:	0065282b 	sltu	a1,v1,a1
+    5f9c:	00a62821 	addu	a1,a1,a2
+    5fa0:	ac45007c 	sw	a1,124(v0)
+    5fa4:	ac430078 	sw	v1,120(v0)
+    5fa8:	8e030050 	lw	v1,80(s0)
+    5fac:	8c820000 	lw	v0,0(a0)	5fac: R_MIPS_LO16	wan_rx_bytes
+    5fb0:	8c850004 	lw	a1,4(a0)	5fb0: R_MIPS_LO16	wan_rx_bytes
+    5fb4:	00621021 	addu	v0,v1,v0
+    5fb8:	0043182b 	sltu	v1,v0,v1
+    5fbc:	00651821 	addu	v1,v1,a1
+    5fc0:	ac830004 	sw	v1,4(a0)	5fc0: R_MIPS_LO16	wan_rx_bytes
+    5fc4:	ac820000 	sw	v0,0(a0)	5fc4: R_MIPS_LO16	wan_rx_bytes
+    5fc8:	24020010 	li	v0,16
+    5fcc:	a2020047 	sb	v0,71(s0)
+    5fd0:	24020001 	li	v0,1
+    5fd4:	8fbf002c 	lw	ra,44(sp)
+    5fd8:	8fb30028 	lw	s3,40(sp)
+    5fdc:	8fb20024 	lw	s2,36(sp)
+    5fe0:	8fb10020 	lw	s1,32(sp)
+    5fe4:	8fb0001c 	lw	s0,28(sp)
+    5fe8:	03e00008 	jr	ra
+    5fec:	27bd0030 	addiu	sp,sp,48
+    5ff0:	30420001 	andi	v0,v0,0x1
+    5ff4:	1440ffba 	bnez	v0,5ee0 <init_module+0x53c>
+    5ff8:	24130001 	li	s3,1
+    5ffc:	824200b0 	lb	v0,176(s2)
+    6000:	2403ffff 	li	v1,-1
+    6004:	1443ffc5 	bne	v0,v1,5f1c <init_module+0x578>
+    6008:	2413ffff 	li	s3,-1
+    600c:	1262ffc4 	beq	s3,v0,5f20 <init_module+0x57c>
+    6010:	3c020000 	lui	v0,0x0	6010: R_MIPS_HI16	tbq_allow_privilege_flow
+    6014:	8e030014 	lw	v1,20(s0)
+    6018:	10600005 	beqz	v1,6030 <init_module+0x68c>
+    601c:	2402ffff 	li	v0,-1
+    6020:	8e020078 	lw	v0,120(s0)
+    6024:	7c421080 	ext	v0,v0,0x2,0x3
+    6028:	2442ffff 	addiu	v0,v0,-1
+    602c:	7c021420 	seb	v0,v0
+    6030:	a24200b0 	sb	v0,176(s2)
+    6034:	3c020000 	lui	v0,0x0	6034: R_MIPS_HI16	tbq_allow_privilege_flow
+    6038:	02002021 	move	a0,s0
+    603c:	24420000 	addiu	v0,v0,0	603c: R_MIPS_LO16	tbq_allow_privilege_flow
+    6040:	0040f809 	jalr	v0
+    6044:	02602821 	move	a1,s3
+    6048:	1440ffbb 	bnez	v0,5f38 <init_module+0x594>
+    604c:	00000000 	nop
+    6050:	8e0200b8 	lw	v0,184(s0)
+    6054:	90430009 	lbu	v1,9(v0)
+    6058:	2c630012 	sltiu	v1,v1,18
+    605c:	1060ffda 	beqz	v1,5fc8 <init_module+0x624>
+    6060:	24110001 	li	s1,1
+    6064:	80430009 	lb	v1,9(v0)
+    6068:	3c020002 	lui	v0,0x2
+    606c:	00711804 	sllv	v1,s1,v1
+    6070:	34420042 	ori	v0,v0,0x42
+    6074:	00621024 	and	v0,v1,v0
+    6078:	1040ffd4 	beqz	v0,5fcc <init_module+0x628>
+    607c:	24020010 	li	v0,16
+    6080:	8e42008c 	lw	v0,140(s2)
+    6084:	1040ffd1 	beqz	v0,5fcc <init_module+0x628>
+    6088:	24020010 	li	v0,16
+    608c:	3c020000 	lui	v0,0x0	608c: R_MIPS_HI16	tbq
+    6090:	8c420e30 	lw	v0,3632(v0)	6090: R_MIPS_LO16	tbq
+    6094:	14400070 	bnez	v0,6258 <init_module+0x8b4>
+    6098:	2402ffff 	li	v0,-1
+    609c:	12620035 	beq	s3,v0,6174 <init_module+0x7d0>
+...
+    60ac:	0040f809 	jalr	v0
+    60b0:	00000000 	nop
+    60b4:	3c020000 	lui	v0,0x0	60b4: R_MIPS_HI16	tbq_filter_packet_by_nf_conn
+    60b8:	02402821 	move	a1,s2
+    60bc:	02603021 	move	a2,s3
+    60c0:	24420000 	addiu	v0,v0,0	60c0: R_MIPS_LO16	tbq_filter_packet_by_nf_conn
+    60c4:	0040f809 	jalr	v0
+    60c8:	02002021 	move	a0,s0
+    60cc:	3c030000 	lui	v1,0x0	60cc: R_MIPS_HI16	local_bh_enable
+    60d0:	24630000 	addiu	v1,v1,0	60d0: R_MIPS_LO16	local_bh_enable
+    60d4:	0060f809 	jalr	v1
+    60d8:	afa20010 	sw	v0,16(sp)
+    60dc:	8fa20010 	lw	v0,16(sp)
+    60e0:	14510024 	bne	v0,s1,6174 <init_module+0x7d0>
+    60e4:	00000000 	nop
+    60e8:	8e04006c 	lw	a0,108(s0)
+    60ec:	10800021 	beqz	a0,6174 <init_module+0x7d0>
+    60f0:	00000000 	nop
+    60f4:	8c83008c 	lw	v1,140(a0)
+    60f8:	1060001e 	beqz	v1,6174 <init_module+0x7d0>
+    60fc:	00000000 	nop
+    6100:	8e050078 	lw	a1,120(s0)
+    6104:	30a60002 	andi	a2,a1,0x2
+    6108:	10c000a7 	beqz	a2,63a8 <init_module+0xa04>
+    610c:	30a50001 	andi	a1,a1,0x1
+    6110:	8e060050 	lw	a2,80(s0)
+    6114:	8c670050 	lw	a3,80(v1)
+    6118:	8c680054 	lw	t0,84(v1)
+    611c:	3c050000 	lui	a1,0x0	611c: R_MIPS_HI16	wan_tx_bytes
+    6120:	00e63021 	addu	a2,a3,a2
+    6124:	00c7382b 	sltu	a3,a2,a3
+    6128:	00e83821 	addu	a3,a3,t0
+    612c:	ac670054 	sw	a3,84(v1)
+    6130:	ac660050 	sw	a2,80(v1)
+    6134:	8c83008c 	lw	v1,140(a0)
+    6138:	8c660070 	lw	a2,112(v1)
+    613c:	8c670074 	lw	a3,116(v1)
+    6140:	24c40001 	addiu	a0,a2,1
+    6144:	0086302b 	sltu	a2,a0,a2
+    6148:	00c73021 	addu	a2,a2,a3
+    614c:	ac660074 	sw	a2,116(v1)
+    6150:	ac640070 	sw	a0,112(v1)
+    6154:	8e040050 	lw	a0,80(s0)
+    6158:	8ca30000 	lw	v1,0(a1)	6158: R_MIPS_LO16	wan_tx_bytes
+    615c:	8ca60004 	lw	a2,4(a1)	615c: R_MIPS_LO16	wan_tx_bytes
+    6160:	00831821 	addu	v1,a0,v1
+    6164:	0064202b 	sltu	a0,v1,a0
+    6168:	00862021 	addu	a0,a0,a2
+    616c:	aca40004 	sw	a0,4(a1)	616c: R_MIPS_LO16	wan_tx_bytes
+    6170:	aca30000 	sw	v1,0(a1)	6170: R_MIPS_LO16	wan_tx_bytes
+    6174:	10400088 	beqz	v0,6398 <init_module+0x9f4>
+    6178:	24030003 	li	v1,3
+    617c:	1443ff92 	bne	v0,v1,5fc8 <init_module+0x624>
+    6180:	3c020000 	lui	v0,0x0	6180: R_MIPS_HI16	kmalloc_caches
+    6184:	8c44001c 	lw	a0,28(v0)	6184: R_MIPS_LO16	kmalloc_caches
+    6188:	3c020000 	lui	v0,0x0	6188: R_MIPS_HI16	kmem_cache_alloc
+    618c:	24420000 	addiu	v0,v0,0	618c: R_MIPS_LO16	kmem_cache_alloc
+    6190:	0040f809 	jalr	v0
+    6194:	24050020 	li	a1,32
+    6198:	10400070 	beqz	v0,635c <init_module+0x9b8>
+    619c:	00408821 	move	s1,v0
+    61a0:	ac500008 	sw	s0,8(v0)
+    61a4:	00402021 	move	a0,v0
+    61a8:	3c020000 	lui	v0,0x0	61a8: R_MIPS_HI16	tbq_enqueue
+    61ac:	24420000 	addiu	v0,v0,0	61ac: R_MIPS_LO16	tbq_enqueue
+    61b0:	0040f809 	jalr	v0
+    61b4:	2405ffff 	li	a1,-1
+    61b8:	04400096 	bltz	v0,6414 <init_module+0xa70>
+    61bc:	3c020000 	lui	v0,0x0	61bc: R_MIPS_HI16	kfree
+    61c0:	24020010 	li	v0,16
+    61c4:	a2020047 	sb	v0,71(s0)
+    61c8:	8fbf002c 	lw	ra,44(sp)
+    61cc:	8fb30028 	lw	s3,40(sp)
+    61d0:	8fb20024 	lw	s2,36(sp)
+    61d4:	8fb10020 	lw	s1,32(sp)
+    61d8:	8fb0001c 	lw	s0,28(sp)
+    61dc:	00001021 	move	v0,zero
+    61e0:	03e00008 	jr	ra
+    61e4:	27bd0030 	addiu	sp,sp,48
+    61e8:	8e050050 	lw	a1,80(s0)
+    61ec:	8c460050 	lw	a2,80(v0)
+    61f0:	8c470054 	lw	a3,84(v0)
+    61f4:	3c040000 	lui	a0,0x0	61f4: R_MIPS_HI16	wan_tx_bytes
+    61f8:	00c52821 	addu	a1,a2,a1
+    61fc:	00a6302b 	sltu	a2,a1,a2
+    6200:	00c73021 	addu	a2,a2,a3
+    6204:	ac460054 	sw	a2,84(v0)
+    6208:	ac450050 	sw	a1,80(v0)
+    620c:	8c62008c 	lw	v0,140(v1)
+    6210:	8c450070 	lw	a1,112(v0)
+    6214:	8c460074 	lw	a2,116(v0)
+    6218:	24a30001 	addiu	v1,a1,1
+    621c:	0065282b 	sltu	a1,v1,a1
+    6220:	00a62821 	addu	a1,a1,a2
+    6224:	ac450074 	sw	a1,116(v0)
+    6228:	ac430070 	sw	v1,112(v0)
+    622c:	8e030050 	lw	v1,80(s0)
+    6230:	8c820000 	lw	v0,0(a0)	6230: R_MIPS_LO16	wan_tx_bytes
+    6234:	8c850004 	lw	a1,4(a0)	6234: R_MIPS_LO16	wan_tx_bytes
+    6238:	00621021 	addu	v0,v1,v0
+    623c:	0043182b 	sltu	v1,v0,v1
+    6240:	00651821 	addu	v1,v1,a1
+    6244:	ac830004 	sw	v1,4(a0)	6244: R_MIPS_LO16	wan_tx_bytes
+    6248:	080017f2 	j	5fc8 <init_module+0x624>	6248: R_MIPS_26	.text
+    624c:	ac820000 	sw	v0,0(a0)	624c: R_MIPS_LO16	wan_tx_bytes
+    6250:	0800185d 	j	6174 <init_module+0x7d0>	6250: R_MIPS_26	.text
+    6254:	24020001 	li	v0,1
+    6258:	8e03006c 	lw	v1,108(s0)
+    625c:	1060ffc5 	beqz	v1,6174 <init_module+0x7d0>
+    6260:	24020001 	li	v0,1
+    6264:	8c62008c 	lw	v0,140(v1)
+    6268:	1040fff9 	beqz	v0,6250 <init_module+0x8ac>
+    626c:	00000000 	nop
+    6270:	8e040078 	lw	a0,120(s0)
+    6274:	30850002 	andi	a1,a0,0x2
+    6278:	14a0001d 	bnez	a1,62f0 <init_module+0x94c>
+    627c:	30840001 	andi	a0,a0,0x1
+    6280:	1080fff3 	beqz	a0,6250 <init_module+0x8ac>
+    6284:	3c040000 	lui	a0,0x0	6284: R_MIPS_HI16	wan_rx_bytes
+    6288:	8c460060 	lw	a2,96(v0)
+    628c:	8e050050 	lw	a1,80(s0)
+    6290:	8c470064 	lw	a3,100(v0)
+    6294:	00c52821 	addu	a1,a2,a1
+    6298:	00a6302b 	sltu	a2,a1,a2
+    629c:	00c73021 	addu	a2,a2,a3
+    62a0:	ac450060 	sw	a1,96(v0)
+    62a4:	ac460064 	sw	a2,100(v0)
+    62a8:	8c63008c 	lw	v1,140(v1)
+    62ac:	24020001 	li	v0,1
+    62b0:	8c660078 	lw	a2,120(v1)
+    62b4:	8c67007c 	lw	a3,124(v1)
+    62b8:	24c50001 	addiu	a1,a2,1
+    62bc:	00a6302b 	sltu	a2,a1,a2
+    62c0:	00c73021 	addu	a2,a2,a3
+    62c4:	ac66007c 	sw	a2,124(v1)
+    62c8:	ac650078 	sw	a1,120(v1)
+    62cc:	8e050050 	lw	a1,80(s0)
+    62d0:	8c830000 	lw	v1,0(a0)	62d0: R_MIPS_LO16	wan_rx_bytes
+    62d4:	8c860004 	lw	a2,4(a0)	62d4: R_MIPS_LO16	wan_rx_bytes
+    62d8:	00a31821 	addu	v1,a1,v1
+    62dc:	0065282b 	sltu	a1,v1,a1
+    62e0:	00a62821 	addu	a1,a1,a2
+    62e4:	ac850004 	sw	a1,4(a0)	62e4: R_MIPS_LO16	wan_rx_bytes
+    62e8:	0800185d 	j	6174 <init_module+0x7d0>	62e8: R_MIPS_26	.text
+    62ec:	ac830000 	sw	v1,0(a0)	62ec: R_MIPS_LO16	wan_rx_bytes
+    62f0:	8c460050 	lw	a2,80(v0)
+    62f4:	8e050050 	lw	a1,80(s0)
+    62f8:	8c470054 	lw	a3,84(v0)
+    62fc:	3c040000 	lui	a0,0x0	62fc: R_MIPS_HI16	wan_tx_bytes
+    6300:	00c52821 	addu	a1,a2,a1
+    6304:	00a6302b 	sltu	a2,a1,a2
+    6308:	00c73021 	addu	a2,a2,a3
+    630c:	ac450050 	sw	a1,80(v0)
+    6310:	ac460054 	sw	a2,84(v0)
+    6314:	8c63008c 	lw	v1,140(v1)
+    6318:	24020001 	li	v0,1
+    631c:	8c660070 	lw	a2,112(v1)
+    6320:	8c670074 	lw	a3,116(v1)
+    6324:	24c50001 	addiu	a1,a2,1
+    6328:	00a6302b 	sltu	a2,a1,a2
+    632c:	00c73021 	addu	a2,a2,a3
+    6330:	ac660074 	sw	a2,116(v1)
+    6334:	ac650070 	sw	a1,112(v1)
+    6338:	8e050050 	lw	a1,80(s0)
+    633c:	8c830000 	lw	v1,0(a0)	633c: R_MIPS_LO16	wan_tx_bytes
+    6340:	8c860004 	lw	a2,4(a0)	6340: R_MIPS_LO16	wan_tx_bytes
+    6344:	00a31821 	addu	v1,a1,v1
+    6348:	0065282b 	sltu	a1,v1,a1
+    634c:	00a62821 	addu	a1,a1,a2
+    6350:	ac850004 	sw	a1,4(a0)	6350: R_MIPS_LO16	wan_tx_bytes
+    6354:	0800185d 	j	6174 <init_module+0x7d0>	6354: R_MIPS_26	.text
+    6358:	ac830000 	sw	v1,0(a0)	6358: R_MIPS_LO16	wan_tx_bytes
+    635c:	3c110000 	lui	s1,0x0	635c: R_MIPS_HI16	.rodata
+    6360:	3c040000 	lui	a0,0x0	6360: R_MIPS_HI16	.data
+    6364:	3c020000 	lui	v0,0x0	6364: R_MIPS_HI16	___ratelimit
+    6368:	248405a8 	addiu	a0,a0,1448	6368: R_MIPS_LO16	.data
+    636c:	24420000 	addiu	v0,v0,0	636c: R_MIPS_LO16	___ratelimit
+    6370:	0040f809 	jalr	v0
+    6374:	26250020 	addiu	a1,s1,32	6374: R_MIPS_LO16	.rodata
+    6378:	10400007 	beqz	v0,6398 <init_module+0x9f4>
+    637c:	3c040000 	lui	a0,0x0	637c: R_MIPS_HI16	$LC71
+    6380:	3c020000 	lui	v0,0x0	6380: R_MIPS_HI16	printk
+    6384:	24840000 	addiu	a0,a0,0	6384: R_MIPS_LO16	$LC71
+    6388:	26250020 	addiu	a1,s1,32	6388: R_MIPS_LO16	.rodata
+    638c:	24420000 	addiu	v0,v0,0	638c: R_MIPS_LO16	printk
+    6390:	0040f809 	jalr	v0
+    6394:	240609a2 	li	a2,2466
+    6398:	24020010 	li	v0,16
+    639c:	a2020047 	sb	v0,71(s0)
+    63a0:	080017f5 	j	5fd4 <init_module+0x630>	63a0: R_MIPS_26	.text
+    63a4:	2402ffff 	li	v0,-1
+    63a8:	10a0ff72 	beqz	a1,6174 <init_module+0x7d0>
+    63ac:	3c050000 	lui	a1,0x0	63ac: R_MIPS_HI16	wan_rx_bytes
+    63b0:	8e060050 	lw	a2,80(s0)
+    63b4:	8c670060 	lw	a3,96(v1)
+    63b8:	8c680064 	lw	t0,100(v1)
+    63bc:	00e63021 	addu	a2,a3,a2
+    63c0:	00c7382b 	sltu	a3,a2,a3
+    63c4:	00e83821 	addu	a3,a3,t0
+    63c8:	ac670064 	sw	a3,100(v1)
+    63cc:	ac660060 	sw	a2,96(v1)
+    63d0:	8c83008c 	lw	v1,140(a0)
+    63d4:	8c660078 	lw	a2,120(v1)
+    63d8:	8c67007c 	lw	a3,124(v1)
+    63dc:	24c40001 	addiu	a0,a2,1
+    63e0:	0086302b 	sltu	a2,a0,a2
+    63e4:	00c73021 	addu	a2,a2,a3
+    63e8:	ac66007c 	sw	a2,124(v1)
+    63ec:	ac640078 	sw	a0,120(v1)
+    63f0:	8e040050 	lw	a0,80(s0)
+    63f4:	8ca30000 	lw	v1,0(a1)	63f4: R_MIPS_LO16	wan_rx_bytes
+    63f8:	8ca60004 	lw	a2,4(a1)	63f8: R_MIPS_LO16	wan_rx_bytes
+    63fc:	00831821 	addu	v1,a0,v1
+    6400:	0064202b 	sltu	a0,v1,a0
+    6404:	00862021 	addu	a0,a0,a2
+    6408:	aca40004 	sw	a0,4(a1)	6408: R_MIPS_LO16	wan_rx_bytes
+    640c:	0800185d 	j	6174 <init_module+0x7d0>	640c: R_MIPS_26	.text
+    6410:	aca30000 	sw	v1,0(a1)	6410: R_MIPS_LO16	wan_rx_bytes
+    6414:	24420000 	addiu	v0,v0,0	6414: R_MIPS_LO16	kfree
+    6418:	0040f809 	jalr	v0
+    641c:	02202021 	move	a0,s1
+    6420:	080018e7 	j	639c <init_module+0x9f8>	6420: R_MIPS_26	.text
+    6424:	24020010 	li	v0,16
+	...
+
+...
+
+--- EXACT FUNCTION tbq_track_set_weight @ 0x790 ---
+00000790 <tbq_track_set_weight>:
+     790:	10800008 	beqz	a0,7b4 <tbq_track_set_weight+0x24>
+     794:	00000000 	nop
+     798:	04a00006 	bltz	a1,7b4 <tbq_track_set_weight+0x24>
+     79c:	00001021 	move	v0,zero
+     7a0:	24060080 	li	a2,128
+     7a4:	00821821 	addu	v1,a0,v0
+     7a8:	24420004 	addiu	v0,v0,4
+     7ac:	1446fffd 	bne	v0,a2,7a4 <tbq_track_set_weight+0x14>
+     7b0:	ac65001c 	sw	a1,28(v1)
+     7b4:	03e00008 	jr	ra
+     7b8:	00000000 	nop
+
+
+--- EXACT FUNCTION tbq_user_track_free @ 0x23dc ---
+000023dc <tbq_user_track_free>:
+    23dc:	27bdffe0 	addiu	sp,sp,-32
+    23e0:	afbf001c 	sw	ra,28(sp)
+    23e4:	afb10018 	sw	s1,24(sp)
+    23e8:	afb00014 	sw	s0,20(sp)
+    23ec:	8c820014 	lw	v0,20(a0)
+    23f0:	8c830010 	lw	v1,16(a0)
+    23f4:	ac800004 	sw	zero,4(a0)
+    23f8:	3c110000 	lui	s1,0x0	23f8: R_MIPS_HI16	tbq_user_sched_cleanup
+    23fc:	ac620004 	sw	v0,4(v1)
+    2400:	ac430000 	sw	v1,0(v0)
+    2404:	3c020010 	lui	v0,0x10
+    2408:	34420100 	ori	v0,v0,0x100
+    240c:	8c851138 	lw	a1,4408(a0)
+    2410:	ac820010 	sw	v0,16(a0)
+    2414:	3c020020 	lui	v0,0x20
+    2418:	34420200 	ori	v0,v0,0x200
+    241c:	00808021 	move	s0,a0
+    2420:	ac820014 	sw	v0,20(a0)
+    2424:	26310000 	addiu	s1,s1,0	2424: R_MIPS_LO16	tbq_user_sched_cleanup
+    2428:	0220f809 	jalr	s1
+    242c:	24840018 	addiu	a0,a0,24
+    2430:	8e051138 	lw	a1,4408(s0)
+    2434:	260408a8 	addiu	a0,s0,2216
+    2438:	0220c821 	move	t9,s1
+    243c:	8fbf001c 	lw	ra,28(sp)
+    2440:	8fb10018 	lw	s1,24(sp)
+    2444:	8fb00014 	lw	s0,20(sp)
+    2448:	03200008 	jr	t9
+    244c:	27bd0020 	addiu	sp,sp,32
+
+
+--- EXACT FUNCTION tbq_online_ip_track_alloc @ 0x5058 ---
+00005058 <tbq_online_ip_track_alloc>:
+    5058:	27bdff48 	addiu	sp,sp,-184
+    505c:	afbf00b4 	sw	ra,180(sp)
+    5060:	afb500b0 	sw	s5,176(sp)
+    5064:	afb400ac 	sw	s4,172(sp)
+    5068:	afb300a8 	sw	s3,168(sp)
+    506c:	afb200a4 	sw	s2,164(sp)
+    5070:	afb100a0 	sw	s1,160(sp)
+    5074:	afb0009c 	sw	s0,156(sp)
+    5078:	3c020000 	lui	v0,0x0	5078: R_MIPS_HI16	memset
+    507c:	27b20018 	addiu	s2,sp,24
+    5080:	00808821 	move	s1,a0
+    5084:	00002821 	move	a1,zero
+    5088:	02402021 	move	a0,s2
+    508c:	24420000 	addiu	v0,v0,0	508c: R_MIPS_LO16	memset
+    5090:	0040f809 	jalr	v0
+    5094:	24060080 	li	a2,128
+    5098:	8e30008c 	lw	s0,140(s1)
+    509c:	3c130000 	lui	s3,0x0	509c: R_MIPS_HI16	tbq
+    50a0:	24060006 	li	a2,6
+    50a4:	26020018 	addiu	v0,s0,24
+    50a8:	ae0202fc 	sw	v0,764(s0)
+    50ac:	8e25008c 	lw	a1,140(s1)
+    50b0:	26140300 	addiu	s4,s0,768
+    50b4:	3c020000 	lui	v0,0x0	50b4: R_MIPS_HI16	memcpy
+    50b8:	24a5002c 	addiu	a1,a1,44
+    50bc:	02802021 	move	a0,s4
+    50c0:	24420000 	addiu	v0,v0,0	50c0: R_MIPS_LO16	memcpy
+    50c4:	0040f809 	jalr	v0
+    50c8:	26730000 	addiu	s3,s3,0	50c8: R_MIPS_LO16	tbq
+    50cc:	8e620018 	lw	v0,24(s3)
+    50d0:	3c040000 	lui	a0,0x0	50d0: R_MIPS_HI16	tbq
+    50d4:	26030308 	addiu	v1,s0,776
+    50d8:	24840014 	addiu	a0,a0,20	50d8: R_MIPS_LO16	tbq
+    50dc:	ae630018 	sw	v1,24(s3)
+    50e0:	ae040308 	sw	a0,776(s0)
+    50e4:	ae02030c 	sw	v0,780(s0)
+    50e8:	ac430000 	sw	v1,0(v0)
+    50ec:	8e22008c 	lw	v0,140(s1)
+    50f0:	02402821 	move	a1,s2
+    50f4:	8c440018 	lw	a0,24(v0)
+    50f8:	3c020000 	lui	v0,0x0	50f8: R_MIPS_HI16	.text
+    50fc:	24422eb8 	addiu	v0,v0,11960	50fc: R_MIPS_LO16	.text
+    5100:	0040f809 	jalr	v0
+    5104:	3c150000 	lui	s5,0x0	5104: R_MIPS_HI16	tbq_user_sched_init
+    5108:	ae021430 	sw	v0,5168(s0)
+    510c:	8e27008c 	lw	a3,140(s1)
+    5110:	3c050000 	lui	a1,0x0	5110: R_MIPS_HI16	tbq
+    5114:	24a50024 	addiu	a1,a1,36	5114: R_MIPS_LO16	tbq
+    5118:	8ce60018 	lw	a2,24(a3)
+    511c:	26b50000 	addiu	s5,s5,0	511c: R_MIPS_LO16	tbq_user_sched_init
+    5120:	24e7002c 	addiu	a3,a3,44
+    5124:	26040310 	addiu	a0,s0,784
+    5128:	afa20010 	sw	v0,16(sp)
+    512c:	02a0f809 	jalr	s5
+    5130:	afb20014 	sw	s2,20(sp)
+    5134:	8e27008c 	lw	a3,140(s1)
+    5138:	8e021430 	lw	v0,5168(s0)
+    513c:	3c050000 	lui	a1,0x0	513c: R_MIPS_HI16	tbq
+    5140:	8ce60018 	lw	a2,24(a3)
+    5144:	26040ba0 	addiu	a0,s0,2976
+    5148:	24a50728 	addiu	a1,a1,1832	5148: R_MIPS_LO16	tbq
+    514c:	24e7002c 	addiu	a3,a3,44
+    5150:	afa20010 	sw	v0,16(sp)
+    5154:	02a0f809 	jalr	s5
+    5158:	afb20014 	sw	s2,20(sp)
+    515c:	3c020000 	lui	v0,0x0	515c: R_MIPS_HI16	find_hnode_by_mac
+    5160:	24420000 	addiu	v0,v0,0	5160: R_MIPS_LO16	find_hnode_by_mac
+    5164:	0040f809 	jalr	v0
+    5168:	02802021 	move	a0,s4
+    516c:	10400006 	beqz	v0,5188 <tbq_online_ip_track_alloc+0x130>
+    5170:	260202f8 	addiu	v0,s0,760
+    5174:	8e620004 	lw	v0,4(s3)
+    5178:	10400002 	beqz	v0,5184 <tbq_online_ip_track_alloc+0x12c>
+    517c:	24020001 	li	v0,1
+    5180:	ae021430 	sw	v0,5168(s0)
+    5184:	260202f8 	addiu	v0,s0,760
+    5188:	8fbf00b4 	lw	ra,180(sp)
+    518c:	8fb500b0 	lw	s5,176(sp)
+    5190:	8fb400ac 	lw	s4,172(sp)
+    5194:	8fb300a8 	lw	s3,168(sp)
+    5198:	8fb200a4 	lw	s2,164(sp)
+    519c:	8fb100a0 	lw	s1,160(sp)
+    51a0:	8fb0009c 	lw	s0,156(sp)
+    51a4:	03e00008 	jr	ra
+    51a8:	27bd00b8 	addiu	sp,sp,184
+
+
+--- RELOCATIONS RELEVANT TO TRACKING ---
+00000050  00016f05 R_MIPS_HI16            00004b48   tbq_dump_tc_info
+00000068  00016f06 R_MIPS_LO16            00004b48   tbq_dump_tc_info
+000000f8  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000000f4  00014f05 R_MIPS_HI16            000016a0   wan_rx_bytes
+000000fc  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000001d0  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+000001cc  00017005 R_MIPS_HI16            00001698   wan_tx_bytes
+000001d4  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+000003f0  0001a206 R_MIPS_LO16            00000030   tbq
+000003dc  0001a205 R_MIPS_HI16            00000030   tbq
+00000424  0001a206 R_MIPS_LO16            00000030   tbq
+00000508  0001a205 R_MIPS_HI16            00000030   tbq
+0000050c  0001a206 R_MIPS_LO16            00000030   tbq
+000006e0  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+000006e4  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+000006f0  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+000006f4  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00000724  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00000728  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00000938  00012e05 R_MIPS_HI16            00000864   tbq_user_backlog_update
+0000093c  00012e06 R_MIPS_LO16            00000864   tbq_user_backlog_update
+00000da0  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00000da4  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00000e24  00019c05 R_MIPS_HI16            00000da0   tbq_flow_reach_max
+00000e28  00019c06 R_MIPS_LO16            00000da0   tbq_flow_reach_max
+00000e44  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00000e48  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00001784  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00001794  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00001788  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00001798  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00001b04  0001a205 R_MIPS_HI16            00000030   tbq
+00001b08  0001a206 R_MIPS_LO16            00000030   tbq
+00001b98  00014905 R_MIPS_HI16            00000724   tbq_get_real_tokens
+00001b9c  00014906 R_MIPS_LO16            00000724   tbq_get_real_tokens
+00001ba8  0001a205 R_MIPS_HI16            00000030   tbq
+00001bac  0001a206 R_MIPS_LO16            00000030   tbq
+00001c14  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+00001c18  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00001c28  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+00001c2c  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00001cd4  00019c05 R_MIPS_HI16            00000da0   tbq_flow_reach_max
+00001cd8  00019c06 R_MIPS_LO16            00000da0   tbq_flow_reach_max
+00001e18  00018905 R_MIPS_HI16            00001bfc   tbq_flow_backlog_max_octets
+00001e1c  00018906 R_MIPS_LO16            00001bfc   tbq_flow_backlog_max_octets
+00001e3c  00018f05 R_MIPS_HI16            00001d34   tbq_flow_backlog_dequeue
+00001e44  00018f06 R_MIPS_LO16            00001d34   tbq_flow_backlog_dequeue
+00001e40  00011805 R_MIPS_HI16            000008d0   tbq_packet_ctrl_backlog_update
+00001e48  00011806 R_MIPS_LO16            000008d0   tbq_packet_ctrl_backlog_update
+00002094  00012e05 R_MIPS_HI16            00000864   tbq_user_backlog_update
+000020a0  00012e06 R_MIPS_LO16            00000864   tbq_user_backlog_update
+0000228c  0001a205 R_MIPS_HI16            00000030   tbq
+00002290  0001a206 R_MIPS_LO16            00000030   tbq
+000023f8  00017905 R_MIPS_HI16            00002264   tbq_user_sched_cleanup
+00002424  00017906 R_MIPS_LO16            00002264   tbq_user_sched_cleanup
+00002474  00011905 R_MIPS_HI16            000023dc   tbq_user_track_free
+00002478  00011906 R_MIPS_LO16            000023dc   tbq_user_track_free
+000024dc  00014905 R_MIPS_HI16            00000724   tbq_get_real_tokens
+000024e0  00014906 R_MIPS_LO16            00000724   tbq_get_real_tokens
+0000257c  00015105 R_MIPS_HI16            00002498   tbq_token_ctrl_feed
+00002580  00015106 R_MIPS_LO16            00002498   tbq_token_ctrl_feed
+000025d0  00014905 R_MIPS_HI16            00000724   tbq_get_real_tokens
+000025d4  00014906 R_MIPS_LO16            00000724   tbq_get_real_tokens
+000025f4  0001a205 R_MIPS_HI16            00000030   tbq
+000025f8  0001a206 R_MIPS_LO16            00000030   tbq
+000026b0  0001a205 R_MIPS_HI16            00000030   tbq
+000026b4  0001a206 R_MIPS_LO16            00000030   tbq
+000026c4  00014105 R_MIPS_HI16            00002538   tbq_token_ctrl_consume
+000026cc  00014106 R_MIPS_LO16            00002538   tbq_token_ctrl_consume
+0000272c  00010d05 R_MIPS_HI16            00002594   tbq_token_ctrl_deactivate
+00002754  00010d06 R_MIPS_LO16            00002594   tbq_token_ctrl_deactivate
+00002774  00010d05 R_MIPS_HI16            00002594   tbq_token_ctrl_deactivate
+00002778  00010d06 R_MIPS_LO16            00002594   tbq_token_ctrl_deactivate
+00002880  00010305 R_MIPS_HI16            00002660   tbq_user_consume
+00002888  00010306 R_MIPS_LO16            00002660   tbq_user_consume
+00002928  00011e05 R_MIPS_HI16            00001df0   tbq_flow_backlog_drop
+00002930  00011e06 R_MIPS_LO16            00001df0   tbq_flow_backlog_drop
+00002950  0001a205 R_MIPS_HI16            00000030   tbq
+00002958  0001a206 R_MIPS_LO16            00000030   tbq
+000029bc  00018a05 R_MIPS_HI16            0000278c   tbq_packet_ctrl_consume
+000029c0  00018a06 R_MIPS_LO16            0000278c   tbq_packet_ctrl_consume
+000029d0  00016905 R_MIPS_HI16            00001ee0   tbq_flow_backlog_detach
+000029dc  00016906 R_MIPS_LO16            00001ee0   tbq_flow_backlog_detach
+000029f0  00011405 R_MIPS_HI16            00001a88   tbq_flow_backlog_attach
+000029f4  00011406 R_MIPS_LO16            00001a88   tbq_flow_backlog_attach
+00002a34  00011705 R_MIPS_HI16            00001fe4   tbq_flow_backlog_drr_schedule
+00002a38  00011706 R_MIPS_LO16            00001fe4   tbq_flow_backlog_drr_schedule
+00002a48  00018f05 R_MIPS_HI16            00001d34   tbq_flow_backlog_dequeue
+00002a50  00018f06 R_MIPS_LO16            00001d34   tbq_flow_backlog_dequeue
+00002a68  00011805 R_MIPS_HI16            000008d0   tbq_packet_ctrl_backlog_update
+00002a6c  00011806 R_MIPS_LO16            000008d0   tbq_packet_ctrl_backlog_update
+00002ae8  00012205 R_MIPS_HI16            000028f4   tbq_flow_backlog_try_dequeue
+00002af0  00012206 R_MIPS_LO16            000028f4   tbq_flow_backlog_try_dequeue
+00002c08  00012205 R_MIPS_HI16            000028f4   tbq_flow_backlog_try_dequeue
+00002c0c  00012206 R_MIPS_LO16            000028f4   tbq_flow_backlog_try_dequeue
+00002eb8  0001a205 R_MIPS_HI16            00000030   tbq
+00002ebc  0001a206 R_MIPS_LO16            00000030   tbq
+00002ee8  0001a206 R_MIPS_LO16            00000030   tbq
+00003020  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+00003024  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00003194  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+00003198  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+000031a4  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+000031a8  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+000031d0  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+000031d4  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+00003240  00016405 R_MIPS_HI16            00002d08   tbq_parse_ct_info
+00003248  00016406 R_MIPS_LO16            00002d08   tbq_parse_ct_info
+000032d0  00016405 R_MIPS_HI16            00002d08   tbq_parse_ct_info
+000032d8  00016406 R_MIPS_LO16            00002d08   tbq_parse_ct_info
+0000337c  00016405 R_MIPS_HI16            00002d08   tbq_parse_ct_info
+00003384  00016406 R_MIPS_LO16            00002d08   tbq_parse_ct_info
+000033d4  00019c05 R_MIPS_HI16            00000da0   tbq_flow_reach_max
+000033d8  00019c06 R_MIPS_LO16            00000da0   tbq_flow_reach_max
+00003464  0001a205 R_MIPS_HI16            00000030   tbq
+00003468  0001a206 R_MIPS_LO16            00000030   tbq
+0000347c  0001a205 R_MIPS_HI16            00000030   tbq
+00003480  0001a206 R_MIPS_LO16            00000030   tbq
+0000349c  0001a205 R_MIPS_HI16            00000030   tbq
+000034a0  0001a206 R_MIPS_LO16            00000030   tbq
+000034a8  0001a205 R_MIPS_HI16            00000030   tbq
+000034ac  0001a206 R_MIPS_LO16            00000030   tbq
+000034b8  00011905 R_MIPS_HI16            000023dc   tbq_user_track_free
+000034bc  00011906 R_MIPS_LO16            000023dc   tbq_user_track_free
+000034fc  0001a205 R_MIPS_HI16            00000030   tbq
+00003500  0001a206 R_MIPS_LO16            00000030   tbq
+00003510  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+0000351c  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+0000355c  00019105 R_MIPS_HI16            00000e78   tbq_bucket_sched_cleanup
+00003560  00019106 R_MIPS_LO16            00000e78   tbq_bucket_sched_cleanup
+00003564  0001a206 R_MIPS_LO16            00000030   tbq
+0000356c  0001a205 R_MIPS_HI16            00000030   tbq
+00003574  0001a206 R_MIPS_LO16            00000030   tbq
+00003578  00016005 R_MIPS_HI16            00007c94   tbq_config_cleanup
+0000357c  00016006 R_MIPS_LO16            00007c94   tbq_config_cleanup
+00003584  0001a206 R_MIPS_LO16            00000030   tbq
+0000358c  0001a205 R_MIPS_HI16            00000030   tbq
+000035b0  0001a206 R_MIPS_LO16            00000030   tbq
+00003554  0001a205 R_MIPS_HI16            00000030   tbq
+000035c4  0001a206 R_MIPS_LO16            00000030   tbq
+000035c0  00015705 R_MIPS_HI16            00001828   tbq_bucket_sched_init
+000035c8  00015706 R_MIPS_LO16            00001828   tbq_bucket_sched_init
+000035dc  0001a206 R_MIPS_LO16            00000030   tbq
+00003770  0001a205 R_MIPS_HI16            00000030   tbq
+00003774  0001a206 R_MIPS_LO16            00000030   tbq
+000037b4  0001a205 R_MIPS_HI16            00000030   tbq
+000037b8  0001a206 R_MIPS_LO16            00000030   tbq
+00003810  00011e05 R_MIPS_HI16            00001df0   tbq_flow_backlog_drop
+00003814  00011e06 R_MIPS_LO16            00001df0   tbq_flow_backlog_drop
+00003830  0000f905 R_MIPS_HI16            00001984   tbq_flow_backlog_enqueue
+00003840  0000f906 R_MIPS_LO16            00001984   tbq_flow_backlog_enqueue
+0000385c  00011805 R_MIPS_HI16            000008d0   tbq_packet_ctrl_backlog_update
+00003860  00011806 R_MIPS_LO16            000008d0   tbq_packet_ctrl_backlog_update
+000038c8  00018a05 R_MIPS_HI16            0000278c   tbq_packet_ctrl_consume
+000038cc  00018a06 R_MIPS_LO16            0000278c   tbq_packet_ctrl_consume
+000038e4  00011405 R_MIPS_HI16            00001a88   tbq_flow_backlog_attach
+000038e8  00011406 R_MIPS_LO16            00001a88   tbq_flow_backlog_attach
+0000398c  0001a205 R_MIPS_HI16            00000030   tbq
+00003990  0001a206 R_MIPS_LO16            00000030   tbq
+00003a4c  00017f05 R_MIPS_HI16            00002ba4   tbq_user_dequeue
+00003a54  00017f06 R_MIPS_LO16            00002ba4   tbq_user_dequeue
+00003a78  00014b05 R_MIPS_HI16            00002aa4   tbq_bucket_dequeue
+00003a84  00014b06 R_MIPS_LO16            00002aa4   tbq_bucket_dequeue
+00003ac0  00013105 R_MIPS_HI16            00003958   tbq_token_ctrl_activate
+00003acc  00013106 R_MIPS_LO16            00003958   tbq_token_ctrl_activate
+00003c28  0001a205 R_MIPS_HI16            00000030   tbq
+00003c30  0001a206 R_MIPS_LO16            00000030   tbq
+00003c2c  00018805 R_MIPS_HI16            00003a88   tbq_timer_feed
+00003c34  00018806 R_MIPS_LO16            00003a88   tbq_timer_feed
+00003c40  0001a205 R_MIPS_HI16            00000030   tbq
+00003c48  0001a206 R_MIPS_LO16            00000030   tbq
+00003c90  00017005 R_MIPS_HI16            00001698   wan_tx_bytes
+00003cd8  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00003cdc  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00003cf0  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00003cf4  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00003d8c  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00003d90  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00003da8  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00003db0  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00003e0c  0001a206 R_MIPS_LO16            00000030   tbq
+00003e50  00016205 R_MIPS_HI16            00002cbc   tbq_timer_assert_unused
+00003e54  00016206 R_MIPS_LO16            00002cbc   tbq_timer_assert_unused
+00003e5c  0001a206 R_MIPS_LO16            00000030   tbq
+00003e60  0001a205 R_MIPS_HI16            00000030   tbq
+00003e70  0001a206 R_MIPS_LO16            00000030   tbq
+00003f04  0001a205 R_MIPS_HI16            00000030   tbq
+00003f08  0001a206 R_MIPS_LO16            00000030   tbq
+00003f14  0001a205 R_MIPS_HI16            00000030   tbq
+00003f1c  0001a206 R_MIPS_LO16            00000030   tbq
+000040e4  0001a205 R_MIPS_HI16            00000030   tbq
+000040e8  0001a206 R_MIPS_LO16            00000030   tbq
+000040f4  0001a205 R_MIPS_HI16            00000030   tbq
+000040fc  0001a206 R_MIPS_LO16            00000030   tbq
+00004584  0000f305 R_MIPS_HI16            00004358   tbq_parse_https_info
+00004588  0000f306 R_MIPS_LO16            00004358   tbq_parse_https_info
+00004598  00016705 R_MIPS_HI16            000041a4   tbq_get_prio_by_server_name
+000045a0  00016706 R_MIPS_LO16            000041a4   tbq_get_prio_by_server_name
+00004758  00012805 R_MIPS_HI16            000045ec   tbq_get_http_header_value
+0000473c  00012805 R_MIPS_HI16            000045ec   tbq_get_http_header_value
+00004764  00012806 R_MIPS_LO16            000045ec   tbq_get_http_header_value
+0000483c  00012805 R_MIPS_HI16            000045ec   tbq_get_http_header_value
+00004848  00012806 R_MIPS_LO16            000045ec   tbq_get_http_header_value
+00004a14  00011105 R_MIPS_HI16            00004684   tbq_parse_http_info
+00004a18  00011106 R_MIPS_LO16            00004684   tbq_parse_http_info
+00004a24  00016a05 R_MIPS_HI16            00004254   tbq_get_http_prio
+00004a28  00016a06 R_MIPS_LO16            00004254   tbq_get_http_prio
+00004b74  0001a205 R_MIPS_HI16            00000030   tbq
+00004b78  0001a206 R_MIPS_LO16            00000030   tbq
+00004b84  0001a205 R_MIPS_HI16            00000030   tbq
+00004b90  0001a206 R_MIPS_LO16            00000030   tbq
+00004c38  0001a205 R_MIPS_HI16            00000030   tbq
+00004c40  0001a206 R_MIPS_LO16            00000030   tbq
+00004ca4  0001a205 R_MIPS_HI16            00000030   tbq
+00004ca8  0001a206 R_MIPS_LO16            00000030   tbq
+00004cb0  0001a205 R_MIPS_HI16            00000030   tbq
+00004cb4  0001a206 R_MIPS_LO16            00000030   tbq
+00004fb0  00019a05 R_MIPS_HI16            00004d88   tbq_user_init
+00004fb4  00019a06 R_MIPS_LO16            00004d88   tbq_user_init
+000050c8  0001a206 R_MIPS_LO16            00000030   tbq
+000050d0  0001a205 R_MIPS_HI16            00000030   tbq
+000050d8  0001a206 R_MIPS_LO16            00000030   tbq
+00005110  0001a205 R_MIPS_HI16            00000030   tbq
+00005114  0001a206 R_MIPS_LO16            00000030   tbq
+00005104  00014a05 R_MIPS_HI16            00004f34   tbq_user_sched_init
+0000511c  00014a06 R_MIPS_LO16            00004f34   tbq_user_sched_init
+0000513c  0001a205 R_MIPS_HI16            00000030   tbq
+00005148  0001a206 R_MIPS_LO16            00000030   tbq
+000051d8  0000ed05 R_MIPS_HI16            00003290   tbq_is_priv_flow
+000051dc  0000ed06 R_MIPS_LO16            00003290   tbq_is_priv_flow
+0000522c  00010b05 R_MIPS_HI16            00006430   tbq_app_match
+00005238  00010b06 R_MIPS_LO16            00006430   tbq_app_match
+00005248  0000f805 R_MIPS_HI16            00003328   tbq_analyse_packet
+00005254  0000f806 R_MIPS_LO16            00003328   tbq_analyse_packet
+00005278  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+00005280  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00005290  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00005298  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+0000529c  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+000052c4  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+000052cc  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+000052e8  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+000052ec  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00005438  0001a205 R_MIPS_HI16            00000030   tbq
+00005444  0001a206 R_MIPS_LO16            00000030   tbq
+00005498  0001a205 R_MIPS_HI16            00000030   tbq
+0000549c  0001a206 R_MIPS_LO16            00000030   tbq
+000054e0  00013e05 R_MIPS_HI16            00005058   tbq_online_ip_track_alloc
+000054e4  00013e06 R_MIPS_LO16            00005058   tbq_online_ip_track_alloc
+00005528  00018a05 R_MIPS_HI16            0000278c   tbq_packet_ctrl_consume
+0000552c  00018a06 R_MIPS_LO16            0000278c   tbq_packet_ctrl_consume
+00005548  0001a205 R_MIPS_HI16            00000030   tbq
+00005564  0001a206 R_MIPS_LO16            00000030   tbq
+00005570  0001a205 R_MIPS_HI16            00000030   tbq
+00005574  0001a206 R_MIPS_LO16            00000030   tbq
+000055d4  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+0000560c  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00005618  00017a05 R_MIPS_HI16            00000360   tbq_weight_table
+0000561c  00017a06 R_MIPS_LO16            00000360   tbq_weight_table
+00005648  00017105 R_MIPS_HI16            00000010   tbq_prio_count
+0000564c  00017106 R_MIPS_LO16            00000010   tbq_prio_count
+0000566c  00010b05 R_MIPS_HI16            00006430   tbq_app_match
+00005670  00010b06 R_MIPS_LO16            00006430   tbq_app_match
+000056a8  0001a206 R_MIPS_LO16            00000030   tbq
+0000572c  00016205 R_MIPS_HI16            00002cbc   tbq_timer_assert_unused
+00005730  00016206 R_MIPS_LO16            00002cbc   tbq_timer_assert_unused
+00005764  00016e05 R_MIPS_HI16            00005720   tbq_timer_cleanup
+00005768  00016e06 R_MIPS_LO16            00005720   tbq_timer_cleanup
+00005760  0001a205 R_MIPS_HI16            00000030   tbq
+00005770  0001a206 R_MIPS_LO16            00000030   tbq
+00005778  00011c05 R_MIPS_HI16            00003438   tbq_global_set_config
+00005780  00011c06 R_MIPS_LO16            00003438   tbq_global_set_config
+00005794  00018105 R_MIPS_HI16            00006f60   tbq_sysfs_unregister
+00005798  00018106 R_MIPS_LO16            00006f60   tbq_sysfs_unregister
+000057a4  00011d05 R_MIPS_HI16            00006c30   tbq_device_unregister
+000057a8  00011d06 R_MIPS_LO16            00006c30   tbq_device_unregister
+000057b4  0000f605 R_MIPS_HI16            00000000   nos_tbq_enqueue
+000057b8  0000f606 R_MIPS_LO16            00000000   nos_tbq_enqueue
+000057bc  0001a105 R_MIPS_HI16            00000000   tbq_p2p_limit
+000057c0  0001a106 R_MIPS_LO16            00000000   tbq_p2p_limit
+000057c8  00015c05 R_MIPS_HI16            00000000   nos_track_event_unregister
+00005cb8  00015c05 R_MIPS_HI16            00000000   nos_track_event_unregister
+00005c2c  00015c05 R_MIPS_HI16            00000000   nos_track_event_unregister
+000057cc  00015c06 R_MIPS_LO16            00000000   nos_track_event_unregister
+000057d8  00018405 R_MIPS_HI16            00005758   tbq_global_cleanup
+000057dc  00018406 R_MIPS_LO16            00005758   tbq_global_cleanup
+000058ac  00016305 R_MIPS_HI16            00003bd4   tbq_timer_func
+000058b0  00016306 R_MIPS_LO16            00003bd4   tbq_timer_func
+000058f0  0001a205 R_MIPS_HI16            00000030   tbq
+000058f8  0001a206 R_MIPS_LO16            00000030   tbq
+0000509c  0001a205 R_MIPS_HI16            00000030   tbq
+0000590c  0001a206 R_MIPS_LO16            00000030   tbq
+00005918  0001a205 R_MIPS_HI16            00000030   tbq
+00005928  0001a206 R_MIPS_LO16            00000030   tbq
+00005920  0001a205 R_MIPS_HI16            00000030   tbq
+0000592c  0001a206 R_MIPS_LO16            00000030   tbq
+0000595c  0001a205 R_MIPS_HI16            00000030   tbq
+0000596c  0001a206 R_MIPS_LO16            00000030   tbq
+0000598c  0001a205 R_MIPS_HI16            00000030   tbq
+00005994  0001a206 R_MIPS_LO16            00000030   tbq
+00005990  00019005 R_MIPS_HI16            0000583c   tbq_timer_init
+00005998  00019006 R_MIPS_LO16            0000583c   tbq_timer_init
+00005b60  00010405 R_MIPS_HI16            000058e4   tbq_global_init
+00005cf0  00010405 R_MIPS_HI16            000058e4   tbq_global_init
+00005b64  00010406 R_MIPS_LO16            000058e4   tbq_global_init
+00005b70  0000f105 R_MIPS_HI16            0000a890   init_user_tbq
+00005b74  0000f106 R_MIPS_LO16            0000a890   init_user_tbq
+00005b80  00019405 R_MIPS_HI16            00000000   nos_track_event_register
+00005b84  00019406 R_MIPS_LO16            00000000   nos_track_event_register
+00005b90  0000fc05 R_MIPS_HI16            00007edc   tbq_device_register
+00005b94  0000fc06 R_MIPS_LO16            00007edc   tbq_device_register
+00005bc0  00015c05 R_MIPS_HI16            00000000   nos_track_event_unregister
+00005bc4  00015c06 R_MIPS_LO16            00000000   nos_track_event_unregister
+00005bd0  00018405 R_MIPS_HI16            00005758   tbq_global_cleanup
+00005bd4  00018406 R_MIPS_LO16            00005758   tbq_global_cleanup
+00005c00  00015f05 R_MIPS_HI16            00007e8c   tbq_sysfs_register
+00005c04  00015f06 R_MIPS_LO16            00007e8c   tbq_sysfs_register
+00005c18  00011d05 R_MIPS_HI16            00006c30   tbq_device_unregister
+00005c1c  00011d06 R_MIPS_LO16            00006c30   tbq_device_unregister
+00005c38  0000f605 R_MIPS_HI16            00000000   nos_tbq_enqueue
+00005c3c  0000f606 R_MIPS_LO16            00000000   nos_tbq_enqueue
+00005c50  00010c05 R_MIPS_HI16            00004b14   tbq_init_p2p_port
+00005c54  00010c06 R_MIPS_LO16            00004b14   tbq_init_p2p_port
+00005c64  00013d05 R_MIPS_HI16            00002fa4   __tbq_p2p_limit
+00005c68  00013d06 R_MIPS_LO16            00002fa4   __tbq_p2p_limit
+00005c6c  0001a105 R_MIPS_HI16            00000000   tbq_p2p_limit
+00005c7c  0001a106 R_MIPS_LO16            00000000   tbq_p2p_limit
+00005f1c  00011a05 R_MIPS_HI16            00003210   tbq_allow_privilege_flow
+00006010  00011a05 R_MIPS_HI16            00003210   tbq_allow_privilege_flow
+00005f24  00011a06 R_MIPS_LO16            00003210   tbq_allow_privilege_flow
+00005f64  00014f05 R_MIPS_HI16            000016a0   wan_rx_bytes
+00005fac  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00005fb0  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00005fc0  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00005fc4  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00006034  00011a05 R_MIPS_HI16            00003210   tbq_allow_privilege_flow
+0000603c  00011a06 R_MIPS_LO16            00003210   tbq_allow_privilege_flow
+0000608c  0001a205 R_MIPS_HI16            00000030   tbq
+00006090  0001a206 R_MIPS_LO16            00000030   tbq
+000060b4  00013805 R_MIPS_HI16            000051ac   tbq_filter_packet_by_nf_conn
+000060c0  00013806 R_MIPS_LO16            000051ac   tbq_filter_packet_by_nf_conn
+0000611c  00017005 R_MIPS_HI16            00001698   wan_tx_bytes
+00006158  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+0000615c  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+0000616c  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006170  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+000061a8  00019705 R_MIPS_HI16            00003740   tbq_enqueue
+000061ac  00019706 R_MIPS_LO16            00003740   tbq_enqueue
+000061f4  00017005 R_MIPS_HI16            00001698   wan_tx_bytes
+00006230  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006234  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006244  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+0000624c  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006284  00014f05 R_MIPS_HI16            000016a0   wan_rx_bytes
+000062d0  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000062d4  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000062e4  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000062ec  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000062fc  00017005 R_MIPS_HI16            00001698   wan_tx_bytes
+0000633c  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006340  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006350  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+00006358  00017006 R_MIPS_LO16            00001698   wan_tx_bytes
+000063ac  00014f05 R_MIPS_HI16            000016a0   wan_rx_bytes
+000063f4  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+000063f8  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00006408  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00003c88  00014f05 R_MIPS_HI16            000016a0   wan_rx_bytes
+00006410  00014f06 R_MIPS_LO16            000016a0   wan_rx_bytes
+00006460  0001a205 R_MIPS_HI16            00000030   tbq
+00006464  0001a206 R_MIPS_LO16            00000030   tbq
+000068f0  0001a205 R_MIPS_HI16            00000030   tbq
+000068f4  0001a206 R_MIPS_LO16            00000030   tbq
+00006930  0001a205 R_MIPS_HI16            00000030   tbq
+00006934  0001a206 R_MIPS_LO16            00000030   tbq
+000069f4  0001a205 R_MIPS_HI16            00000030   tbq
+000069f8  0001a206 R_MIPS_LO16            00000030   tbq
+00006a28  0001a205 R_MIPS_HI16            00000030   tbq
+00006a2c  0001a206 R_MIPS_LO16            00000030   tbq
+00006ae8  0001a205 R_MIPS_HI16            00000030   tbq
+00006aec  0001a206 R_MIPS_LO16            00000030   tbq
+00006b1c  0001a205 R_MIPS_HI16            00000030   tbq
+00006b20  0001a206 R_MIPS_LO16            00000030   tbq
+00006be0  0001a205 R_MIPS_HI16            00000030   tbq
+00006be8  0001a206 R_MIPS_LO16            00000030   tbq
+00006cac  0001a205 R_MIPS_HI16            00000030   tbq
+00006cb0  0001a206 R_MIPS_LO16            00000030   tbq
+00006cc0  0001a205 R_MIPS_HI16            00000030   tbq
+00006cc4  0001a206 R_MIPS_LO16            00000030   tbq
+00006d38  0001a205 R_MIPS_HI16            00000030   tbq
+00006d3c  0001a206 R_MIPS_LO16            00000030   tbq
+00006db0  0001a205 R_MIPS_HI16            00000030   tbq
+00006db4  0001a206 R_MIPS_LO16            00000030   tbq
+00006f60  0001a205 R_MIPS_HI16            00000030   tbq
+00006f64  0001a206 R_MIPS_LO16            00000030   tbq
+000082a0  0001a205 R_MIPS_HI16            00000030   tbq
+000082a4  0001a206 R_MIPS_LO16            00000030   tbq
+000082ac  0001a206 R_MIPS_LO16            00000030   tbq
+000082d0  0001a206 R_MIPS_LO16            00000030   tbq
+00008324  0001a206 R_MIPS_LO16            00000030   tbq
+000083a8  00011c05 R_MIPS_HI16            00003438   tbq_global_set_config
+000083ac  00011c06 R_MIPS_LO16            00003438   tbq_global_set_config
+000085fc  0001a205 R_MIPS_HI16            00000030   tbq
+00008600  0001a206 R_MIPS_LO16            00000030   tbq
+00008610  00016005 R_MIPS_HI16            00007c94   tbq_config_cleanup
+00008614  00016006 R_MIPS_LO16            00007c94   tbq_config_cleanup
+0000866c  0001a205 R_MIPS_HI16            00000030   tbq
+00008670  0001a206 R_MIPS_LO16            00000030   tbq
+00008818  00011505 R_MIPS_HI16            0000b4a0   update_user_tbq_info
+0000881c  00011506 R_MIPS_LO16            0000b4a0   update_user_tbq_info
+00008834  00018505 R_MIPS_HI16            0000af3c   user_tbq_list_add
+00008838  00018506 R_MIPS_LO16            0000af3c   user_tbq_list_add
+00008844  00012b05 R_MIPS_HI16            0000a9f4   user_tbq_show_all_rule
+00008ea4  00012b05 R_MIPS_HI16            0000a9f4   user_tbq_show_all_rule
+00008cc0  00012b05 R_MIPS_HI16            0000a9f4   user_tbq_show_all_rule
+00008c9c  00012b05 R_MIPS_HI16            0000a9f4   user_tbq_show_all_rule
+00008848  00012b06 R_MIPS_LO16            0000a9f4   user_tbq_show_all_rule
+000089d4  00011605 R_MIPS_HI16            00001758   tbq_dump_prio_count
+000089d8  00011606 R_MIPS_LO16            00001758   tbq_dump_prio_count
+00008af0  00016005 R_MIPS_HI16            00007c94   tbq_config_cleanup
+00008af4  00016006 R_MIPS_LO16            00007c94   tbq_config_cleanup
+00008390  00011c05 R_MIPS_HI16            00003438   tbq_global_set_config
+00008b08  00011c06 R_MIPS_LO16            00003438   tbq_global_set_config
+000085e4  0001a205 R_MIPS_HI16            00000030   tbq
+00008c1c  0001a206 R_MIPS_LO16            00000030   tbq
+0000880c  00019d05 R_MIPS_HI16            0000ac34   user_tbq_list_flush
+00008c8c  00019d06 R_MIPS_LO16            0000ac34   user_tbq_list_flush
+00008800  00019805 R_MIPS_HI16            0000b37c   user_tbq_list_del
+00008ca0  00019806 R_MIPS_LO16            0000b37c   user_tbq_list_del
+00008cac  00017505 R_MIPS_HI16            00003eb0   tbq_resume_user_group_token
+00008cb0  00017506 R_MIPS_LO16            00003eb0   tbq_resume_user_group_token
+00008df8  0001a205 R_MIPS_HI16            00000030   tbq
+00008e48  0001a206 R_MIPS_LO16            00000030   tbq
+00008e94  00011506 R_MIPS_LO16            0000b4a0   update_user_tbq_info
+0000a898  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000a89c  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000a8b0  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000a8b8  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000a934  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000a938  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000aa0c  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000aa10  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000aa6c  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000aa70  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000ac70  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000ac74  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000ac78  00017505 R_MIPS_HI16            00003eb0   tbq_resume_user_group_token
+0000ac90  00017506 R_MIPS_LO16            00003eb0   tbq_resume_user_group_token
+0000aeb8  00015805 R_MIPS_HI16            000040a8   tbq_update_user_token
+0000aebc  00015806 R_MIPS_LO16            000040a8   tbq_update_user_token
+0000af68  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000af70  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+0000b1b0  00018505 R_MIPS_HI16            0000af3c   user_tbq_list_add
+0000b1b4  00018506 R_MIPS_LO16            0000af3c   user_tbq_list_add
+0000b1ec  00018d05 R_MIPS_HI16            00001710   user_tbq_hash_table
+0000b1f0  00018d06 R_MIPS_LO16            00001710   user_tbq_hash_table
+00000298  00012502 R_MIPS_32              00000670   tbq_version
+0000001c  0001a202 R_MIPS_32              00000030   tbq
+000003ac  00014202 R_MIPS_32              00000a80   tbq_flow_base_analyse
+000003b4  00014202 R_MIPS_32              00000a80   tbq_flow_base_analyse
+000003bc  00010a02 R_MIPS_32              00000cc0   tbq_fsm_idle
+000003c4  00011b02 R_MIPS_32              00000d30   tbq_fsm_rate_prepare
+000003cc  00013502 R_MIPS_32              00000b4c   tbq_fsm_rate_confirm
+000003d4  00017702 R_MIPS_32              00000cb8   tbq_fsm_finish
+000003d8  00018b02 R_MIPS_32              00001628   tbq_match_iqiyi_flow
+000003dc  00018702 R_MIPS_32              0000155c   tbq_match_qq_flow
+000003e0  00013c02 R_MIPS_32              00001084   tbq_match_weixin_flow
+000003e4  0000fb02 R_MIPS_32              0000450c   tbq_match_https_flow
+000003e8  00015d02 R_MIPS_32              000048d0   tbq_match_http_flow
+000003ec  00012d02 R_MIPS_32              000016bc   tbq_match_thunder_flow
+000003f0  00010802 R_MIPS_32              000014b4   tbq_match_wz_flow
+000003f4  00010902 R_MIPS_32              000013fc   tbq_match_hyxd_flow
+000003f8  00011f02 R_MIPS_32              00001374   tbq_match_mhxy_flow
+000003fc  00013602 R_MIPS_32              000012ac   tbq_match_lol_flow
+00000400  00017e02 R_MIPS_32              000011e4   tbq_match_cyhx_flow
+00000404  00013a02 R_MIPS_32              00004abc   tbq_match_p2p_flow
+00000410  00012402 R_MIPS_32              00002450   tbq_on_user_free
+00000414  00018302 R_MIPS_32              00003170   tbq_on_flow_free
+00000120  00010502 R_MIPS_32              000006e0   tbq_get_prio_by_weight
+00000140  00014902 R_MIPS_32              00000724   tbq_get_real_tokens
+00000160  0000fd02 R_MIPS_32              00000790   tbq_track_set_weight
+00000180  00018002 R_MIPS_32              000007bc   tbq_token_ctrl_init
+000001a0  00015002 R_MIPS_32              000007fc   tbq_token_ctrl_assert_unused
+000001c0  0000ee02 R_MIPS_32              00000804   tbq_bucket_init
+000001e0  00013902 R_MIPS_32              0000085c   tbq_bucket_cleanup
+00000200  00012e02 R_MIPS_32              00000864   tbq_user_backlog_update
+00000220  00011802 R_MIPS_32              000008d0   tbq_packet_ctrl_backlog_update
+00000240  00018c02 R_MIPS_32              000009f8   tbq_user_sched_update
+00000260  00014202 R_MIPS_32              00000a80   tbq_flow_base_analyse
+00000280  00013502 R_MIPS_32              00000b4c   tbq_fsm_rate_confirm
+000002a0  00017702 R_MIPS_32              00000cb8   tbq_fsm_finish
+000002c0  00010a02 R_MIPS_32              00000cc0   tbq_fsm_idle
+000002e0  00019902 R_MIPS_32              00000d0c   tbq_get_prio_by_avg_pkt_size
+00000300  00011b02 R_MIPS_32              00000d30   tbq_fsm_rate_prepare
+00000320  00019c02 R_MIPS_32              00000da0   tbq_flow_reach_max
+00000340  00015402 R_MIPS_32              00000e1c   tbq_drop_lower_flow_packet
+00000360  0001a602 R_MIPS_32              00000e44   tbq_get_max_p2p_flow_num
+00000380  00019102 R_MIPS_32              00000e78   tbq_bucket_sched_cleanup
+000003c0  00013c02 R_MIPS_32              00001084   tbq_match_weixin_flow
+000003e0  00017e02 R_MIPS_32              000011e4   tbq_match_cyhx_flow
+00000400  00013602 R_MIPS_32              000012ac   tbq_match_lol_flow
+00000420  00011f02 R_MIPS_32              00001374   tbq_match_mhxy_flow
+00000440  00010902 R_MIPS_32              000013fc   tbq_match_hyxd_flow
+00000460  00010802 R_MIPS_32              000014b4   tbq_match_wz_flow
+00000480  00018702 R_MIPS_32              0000155c   tbq_match_qq_flow
+000004a0  00018b02 R_MIPS_32              00001628   tbq_match_iqiyi_flow
+000004c0  00012d02 R_MIPS_32              000016bc   tbq_match_thunder_flow
+000004e0  00011602 R_MIPS_32              00001758   tbq_dump_prio_count
+00000520  00015702 R_MIPS_32              00001828   tbq_bucket_sched_init
+00000580  0000f902 R_MIPS_32              00001984   tbq_flow_backlog_enqueue
+000005c0  00011402 R_MIPS_32              00001a88   tbq_flow_backlog_attach
+00000600  00018902 R_MIPS_32              00001bfc   tbq_flow_backlog_max_octets
+00000640  00018f02 R_MIPS_32              00001d34   tbq_flow_backlog_dequeue
+00000660  00011e02 R_MIPS_32              00001df0   tbq_flow_backlog_drop
+00000680  00016902 R_MIPS_32              00001ee0   tbq_flow_backlog_detach
+000006c0  00011702 R_MIPS_32              00001fe4   tbq_flow_backlog_drr_schedule
+00000720  0000ef02 R_MIPS_32              00002248   tbq_user_cleanup
+00000740  00017902 R_MIPS_32              00002264   tbq_user_sched_cleanup
+00000760  00011902 R_MIPS_32              000023dc   tbq_user_track_free
+00000780  00012402 R_MIPS_32              00002450   tbq_on_user_free
+000007a0  00015102 R_MIPS_32              00002498   tbq_token_ctrl_feed
+000007c0  00014102 R_MIPS_32              00002538   tbq_token_ctrl_consume
+000007e0  00010d02 R_MIPS_32              00002594   tbq_token_ctrl_deactivate
+00000800  00010302 R_MIPS_32              00002660   tbq_user_consume
+00000820  00018a02 R_MIPS_32              0000278c   tbq_packet_ctrl_consume
+00000840  00012202 R_MIPS_32              000028f4   tbq_flow_backlog_try_dequeue
+00000860  00014b02 R_MIPS_32              00002aa4   tbq_bucket_dequeue
+00000880  00017f02 R_MIPS_32              00002ba4   tbq_user_dequeue
+000008a0  00016202 R_MIPS_32              00002cbc   tbq_timer_assert_unused
+000008c0  00016402 R_MIPS_32              00002d08   tbq_parse_ct_info
+00000900  00013d02 R_MIPS_32              00002fa4   __tbq_p2p_limit
+00000940  00018302 R_MIPS_32              00003170   tbq_on_flow_free
+00000960  00011a02 R_MIPS_32              00003210   tbq_allow_privilege_flow
+00000980  0000ed02 R_MIPS_32              00003290   tbq_is_priv_flow
+000009a0  0000f802 R_MIPS_32              00003328   tbq_analyse_packet
+000009c0  00011c02 R_MIPS_32              00003438   tbq_global_set_config
+00000a00  00019702 R_MIPS_32              00003740   tbq_enqueue
+00000a20  00013102 R_MIPS_32              00003958   tbq_token_ctrl_activate
+00000a40  00018802 R_MIPS_32              00003a88   tbq_timer_feed
+00000a60  00016302 R_MIPS_32              00003bd4   tbq_timer_func
+00000a80  00017502 R_MIPS_32              00003eb0   tbq_resume_user_group_token
+00000aa0  00015802 R_MIPS_32              000040a8   tbq_update_user_token
+00000ac0  00016702 R_MIPS_32              000041a4   tbq_get_prio_by_server_name
+00000ae0  00016a02 R_MIPS_32              00004254   tbq_get_http_prio
+00000b00  0000f302 R_MIPS_32              00004358   tbq_parse_https_info
+00000b20  0000fb02 R_MIPS_32              0000450c   tbq_match_https_flow
+00000b40  00012802 R_MIPS_32              000045ec   tbq_get_http_header_value
+00000b60  00011102 R_MIPS_32              00004684   tbq_parse_http_info
+00000b80  00015d02 R_MIPS_32              000048d0   tbq_match_http_flow
+00000ba0  00013a02 R_MIPS_32              00004abc   tbq_match_p2p_flow
+00000bc0  00010c02 R_MIPS_32              00004b14   tbq_init_p2p_port
+00000be0  00016f02 R_MIPS_32              00004b48   tbq_dump_tc_info
+00000c00  00019a02 R_MIPS_32              00004d88   tbq_user_init
+00000c20  00014a02 R_MIPS_32              00004f34   tbq_user_sched_init
+00000c40  00013e02 R_MIPS_32              00005058   tbq_online_ip_track_alloc
+00000c60  00013802 R_MIPS_32              000051ac   tbq_filter_packet_by_nf_conn
+00000c80  00016e02 R_MIPS_32              00005720   tbq_timer_cleanup
+00000ca0  00018402 R_MIPS_32              00005758   tbq_global_cleanup
+00000cc0  00014c02 R_MIPS_32              0000578c   nos_tbq_fini
+00000ce0  00019002 R_MIPS_32              0000583c   tbq_timer_init
+00000d00  00010402 R_MIPS_32              000058e4   tbq_global_init
+00000d20  00019302 R_MIPS_32              000059a4   nos_tbq_init
+00000d60  00010b02 R_MIPS_32              00006430   tbq_app_match
+00000ea0  00011d02 R_MIPS_32              00006c30   tbq_device_unregister
+00000f00  00018102 R_MIPS_32              00006f60   tbq_sysfs_unregister
+00000fe0  00016002 R_MIPS_32              00007c94   tbq_config_cleanup
+00001040  00015f02 R_MIPS_32              00007e8c   tbq_sysfs_register
+00001060  0000fc02 R_MIPS_32              00007edc   tbq_device_register
+000012c0  0000f102 R_MIPS_32              0000a890   init_user_tbq
+000012e0  00011302 R_MIPS_32              0000a90c   fini_user_tbq
+00001300  00012b02 R_MIPS_32              0000a9f4   user_tbq_show_all_rule
+00001360  00019d02 R_MIPS_32              0000ac34   user_tbq_list_flush
+000013a0  00018502 R_MIPS_32              0000af3c   user_tbq_list_add
+00001400  00019802 R_MIPS_32              0000b37c   user_tbq_list_del
+00001420  00011502 R_MIPS_32              0000b4a0   update_user_tbq_info
+
+--- RELEVANT STRINGS ---
+nos_tbq_fini
+nos_tbq_init
+__nos_tbq_enqueue
+__tbq_p2p_limit
+tbq_timer_func
+tbq_reinject
+tbq_parse_ct_info
+tbq_user_init
+tbq_param_set_uint
+tbq_param_set_max_backlog_packets
+tbq_param_set_latency_shift
+tbq_param_set_disable_timeout
+tbq_release
+tbq_handle_command
+tbq_enable
+tbq_disable
+tbq_json_string_map
+tbq_config_group_rule_init
+tbq_json_array_map
+tbq_json_integer_map
+tbq_rule_init
+tbq_wanid_init
+tbq_token_rule_init
+tbq_token_config_init
+tbq_user_rule_init
+tbq_str_to_weight
+tbq_ip_rule_init
+tbq_reload_config
+tbq_config_dump
+tbq_rule_dump
+tbq_config_parse_rate
+tbq_write
+tbq_register_chrdev
+tbq_disable_timeout
+tbq_latency_shift
+tbq_max_backlog_packets
+init_user_tbq
+user_tbq_list_del
+update_user_tbq_info
+user_tbq_set
+tbq_caulate_user_tbq
+user_tbq_list_add
+nos ipgroup tbq info:
+nos users tbq  now info:
+wan_tx_bytes
+wan_rx_bytes
+bytes per jiffy: %d
+6*TBQ* skb is null
+6*TBQ* ct is null
+6*TBQ* iph is null
+6*TBQ* %s %d: the verdict is no support and verdict = %d
+6*TBQ* notify disable done in timer func
+6*TBQ* user init: %pI4h@[%s], upj: %d]
+6*TBQ* nos_tbq_fini() OK
+6*TBQ* tbq_token_ctrl size:   %zu
+6*TBQ* tbq_user size:         %zu
+6*TBQ* tbq_user_sched size:   %zu
+6*TBQ* tbq_bucket size:       %zu
+6*TBQ* tbq_bucket_sched size: %zu
+6*TBQ* tbq_flow_track size:   %zu
+6*TBQ* tbq_user_track size:   %zu
+6*TBQ* tbq_backlog size:      %zu
+6*TBQ* tbq_flow_backlog size: %zu
+6*TBQ* nos_flow_track size:   %zu
+6*TBQ* nos_user_track size:   %zu
+6*TBQ* nf_conn size:          %zu
+6*TBQ* sk_buff size:          %zu
+6*TBQ* TBQ_BACKLOG_PACKETS_MAX:  %d
+6*TBQ* TBQ_LATENCY_SHIFT_MAX:    %d
+6*TBQ* TBQ_DISABLE_TIMEOUT_MAX:  %d
+6*TBQ* HZ: %d
+6*TBQ* tbq_device_init failed: %d
+6*TBQ* nos_tbq_init() OK
+6*TBQ* %s %d: the pkt malloc failed and drop the skb
+6*TBQ* bad uint parameter: [%.*s]
+6*TBQ* bad rate limit: [%s]
+6*TBQ* bad max_backlog_packets: %u, out of range: [%d, %d]
+6*TBQ* max_backlog_packets set to %u
+6*TBQ* bad latency_shift: %u, out of range: [%d, %d]
+6*TBQ* latency_shift set to %u
+6*TBQ* bad disable_timeout: %u, out of range: [%d, %d]
+6*TBQ* disable_timeout set to %u
+tbq status: %s
+6*TBQ* tbq enabled
+6*TBQ* disabling tbq ...
+6*TBQ* tbq enqueue handlers is disabled
+6*TBQ* disable timeout
+6*TBQ* disable canceled on signal
+6*TBQ* disable failed, unknown error: %d
+6*TBQ* tbq backlog is cleared
+6*TBQ* tbq disabled
+6*TBQ* %s not set
+6*TBQ* %s is not string
+6*TBQ* %s.length == %d, out of range: [0, %d]
+6*TBQ* %s.length == %d, out of memory
+6*TBQ* token_rule not set
+6*TBQ* token_rule is not object
+6*TBQ* %s is not array
+6*TBQ* %s is empty
+6*TBQ* %s[%d] init failed, total: %d
+6*TBQ* int_value not set
+6*TBQ* wanid=%02x set
+6*TBQ* wanid parse failed
+6*TBQ* config.Rules[n].UploadLimit parse failed
+6*TBQ* config.Rules[n].DownloadLimit parse failed
+6*TBQ* config overflow, cur_size: %d, block_size: %d, max_size: %d
+&tbq_sysfs_mutex
+&tbq_mutex
+====tbq register chr dev region failed. %d
+6*TBQ* %s is not integer
+6*TBQ* %s == %ld, out of range: [%ld, %ld]
+6*TBQ* tbq is running
+6*TBQ* tbq is not running
+6*TBQ* config is not object
+6*TBQ* MaxBacklogPackets set to: %ld
+6*TBQ* LatencyShift set to: %ld
+6*TBQ* DisableTimeout set to: %ld
+6*TBQ* reloading tbq ...
+6*TBQ* tbq reloaded
+6*TBQ* ------------- TBQ CONFIG (rule count: %u) -------------
+6*TBQ* ~~~~~~~~~ TBQ RULE [%s] ~~~~~~~~~
+6*TBQ* ip rule %d: [%pI4h, %pI4h], weight: %u
+6*TBQ* user rule %d: [%.*s], weight: %u
+6*TBQ* app rule %d: %u
+6*TBQ* global %s tokens_per_jiffy: %d
+6*TBQ* user   %s tokens_per_jiffy: %d
+6*TBQ* max_backlog_packets:  %u
+6*TBQ* latency_shift:        %u
+6*TBQ* disable_timeout:      %u
+6*TBQ* ------------------------------------------
+6*TBQ* config size: %d
+6*TBQ* bad weight: [%s]
+6*TBQ* weight == %u, out of range: [%u, %u]
+6*TBQ* bad ip: [%s]
+6*TBQ* "%s" => "%pI4h - %pI4h"
+6*TBQ* IpMin > IpMax, swapped to: %pI4h - %pI4h
+6*TBQ* "%s-%s" => "%pI4h - %pI4h"
+6*TBQ* bad user_desc: [%s], name_len(%d) >= %d
+6*TBQ* init_user_tbq_hash_table ok
+6*TBQ* rate up_limit => %lu  down_limit => %lu  bytes per sec
+6*TBQ* update user token:%02X:%02X:%02X %d %d
+6*TBQ* Alloc node failed
+6*TBQ* found mac:%02X:%02X
+6*TBQ* node not find in user_tbq_list
+6*TBQ* user node update failed
+tbq_is_priv_flow
+tbq_bucket_init
+tbq_user_cleanup
+init_user_tbq
+tbq_parse_https_info
+nos_tbq_enqueue
+tbq_analyse_packet
+tbq_flow_backlog_enqueue
+tbq_match_https_flow
+tbq_device_register
+tbq_track_set_weight
+tbq_user_consume
+tbq_global_init
+tbq_get_prio_by_weight
+tbq_match_wz_flow
+tbq_match_hyxd_flow
+tbq_fsm_idle
+tbq_app_match
+tbq_init_p2p_port
+tbq_token_ctrl_deactivate
+tbq_parse_http_info
+fini_user_tbq
+tbq_flow_backlog_attach
+update_user_tbq_info
+tbq_dump_prio_count
+tbq_flow_backlog_drr_schedule
+tbq_packet_ctrl_backlog_update
+tbq_user_track_free
+tbq_allow_privilege_flow
+tbq_fsm_rate_prepare
+tbq_global_set_config
+tbq_device_unregister
+tbq_flow_backlog_drop
+tbq_match_mhxy_flow
+tbq_flow_backlog_try_dequeue
+tbq_on_user_free
+tbq_version
+tbq_get_http_header_value
+user_tbq_show_all_rule
+tbq_match_thunder_flow
+tbq_user_backlog_update
+tbq_token_ctrl_activate
+tbq_fsm_rate_confirm
+tbq_match_lol_flow
+tbq_filter_packet_by_nf_conn
+tbq_bucket_cleanup
+tbq_match_p2p_flow
+tbq_match_weixin_flow
+__tbq_p2p_limit
+tbq_online_ip_track_alloc
+tbq_token_ctrl_consume
+tbq_flow_base_analyse
+tbq_get_real_tokens
+tbq_user_sched_init
+tbq_bucket_dequeue
+nos_tbq_fini
+wan_rx_bytes
+tbq_token_ctrl_assert_unused
+tbq_token_ctrl_feed
+tbq_drop_lower_flow_packet
+tbq_bucket_sched_init
+tbq_update_user_token
+tbq_match_http_flow
+tbq_sysfs_register
+tbq_config_cleanup
+tbq_timer_assert_unused
+tbq_timer_func
+tbq_parse_ct_info
+tbq_get_prio_by_server_name
+tbq_flow_backlog_detach
+tbq_get_http_prio
+tbq_timer_cleanup
+tbq_dump_tc_info
+wan_tx_bytes
+tbq_prio_count
+tbq_resume_user_group_token
+tbq_fsm_finish
+tbq_user_sched_cleanup
+tbq_weight_table
+tbq_match_cyhx_flow
+tbq_user_dequeue
+tbq_token_ctrl_init
+tbq_sysfs_unregister
+tbq_on_flow_free
+tbq_global_cleanup
+user_tbq_list_add
+tbq_match_qq_flow
+tbq_timer_feed
+tbq_flow_backlog_max_octets
+tbq_packet_ctrl_consume
+tbq_match_iqiyi_flow
+tbq_user_sched_update
+user_tbq_hash_table
+tbq_flow_backlog_dequeue
+tbq_timer_init
+tbq_bucket_sched_cleanup
+nos_tbq_init
+tbq_enqueue
+user_tbq_list_del
+tbq_get_prio_by_avg_pkt_size
+tbq_user_init
+tbq_flow_reach_max
+user_tbq_list_flush
+tbq_p2p_limit
+tbq_get_max_p2p_flow_num
+
+
+===== MODULE port_filter.ko =====
+
+--- RELEVANT SYMBOLS ---
+         U clear_online_ip_flag
+         U online_ip_hash
+         U online_ip_hash_size
+
+--- FUNCTION/OWNER (6, 0, 'cleanup_module-0x1270') triggered by: 45c:	3c170000 	lui	s7,0x0	45c: R_MIPS_HI16	online_ip_hash_size ---
+     3ec:	24450008 	addiu	a1,v0,8
+     3f0:	ac660004 	sw	a2,4(v1)
+     3f4:	acc30000 	sw	v1,0(a2)
+     3f8:	8c43000c 	lw	v1,12(v0)
+     3fc:	8c460008 	lw	a2,8(v0)
+     400:	ac440004 	sw	a0,4(v0)
+     404:	ac440000 	sw	a0,0(v0)
+     408:	acc30004 	sw	v1,4(a2)
+     40c:	ac660000 	sw	a2,0(v1)
+     410:	ac45000c 	sw	a1,12(v0)
+     414:	ac450008 	sw	a1,8(v0)
+     418:	ac400014 	sw	zero,20(v0)
+     41c:	00402021 	move	a0,v0
+     420:	02c0f809 	jalr	s6
+     424:	ac400010 	sw	zero,16(v0)
+     428:	8e630000 	lw	v1,0(s3)
+     42c:	02602021 	move	a0,s3
+     430:	16b3ffec 	bne	s5,s3,3e4 <cleanup_module-0xe8c>
+     434:	02601021 	move	v0,s3
+     438:	0240f809 	jalr	s2
+     43c:	00000000 	nop
+     440:	8e940000 	lw	s4,0(s4)
+     444:	1697ffd8 	bne	s4,s7,3a8 <cleanup_module-0xec8>
+     448:	00000000 	nop
+     44c:	0240f809 	jalr	s2
+     450:	00000000 	nop
+     454:	0200f809 	jalr	s0
+     458:	00000000 	nop
+     45c:	3c170000 	lui	s7,0x0	45c: R_MIPS_HI16	online_ip_hash_size
+     460:	8ee20000 	lw	v0,0(s7)	460: R_MIPS_LO16	online_ip_hash_size
+     464:	10400025 	beqz	v0,4fc <cleanup_module-0xd74>
+     468:	0000b021 	move	s6,zero
+     46c:	3c150000 	lui	s5,0x0	46c: R_MIPS_HI16	online_ip_hash
+     470:	2411ffbf 	li	s1,-65
+     474:	8ea20000 	lw	v0,0(s5)	474: R_MIPS_LO16	online_ip_hash
+     478:	0016a0c0 	sll	s4,s6,0x3
+     47c:	00541021 	addu	v0,v0,s4
+     480:	8c530000 	lw	s3,0(v0)
+     484:	10530019 	beq	v0,s3,4ec <cleanup_module-0xd84>
+     488:	8ee20000 	lw	v0,0(s7)	488: R_MIPS_LO16	online_ip_hash_size
+     48c:	8e62000c 	lw	v0,12(s3)
+     490:	00511024 	and	v0,v0,s1
+     494:	0200f809 	jalr	s0
+     498:	ae62000c 	sw	v0,12(s3)
+     49c:	8e620038 	lw	v0,56(s3)
+     4a0:	26660038 	addiu	a2,s3,56
+     4a4:	10c2000a 	beq	a2,v0,4d0 <cleanup_module-0xda0>
+     4a8:	2442ff70 	addiu	v0,v0,-144
+     4ac:	9045009b 	lbu	a1,155(v0)
+     4b0:	9044009a 	lbu	a0,154(v0)
+     4b4:	8c430090 	lw	v1,144(v0)
+     4b8:	00b12824 	and	a1,a1,s1
+     4bc:	00912024 	and	a0,a0,s1
+     4c0:	a045009b 	sb	a1,155(v0)
+     4c4:	a044009a 	sb	a0,154(v0)
+     4c8:	14c3fff8 	bne	a2,v1,4ac <cleanup_module-0xdc4>
+     4cc:	2462ff70 	addiu	v0,v1,-144
+     4d0:	0240f809 	jalr	s2
+     4d4:	00000000 	nop
+     4d8:	8ea20000 	lw	v0,0(s5)	4d8: R_MIPS_LO16	online_ip_hash
+     4dc:	8e730000 	lw	s3,0(s3)
+     4e0:	00541021 	addu	v0,v0,s4
+     4e4:	1662ffe9 	bne	s3,v0,48c <cleanup_module-0xde4>
+     4e8:	8ee20000 	lw	v0,0(s7)	4e8: R_MIPS_LO16	online_ip_hash_size
+     4ec:	26d60001 	addiu	s6,s6,1
+     4f0:	02c2102b 	sltu	v0,s6,v0
+     4f4:	1440ffe0 	bnez	v0,478 <cleanup_module-0xdf8>
+     4f8:	8ea20000 	lw	v0,0(s5)	4f8: R_MIPS_LO16	online_ip_hash
+     4fc:	0240c821 	move	t9,s2
+     500:	8fbf0034 	lw	ra,52(sp)
+     504:	8fbe0030 	lw	s8,48(sp)
+     508:	8fb7002c 	lw	s7,44(sp)
+     50c:	8fb60028 	lw	s6,40(sp)
+     510:	8fb50024 	lw	s5,36(sp)
+     514:	8fb40020 	lw	s4,32(sp)
+     518:	8fb3001c 	lw	s3,28(sp)
+     51c:	8fb20018 	lw	s2,24(sp)
+     520:	8fb10014 	lw	s1,20(sp)
+     524:	8fb00010 	lw	s0,16(sp)
+     528:	03200008 	jr	t9
+     52c:	27bd0038 	addiu	sp,sp,56
+     530:	3c120000 	lui	s2,0x0	530: R_MIPS_HI16	local_bh_enable
+     534:	08000113 	j	44c <cleanup_module-0xe24>	534: R_MIPS_26	.text
+     538:	26520000 	addiu	s2,s2,0	538: R_MIPS_LO16	local_bh_enable
+     53c:	3c020000 	lui	v0,0x0	53c: R_MIPS_HI16	.data..read_mostly
+     540:	8c420000 	lw	v0,0(v0)	540: R_MIPS_LO16	.data..read_mostly
+     544:	10400007 	beqz	v0,564 <cleanup_module-0xd0c>
+     548:	00802821 	move	a1,a0
+     54c:	3c190000 	lui	t9,0x0	54c: R_MIPS_HI16	kmem_cache_free
+     550:	00402021 	move	a0,v0
+     554:	24a5ff40 	addiu	a1,a1,-192
+     558:	27390000 	addiu	t9,t9,0	558: R_MIPS_LO16	kmem_cache_free
+     55c:	03200008 	jr	t9
+     560:	00000000 	nop
+     564:	03e00008 	jr	ra
+     568:	00000000 	nop
+     56c:	27bdffa0 	addiu	sp,sp,-96
+     570:	afbf005c 	sw	ra,92(sp)
+     574:	afbe0058 	sw	s8,88(sp)
+     578:	afb70054 	sw	s7,84(sp)
+     57c:	afb60050 	sw	s6,80(sp)
+     580:	afb5004c 	sw	s5,76(sp)
+     584:	afb40048 	sw	s4,72(sp)
+     588:	afb30044 	sw	s3,68(sp)
+     58c:	afb20040 	sw	s2,64(sp)
+     590:	afb1003c 	sw	s1,60(sp)
+     594:	afb00038 	sw	s0,56(sp)
+     598:	2c830005 	sltiu	v1,a0,5
+     59c:	00801021 	move	v0,a0
+     5a0:	14600019 	bnez	v1,608 <cleanup_module-0xc68>
+     5a4:	00a0a821 	move	s5,a1
+     5a8:	afa20010 	sw	v0,16(sp)
+     5ac:	3c040000 	lui	a0,0x0	5ac: R_MIPS_HI16	.rodata
+     5b0:	3c070000 	lui	a3,0x0	5b0: R_MIPS_HI16	$LC12
+     5b4:	3c020000 	lui	v0,0x0	5b4: R_MIPS_HI16	bm_k_error
+     5b8:	2484001c 	addiu	a0,a0,28	5b8: R_MIPS_LO16	.rodata
+     5bc:	24e70000 	addiu	a3,a3,0	5bc: R_MIPS_LO16	$LC12
+     5c0:	240501ab 	li	a1,427
+     5c4:	24420000 	addiu	v0,v0,0	5c4: R_MIPS_LO16	bm_k_error
+     5c8:	0040f809 	jalr	v0
+     5cc:	24060006 	li	a2,6
+     5d0:	241e0002 	li	s8,2
+...
+     8dc:	8e420010 	lw	v0,16(s2)
+     8e0:	14430006 	bne	v0,v1,8fc <cleanup_module-0x974>
+     8e4:	00000000 	nop
+     8e8:	08000347 	j	d1c <cleanup_module-0x554>	8e8: R_MIPS_26	.text
+     8ec:	00000000 	nop
+     8f0:	8e420010 	lw	v0,16(s2)
+     8f4:	10430109 	beq	v0,v1,d1c <cleanup_module-0x554>
+     8f8:	00000000 	nop
+     8fc:	8e520000 	lw	s2,0(s2)
+     900:	1653fffb 	bne	s2,s3,8f0 <cleanup_module-0x980>
+     904:	00000000 	nop
+     908:	3c110000 	lui	s1,0x0	908: R_MIPS_HI16	local_bh_enable
+     90c:	26310000 	addiu	s1,s1,0	90c: R_MIPS_LO16	local_bh_enable
+     910:	0220f809 	jalr	s1
+     914:	241e0006 	li	s8,6
+     918:	8ea20000 	lw	v0,0(s5)
+     91c:	3c040000 	lui	a0,0x0	91c: R_MIPS_HI16	.rodata
+     920:	3c070000 	lui	a3,0x0	920: R_MIPS_HI16	$LC8
+     924:	afa20010 	sw	v0,16(sp)
+     928:	3c020000 	lui	v0,0x0	928: R_MIPS_HI16	bm_k_error
+     92c:	24840050 	addiu	a0,a0,80	92c: R_MIPS_LO16	.rodata
+     930:	24e70000 	addiu	a3,a3,0	930: R_MIPS_LO16	$LC8
+     934:	24050080 	li	a1,128
+     938:	24420000 	addiu	v0,v0,0	938: R_MIPS_LO16	bm_k_error
+     93c:	0040f809 	jalr	v0
+     940:	24060006 	li	a2,6
+     944:	0200f809 	jalr	s0
+     948:	00000000 	nop
+     94c:	3c170000 	lui	s7,0x0	94c: R_MIPS_HI16	online_ip_hash_size
+     950:	8ee20000 	lw	v0,0(s7)	950: R_MIPS_LO16	online_ip_hash_size
+     954:	10400025 	beqz	v0,9ec <cleanup_module-0x884>
+     958:	0000b021 	move	s6,zero
+     95c:	3c140000 	lui	s4,0x0	95c: R_MIPS_HI16	online_ip_hash
+     960:	2412ffbf 	li	s2,-65
+     964:	8e820000 	lw	v0,0(s4)	964: R_MIPS_LO16	online_ip_hash
+     968:	0016a8c0 	sll	s5,s6,0x3
+     96c:	00551021 	addu	v0,v0,s5
+     970:	8c530000 	lw	s3,0(v0)
+     974:	10530019 	beq	v0,s3,9dc <cleanup_module-0x894>
+     978:	8ee20000 	lw	v0,0(s7)	978: R_MIPS_LO16	online_ip_hash_size
+     97c:	8e62000c 	lw	v0,12(s3)
+     980:	00521024 	and	v0,v0,s2
+     984:	0200f809 	jalr	s0
+     988:	ae62000c 	sw	v0,12(s3)
+     98c:	8e620038 	lw	v0,56(s3)
+     990:	26660038 	addiu	a2,s3,56
+     994:	10c2000a 	beq	a2,v0,9c0 <cleanup_module-0x8b0>
+     998:	2442ff70 	addiu	v0,v0,-144
+     99c:	9045009b 	lbu	a1,155(v0)
+     9a0:	9044009a 	lbu	a0,154(v0)
+     9a4:	8c430090 	lw	v1,144(v0)
+     9a8:	00b22824 	and	a1,a1,s2
+     9ac:	00922024 	and	a0,a0,s2
+     9b0:	a045009b 	sb	a1,155(v0)
+     9b4:	a044009a 	sb	a0,154(v0)
+     9b8:	14c3fff8 	bne	a2,v1,99c <cleanup_module-0x8d4>
+     9bc:	2462ff70 	addiu	v0,v1,-144
+     9c0:	0220f809 	jalr	s1
+     9c4:	00000000 	nop
+     9c8:	8e820000 	lw	v0,0(s4)	9c8: R_MIPS_LO16	online_ip_hash
+     9cc:	8e730000 	lw	s3,0(s3)
+     9d0:	00551021 	addu	v0,v0,s5
+     9d4:	1662ffe9 	bne	s3,v0,97c <cleanup_module-0x8f4>
+     9d8:	8ee20000 	lw	v0,0(s7)	9d8: R_MIPS_LO16	online_ip_hash_size
+     9dc:	26d60001 	addiu	s6,s6,1
+     9e0:	02c2102b 	sltu	v0,s6,v0
+     9e4:	1440ffe0 	bnez	v0,968 <cleanup_module-0x908>
+     9e8:	8e820000 	lw	v0,0(s4)	9e8: R_MIPS_LO16	online_ip_hash
+     9ec:	0220f809 	jalr	s1
+     9f0:	00000000 	nop
+     9f4:	03c01021 	move	v0,s8
+     9f8:	8fbf005c 	lw	ra,92(sp)
+     9fc:	8fbe0058 	lw	s8,88(sp)
+     a00:	8fb70054 	lw	s7,84(sp)
+     a04:	8fb60050 	lw	s6,80(sp)
+     a08:	8fb5004c 	lw	s5,76(sp)
+     a0c:	8fb40048 	lw	s4,72(sp)
+     a10:	8fb30044 	lw	s3,68(sp)
+     a14:	8fb20040 	lw	s2,64(sp)
+     a18:	8fb1003c 	lw	s1,60(sp)
+     a1c:	8fb00038 	lw	s0,56(sp)
+     a20:	03e00008 	jr	ra
+     a24:	27bd0060 	addiu	sp,sp,96
+     a28:	3c100000 	lui	s0,0x0	a28: R_MIPS_HI16	local_bh_disable
+     a2c:	26100000 	addiu	s0,s0,0	a2c: R_MIPS_LO16	local_bh_disable
+     a30:	0200f809 	jalr	s0
+     a34:	00000000 	nop
+     a38:	3c140000 	lui	s4,0x0	a38: R_MIPS_HI16	k_port_filter_list
+     a3c:	8e820000 	lw	v0,0(s4)	a3c: R_MIPS_LO16	k_port_filter_list
+     a40:	26930000 	addiu	s3,s4,0	a40: R_MIPS_LO16	k_port_filter_list
+     a44:	1053000d 	beq	v0,s3,a7c <cleanup_module-0x7f4>
+     a48:	00000000 	nop
+     a4c:	8ea40000 	lw	a0,0(s5)
+     a50:	8c430010 	lw	v1,16(v0)
+     a54:	14640006 	bne	v1,a0,a70 <cleanup_module-0x800>
+     a58:	00000000 	nop
+     a5c:	080003ce 	j	f38 <cleanup_module-0x338>	a5c: R_MIPS_26	.text
+     a60:	00000000 	nop
+     a64:	8c430010 	lw	v1,16(v0)
+     a68:	10830133 	beq	a0,v1,f38 <cleanup_module-0x338>
+     a6c:	00000000 	nop
+     a70:	8c420000 	lw	v0,0(v0)
+     a74:	1453fffb 	bne	v0,s3,a64 <cleanup_module-0x80c>
+     a78:	00000000 	nop
+     a7c:	3c110000 	lui	s1,0x0	a7c: R_MIPS_HI16	local_bh_enable
+     a80:	26310000 	addiu	s1,s1,0	a80: R_MIPS_LO16	local_bh_enable
+     a84:	0220f809 	jalr	s1
+     a88:	00000000 	nop
+     a8c:	3c020000 	lui	v0,0x0	a8c: R_MIPS_HI16	.data..read_mostly
+     a90:	8c440000 	lw	a0,0(v0)	a90: R_MIPS_LO16	.data..read_mostly
+     a94:	3c020000 	lui	v0,0x0	a94: R_MIPS_HI16	kmem_cache_alloc
+     a98:	24420000 	addiu	v0,v0,0	a98: R_MIPS_LO16	kmem_cache_alloc
+     a9c:	0040f809 	jalr	v0
+     aa0:	34058020 	li	a1,0x8020
+     aa4:	1040017f 	beqz	v0,10a4 <cleanup_module-0x1cc>
+     aa8:	00409021 	move	s2,v0
+     aac:	24420008 	addiu	v0,v0,8
+     ab0:	ae42000c 	sw	v0,12(s2)
+     ab4:	ae420008 	sw	v0,8(s2)
+     ab8:	3c020000 	lui	v0,0x0	ab8: R_MIPS_HI16	memcpy
+     abc:	02a02821 	move	a1,s5
+     ac0:	26440010 	addiu	a0,s2,16
+...
+     f14:	3c020000 	lui	v0,0x0	f14: R_MIPS_HI16	call_rcu_sched
+     f18:	268400c0 	addiu	a0,s4,192
+     f1c:	24420000 	addiu	v0,v0,0	f1c: R_MIPS_LO16	call_rcu_sched
+     f20:	0040f809 	jalr	v0
+     f24:	24a5053c 	addiu	a1,a1,1340	f24: R_MIPS_LO16	.text
+     f28:	0240f809 	jalr	s2
+     f2c:	00000000 	nop
+     f30:	08000326 	j	c98 <cleanup_module-0x5d8>	f30: R_MIPS_26	.text
+     f34:	00000000 	nop
+     f38:	1040fed0 	beqz	v0,a7c <cleanup_module-0x7f4>
+     f3c:	00000000 	nop
+     f40:	3c110000 	lui	s1,0x0	f40: R_MIPS_HI16	local_bh_enable
+     f44:	26310000 	addiu	s1,s1,0	f44: R_MIPS_LO16	local_bh_enable
+     f48:	0220f809 	jalr	s1
+     f4c:	241e0005 	li	s8,5
+     f50:	8ea20000 	lw	v0,0(s5)
+     f54:	3c040000 	lui	a0,0x0	f54: R_MIPS_HI16	.rodata
+     f58:	3c070000 	lui	a3,0x0	f58: R_MIPS_HI16	$LC7
+     f5c:	afa20010 	sw	v0,16(sp)
+     f60:	3c020000 	lui	v0,0x0	f60: R_MIPS_HI16	bm_k_error
+     f64:	24840030 	addiu	a0,a0,48	f64: R_MIPS_LO16	.rodata
+     f68:	24e70000 	addiu	a3,a3,0	f68: R_MIPS_LO16	$LC7
+     f6c:	240500b1 	li	a1,177
+     f70:	24420000 	addiu	v0,v0,0	f70: R_MIPS_LO16	bm_k_error
+     f74:	0040f809 	jalr	v0
+     f78:	24060006 	li	a2,6
+     f7c:	0200f809 	jalr	s0
+     f80:	00000000 	nop
+     f84:	3c170000 	lui	s7,0x0	f84: R_MIPS_HI16	online_ip_hash_size
+     f88:	8ee20000 	lw	v0,0(s7)	f88: R_MIPS_LO16	online_ip_hash_size
+     f8c:	1040fe97 	beqz	v0,9ec <cleanup_module-0x884>
+     f90:	0000b021 	move	s6,zero
+     f94:	3c140000 	lui	s4,0x0	f94: R_MIPS_HI16	online_ip_hash
+     f98:	2412ffbf 	li	s2,-65
+     f9c:	8e820000 	lw	v0,0(s4)	f9c: R_MIPS_LO16	online_ip_hash
+     fa0:	0016a8c0 	sll	s5,s6,0x3
+     fa4:	00551021 	addu	v0,v0,s5
+     fa8:	8c530000 	lw	s3,0(v0)
+     fac:	10530019 	beq	v0,s3,1014 <cleanup_module-0x25c>
+     fb0:	8ee20000 	lw	v0,0(s7)	fb0: R_MIPS_LO16	online_ip_hash_size
+     fb4:	8e62000c 	lw	v0,12(s3)
+     fb8:	00521024 	and	v0,v0,s2
+     fbc:	0200f809 	jalr	s0
+     fc0:	ae62000c 	sw	v0,12(s3)
+     fc4:	8e620038 	lw	v0,56(s3)
+     fc8:	26660038 	addiu	a2,s3,56
+     fcc:	10c2000a 	beq	a2,v0,ff8 <cleanup_module-0x278>
+     fd0:	2442ff70 	addiu	v0,v0,-144
+     fd4:	9045009b 	lbu	a1,155(v0)
+     fd8:	9044009a 	lbu	a0,154(v0)
+     fdc:	8c430090 	lw	v1,144(v0)
+     fe0:	00b22824 	and	a1,a1,s2
+     fe4:	00922024 	and	a0,a0,s2
+     fe8:	a045009b 	sb	a1,155(v0)
+     fec:	a044009a 	sb	a0,154(v0)
+     ff0:	14c3fff8 	bne	a2,v1,fd4 <cleanup_module-0x29c>
+     ff4:	2462ff70 	addiu	v0,v1,-144
+     ff8:	0220f809 	jalr	s1
+     ffc:	00000000 	nop
+    1000:	8e820000 	lw	v0,0(s4)	1000: R_MIPS_LO16	online_ip_hash
+    1004:	8e730000 	lw	s3,0(s3)
+    1008:	00551021 	addu	v0,v0,s5
+    100c:	1662ffe9 	bne	s3,v0,fb4 <cleanup_module-0x2bc>
+    1010:	8ee20000 	lw	v0,0(s7)	1010: R_MIPS_LO16	online_ip_hash_size
+    1014:	26d60001 	addiu	s6,s6,1
+    1018:	02c2102b 	sltu	v0,s6,v0
+    101c:	1440ffdf 	bnez	v0,f9c <cleanup_module-0x2d4>
+    1020:	00000000 	nop
+    1024:	0220f809 	jalr	s1
+    1028:	00000000 	nop
+    102c:	0800027e 	j	9f8 <cleanup_module-0x878>	102c: R_MIPS_26	.text
+    1030:	03c01021 	move	v0,s8
+    1034:	0220f809 	jalr	s1
+    1038:	00000000 	nop
+    103c:	8fde0000 	lw	s8,0(s8)
+    1040:	17d3fed0 	bne	s8,s3,b84 <cleanup_module-0x6ec>
+    1044:	00000000 	nop
+    1048:	08000326 	j	c98 <cleanup_module-0x5d8>	1048: R_MIPS_26	.text
+    104c:	00000000 	nop
+    1050:	3c110000 	lui	s1,0x0	1050: R_MIPS_HI16	local_bh_enable
+    1054:	26310000 	addiu	s1,s1,0	1054: R_MIPS_LO16	local_bh_enable
+    1058:	0220f809 	jalr	s1
+    105c:	00000000 	nop
+    1060:	3c020000 	lui	v0,0x0	1060: R_MIPS_HI16	.data..read_mostly
+    1064:	8c440000 	lw	a0,0(v0)	1064: R_MIPS_LO16	.data..read_mostly
+    1068:	3c020000 	lui	v0,0x0	1068: R_MIPS_HI16	kmem_cache_free
+    106c:	24420000 	addiu	v0,v0,0	106c: R_MIPS_LO16	kmem_cache_free
+    1070:	0040f809 	jalr	v0
+    1074:	02802821 	move	a1,s4
+    1078:	08000326 	j	c98 <cleanup_module-0x5d8>	1078: R_MIPS_26	.text
+    107c:	00000000 	nop
+    1080:	3c110000 	lui	s1,0x0	1080: R_MIPS_HI16	local_bh_enable
+    1084:	08000326 	j	c98 <cleanup_module-0x5d8>	1084: R_MIPS_26	.text
+    1088:	26310000 	addiu	s1,s1,0	1088: R_MIPS_LO16	local_bh_enable
+    108c:	3c020000 	lui	v0,0x0	108c: R_MIPS_HI16	clear_online_ip_flag
+    1090:	24420000 	addiu	v0,v0,0	1090: R_MIPS_LO16	clear_online_ip_flag
+    1094:	0040f809 	jalr	v0
+    1098:	24040006 	li	a0,6
+    109c:	08000175 	j	5d4 <cleanup_module-0xc9c>	109c: R_MIPS_26	.text
+    10a0:	0000f021 	move	s8,zero
+    10a4:	3c040000 	lui	a0,0x0	10a4: R_MIPS_HI16	.rodata
+    10a8:	3c070000 	lui	a3,0x0	10a8: R_MIPS_HI16	$LC4
+    10ac:	3c020000 	lui	v0,0x0	10ac: R_MIPS_HI16	bm_k_error
+    10b0:	24840038 	addiu	a0,a0,56	10b0: R_MIPS_LO16	.rodata
+    10b4:	24e70000 	addiu	a3,a3,0	10b4: R_MIPS_LO16	$LC4
+    10b8:	2405005d 	li	a1,93
+    10bc:	24420000 	addiu	v0,v0,0	10bc: R_MIPS_LO16	bm_k_error
+    10c0:	0040f809 	jalr	v0
+    10c4:	24060006 	li	a2,6
+    10c8:	3c040000 	lui	a0,0x0	10c8: R_MIPS_HI16	.rodata
+    10cc:	3c070000 	lui	a3,0x0	10cc: R_MIPS_HI16	$LC5
+    10d0:	3c020000 	lui	v0,0x0	10d0: R_MIPS_HI16	bm_k_debug
+    10d4:	24840030 	addiu	a0,a0,48	10d4: R_MIPS_LO16	.rodata
+    10d8:	24e70000 	addiu	a3,a3,0	10d8: R_MIPS_LO16	$LC5
+    10dc:	240500a1 	li	a1,161
+    10e0:	24420000 	addiu	v0,v0,0	10e0: R_MIPS_LO16	bm_k_debug
+    10e4:	0040f809 	jalr	v0
+    10e8:	24060006 	li	a2,6
+    10ec:	080003df 	j	f7c <cleanup_module-0x2f4>	10ec: R_MIPS_26	.text
+    10f0:	241e0001 	li	s8,1
+    10f4:	27bdffb8 	addiu	sp,sp,-72
+    10f8:	afbf0044 	sw	ra,68(sp)
+    10fc:	afbe0040 	sw	s8,64(sp)
+    1100:	afb7003c 	sw	s7,60(sp)
+    1104:	afb60038 	sw	s6,56(sp)
+    1108:	afb50034 	sw	s5,52(sp)
+    110c:	afb40030 	sw	s4,48(sp)
+    1110:	afb3002c 	sw	s3,44(sp)
+    1114:	afb20028 	sw	s2,40(sp)
+    1118:	afb10024 	sw	s1,36(sp)
+    111c:	afb00020 	sw	s0,32(sp)
+    1120:	8c9000cc 	lw	s0,204(a0)
+    1124:	3c140000 	lui	s4,0x0	1124: R_MIPS_HI16	.rodata
+    1128:	3c070000 	lui	a3,0x0	1128: R_MIPS_HI16	$LC13
+    112c:	8e120010 	lw	s2,16(s0)
+    1130:	3c130000 	lui	s3,0x0	1130: R_MIPS_HI16	bm_k_debug
+    1134:	24e70000 	addiu	a3,a3,0	1134: R_MIPS_LO16	$LC13
+    1138:	26730000 	addiu	s3,s3,0	1138: R_MIPS_LO16	bm_k_debug
+    113c:	268400a8 	addiu	a0,s4,168	113c: R_MIPS_LO16	.rodata
+    1140:	240501ce 	li	a1,462
+    1144:	24060006 	li	a2,6
+    1148:	0260f809 	jalr	s3
+    114c:	afb20010 	sw	s2,16(sp)
+    1150:	12400031 	beqz	s2,1218 <cleanup_module-0x58>
+    1154:	00001021 	move	v0,zero
+    1158:	269400a8 	addiu	s4,s4,168	1158: R_MIPS_LO16	.rodata
+    115c:	3c160000 	lui	s6,0x0	115c: R_MIPS_HI16	$LC14
+    1160:	3c170000 	lui	s7,0x0	1160: R_MIPS_HI16	.text
+    1164:	26100014 	addiu	s0,s0,20
+    1168:	26d60000 	addiu	s6,s6,0	1168: R_MIPS_LO16	$LC14
+...
+
+--- RELOCATIONS RELEVANT TO TRACKING ---
+0000045c  00005005 R_MIPS_HI16            00000000   online_ip_hash_size
+00000460  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+0000046c  00004d05 R_MIPS_HI16            00000000   online_ip_hash
+00000474  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+00000488  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+000004d8  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+000004e8  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+000004f8  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+0000094c  00005005 R_MIPS_HI16            00000000   online_ip_hash_size
+00000950  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+0000095c  00004d05 R_MIPS_HI16            00000000   online_ip_hash
+00000964  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+00000978  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+000009c8  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+000009d8  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+000009e8  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+00000f84  00005005 R_MIPS_HI16            00000000   online_ip_hash_size
+00000f88  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+00000f94  00004d05 R_MIPS_HI16            00000000   online_ip_hash
+00000f9c  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+00000fb0  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+00001000  00004d06 R_MIPS_LO16            00000000   online_ip_hash
+00001010  00005006 R_MIPS_LO16            00000000   online_ip_hash_size
+0000108c  00003605 R_MIPS_HI16            00000000   clear_online_ip_flag
+00001090  00003606 R_MIPS_LO16            00000000   clear_online_ip_flag
+
+--- RELEVANT STRINGS ---
+clear_online_ip_flag
+online_ip_hash
+online_ip_hash_size
+
+
+===== MODULE portal.ko =====
+
+--- RELEVANT SYMBOLS ---
+         U nf_hook_slow
+         U nf_hooks
+         U online_ip_hash
+         U online_ip_hash_size
+
+--- FUNCTION/OWNER (6, 0, 'portal_get_redirect_info-0x5b4') triggered by: 1e0:	3c1e0000 	lui	s8,0x0	1e0: R_MIPS_HI16	online_ip_hash_size ---
+Disassembly of section .text:
+
+00000000 <portal_get_redirect_info-0x5b4>:
+       0:	94820002 	lhu	v0,2(a0)
+       4:	03e00008 	jr	ra
+       8:	30423fff 	andi	v0,v0,0x3fff
+       c:	8c83004c 	lw	v1,76(a0)
+      10:	2402fffe 	li	v0,-2
+      14:	00621024 	and	v0,v1,v0
+      18:	8c59002c 	lw	t9,44(v0)
+      1c:	03200008 	jr	t9
+      20:	00000000 	nop
+      24:	03e00008 	jr	ra
+      28:	24020002 	li	v0,2
+      2c:	27bdffa8 	addiu	sp,sp,-88
+      30:	afbf0054 	sw	ra,84(sp)
+      34:	afbe0050 	sw	s8,80(sp)
+      38:	afb7004c 	sw	s7,76(sp)
+      3c:	afb60048 	sw	s6,72(sp)
+      40:	afb50044 	sw	s5,68(sp)
+      44:	afb40040 	sw	s4,64(sp)
+      48:	afb3003c 	sw	s3,60(sp)
+      4c:	afb20038 	sw	s2,56(sp)
+      50:	afb10034 	sw	s1,52(sp)
+      54:	afb00030 	sw	s0,48(sp)
+      58:	3c034325 	lui	v1,0x4325
+      5c:	3463c53f 	ori	v1,v1,0xc53f
+      60:	00830019 	multu	a0,v1
+      64:	00801021 	move	v0,a0
+      68:	afa40058 	sw	a0,88(sp)
+      6c:	00001810 	mfhi	v1
+      70:	00031902 	srl	v1,v1,0x4
+      74:	00032080 	sll	a0,v1,0x2
+      78:	00032980 	sll	a1,v1,0x6
+      7c:	00a42023 	subu	a0,a1,a0
+      80:	00831821 	addu	v1,a0,v1
+      84:	00431823 	subu	v1,v0,v1
+      88:	3c020000 	lui	v0,0x0	88: R_MIPS_HI16	.bss
+      8c:	00031880 	sll	v1,v1,0x2
+      90:	244209e0 	addiu	v0,v0,2528	90: R_MIPS_LO16	.bss
+      94:	00431021 	addu	v0,v0,v1
+      98:	8c500000 	lw	s0,0(v0)
+      9c:	12000027 	beqz	s0,13c <portal_get_redirect_info-0x478>
+      a0:	3c1e0000 	lui	s8,0x0	a0: R_MIPS_HI16	$LC0
+      a4:	3c170000 	lui	s7,0x0	a4: R_MIPS_HI16	bm_k_debug
+      a8:	3c160000 	lui	s6,0x0	a8: R_MIPS_HI16	.rodata
+      ac:	27de0000 	addiu	s8,s8,0	ac: R_MIPS_LO16	$LC0
+      b0:	26f70000 	addiu	s7,s7,0	b0: R_MIPS_LO16	bm_k_debug
+      b4:	26d600ec 	addiu	s6,s6,236	b4: R_MIPS_LO16	.rodata
+      b8:	27b50058 	addiu	s5,sp,88
+      bc:	27b40059 	addiu	s4,sp,89
+      c0:	27b3005a 	addiu	s3,sp,90
+      c4:	27b2005b 	addiu	s2,sp,91
+      c8:	92a50000 	lbu	a1,0(s5)
+      cc:	92840000 	lbu	a0,0(s4)
+      d0:	92630000 	lbu	v1,0(s3)
+      d4:	92420000 	lbu	v0,0(s2)
+      d8:	8e110000 	lw	s1,0(s0)
+      dc:	afa50010 	sw	a1,16(sp)
+      e0:	afa40014 	sw	a0,20(sp)
+      e4:	afa2001c 	sw	v0,28(sp)
+      e8:	afa30018 	sw	v1,24(sp)
+      ec:	92030008 	lbu	v1,8(s0)
+      f0:	26020008 	addiu	v0,s0,8
+      f4:	02c02021 	move	a0,s6
+      f8:	afa30020 	sw	v1,32(sp)
+      fc:	90430001 	lbu	v1,1(v0)
+     100:	240502da 	li	a1,730
+     104:	24060007 	li	a2,7
+     108:	afa30024 	sw	v1,36(sp)
+     10c:	90430002 	lbu	v1,2(v0)
+     110:	03c03821 	move	a3,s8
+     114:	afa30028 	sw	v1,40(sp)
+     118:	90420003 	lbu	v0,3(v0)
+     11c:	02e0f809 	jalr	s7
+     120:	afa2002c 	sw	v0,44(sp)
+     124:	8e030008 	lw	v1,8(s0)
+     128:	8fa20058 	lw	v0,88(sp)
+     12c:	10620005 	beq	v1,v0,144 <portal_get_redirect_info-0x470>
+     130:	02001021 	move	v0,s0
+     134:	1620ffe4 	bnez	s1,c8 <portal_get_redirect_info-0x4ec>
+     138:	02208021 	move	s0,s1
+     13c:	00008021 	move	s0,zero
+     140:	02001021 	move	v0,s0
+     144:	8fbf0054 	lw	ra,84(sp)
+     148:	8fbe0050 	lw	s8,80(sp)
+     14c:	8fb7004c 	lw	s7,76(sp)
+     150:	8fb60048 	lw	s6,72(sp)
+     154:	8fb50044 	lw	s5,68(sp)
+     158:	8fb40040 	lw	s4,64(sp)
+     15c:	8fb3003c 	lw	s3,60(sp)
+     160:	8fb20038 	lw	s2,56(sp)
+     164:	8fb10034 	lw	s1,52(sp)
+     168:	8fb00030 	lw	s0,48(sp)
+     16c:	03e00008 	jr	ra
+     170:	27bd0058 	addiu	sp,sp,88
+     174:	27bdffb8 	addiu	sp,sp,-72
+     178:	afbf0044 	sw	ra,68(sp)
+     17c:	afbe0040 	sw	s8,64(sp)
+     180:	afb7003c 	sw	s7,60(sp)
+     184:	afb60038 	sw	s6,56(sp)
+     188:	afb50034 	sw	s5,52(sp)
+     18c:	afb40030 	sw	s4,48(sp)
+     190:	afb3002c 	sw	s3,44(sp)
+     194:	afb20028 	sw	s2,40(sp)
+     198:	afb10024 	sw	s1,36(sp)
+     19c:	afb00020 	sw	s0,32(sp)
+     1a0:	3c040000 	lui	a0,0x0	1a0: R_MIPS_HI16	.rodata
+     1a4:	3c070000 	lui	a3,0x0	1a4: R_MIPS_HI16	$LC1
+     1a8:	3c020000 	lui	v0,0x0	1a8: R_MIPS_HI16	bm_k_debug
+     1ac:	24420000 	addiu	v0,v0,0	1ac: R_MIPS_LO16	bm_k_debug
+     1b0:	24840278 	addiu	a0,a0,632	1b0: R_MIPS_LO16	.rodata
+     1b4:	24e70000 	addiu	a3,a3,0	1b4: R_MIPS_LO16	$LC1
+     1b8:	24050311 	li	a1,785
+     1bc:	0040f809 	jalr	v0
+     1c0:	24060007 	li	a2,7
+     1c4:	3c020000 	lui	v0,0x0	1c4: R_MIPS_HI16	.bss
+     1c8:	244209e0 	addiu	v0,v0,2528	1c8: R_MIPS_LO16	.bss
+     1cc:	3c160000 	lui	s6,0x0	1cc: R_MIPS_HI16	local_bh_disable
+     1d0:	3c150000 	lui	s5,0x0	1d0: R_MIPS_HI16	local_bh_enable
+     1d4:	afa20018 	sw	v0,24(sp)
+     1d8:	26d60000 	addiu	s6,s6,0	1d8: R_MIPS_LO16	local_bh_disable
+     1dc:	26b50000 	addiu	s5,s5,0	1dc: R_MIPS_LO16	local_bh_enable
+     1e0:	3c1e0000 	lui	s8,0x0	1e0: R_MIPS_HI16	online_ip_hash_size
+     1e4:	3c120000 	lui	s2,0x0	1e4: R_MIPS_HI16	online_ip_hash
+     1e8:	2417ff7f 	li	s7,-129
+     1ec:	8fa30018 	lw	v1,24(sp)
+     1f0:	8c620000 	lw	v0,0(v1)
+     1f4:	10400049 	beqz	v0,31c <portal_get_redirect_info-0x298>
+     1f8:	afa20010 	sw	v0,16(sp)
+     1fc:	8fa30010 	lw	v1,16(sp)
+     200:	8fa40010 	lw	a0,16(sp)
+     204:	8c630000 	lw	v1,0(v1)
+     208:	afa30014 	sw	v1,20(sp)
+     20c:	02c0f809 	jalr	s6
+     210:	8c930008 	lw	s3,8(a0)
+     214:	8fc20000 	lw	v0,0(s8)	214: R_MIPS_LO16	online_ip_hash_size
+     218:	1040002c 	beqz	v0,2cc <portal_get_redirect_info-0x2e8>
+     21c:	0000a021 	move	s4,zero
+     220:	8e420000 	lw	v0,0(s2)	220: R_MIPS_LO16	online_ip_hash
+     224:	001488c0 	sll	s1,s4,0x3
+     228:	00511021 	addu	v0,v0,s1
+     22c:	8c500000 	lw	s0,0(v0)
+     230:	14500007 	bne	v0,s0,250 <portal_get_redirect_info-0x364>
+     234:	8fc20000 	lw	v0,0(s8)	234: R_MIPS_LO16	online_ip_hash_size
+     238:	080000b0 	j	2c0 <portal_get_redirect_info-0x2f4>	238: R_MIPS_26	.text
+     23c:	26940001 	addiu	s4,s4,1
+     240:	8e100000 	lw	s0,0(s0)
+     244:	00511021 	addu	v0,v0,s1
+     248:	1202001c 	beq	s0,v0,2bc <portal_get_redirect_info-0x2f8>
+     24c:	8fc20000 	lw	v0,0(s8)	24c: R_MIPS_LO16	online_ip_hash_size
+     250:	8e020018 	lw	v0,24(s0)
+     254:	1662fffa 	bne	s3,v0,240 <portal_get_redirect_info-0x374>
+     258:	8e420000 	lw	v0,0(s2)	258: R_MIPS_LO16	online_ip_hash
+     25c:	8e02000c 	lw	v0,12(s0)
+     260:	00571024 	and	v0,v0,s7
+     264:	02c0f809 	jalr	s6
+     268:	ae02000c 	sw	v0,12(s0)
+     26c:	8e020038 	lw	v0,56(s0)
+     270:	26060038 	addiu	a2,s0,56
+     274:	10c2000a 	beq	a2,v0,2a0 <portal_get_redirect_info-0x314>
+     278:	2442ff70 	addiu	v0,v0,-144
+     27c:	9045009b 	lbu	a1,155(v0)
+     280:	9044009a 	lbu	a0,154(v0)
+     284:	8c430090 	lw	v1,144(v0)
+     288:	30a5007f 	andi	a1,a1,0x7f
+     28c:	3084007f 	andi	a0,a0,0x7f
+     290:	a045009b 	sb	a1,155(v0)
+     294:	a044009a 	sb	a0,154(v0)
+     298:	14c3fff8 	bne	a2,v1,27c <portal_get_redirect_info-0x338>
+     29c:	2462ff70 	addiu	v0,v1,-144
+     2a0:	02a0f809 	jalr	s5
+     2a4:	00000000 	nop
+     2a8:	8e420000 	lw	v0,0(s2)	2a8: R_MIPS_LO16	online_ip_hash
+     2ac:	8e100000 	lw	s0,0(s0)
+     2b0:	00511021 	addu	v0,v0,s1
+     2b4:	1602ffe6 	bne	s0,v0,250 <portal_get_redirect_info-0x364>
+     2b8:	8fc20000 	lw	v0,0(s8)	2b8: R_MIPS_LO16	online_ip_hash_size
+     2bc:	26940001 	addiu	s4,s4,1
+     2c0:	0282102b 	sltu	v0,s4,v0
+     2c4:	1440ffd7 	bnez	v0,224 <portal_get_redirect_info-0x390>
+     2c8:	8e420000 	lw	v0,0(s2)	2c8: R_MIPS_LO16	online_ip_hash
+     2cc:	02a0f809 	jalr	s5
+     2d0:	00000000 	nop
+     2d4:	8fa40010 	lw	a0,16(sp)
+     2d8:	8c820000 	lw	v0,0(a0)
+     2dc:	8c830004 	lw	v1,4(a0)
+     2e0:	10400002 	beqz	v0,2ec <portal_get_redirect_info-0x2c8>
+     2e4:	ac620000 	sw	v0,0(v1)
+     2e8:	ac430004 	sw	v1,4(v0)
+     2ec:	8fa20010 	lw	v0,16(sp)
+     2f0:	3c030020 	lui	v1,0x20
+     2f4:	3c040010 	lui	a0,0x10
+     2f8:	34630200 	ori	v1,v1,0x200
+     2fc:	34840100 	ori	a0,a0,0x100
+     300:	ac430004 	sw	v1,4(v0)
+     304:	ac440000 	sw	a0,0(v0)
+     308:	8fa20014 	lw	v0,20(sp)
+     30c:	10400003 	beqz	v0,31c <portal_get_redirect_info-0x298>
+     310:	00000000 	nop
+     314:	0800007f 	j	1fc <portal_get_redirect_info-0x3b8>	314: R_MIPS_26	.text
+     318:	afa20010 	sw	v0,16(sp)
+     31c:	8fa20018 	lw	v0,24(sp)
+     320:	3c030000 	lui	v1,0x0	320: R_MIPS_HI16	.bss
+     324:	24630ad4 	addiu	v1,v1,2772	324: R_MIPS_LO16	.bss
+     328:	24420004 	addiu	v0,v0,4
+     32c:	1443ffaf 	bne	v0,v1,1ec <portal_get_redirect_info-0x3c8>
+     330:	afa20018 	sw	v0,24(sp)
+     334:	8fbf0044 	lw	ra,68(sp)
+     338:	8fbe0040 	lw	s8,64(sp)
+     33c:	8fb7003c 	lw	s7,60(sp)
+     340:	8fb60038 	lw	s6,56(sp)
+     344:	8fb50034 	lw	s5,52(sp)
+     348:	8fb40030 	lw	s4,48(sp)
+     34c:	8fb3002c 	lw	s3,44(sp)
+     350:	8fb20028 	lw	s2,40(sp)
+     354:	8fb10024 	lw	s1,36(sp)
+     358:	8fb00020 	lw	s0,32(sp)
+     35c:	00001021 	move	v0,zero
+     360:	03e00008 	jr	ra
+     364:	27bd0048 	addiu	sp,sp,72
+     368:	27bdffc8 	addiu	sp,sp,-56
+     36c:	afbf0034 	sw	ra,52(sp)
+     370:	afb50030 	sw	s5,48(sp)
+     374:	afb4002c 	sw	s4,44(sp)
+     378:	afb30028 	sw	s3,40(sp)
+     37c:	afb20024 	sw	s2,36(sp)
+     380:	afb10020 	sw	s1,32(sp)
+     384:	afb0001c 	sw	s0,28(sp)
+     388:	00808021 	move	s0,a0
+     38c:	1480000c 	bnez	a0,3c0 <portal_get_redirect_info-0x1f4>
+     390:	00c08821 	move	s1,a2
+     394:	00008021 	move	s0,zero
+     398:	02001021 	move	v0,s0
+     39c:	8fbf0034 	lw	ra,52(sp)
+     3a0:	8fb50030 	lw	s5,48(sp)
+     3a4:	8fb4002c 	lw	s4,44(sp)
+     3a8:	8fb30028 	lw	s3,40(sp)
+     3ac:	8fb20024 	lw	s2,36(sp)
+     3b0:	8fb10020 	lw	s1,32(sp)
+     3b4:	8fb0001c 	lw	s0,28(sp)
+     3b8:	03e00008 	jr	ra
+     3bc:	27bd0038 	addiu	sp,sp,56
+     3c0:	18a0fff4 	blez	a1,394 <portal_get_redirect_info-0x220>
+     3c4:	00000000 	nop
+     3c8:	10c0fff2 	beqz	a2,394 <portal_get_redirect_info-0x220>
+     3cc:	00000000 	nop
+     3d0:	80c20000 	lb	v0,0(a2)
+     3d4:	1040ffef 	beqz	v0,394 <portal_get_redirect_info-0x220>
+     3d8:	3c020000 	lui	v0,0x0	3d8: R_MIPS_HI16	strlen
+     3dc:	afa50010 	sw	a1,16(sp)
+     3e0:	24420000 	addiu	v0,v0,0	3e0: R_MIPS_LO16	strlen
+     3e4:	0040f809 	jalr	v0
+     3e8:	00c02021 	move	a0,a2
+     3ec:	8fa50010 	lw	a1,16(sp)
+     3f0:	24a50001 	addiu	a1,a1,1
+     3f4:	00a2a023 	subu	s4,a1,v0
+     3f8:	1a80ffe6 	blez	s4,394 <portal_get_redirect_info-0x220>
+     3fc:	00409821 	move	s3,v0
+     400:	3c150000 	lui	s5,0x0	400: R_MIPS_HI16	memcmp
+     404:	26b50000 	addiu	s5,s5,0	404: R_MIPS_LO16	memcmp
+     408:	00009021 	move	s2,zero
+     40c:	82030000 	lb	v1,0(s0)
+     410:	82220000 	lb	v0,0(s1)
+     414:	26520001 	addiu	s2,s2,1
+     418:	02002021 	move	a0,s0
+     41c:	02202821 	move	a1,s1
+     420:	14620005 	bne	v1,v0,438 <portal_get_redirect_info-0x17c>
+     424:	02603021 	move	a2,s3
+     428:	02a0f809 	jalr	s5
+     42c:	00000000 	nop
+     430:	1040ffda 	beqz	v0,39c <portal_get_redirect_info-0x218>
+     434:	02001021 	move	v0,s0
+     438:	0254102a 	slt	v0,s2,s4
+     43c:	1440fff3 	bnez	v0,40c <portal_get_redirect_info-0x1a8>
+     440:	26100001 	addiu	s0,s0,1
+     444:	2610ffff 	addiu	s0,s0,-1
+     448:	080000e6 	j	398 <portal_get_redirect_info-0x21c>	448: R_MIPS_26	.text
+     44c:	00008021 	move	s0,zero
+     450:	27bdffc8 	addiu	sp,sp,-56
+     454:	afbf0034 	sw	ra,52(sp)
+     458:	afbe0030 	sw	s8,48(sp)
+     45c:	afb7002c 	sw	s7,44(sp)
+     460:	afb60028 	sw	s6,40(sp)
+     464:	afb50024 	sw	s5,36(sp)
+     468:	afb40020 	sw	s4,32(sp)
+     46c:	afb3001c 	sw	s3,28(sp)
+     470:	afb20018 	sw	s2,24(sp)
+     474:	afb10014 	sw	s1,20(sp)
+     478:	afb00010 	sw	s0,16(sp)
+     47c:	3c170000 	lui	s7,0x0	47c: R_MIPS_HI16	local_bh_disable
+     480:	26f70000 	addiu	s7,s7,0	480: R_MIPS_LO16	local_bh_disable
+     484:	02e0f809 	jalr	s7
+     488:	00809821 	move	s3,a0
+     48c:	3c030000 	lui	v1,0x0	48c: R_MIPS_HI16	online_ip_hash_size
+     490:	8c620000 	lw	v0,0(v1)	490: R_MIPS_LO16	online_ip_hash_size
+     494:	10400044 	beqz	v0,5a8 <portal_get_redirect_info-0xc>
+     498:	3c140000 	lui	s4,0x0	498: R_MIPS_HI16	memcmp
+     49c:	3c160000 	lui	s6,0x0	49c: R_MIPS_HI16	local_bh_enable
+     4a0:	26d60000 	addiu	s6,s6,0	4a0: R_MIPS_LO16	local_bh_enable
+     4a4:	26940000 	addiu	s4,s4,0	4a4: R_MIPS_LO16	memcmp
+     4a8:	0000a821 	move	s5,zero
+     4ac:	3c120000 	lui	s2,0x0	4ac: R_MIPS_HI16	online_ip_hash
+     4b0:	241eff7f 	li	s8,-129
+     4b4:	8e420000 	lw	v0,0(s2)	4b4: R_MIPS_LO16	online_ip_hash
+     4b8:	001588c0 	sll	s1,s5,0x3
+     4bc:	00511021 	addu	v0,v0,s1
+     4c0:	8c500000 	lw	s0,0(v0)
+     4c4:	14500008 	bne	v0,s0,4e8 <portal_get_redirect_info-0xcc>
+     4c8:	02602021 	move	a0,s3
+     4cc:	08000158 	j	560 <portal_get_redirect_info-0x54>	4cc: R_MIPS_26	.text
+     4d0:	3c190000 	lui	t9,0x0	4d0: R_MIPS_HI16	online_ip_hash_size
+     4d4:	8e100000 	lw	s0,0(s0)
+     4d8:	00511021 	addu	v0,v0,s1
+     4dc:	12020020 	beq	s0,v0,560 <portal_get_redirect_info-0x54>
+     4e0:	3c190000 	lui	t9,0x0	4e0: R_MIPS_HI16	online_ip_hash_size
+     4e4:	02602021 	move	a0,s3
+     4e8:	2605002c 	addiu	a1,s0,44
+     4ec:	0280f809 	jalr	s4
+     4f0:	24060006 	li	a2,6
+     4f4:	1440fff7 	bnez	v0,4d4 <portal_get_redirect_info-0xe0>
+     4f8:	8e420000 	lw	v0,0(s2)	4f8: R_MIPS_LO16	online_ip_hash
+     4fc:	8e02000c 	lw	v0,12(s0)
+     500:	005e1024 	and	v0,v0,s8
+     504:	02e0f809 	jalr	s7
+     508:	ae02000c 	sw	v0,12(s0)
+     50c:	8e020038 	lw	v0,56(s0)
+     510:	26060038 	addiu	a2,s0,56
+     514:	10c2000a 	beq	a2,v0,540 <portal_get_redirect_info-0x74>
+     518:	2442ff70 	addiu	v0,v0,-144
+     51c:	9045009b 	lbu	a1,155(v0)
+     520:	9044009a 	lbu	a0,154(v0)
+     524:	8c430090 	lw	v1,144(v0)
+     528:	30a5007f 	andi	a1,a1,0x7f
+     52c:	3084007f 	andi	a0,a0,0x7f
+     530:	a045009b 	sb	a1,155(v0)
+     534:	a044009a 	sb	a0,154(v0)
+     538:	14c3fff8 	bne	a2,v1,51c <portal_get_redirect_info-0x98>
+     53c:	2462ff70 	addiu	v0,v1,-144
+     540:	02c0f809 	jalr	s6
+     544:	00000000 	nop
+     548:	8e420000 	lw	v0,0(s2)	548: R_MIPS_LO16	online_ip_hash
+     54c:	8e100000 	lw	s0,0(s0)
+     550:	00511021 	addu	v0,v0,s1
+     554:	1602ffe4 	bne	s0,v0,4e8 <portal_get_redirect_info-0xcc>
+     558:	02602021 	move	a0,s3
+     55c:	3c190000 	lui	t9,0x0	55c: R_MIPS_HI16	online_ip_hash_size
+     560:	8f220000 	lw	v0,0(t9)	560: R_MIPS_LO16	online_ip_hash_size
+     564:	26b50001 	addiu	s5,s5,1
+     568:	02a2102b 	sltu	v0,s5,v0
+     56c:	1440ffd2 	bnez	v0,4b8 <portal_get_redirect_info-0xfc>
+     570:	8e420000 	lw	v0,0(s2)	570: R_MIPS_LO16	online_ip_hash
+     574:	02c0c821 	move	t9,s6
+     578:	8fbf0034 	lw	ra,52(sp)
+     57c:	8fbe0030 	lw	s8,48(sp)
+     580:	8fb7002c 	lw	s7,44(sp)
+     584:	8fb60028 	lw	s6,40(sp)
+     588:	8fb50024 	lw	s5,36(sp)
+     58c:	8fb40020 	lw	s4,32(sp)
+     590:	8fb3001c 	lw	s3,28(sp)
+     594:	8fb20018 	lw	s2,24(sp)
+     598:	8fb10014 	lw	s1,20(sp)
+     59c:	8fb00010 	lw	s0,16(sp)
+     5a0:	03200008 	jr	t9
+     5a4:	27bd0038 	addiu	sp,sp,56
+     5a8:	3c160000 	lui	s6,0x0	5a8: R_MIPS_HI16	local_bh_enable
+     5ac:	0800015d 	j	574 <portal_get_redirect_info-0x40>	5ac: R_MIPS_26	.text
+     5b0:	26d60000 	addiu	s6,s6,0	5b0: R_MIPS_LO16	local_bh_enable
+
+
+--- FUNCTION/OWNER (373, 1460, 'portal_get_redirect_info') triggered by: c68:	3c1e0000 	lui	s8,0x0	c68: R_MIPS_HI16	online_ip_hash_size ---
+     bf8:	8fa30030 	lw	v1,48(sp)
+     bfc:	34a5c53f 	ori	a1,a1,0xc53f
+     c00:	00650019 	multu	v1,a1
+     c04:	ac430008 	sw	v1,8(v0)
+     c08:	00002010 	mfhi	a0
+     c0c:	00042102 	srl	a0,a0,0x4
+     c10:	00042880 	sll	a1,a0,0x2
+     c14:	00043180 	sll	a2,a0,0x6
+     c18:	00c52823 	subu	a1,a2,a1
+     c1c:	00a42021 	addu	a0,a1,a0
+     c20:	00641823 	subu	v1,v1,a0
+     c24:	3c040000 	lui	a0,0x0	c24: R_MIPS_HI16	.bss
+     c28:	248409e0 	addiu	a0,a0,2528	c28: R_MIPS_LO16	.bss
+     c2c:	00031880 	sll	v1,v1,0x2
+     c30:	00831821 	addu	v1,a0,v1
+     c34:	8c640000 	lw	a0,0(v1)
+     c38:	10800002 	beqz	a0,c44 <portal_get_redirect_info+0x690>
+     c3c:	ac440000 	sw	a0,0(v0)
+     c40:	ac820004 	sw	v0,4(a0)
+     c44:	ac620000 	sw	v0,0(v1)
+     c48:	080002d3 	j	b4c <portal_get_redirect_info+0x598>	c48: R_MIPS_26	.text
+     c4c:	ac430004 	sw	v1,4(v0)
+     c50:	8e22001c 	lw	v0,28(s1)
+     c54:	3c030000 	lui	v1,0x0	c54: R_MIPS_HI16	.bss
+     c58:	3c110000 	lui	s1,0x0	c58: R_MIPS_HI16	local_bh_disable
+     c5c:	26310000 	addiu	s1,s1,0	c5c: R_MIPS_LO16	local_bh_disable
+     c60:	0220f809 	jalr	s1
+     c64:	ac620068 	sw	v0,104(v1)	c64: R_MIPS_LO16	.bss
+     c68:	3c1e0000 	lui	s8,0x0	c68: R_MIPS_HI16	online_ip_hash_size
+     c6c:	8fc20000 	lw	v0,0(s8)	c6c: R_MIPS_LO16	online_ip_hash_size
+     c70:	1040035a 	beqz	v0,19dc <portal_get_redirect_info+0x1428>
+     c74:	0000b821 	move	s7,zero
+     c78:	3c140000 	lui	s4,0x0	c78: R_MIPS_HI16	local_bh_enable
+     c7c:	26940000 	addiu	s4,s4,0	c7c: R_MIPS_LO16	local_bh_enable
+     c80:	3c150000 	lui	s5,0x0	c80: R_MIPS_HI16	online_ip_hash
+     c84:	2416ff7f 	li	s6,-129
+     c88:	8ea20000 	lw	v0,0(s5)	c88: R_MIPS_LO16	online_ip_hash
+     c8c:	001798c0 	sll	s3,s7,0x3
+     c90:	00531021 	addu	v0,v0,s3
+     c94:	8c520000 	lw	s2,0(v0)
+     c98:	1052001b 	beq	v0,s2,d08 <portal_get_redirect_info+0x754>
+     c9c:	00000000 	nop
+     ca0:	1242001a 	beq	s2,v0,d0c <portal_get_redirect_info+0x758>
+     ca4:	8fc20000 	lw	v0,0(s8)	ca4: R_MIPS_LO16	online_ip_hash_size
+     ca8:	8e42000c 	lw	v0,12(s2)
+     cac:	00561024 	and	v0,v0,s6
+     cb0:	0220f809 	jalr	s1
+     cb4:	ae42000c 	sw	v0,12(s2)
+     cb8:	8e420038 	lw	v0,56(s2)
+     cbc:	26460038 	addiu	a2,s2,56
+     cc0:	10c2000a 	beq	a2,v0,cec <portal_get_redirect_info+0x738>
+     cc4:	2442ff70 	addiu	v0,v0,-144
+     cc8:	9045009b 	lbu	a1,155(v0)
+     ccc:	9044009a 	lbu	a0,154(v0)
+     cd0:	8c430090 	lw	v1,144(v0)
+     cd4:	30a5007f 	andi	a1,a1,0x7f
+     cd8:	3084007f 	andi	a0,a0,0x7f
+     cdc:	a045009b 	sb	a1,155(v0)
+     ce0:	a044009a 	sb	a0,154(v0)
+     ce4:	14c3fff8 	bne	a2,v1,cc8 <portal_get_redirect_info+0x714>
+     ce8:	2462ff70 	addiu	v0,v1,-144
+     cec:	0280f809 	jalr	s4
+     cf0:	00000000 	nop
+     cf4:	8ea20000 	lw	v0,0(s5)	cf4: R_MIPS_LO16	online_ip_hash
+     cf8:	8e520000 	lw	s2,0(s2)
+     cfc:	00531021 	addu	v0,v0,s3
+     d00:	1642ffe9 	bne	s2,v0,ca8 <portal_get_redirect_info+0x6f4>
+     d04:	00000000 	nop
+     d08:	8fc20000 	lw	v0,0(s8)	d08: R_MIPS_LO16	online_ip_hash_size
+     d0c:	26f70001 	addiu	s7,s7,1
+     d10:	02e2102b 	sltu	v0,s7,v0
+     d14:	1440ffdc 	bnez	v0,c88 <portal_get_redirect_info+0x6d4>
+     d18:	00000000 	nop
+     d1c:	0280f809 	jalr	s4
+     d20:	00000000 	nop
+     d24:	3c040000 	lui	a0,0x0	d24: R_MIPS_HI16	.bss
+     d28:	8c820068 	lw	v0,104(a0)	d28: R_MIPS_LO16	.bss
+     d2c:	3c070000 	lui	a3,0x0	d2c: R_MIPS_HI16	$LC9
+     d30:	3c040000 	lui	a0,0x0	d30: R_MIPS_HI16	.rodata
+     d34:	afa20010 	sw	v0,16(sp)
+     d38:	24840140 	addiu	a0,a0,320	d38: R_MIPS_LO16	.rodata
+     d3c:	24e70000 	addiu	a3,a3,0	d3c: R_MIPS_LO16	$LC9
+     d40:	24050a8a 	li	a1,2698
+     d44:	0200f809 	jalr	s0
+     d48:	24060007 	li	a2,7
+     d4c:	080002ae 	j	ab8 <portal_get_redirect_info+0x504>	d4c: R_MIPS_26	.text
+     d50:	00001021 	move	v0,zero
+     d54:	92420003 	lbu	v0,3(s2)
+     d58:	92440004 	lbu	a0,4(s2)
+     d5c:	92470002 	lbu	a3,2(s2)
+     d60:	9225001c 	lbu	a1,28(s1)
+     d64:	92460001 	lbu	a2,1(s2)
+     d68:	00822026 	xor	a0,a0,v0
+     d6c:	3c020000 	lui	v0,0x0	d6c: R_MIPS_HI16	.bss
+     d70:	24420070 	addiu	v0,v0,112	d70: R_MIPS_LO16	.bss
+     d74:	92430005 	lbu	v1,5(s2)
+     d78:	00872025 	or	a0,a0,a3
+     d7c:	00c53026 	xor	a2,a2,a1
+     d80:	8c47031c 	lw	a3,796(v0)
+     d84:	3c05dead 	lui	a1,0xdead
+     d88:	34a5beef 	ori	a1,a1,0xbeef
+     d8c:	308400ff 	andi	a0,a0,0xff
+     d90:	00852021 	addu	a0,a0,a1
+     d94:	00c33025 	or	a2,a2,v1
+     d98:	00873826 	xor	a3,a0,a3
+     d9c:	30c600ff 	andi	a2,a2,0xff
+     da0:	00241c82 	ror	v1,a0,0x12
+     da4:	00e31823 	subu	v1,a3,v1
+     da8:	00c52821 	addu	a1,a2,a1
+     dac:	00652826 	xor	a1,v1,a1
+     db0:	00233542 	ror	a2,v1,0x15
+     db4:	00a62823 	subu	a1,a1,a2
+     db8:	002531c2 	ror	a2,a1,0x7
+     dbc:	00a42026 	xor	a0,a1,a0
+     dc0:	00862023 	subu	a0,a0,a2
+     dc4:	00243402 	ror	a2,a0,0x10
+     dc8:	00831826 	xor	v1,a0,v1
+     dcc:	00661823 	subu	v1,v1,a2
+     dd0:	00233702 	ror	a2,v1,0x1c
+     dd4:	00652826 	xor	a1,v1,a1
+     dd8:	00a62823 	subu	a1,a1,a2
+     ddc:	00a42026 	xor	a0,a1,a0
+     de0:	00252c82 	ror	a1,a1,0x12
+...
+
+--- RELOCATIONS RELEVANT TO TRACKING ---
+00000214  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+00000220  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+00000234  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+0000024c  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+00000258  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+000002a8  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+000001e0  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+000002b8  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+000002c8  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+0000048c  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+00000490  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+000004ac  00006c05 R_MIPS_HI16            00000000   online_ip_hash
+000004b4  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+000004f8  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+00000548  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+0000055c  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+00000560  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+00000570  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+00000c68  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+00000c6c  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+00000c80  00006c05 R_MIPS_HI16            00000000   online_ip_hash
+00000c88  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+000004d0  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+00000ca4  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+000001e4  00006c05 R_MIPS_HI16            00000000   online_ip_hash
+00000cf4  00006c06 R_MIPS_LO16            00000000   online_ip_hash
+000004e0  00007405 R_MIPS_HI16            00000000   online_ip_hash_size
+00000d08  00007406 R_MIPS_LO16            00000000   online_ip_hash_size
+
+--- RELEVANT STRINGS ---
+online_ip_hash
+online_ip_hash_size

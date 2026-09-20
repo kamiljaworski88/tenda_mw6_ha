@@ -1,0 +1,639 @@
+===== RUN 67 GOAL =====
+Identify who fills the 20-byte per-client records consumed by dev_traffic_upload_json_packer; map MAC/up/down offsets and trace the producer back to confsrv/runtime counters.
+===== JSON PACKER EXACT WINDOW =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00030990 <dev_traffic_upload_json_packer@@Base>:
+   30990:	3c1c0006 	lui	gp,0x6
+   30994:	279c29e0 	addiu	gp,gp,10720
+   30998:	0399e021 	addu	gp,gp,t9
+   3099c:	27bdffb8 	addiu	sp,sp,-72
+   309a0:	afbf0044 	sw	ra,68(sp)
+   309a4:	afbe0040 	sw	s8,64(sp)
+   309a8:	afb7003c 	sw	s7,60(sp)
+   309ac:	afb60038 	sw	s6,56(sp)
+   309b0:	afb50034 	sw	s5,52(sp)
+   309b4:	afb40030 	sw	s4,48(sp)
+   309b8:	afb3002c 	sw	s3,44(sp)
+   309bc:	afb20028 	sw	s2,40(sp)
+   309c0:	afb10024 	sw	s1,36(sp)
+   309c4:	afb00020 	sw	s0,32(sp)
+   309c8:	afbc0018 	sw	gp,24(sp)
+   309cc:	00808021 	move	s0,a0
+   309d0:	00c0a021 	move	s4,a2
+   309d4:	10800035 	beqz	a0,30aac <dev_traffic_upload_json_packer@@Base+0x11c>
+   309d8:	00e0a821 	move	s5,a3
+   309dc:	10a00034 	beqz	a1,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309e0:	24020001 	li	v0,1
+   309e4:	8c960000 	lw	s6,0(a0)
+   309e8:	1ac00031 	blez	s6,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309ec:	8f858028 	lw	a1,-32728(gp)
+   309f0:	8e020014 	lw	v0,20(s0)
+   309f4:	8cc40000 	lw	a0,0(a2)
+   309f8:	8f9981c0 	lw	t9,-32320(gp)
+   309fc:	8e070010 	lw	a3,16(s0)
+   30a00:	24a5911c 	addiu	a1,a1,-28388
+   30a04:	afa20010 	sw	v0,16(sp)
+   30a08:	0320f809 	jalr	t9
+   30a0c:	26060004 	addiu	a2,s0,4
+   30a10:	8fbc0018 	lw	gp,24(sp)
+   30a14:	00408821 	move	s1,v0
+   30a18:	02009821 	move	s3,s0
+   30a1c:	8f9e8028 	lw	s8,-32728(gp)
+   30a20:	24120001 	li	s2,1
+   30a24:	24170014 	li	s7,20
+   30a28:	1000000d 	b	30a60 <dev_traffic_upload_json_packer@@Base+0xd0>
+   30a2c:	27de913c 	addiu	s8,s8,-28356
+   30a30:	72571002 	mul	v0,s2,s7
+   30a34:	8e840000 	lw	a0,0(s4)
+   30a38:	8e670010 	lw	a3,16(s3)
+   30a3c:	26520001 	addiu	s2,s2,1
+   30a40:	00912021 	addu	a0,a0,s1
+   30a44:	00503021 	addu	a2,v0,s0
+   30a48:	8e620014 	lw	v0,20(s3)
+   30a4c:	24c60004 	addiu	a2,a2,4
+   30a50:	0320f809 	jalr	t9
+   30a54:	afa20010 	sw	v0,16(sp)
+   30a58:	8fbc0018 	lw	gp,24(sp)
+   30a5c:	02228821 	addu	s1,s1,v0
+   30a60:	0256102a 	slt	v0,s2,s6
+   30a64:	8f9981c0 	lw	t9,-32320(gp)
+   30a68:	10400006 	beqz	v0,30a84 <dev_traffic_upload_json_packer@@Base+0xf4>
+   30a6c:	03c02821 	move	a1,s8
+   30a70:	8ea20000 	lw	v0,0(s5)
+   30a74:	2442ffff 	addiu	v0,v0,-1
+   30a78:	0222102a 	slt	v0,s1,v0
+   30a7c:	1440ffec 	bnez	v0,30a30 <dev_traffic_upload_json_packer@@Base+0xa0>
+   30a80:	26730014 	addiu	s3,s3,20
+   30a84:	8e840000 	lw	a0,0(s4)
+   30a88:	8f858028 	lw	a1,-32728(gp)
+   30a8c:	8f998ad0 	lw	t9,-30000(gp)
+   30a90:	00912021 	addu	a0,a0,s1
+   30a94:	24a5915c 	addiu	a1,a1,-28324
+   30a98:	0320f809 	jalr	t9
+   30a9c:	26310001 	addiu	s1,s1,1
+   30aa0:	aeb10000 	sw	s1,0(s5)
+   30aa4:	10000002 	b	30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   30aa8:	00001021 	move	v0,zero
+   30aac:	24020001 	li	v0,1
+   30ab0:	8fbf0044 	lw	ra,68(sp)
+   30ab4:	8fbe0040 	lw	s8,64(sp)
+   30ab8:	8fb7003c 	lw	s7,60(sp)
+   30abc:	8fb60038 	lw	s6,56(sp)
+===== TRAFFIC UPLOAD COMMAND WINDOW =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00030ae0 <cmd_cloud_info_dev_traffic_upload@@Base>:
+   30ae0:	3c1c0006 	lui	gp,0x6
+   30ae4:	279c2890 	addiu	gp,gp,10384
+   30ae8:	0399e021 	addu	gp,gp,t9
+   30aec:	27bdfb98 	addiu	sp,sp,-1128
+   30af0:	afbf0464 	sw	ra,1124(sp)
+   30af4:	afb50460 	sw	s5,1120(sp)
+   30af8:	afb4045c 	sw	s4,1116(sp)
+   30afc:	afb30458 	sw	s3,1112(sp)
+   30b00:	afb20454 	sw	s2,1108(sp)
+   30b04:	afb10450 	sw	s1,1104(sp)
+   30b08:	afb0044c 	sw	s0,1100(sp)
+   30b0c:	afbc0018 	sw	gp,24(sp)
+   30b10:	00809021 	move	s2,a0
+   30b14:	00c08821 	move	s1,a2
+   30b18:	00e0a821 	move	s5,a3
+   30b1c:	14a00043 	bnez	a1,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30b20:	00001021 	move	v0,zero
+   30b24:	8f9981ec 	lw	t9,-32276(gp)
+   30b28:	0320f809 	jalr	t9
+   30b2c:	00000000 	nop
+   30b30:	1040002f 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b34:	8fbc0018 	lw	gp,24(sp)
+   30b38:	8f9980c0 	lw	t9,-32576(gp)
+   30b3c:	0320f809 	jalr	t9
+   30b40:	24040003 	li	a0,3
+   30b44:	8fbc0018 	lw	gp,24(sp)
+   30b48:	10400029 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b4c:	00409821 	move	s3,v0
+   30b50:	8f998bd4 	lw	t9,-29740(gp)
+   30b54:	27b40044 	addiu	s4,sp,68
+   30b58:	02802021 	move	a0,s4
+   30b5c:	00002821 	move	a1,zero
+   30b60:	0320f809 	jalr	t9
+   30b64:	24060400 	li	a2,1024
+   30b68:	8fbc0018 	lw	gp,24(sp)
+   30b6c:	24020400 	li	v0,1024
+   30b70:	27b00028 	addiu	s0,sp,40
+   30b74:	8f99819c 	lw	t9,-32356(gp)
+   30b78:	02402821 	move	a1,s2
+   30b7c:	02002021 	move	a0,s0
+   30b80:	2406001c 	li	a2,28
+   30b84:	afb40020 	sw	s4,32(sp)
+   30b88:	0320f809 	jalr	t9
+   30b8c:	afa20024 	sw	v0,36(sp)
+   30b90:	8fbc0018 	lw	gp,24(sp)
+   30b94:	24020006 	li	v0,6
+   30b98:	a3a20028 	sb	v0,40(sp)
+   30b9c:	8f9981fc 	lw	t9,-32260(gp)
+   30ba0:	24020003 	li	v0,3
+   30ba4:	a3a20029 	sb	v0,41(sp)
+   30ba8:	2402003e 	li	v0,62
+   30bac:	afb30034 	sw	s3,52(sp)
+   30bb0:	a3a2002a 	sb	v0,42(sp)
+   30bb4:	02202021 	move	a0,s1
+   30bb8:	02a02821 	move	a1,s5
+   30bbc:	27a60020 	addiu	a2,sp,32
+   30bc0:	0320f809 	jalr	t9
+   30bc4:	27a70024 	addiu	a3,sp,36
+   30bc8:	14400018 	bnez	v0,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30bcc:	8fbc0018 	lw	gp,24(sp)
+   30bd0:	8f998554 	lw	t9,-31404(gp)
+   30bd4:	8fa60024 	lw	a2,36(sp)
+   30bd8:	8fa70020 	lw	a3,32(sp)
+   30bdc:	02002021 	move	a0,s0
+   30be0:	0320f809 	jalr	t9
+   30be4:	24050001 	li	a1,1
+   30be8:	10000011 	b	30c30 <cmd_cloud_info_dev_traffic_upload@@Base+0x150>
+   30bec:	8fbf0464 	lw	ra,1124(sp)
+   30bf0:	8f828570 	lw	v0,-31376(gp)
+   30bf4:	8f868028 	lw	a2,-32728(gp)
+   30bf8:	8f878028 	lw	a3,-32728(gp)
+   30bfc:	8c440000 	lw	a0,0(v0)
+   30c00:	24020298 	li	v0,664
+   30c04:	afa20010 	sw	v0,16(sp)
+   30c08:	8f828028 	lw	v0,-32728(gp)
+   30c0c:	8f998274 	lw	t9,-32140(gp)
+   30c10:	24c694d0 	addiu	a2,a2,-27440
+   30c14:	24428fb8 	addiu	v0,v0,-28744
+   30c18:	afa20014 	sw	v0,20(sp)
+   30c1c:	24e78e78 	addiu	a3,a3,-29064
+   30c20:	0320f809 	jalr	t9
+   30c24:	24050002 	li	a1,2
+   30c28:	24020001 	li	v0,1
+   30c2c:	8fbf0464 	lw	ra,1124(sp)
+   30c30:	8fb50460 	lw	s5,1120(sp)
+   30c34:	8fb4045c 	lw	s4,1116(sp)
+   30c38:	8fb30458 	lw	s3,1112(sp)
+   30c3c:	8fb20454 	lw	s2,1108(sp)
+   30c40:	8fb10450 	lw	s1,1104(sp)
+   30c44:	8fb0044c 	lw	s0,1100(sp)
+   30c48:	03e00008 	jr	ra
+   30c4c:	27bd0468 	addiu	sp,sp,1128
+
+00030c50 <cmd_cloud_router_push_info_q@@Base>:
+   30c50:	3c1c0006 	lui	gp,0x6
+   30c54:	279c2720 	addiu	gp,gp,10016
+   30c58:	0399e021 	addu	gp,gp,t9
+   30c5c:	27bdfb10 	addiu	sp,sp,-1264
+   30c60:	afbf04ec 	sw	ra,1260(sp)
+   30c64:	afb404e8 	sw	s4,1256(sp)
+   30c68:	afb304e4 	sw	s3,1252(sp)
+   30c6c:	afb204e0 	sw	s2,1248(sp)
+   30c70:	afb104dc 	sw	s1,1244(sp)
+   30c74:	afb004d8 	sw	s0,1240(sp)
+   30c78:	afbc0020 	sw	gp,32(sp)
+   30c7c:	00808821 	move	s1,a0
+===== UPLOAD STATISTICS WINDOW =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+000211a0 <upload_statistics@@Base>:
+   211a0:	3c1c0007 	lui	gp,0x7
+   211a4:	279c21d0 	addiu	gp,gp,8656
+   211a8:	0399e021 	addu	gp,gp,t9
+   211ac:	27bdffb0 	addiu	sp,sp,-80
+   211b0:	afbf004c 	sw	ra,76(sp)
+   211b4:	afb00048 	sw	s0,72(sp)
+   211b8:	afbc0018 	sw	gp,24(sp)
+   211bc:	8f858030 	lw	a1,-32720(gp)
+   211c0:	8f99819c 	lw	t9,-32356(gp)
+   211c4:	27b00020 	addiu	s0,sp,32
+   211c8:	24a560d4 	addiu	a1,a1,24788
+   211cc:	2406000b 	li	a2,11
+   211d0:	02002021 	move	a0,s0
+   211d4:	afa0002c 	sw	zero,44(sp)
+   211d8:	afa00030 	sw	zero,48(sp)
+   211dc:	afa00034 	sw	zero,52(sp)
+   211e0:	afa00038 	sw	zero,56(sp)
+   211e4:	afa0003c 	sw	zero,60(sp)
+   211e8:	afa00040 	sw	zero,64(sp)
+   211ec:	0320f809 	jalr	t9
+   211f0:	afa00044 	sw	zero,68(sp)
+   211f4:	8fbc0018 	lw	gp,24(sp)
+   211f8:	8f99815c 	lw	t9,-32420(gp)
+   211fc:	0320f809 	jalr	t9
+   21200:	02002021 	move	a0,s0
+   21204:	8fbc0018 	lw	gp,24(sp)
+   21208:	24030001 	li	v1,1
+   2120c:	02003021 	move	a2,s0
+   21210:	8f9989ac 	lw	t9,-30292(gp)
+   21214:	afa30010 	sw	v1,16(sp)
+   21218:	00403821 	move	a3,v0
+   2121c:	24040040 	li	a0,64
+   21220:	0320f809 	jalr	t9
+   21224:	27a5002c 	addiu	a1,sp,44
+   21228:	8fbf004c 	lw	ra,76(sp)
+   2122c:	8fb00048 	lw	s0,72(sp)
+   21230:	03e00008 	jr	ra
+   21234:	27bd0050 	addiu	sp,sp,80
+
+00021238 <do_event_versionq_fail@@Base>:
+   21238:	3c1c0007 	lui	gp,0x7
+   2123c:	279c2138 	addiu	gp,gp,8504
+   21240:	0399e021 	addu	gp,gp,t9
+   21244:	27bdffb8 	addiu	sp,sp,-72
+   21248:	afbf0044 	sw	ra,68(sp)
+   2124c:	afbc0018 	sw	gp,24(sp)
+   21250:	8f828570 	lw	v0,-31376(gp)
+   21254:	8f868030 	lw	a2,-32720(gp)
+   21258:	8f878030 	lw	a3,-32720(gp)
+   2125c:	8c440000 	lw	a0,0(v0)
+   21260:	240208e6 	li	v0,2278
+   21264:	afa20010 	sw	v0,16(sp)
+   21268:	8f828030 	lw	v0,-32720(gp)
+   2126c:	8f998274 	lw	t9,-32140(gp)
+   21270:	24c66ba8 	addiu	a2,a2,27560
+   21274:	24425ca0 	addiu	v0,v0,23712
+   21278:	afa20014 	sw	v0,20(sp)
+   2127c:	24e75968 	addiu	a3,a3,22888
+   21280:	0320f809 	jalr	t9
+   21284:	00002821 	move	a1,zero
+   21288:	10000005 	b	212a0 <do_event_versionq_fail@@Base+0x68>
+   2128c:	8fbc0018 	lw	gp,24(sp)
+   21290:	00402021 	move	a0,v0
+   21294:	0320f809 	jalr	t9
+   21298:	24050008 	li	a1,8
+   2129c:	8fbc0018 	lw	gp,24(sp)
+   212a0:	8f998a50 	lw	t9,-30128(gp)
+   212a4:	0320f809 	jalr	t9
+   212a8:	24040002 	li	a0,2
+   212ac:	8fbc0018 	lw	gp,24(sp)
+   212b0:	1440fff7 	bnez	v0,21290 <do_event_versionq_fail@@Base+0x58>
+   212b4:	8f9980b8 	lw	t9,-32584(gp)
+   212b8:	8f9985e4 	lw	t9,-31260(gp)
+   212bc:	0320f809 	jalr	t9
+   212c0:	24040002 	li	a0,2
+   212c4:	8fbc0018 	lw	gp,24(sp)
+   212c8:	8f99833c 	lw	t9,-31940(gp)
+   212cc:	0320f809 	jalr	t9
+   212d0:	00000000 	nop
+   212d4:	10400018 	beqz	v0,21338 <do_event_versionq_fail@@Base+0x100>
+   212d8:	8fbc0018 	lw	gp,24(sp)
+   212dc:	24020001 	li	v0,1
+   212e0:	afa20010 	sw	v0,16(sp)
+   212e4:	24020006 	li	v0,6
+   212e8:	afa00020 	sw	zero,32(sp)
+   212ec:	8f9989ac 	lw	t9,-30292(gp)
+   212f0:	a3a20020 	sb	v0,32(sp)
+   212f4:	24020003 	li	v0,3
+   212f8:	a3a20021 	sb	v0,33(sp)
+   212fc:	2402001c 	li	v0,28
+   21300:	a3a20022 	sb	v0,34(sp)
+   21304:	afa00024 	sw	zero,36(sp)
+   21308:	afa00028 	sw	zero,40(sp)
+   2130c:	afa0002c 	sw	zero,44(sp)
+   21310:	afa00030 	sw	zero,48(sp)
+   21314:	afa00034 	sw	zero,52(sp)
+   21318:	afa00038 	sw	zero,56(sp)
+   2131c:	24040004 	li	a0,4
+===== START UPLOAD STATISTIC WINDOW =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0001e43c <start_upload_statistic@@Base>:
+   1e43c:	3c1c0007 	lui	gp,0x7
+   1e440:	279c4f34 	addiu	gp,gp,20276
+   1e444:	0399e021 	addu	gp,gp,t9
+   1e448:	27bdffd8 	addiu	sp,sp,-40
+   1e44c:	afbf0024 	sw	ra,36(sp)
+   1e450:	afbc0018 	sw	gp,24(sp)
+   1e454:	8f99853c 	lw	t9,-31428(gp)
+   1e458:	24020003 	li	v0,3
+   1e45c:	00803821 	move	a3,a0
+   1e460:	afa20010 	sw	v0,16(sp)
+   1e464:	00a02021 	move	a0,a1
+   1e468:	00c02821 	move	a1,a2
+   1e46c:	0320f809 	jalr	t9
+   1e470:	24060037 	li	a2,55
+   1e474:	8fbf0024 	lw	ra,36(sp)
+   1e478:	38420001 	xori	v0,v0,0x1
+   1e47c:	2c420001 	sltiu	v0,v0,1
+   1e480:	03e00008 	jr	ra
+   1e484:	27bd0028 	addiu	sp,sp,40
+
+0001e488 <start_account_info_u@@Base>:
+   1e488:	3c1c0007 	lui	gp,0x7
+   1e48c:	279c4ee8 	addiu	gp,gp,20200
+   1e490:	0399e021 	addu	gp,gp,t9
+   1e494:	27bdffd8 	addiu	sp,sp,-40
+   1e498:	afbf0024 	sw	ra,36(sp)
+   1e49c:	afbc0018 	sw	gp,24(sp)
+   1e4a0:	8f99853c 	lw	t9,-31428(gp)
+   1e4a4:	24020003 	li	v0,3
+   1e4a8:	00803821 	move	a3,a0
+   1e4ac:	afa20010 	sw	v0,16(sp)
+   1e4b0:	00a02021 	move	a0,a1
+   1e4b4:	00c02821 	move	a1,a2
+   1e4b8:	0320f809 	jalr	t9
+   1e4bc:	24060014 	li	a2,20
+   1e4c0:	8fbf0024 	lw	ra,36(sp)
+   1e4c4:	38420001 	xori	v0,v0,0x1
+   1e4c8:	2c420001 	sltiu	v0,v0,1
+   1e4cc:	03e00008 	jr	ra
+   1e4d0:	27bd0028 	addiu	sp,sp,40
+
+0001e4d4 <start_account_info_q@@Base>:
+   1e4d4:	3c1c0007 	lui	gp,0x7
+   1e4d8:	279c4e9c 	addiu	gp,gp,20124
+   1e4dc:	0399e021 	addu	gp,gp,t9
+   1e4e0:	27bdffd8 	addiu	sp,sp,-40
+   1e4e4:	afbf0024 	sw	ra,36(sp)
+   1e4e8:	afbc0018 	sw	gp,24(sp)
+   1e4ec:	8f99853c 	lw	t9,-31428(gp)
+   1e4f0:	24020003 	li	v0,3
+   1e4f4:	00803821 	move	a3,a0
+   1e4f8:	afa20010 	sw	v0,16(sp)
+   1e4fc:	00002021 	move	a0,zero
+   1e500:	00002821 	move	a1,zero
+   1e504:	0320f809 	jalr	t9
+   1e508:	24060012 	li	a2,18
+   1e50c:	8fbf0024 	lw	ra,36(sp)
+   1e510:	38420001 	xori	v0,v0,0x1
+   1e514:	2c420001 	sltiu	v0,v0,1
+   1e518:	03e00008 	jr	ra
+   1e51c:	27bd0028 	addiu	sp,sp,40
+
+0001e520 <do_disp_task@@Base>:
+   1e520:	3c1c0007 	lui	gp,0x7
+   1e524:	279c4e50 	addiu	gp,gp,20048
+   1e528:	0399e021 	addu	gp,gp,t9
+   1e52c:	27bdffd8 	addiu	sp,sp,-40
+   1e530:	afbf0024 	sw	ra,36(sp)
+   1e534:	afbc0018 	sw	gp,24(sp)
+   1e538:	24020005 	li	v0,5
+   1e53c:	14a20009 	bne	a1,v0,1e564 <do_disp_task@@Base+0x44>
+   1e540:	8f828570 	lw	v0,-31376(gp)
+   1e544:	9082000c 	lbu	v0,12(a0)
+   1e548:	8c87001c 	lw	a3,28(a0)
+   1e54c:	8f99853c 	lw	t9,-31428(gp)
+   1e550:	afa20010 	sw	v0,16(sp)
+   1e554:	00002021 	move	a0,zero
+   1e558:	00002821 	move	a1,zero
+   1e55c:	1000000d 	b	1e594 <do_disp_task@@Base+0x74>
+   1e560:	2406000d 	li	a2,13
+   1e564:	8f868030 	lw	a2,-32720(gp)
+   1e568:	8f878030 	lw	a3,-32720(gp)
+   1e56c:	8c440000 	lw	a0,0(v0)
+   1e570:	24020604 	li	v0,1540
+   1e574:	afa20010 	sw	v0,16(sp)
+   1e578:	8f828030 	lw	v0,-32720(gp)
+   1e57c:	8f998274 	lw	t9,-32140(gp)
+   1e580:	24c66c98 	addiu	a2,a2,27800
+   1e584:	24425a60 	addiu	v0,v0,23136
+   1e588:	afa20014 	sw	v0,20(sp)
+   1e58c:	24e75968 	addiu	a3,a3,22888
+   1e590:	24050003 	li	a1,3
+   1e594:	0320f809 	jalr	t9
+   1e598:	00000000 	nop
+   1e59c:	8fbf0024 	lw	ra,36(sp)
+   1e5a0:	03e00008 	jr	ra
+   1e5a4:	27bd0028 	addiu	sp,sp,40
+
+0001e5a8 <cmd_cloud_echo_a@@Base>:
+   1e5a8:	3c1c0007 	lui	gp,0x7
+   1e5ac:	279c4dc8 	addiu	gp,gp,19912
+   1e5b0:	0399e021 	addu	gp,gp,t9
+   1e5b4:	27bdffc8 	addiu	sp,sp,-56
+   1e5b8:	afbf0034 	sw	ra,52(sp)
+   1e5bc:	afb10030 	sw	s1,48(sp)
+   1e5c0:	afb0002c 	sw	s0,44(sp)
+   1e5c4:	afbc0020 	sw	gp,32(sp)
+   1e5c8:	14a00025 	bnez	a1,1e660 <cmd_cloud_echo_a@@Base+0xb8>
+   1e5cc:	8f908570 	lw	s0,-31376(gp)
+   1e5d0:	8f998aa4 	lw	t9,-30044(gp)
+   1e5d4:	0320f809 	jalr	t9
+   1e5d8:	8c84000c 	lw	a0,12(a0)
+   1e5dc:	8fbc0020 	lw	gp,32(sp)
+   1e5e0:	24030c36 	li	v1,3126
+   1e5e4:	8e040000 	lw	a0,0(s0)
+   1e5e8:	afa30010 	sw	v1,16(sp)
+   1e5ec:	8f838030 	lw	v1,-32720(gp)
+   1e5f0:	8f868030 	lw	a2,-32720(gp)
+   1e5f4:	8f878030 	lw	a3,-32720(gp)
+   1e5f8:	8f998274 	lw	t9,-32140(gp)
+   1e5fc:	00408021 	move	s0,v0
+===== SYMBOL / RELOCATION XREFS =====
+   3094c:	02002021 	move	a0,s0
+   30950:	27a60018 	addiu	a2,sp,24
+   30954:	0320f809 	jalr	t9
+   30958:	27a7001c 	addiu	a3,sp,28
+   3095c:	14400005 	bnez	v0,30974 <cmd_cloud_mesh_node_a@@Base+0xac>
+   30960:	8fbc0010 	lw	gp,16(sp)
+   30964:	8f998474 	lw	t9,-31628(gp)
+   30968:	8fa40018 	lw	a0,24(sp)
+   3096c:	0320f809 	jalr	t9
+   30970:	8fa5001c 	lw	a1,28(sp)
+   30974:	00001821 	move	v1,zero
+   30978:	8fbf2034 	lw	ra,8244(sp)
+   3097c:	8fb12030 	lw	s1,8240(sp)
+   30980:	8fb0202c 	lw	s0,8236(sp)
+   30984:	00601021 	move	v0,v1
+   30988:	03e00008 	jr	ra
+   3098c:	27bd2038 	addiu	sp,sp,8248
+
+00030990 <dev_traffic_upload_json_packer@@Base>:
+   30990:	3c1c0006 	lui	gp,0x6
+   30994:	279c29e0 	addiu	gp,gp,10720
+   30998:	0399e021 	addu	gp,gp,t9
+   3099c:	27bdffb8 	addiu	sp,sp,-72
+   309a0:	afbf0044 	sw	ra,68(sp)
+   309a4:	afbe0040 	sw	s8,64(sp)
+   309a8:	afb7003c 	sw	s7,60(sp)
+   309ac:	afb60038 	sw	s6,56(sp)
+   309b0:	afb50034 	sw	s5,52(sp)
+   309b4:	afb40030 	sw	s4,48(sp)
+   309b8:	afb3002c 	sw	s3,44(sp)
+   309bc:	afb20028 	sw	s2,40(sp)
+   309c0:	afb10024 	sw	s1,36(sp)
+   309c4:	afb00020 	sw	s0,32(sp)
+   309c8:	afbc0018 	sw	gp,24(sp)
+   309cc:	00808021 	move	s0,a0
+   309d0:	00c0a021 	move	s4,a2
+   309d4:	10800035 	beqz	a0,30aac <dev_traffic_upload_json_packer@@Base+0x11c>
+   309d8:	00e0a821 	move	s5,a3
+   309dc:	10a00034 	beqz	a1,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309e0:	24020001 	li	v0,1
+   309e4:	8c960000 	lw	s6,0(a0)
+   309e8:	1ac00031 	blez	s6,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309ec:	8f858028 	lw	a1,-32728(gp)
+   309f0:	8e020014 	lw	v0,20(s0)
+   309f4:	8cc40000 	lw	a0,0(a2)
+   309f8:	8f9981c0 	lw	t9,-32320(gp)
+   309fc:	8e070010 	lw	a3,16(s0)
+   30a00:	24a5911c 	addiu	a1,a1,-28388
+   30a04:	afa20010 	sw	v0,16(sp)
+   30a08:	0320f809 	jalr	t9
+   30a0c:	26060004 	addiu	a2,s0,4
+   30a10:	8fbc0018 	lw	gp,24(sp)
+   30a14:	00408821 	move	s1,v0
+   30a18:	02009821 	move	s3,s0
+   30a1c:	8f9e8028 	lw	s8,-32728(gp)
+   30a20:	24120001 	li	s2,1
+   30a24:	24170014 	li	s7,20
+   30a28:	1000000d 	b	30a60 <dev_traffic_upload_json_packer@@Base+0xd0>
+   30a2c:	27de913c 	addiu	s8,s8,-28356
+   30a30:	72571002 	mul	v0,s2,s7
+   30a34:	8e840000 	lw	a0,0(s4)
+   30a38:	8e670010 	lw	a3,16(s3)
+   30a3c:	26520001 	addiu	s2,s2,1
+   30a40:	00912021 	addu	a0,a0,s1
+   30a44:	00503021 	addu	a2,v0,s0
+   30a48:	8e620014 	lw	v0,20(s3)
+   30a4c:	24c60004 	addiu	a2,a2,4
+   30a50:	0320f809 	jalr	t9
+   30a54:	afa20010 	sw	v0,16(sp)
+   30a58:	8fbc0018 	lw	gp,24(sp)
+   30a5c:	02228821 	addu	s1,s1,v0
+   30a60:	0256102a 	slt	v0,s2,s6
+   30a64:	8f9981c0 	lw	t9,-32320(gp)
+   30a68:	10400006 	beqz	v0,30a84 <dev_traffic_upload_json_packer@@Base+0xf4>
+   30a6c:	03c02821 	move	a1,s8
+   30a70:	8ea20000 	lw	v0,0(s5)
+   30a74:	2442ffff 	addiu	v0,v0,-1
+   30a78:	0222102a 	slt	v0,s1,v0
+   30a7c:	1440ffec 	bnez	v0,30a30 <dev_traffic_upload_json_packer@@Base+0xa0>
+   30a80:	26730014 	addiu	s3,s3,20
+   30a84:	8e840000 	lw	a0,0(s4)
+   30a88:	8f858028 	lw	a1,-32728(gp)
+   30a8c:	8f998ad0 	lw	t9,-30000(gp)
+   30a90:	00912021 	addu	a0,a0,s1
+   30a94:	24a5915c 	addiu	a1,a1,-28324
+   30a98:	0320f809 	jalr	t9
+   30a9c:	26310001 	addiu	s1,s1,1
+   30aa0:	aeb10000 	sw	s1,0(s5)
+   30aa4:	10000002 	b	30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   30aa8:	00001021 	move	v0,zero
+   30aac:	24020001 	li	v0,1
+   30ab0:	8fbf0044 	lw	ra,68(sp)
+   30ab4:	8fbe0040 	lw	s8,64(sp)
+   30ab8:	8fb7003c 	lw	s7,60(sp)
+   30abc:	8fb60038 	lw	s6,56(sp)
+   30ac0:	8fb50034 	lw	s5,52(sp)
+   30ac4:	8fb40030 	lw	s4,48(sp)
+   30ac8:	8fb3002c 	lw	s3,44(sp)
+   30acc:	8fb20028 	lw	s2,40(sp)
+   30ad0:	8fb10024 	lw	s1,36(sp)
+   30ad4:	8fb00020 	lw	s0,32(sp)
+   30ad8:	03e00008 	jr	ra
+   30adc:	27bd0048 	addiu	sp,sp,72
+
+00030ae0 <cmd_cloud_info_dev_traffic_upload@@Base>:
+   30ae0:	3c1c0006 	lui	gp,0x6
+   30ae4:	279c2890 	addiu	gp,gp,10384
+   30ae8:	0399e021 	addu	gp,gp,t9
+   30aec:	27bdfb98 	addiu	sp,sp,-1128
+   30af0:	afbf0464 	sw	ra,1124(sp)
+   30af4:	afb50460 	sw	s5,1120(sp)
+   30af8:	afb4045c 	sw	s4,1116(sp)
+   30afc:	afb30458 	sw	s3,1112(sp)
+   30b00:	afb20454 	sw	s2,1108(sp)
+   30b04:	afb10450 	sw	s1,1104(sp)
+   30b08:	afb0044c 	sw	s0,1100(sp)
+   30b0c:	afbc0018 	sw	gp,24(sp)
+   30b10:	00809021 	move	s2,a0
+   30b14:	00c08821 	move	s1,a2
+   30b18:	00e0a821 	move	s5,a3
+   30b1c:	14a00043 	bnez	a1,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30b20:	00001021 	move	v0,zero
+   30b24:	8f9981ec 	lw	t9,-32276(gp)
+   30b28:	0320f809 	jalr	t9
+   30b2c:	00000000 	nop
+   30b30:	1040002f 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b34:	8fbc0018 	lw	gp,24(sp)
+   30b38:	8f9980c0 	lw	t9,-32576(gp)
+   30b3c:	0320f809 	jalr	t9
+   30b40:	24040003 	li	a0,3
+   30b44:	8fbc0018 	lw	gp,24(sp)
+   30b48:	10400029 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b4c:	00409821 	move	s3,v0
+   30b50:	8f998bd4 	lw	t9,-29740(gp)
+   30b54:	27b40044 	addiu	s4,sp,68
+   30b58:	02802021 	move	a0,s4
+   30b5c:	00002821 	move	a1,zero
+   30b60:	0320f809 	jalr	t9
+   30b64:	24060400 	li	a2,1024
+   30b68:	8fbc0018 	lw	gp,24(sp)
+   30b6c:	24020400 	li	v0,1024
+   30b70:	27b00028 	addiu	s0,sp,40
+   30b74:	8f99819c 	lw	t9,-32356(gp)
+   30b78:	02402821 	move	a1,s2
+   30b7c:	02002021 	move	a0,s0
+   30b80:	2406001c 	li	a2,28
+   30b84:	afb40020 	sw	s4,32(sp)
+   30b88:	0320f809 	jalr	t9
+   30b8c:	afa20024 	sw	v0,36(sp)
+   30b90:	8fbc0018 	lw	gp,24(sp)
+   30b94:	24020006 	li	v0,6
+   30b98:	a3a20028 	sb	v0,40(sp)
+   30b9c:	8f9981fc 	lw	t9,-32260(gp)
+   30ba0:	24020003 	li	v0,3
+   30ba4:	a3a20029 	sb	v0,41(sp)
+   30ba8:	2402003e 	li	v0,62
+   30bac:	afb30034 	sw	s3,52(sp)
+   30bb0:	a3a2002a 	sb	v0,42(sp)
+   30bb4:	02202021 	move	a0,s1
+   30bb8:	02a02821 	move	a1,s5
+   30bbc:	27a60020 	addiu	a2,sp,32
+   30bc0:	0320f809 	jalr	t9
+   30bc4:	27a70024 	addiu	a3,sp,36
+   30bc8:	14400018 	bnez	v0,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30bcc:	8fbc0018 	lw	gp,24(sp)
+   30bd0:	8f998554 	lw	t9,-31404(gp)
+   30bd4:	8fa60024 	lw	a2,36(sp)
+   30bd8:	8fa70020 	lw	a3,32(sp)
+   30bdc:	02002021 	move	a0,s0
+   30be0:	0320f809 	jalr	t9
+   30be4:	24050001 	li	a1,1
+   30be8:	10000011 	b	30c30 <cmd_cloud_info_dev_traffic_upload@@Base+0x150>
+   30bec:	8fbf0464 	lw	ra,1124(sp)
+   30bf0:	8f828570 	lw	v0,-31376(gp)
+   30bf4:	8f868028 	lw	a2,-32728(gp)
+   30bf8:	8f878028 	lw	a3,-32728(gp)
+   30bfc:	8c440000 	lw	a0,0(v0)
+   30c00:	24020298 	li	v0,664
+   30c04:	afa20010 	sw	v0,16(sp)
+   30c08:	8f828028 	lw	v0,-32728(gp)
+   30c0c:	8f998274 	lw	t9,-32140(gp)
+   30c10:	24c694d0 	addiu	a2,a2,-27440
+   30c14:	24428fb8 	addiu	v0,v0,-28744
+   30c18:	afa20014 	sw	v0,20(sp)
+   30c1c:	24e78e78 	addiu	a3,a3,-29064
+   30c20:	0320f809 	jalr	t9
+   30c24:	24050002 	li	a1,2
+   30c28:	24020001 	li	v0,1
+   30c2c:	8fbf0464 	lw	ra,1124(sp)
+   30c30:	8fb50460 	lw	s5,1120(sp)
+   30c34:	8fb4045c 	lw	s4,1116(sp)
+   30c38:	8fb30458 	lw	s3,1112(sp)
+   30c3c:	8fb20454 	lw	s2,1108(sp)
+   30c40:	8fb10450 	lw	s1,1104(sp)
+   30c44:	8fb0044c 	lw	s0,1100(sp)
+   30c48:	03e00008 	jr	ra
+   30c4c:	27bd0468 	addiu	sp,sp,1128
+
+00030c50 <cmd_cloud_router_push_info_q@@Base>:
+   30c50:	3c1c0006 	lui	gp,0x6
+   30c54:	279c2720 	addiu	gp,gp,10016
+   30c58:	0399e021 	addu	gp,gp,t9
+===== CONFSRV TRAFFIC SEND XREFS =====

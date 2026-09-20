@@ -1,0 +1,10 @@
+===== RUN 116 GOAL =====
+Locate every ELF importing/defining uc_api_m_cloud_info_send_dev_traffic and recover caller functions.
+ELF symbol hits: 1
+
+===== firmware-src/RootFS-unpacked/lib/libucapi.so =====
+uc_api_m_cloud_info_send_dev_traffic value=0x7698 shndx=10
+.got=0x31ee0 inferred_gp=0x39ed0
+NO GOT WORD MATCHING SYMBOL VALUE
+
+===== STRING-ONLY REFERENCES ACROSS ROOTFS =====

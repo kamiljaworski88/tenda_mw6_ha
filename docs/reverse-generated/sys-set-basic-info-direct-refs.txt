@@ -1,0 +1,28 @@
+===== RUN 56 GOAL =====
+Find direct disassembly references to uc_api_set_basic_info at 0x8348.
+===== SYMBOL =====
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+===== DIRECT REFERENCES =====
+    8324:	10400002 	beqz	v0,8330 <uc_api_enable_upgrade@@Base+0x148>
+    8328:	00001821 	move	v1,zero
+    832c:	2403ffff 	li	v1,-1
+    8330:	8fbf0034 	lw	ra,52(sp)
+    8334:	8fb10030 	lw	s1,48(sp)
+    8338:	8fb0002c 	lw	s0,44(sp)
+    833c:	00601021 	move	v0,v1
+    8340:	03e00008 	jr	ra
+    8344:	27bd0038 	addiu	sp,sp,56
+
+00008348 <uc_api_set_basic_info@@Base>:
+    8348:	3c1c0003 	lui	gp,0x3
+    834c:	279c1b88 	addiu	gp,gp,7048
+    8350:	0399e021 	addu	gp,gp,t9
+    8354:	27bdfd68 	addiu	sp,sp,-664
+    8358:	afbf0294 	sw	ra,660(sp)
+    835c:	afb20290 	sw	s2,656(sp)
+    8360:	afb1028c 	sw	s1,652(sp)
+    8364:	afb00288 	sw	s0,648(sp)
+    8368:	afbc0020 	sw	gp,32(sp)
+    836c:	14800009 	bnez	a0,8394 <uc_api_set_basic_info@@Base+0x4c>
+    8370:	00808021 	move	s0,a0
+    8374:	8f848024 	lw	a0,-32732(gp)

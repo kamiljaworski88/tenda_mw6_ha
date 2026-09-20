@@ -1,0 +1,546 @@
+===== RUN 44 GOAL =====
+Determine how cmdsrv routes subscriber vs request clients and whether cmdrpc@ keys/channels get a dedicated request/reply path that avoids global subscribe mode.
+===== SYMBOLS =====
+    16: 00404310     0 FUNC    GLOBAL DEFAULT  UND redis_client_try_execute
+    17: 00404300     0 FUNC    GLOBAL DEFAULT  UND redis_client_execute
+    18: 004042f0     0 FUNC    GLOBAL DEFAULT  UND redis_client_init
+    21: 004042c0     0 FUNC    GLOBAL DEFAULT  UND redis_reader_init
+    23: 004042a0     0 FUNC    GLOBAL DEFAULT  UND cm_io_close
+    25: 00404280     0 FUNC    GLOBAL DEFAULT  UND redis_reader_cleanup
+    29: 00404240     0 FUNC    GLOBAL DEFAULT  UND redis_writer_push
+    32: 00404210     0 FUNC    GLOBAL DEFAULT  UND redisReaderCleanup
+    33: 00404200     0 FUNC    GLOBAL DEFAULT  UND redis_option_new
+    34: 004041f0     0 FUNC    GLOBAL DEFAULT  UND cm_io_accept
+    37: 004041c0     0 FUNC    GLOBAL DEFAULT  UND redisReaderGetReply
+    40: 004041a0     0 FUNC    GLOBAL DEFAULT  UND redis_writer_cleanup
+    41: 00404190     0 FUNC    GLOBAL DEFAULT  UND freeReplyObject
+    43: 00404170     0 FUNC    GLOBAL DEFAULT  UND redis_reader_feed
+    47: 00404130     0 FUNC    GLOBAL DEFAULT  UND subscribe_unregister
+    48: 00404120     0 FUNC    GLOBAL DEFAULT  UND subscribe_new
+    53: 004040e0     0 FUNC    GLOBAL DEFAULT  UND redis_writer_init
+    61: 00404060     0 FUNC    GLOBAL DEFAULT  UND subscribe_register
+    65: 00404020     0 FUNC    GLOBAL DEFAULT  UND redisReaderFeed
+    67: 00404000     0 FUNC    GLOBAL DEFAULT  UND redis_writer_flush
+    70: 00403fe0     0 FUNC    GLOBAL DEFAULT  UND redisReaderInit
+===== STRINGS =====
+    134 /lib/ld-uClibc.so.0
+    1fb p`SA
+    263 pdSA
+    951 _fini
+    957 __uClibc_main
+    965 libcommon.so
+    972 _DYNAMIC_LINKING
+    983 __RLD_MAP
+    98d _GLOBAL_OFFSET_TABLE_
+    9a3 _Jv_RegisterClasses
+    9b7 libm.so.0
+    9c1 libz.so
+    9c9 libpthread.so.0
+    9d9 libapmib.so
+    9e5 librtlWifiSrc.so
+    9f6 libcommonprod.so
+    a07 libcm.so
+    a10 libredis.so
+    a1c libutil.so.0
+    a29 cm_abort
+    a32 stderr
+    a39 cm_time
+    a41 fprintf
+    a49 exit
+    a4e subscribe_unregister
+    a63 redis_writer_flush
+    a76 sdsfree
+    a7e cm_io_close
+    a8a redis_reader_cleanup
+    a9f redis_writer_cleanup
+    ab4 cm_strerror
+    ac0 redisReaderInit
+    ad0 redisReaderFeed
+    ae0 redisReaderCleanup
+    af3 redisReaderGetReply
+    b07 get_mem_config
+    b16 atoi
+    b1b cm_io_read
+    b26 redis_reader_feed
+    b38 redis_client_execute
+    b4d cm_io_write
+    b59 redis_writer_push
+    b6b freeReplyObject
+    b7b malloc
+    b82 redis_client_try_execute
+    b9b memset
+    ba2 redis_reader_init
+    bb4 redis_writer_init
+    bc6 cm_io_accept
+    bd3 redis_option_new
+    be4 strcmp
+    beb fwrite
+    bf2 cm_init
+    bfa redis_client_init
+    c0c subscribe_new
+    c1a cm_io_listen
+    c27 cm_run
+    c2e sdsempty
+    c37 sdsMakeRoomFor
+    c46 sdsll2str
+    c50 sdsIncrLen
+    c5b strlen
+    c62 memcpy
+    c69 subscribe_register
+    c7c sdsnew
+    c83 sdscatprintf
+    c90 freopen
+    c98 getopt
+    c9f optarg
+    ca6 optind
+    cad libgcc_s.so.1
+    cbb __register_frame_info
+    cd1 __deregister_frame_info
+    ce9 libc.so.0
+    cf3 _ftext
+    cfa _fdata
+    d01 _edata
+    d08 __bss_start
+    d14 _fbss
+    d1a _end
+    d1f GLIBC_2.0
+    f0d RR&#
+   11bb $!8`
+   11c7 $!0@
+   133e P&! 
+   172d Rs&|G
+   1b44 tRc$
+   1be4 tRc$
+   209c TRc$
+   21a1 Qc$!0@
+   22fd Rs&x
+   232a B$!(
+   2612 B$+ E
+   26b7 &! `
+--
+   3393 $<.9'
+   343e E$!0 
+   359e T$! 
+   3726 R$! @
+   375e R&#(P
+   37a6 R$! @
+   37de R&#(P
+   380c HQc$
+   388a W$! 
+   3906 E&! 
+   3952 V$! 
+   3abd Rc$!0@
+   3d1a S$! `
+   3d52 s&#(p
+   3eb6 T$! 
+   4370 cm_assert(!cli->proxy) failure at <cmdsrv.c:496>
+   43a4 [%.3f cmdsrv.c:500 %s] %p, no proxy connection available
+   43e0 Usage: %s [OPTIONS]
+   43f4   -l listen address (encrypted protocol)
+   441d   -r server address (encrypted protocol)
+   4446   -L listen address (raw redis protocol)
+   446f   -R server address (raw redis protocol)
+   449c [%.3f cmdsrv.c:210 %s] cli: %p, unsubscribe: %s
+   44d0 cm_assert(cli->subcount > 0) failure at <cmdsrv.c:216>
+   450c cm_assert(!task->req) failure at <cmdsrv.c:872>
+   4540 cm_assert(cm_io_is_closing(&cli->wio)) failure at <cmdsrv.c:607>
+   4584 cm_assert(sw->cli == cli) failure at <cmdsrv.c:615>
+   45bc cm_assert(cli->subcount == 0) failure at <cmdsrv.c:619>
+   45f8 cm_assert(list_empty(&cli->pending_requests)) failure at <cmdsrv.c:621>
+   4644 cm_assert(list_empty(&cli->pending_replies)) failure at <cmdsrv.c:622>
+   4690 cm_assert(!err) failure at <cmdsrv.c:625>
+   46bc cm_assert(cmio->status == CM_IO_CLOSED) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:33>
+   4738 cm_assert(cm_io_is_closed(&cli->wio)) failure at <cmdsrv.c:626>
+   477c [%.3f cmdsrv.c:323 %s] offline: %p, error: %s
+   47ac [%.3f cmdsrv.c:328 %s] offline: %p, error: %s
+   47dc cm_assert(proxy->client_count == 0) failure at <cmdsrv.c:331>
+   481c /var/mib.mem
+   482c role
+   4834 [%.3f cmdsrv.c:773 %s] offline: %p, error: %s
+   4864 [%.3f cmdsrv.c:781 %s] offline: %p, error: %s
+   4894 cm_assert(!list_empty(&cli->pending_requests)) failure at <cmdsrv.c:347>
+   48e0 cm_assert(err == CM_E2BIG) failure at <cmdsrv.c:354>
+   4918 cm_assert(!ev_is_active(&cmio->io)) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:25>
+   4990 cm_assert(!ev_is_active(&cmio->timer)) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:26>
+   4a0c cm_assert(!cm_io_is_active(&cli->wio)) failure at <cmdsrv.c:654>
+   4a50 cm_assert(!reply) failure at <cmdsrv.c:903>
+   4a80 [%.3f cmdsrv.c:910 %s] offline: %p, error: %s
+   4ab0 [%.3f cmdsrv.c:641 %s] offline: %p, error: %s
+   4ae0 [%.3f cmdsrv.c:418 %s] cli: %p, bad request: [%.16s]
+   4b18 [%.3f cmdsrv.c:450 %s] only SUBSCRIBE / UNSUBSCRIBE allowed in subscribe mode
+   4b68 oom at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm.h:77>
+   4bb4 cm_assert(cb) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/redis_client.h:45>
+   4c1c cm_assert(err == CM_EAGAIN) failure at <cmdsrv.c:557>
+   4c54 cm_assert(list_empty(&cli->pending_requests)) failure at <cmdsrv.c:562>
+   4ca0 cm_assert(!list_empty(&cli->proxy->pending_clients)) failure at <cmdsrv.c:566>
+   4cf4 cm_assert(cmio->io.fd == -1) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:66>
+   4d64 cm_assert(!cmio->share) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:67>
+   4dd0 cm_assert(share->io.fd == -1) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:69>
+   4e40 cm_assert(!share->share) failure at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm_io.h:70>
+   4eac [%.3f cmdsrv.c:811 %s] %p, error: %s
+   4ed4 [%.3f cmdsrv.c:818 %s] offline: %p, error: %s
+   4f04 /dev/null
+   4f14 l:L:r:R:
+   4f20 [%.3f cmdsrv.c:989 %s] listen address: {%s}, server address: {%s}
+   4f64 Server address must be set!
+   4f84 Listen and server address must be different!
+   4fb4 cm_io_listen() error: %s
+   4fd0 oom at <cmdsrv.c:712>
+   4fe8 unsubscribe
+   4ff4 subscribe
+   5000 [%.3f cmdsrv.c:195 %s] cli: %p, subscribe: %s
+   5038 pong
+   5048 oom at <cmdsrv.c:668>
+   5068 pong
+   5070 oom at <cmdsrv.c:672>
+   5088 -ERR wrong number of arguments for 'ping' command
+   50bc oom at <cmdsrv.c:677>
+   50d4 cm_assert(n) failure at <cmdsrv.c:155>
+   5100 [%.3f cmdsrv.c:160 %s] offline: %p, error: %s
+   5130 oom at <cmdsrv.c:180>
+   5148 message
+   5150 [pool-%d@%p] clients: %u, requests: %llu
+   517c [TOTAL] clients: %u, requests: %llu
+   51a4 Version: 1.0
+   51c0 main
+   51c8 client_handle_request
+   51e0 subwatcher_free
+   51f0 client_send_done
+   5204 subwatcher_new
+   5214 subwatcher_ready
+   5228 client_forward_request
+   5240 client_attach_redis
+   5254 proxy_task_done
+   5264 client_online
+   5274 client_recv_done
+   5288 redis_client_on_close
+   52e4 ping
+   52fc info
+   5314 client
+   532c subscribe
+   5345 unsubscribe
+   5488 GCC: (GNU) 3.3.2
+   5499 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+   5895 .shstrtab
+   589f .interp
+   58a7 .reginfo
+   58b0 .dynamic
+   58b9 .hash
+   58bf .dynsym
+   58c7 .dynstr
+   58cf .gnu.version
+   58dc .gnu.version_r
+   58eb .rel.plt
+   58f4 .init
+   58fa .text
+   5900 .MIPS.stubs
+   590c .fini
+   5912 .rodata
+   591a .eh_frame
+   5924 .ctors
+   592b .dtors
+   5932 .jcr
+   5937 .data
+   593d .rld_map
+   5946 .got.plt
+   594f .got
+   5954 .sdata
+   595b .bss
+   5960 .comment
+   5969 .pdr
+   596e .gnu.attributes
+===== REFERENCES TO SUBSCRIBE-ONLY ERROR =====
+string_offset=4b18
+1325-  402264:	24a551c8 	addiu	a1,a1,20936
+1326-  402268:	afa50010 	sw	a1,16(sp)
+1327-  40226c:	8f858024 	lw	a1,-32732(gp)
+1328-  402270:	00403021 	move	a2,v0
+1329-  402274:	00603821 	move	a3,v1
+1330-  402278:	0320f809 	jalr	t9
+1331-  40227c:	24a54ae0 	addiu	a1,a1,19168
+1332-  402280:	8fbc0020 	lw	gp,32(sp)
+1333-  402284:	8f9980f4 	lw	t9,-32524(gp)
+1334-  402288:	0320f809 	jalr	t9
+1335-  40228c:	02002021 	move	a0,s0
+1336-  402290:	02201021 	move	v0,s1
+1337-  402294:	8fbf004c 	lw	ra,76(sp)
+1338-  402298:	8fb50048 	lw	s5,72(sp)
+1339-  40229c:	8fb40044 	lw	s4,68(sp)
+1340-  4022a0:	8fb30040 	lw	s3,64(sp)
+1341-  4022a4:	8fb2003c 	lw	s2,60(sp)
+1342-  4022a8:	8fb10038 	lw	s1,56(sp)
+1343-  4022ac:	8fb00034 	lw	s0,52(sp)
+1344-  4022b0:	03e00008 	jr	ra
+1345-  4022b4:	27bd0050 	addiu	sp,sp,80
+1346-  4022b8:	80a20001 	lb	v0,1(a1)
+1347-  4022bc:	2442ffd0 	addiu	v0,v0,-48
+1348-  4022c0:	2c43000a 	sltiu	v1,v0,10
+1349-  4022c4:	1060ffdb 	beqz	v1,402234 <_ftext@@Base+0x13b4>
+1350-  4022c8:	2403000d 	li	v1,13
+1351-  4022cc:	80a40002 	lb	a0,2(a1)
+1352-  4022d0:	1483ffd8 	bne	a0,v1,402234 <_ftext@@Base+0x13b4>
+1353-  4022d4:	2403000a 	li	v1,10
+1354-  4022d8:	80a40003 	lb	a0,3(a1)
+1355-  4022dc:	1483ffd5 	bne	a0,v1,402234 <_ftext@@Base+0x13b4>
+1356-  4022e0:	00000000 	nop
+1357-  4022e4:	10400069 	beqz	v0,40248c <_ftext@@Base+0x160c>
+1358-  4022e8:	8f9980f4 	lw	t9,-32524(gp)
+1359-  4022ec:	24a60004 	addiu	a2,a1,4
+1360-  4022f0:	10c00066 	beqz	a2,40248c <_ftext@@Base+0x160c>
+1361-  4022f4:	8f938028 	lw	s3,-32728(gp)
+1362-  4022f8:	24070014 	li	a3,20
+1363-  4022fc:	267352e0 	addiu	s3,s3,21216
+1364-  402300:	26680078 	addiu	t0,s3,120
+1365-  402304:	82620000 	lb	v0,0(s3)
+1366-  402308:	10400011 	beqz	v0,402350 <_ftext@@Base+0x14d0>
+1367-  40230c:	8f998024 	lw	t9,-32732(gp)
+1368-  402310:	80c30000 	lb	v1,0(a2)
+1369-  402314:	14620022 	bne	v1,v0,4023a0 <_ftext@@Base+0x1520>
+1370-  402318:	24040001 	li	a0,1
+1371-  40231c:	24020001 	li	v0,1
+1372-  402320:	02621821 	addu	v1,s3,v0
+1373-  402324:	80630000 	lb	v1,0(v1)
+1374-  402328:	24420001 	addiu	v0,v0,1
+1375-  40232c:	00c42821 	addu	a1,a2,a0
+1376-  402330:	10600006 	beqz	v1,40234c <_ftext@@Base+0x14cc>
+1377-  402334:	00402021 	move	a0,v0
+1378-  402338:	80a50000 	lb	a1,0(a1)
+1379-  40233c:	14a30018 	bne	a1,v1,4023a0 <_ftext@@Base+0x1520>
+1380-  402340:	00000000 	nop
+1381-  402344:	1447fff7 	bne	v0,a3,402324 <_ftext@@Base+0x14a4>
+1382-  402348:	02621821 	addu	v1,s3,v0
+1383-  40234c:	8f998024 	lw	t9,-32732(gp)
+1384-  402350:	273918b8 	addiu	t9,t9,6328
+1385-  402354:	0320f809 	jalr	t9
+1386-  402358:	02002021 	move	a0,s0
+1387-  40235c:	8fbc0020 	lw	gp,32(sp)
+1388-  402360:	00408821 	move	s1,v0
+1389-  402364:	8f9980f4 	lw	t9,-32524(gp)
+1390-  402368:	0320f809 	jalr	t9
+1391-  40236c:	02002021 	move	a0,s0
+1392-  402370:	12200005 	beqz	s1,402388 <_ftext@@Base+0x1508>
+1393-  402374:	8fbc0020 	lw	gp,32(sp)
+1394-  402378:	8e230000 	lw	v1,0(s1)
+1395-  40237c:	24020002 	li	v0,2
+1396-  402380:	10620093 	beq	v1,v0,4025d0 <_ftext@@Base+0x1750>
+1397-  402384:	00000000 	nop
+1398-  402388:	8f99809c 	lw	t9,-32612(gp)
+1399-  40238c:	02202021 	move	a0,s1
+1400-  402390:	0320f809 	jalr	t9
+1401-  402394:	2411ffea 	li	s1,-22
+1402-  402398:	1000ffbe 	b	402294 <_ftext@@Base+0x1414>
+1403-  40239c:	02201021 	move	v0,s1
+1404-  4023a0:	26730018 	addiu	s3,s3,24
+1405-  4023a4:	1668ffd7 	bne	s3,t0,402304 <_ftext@@Base+0x1484>
+1406-  4023a8:	264200d8 	addiu	v0,s2,216
+1407-  4023ac:	8e4300d8 	lw	v1,216(s2)
+1408-  4023b0:	10620013 	beq	v1,v0,402400 <_ftext@@Base+0x1580>
+1409-  4023b4:	8f828108 	lw	v0,-32504(gp)
+1410-  4023b8:	8f9980c8 	lw	t9,-32568(gp)
+1411-  4023bc:	2411ffea 	li	s1,-22
+1412-  4023c0:	8c440000 	lw	a0,0(v0)
+1413-  4023c4:	0320f809 	jalr	t9
+1414-  4023c8:	afa40028 	sw	a0,40(sp)
+1415-  4023cc:	8fbc0020 	lw	gp,32(sp)
+1416-  4023d0:	8fa40028 	lw	a0,40(sp)
+1417-  4023d4:	00403021 	move	a2,v0
+1418-  4023d8:	8f858024 	lw	a1,-32732(gp)
+1419-  4023dc:	8f9980a0 	lw	t9,-32608(gp)
+1420-  4023e0:	00603821 	move	a3,v1
+1421-  4023e4:	24a55228 	addiu	a1,a1,21032
+1422-  4023e8:	afa50010 	sw	a1,16(sp)
+1423-  4023ec:	8f858024 	lw	a1,-32732(gp)
+1424-  4023f0:	0320f809 	jalr	t9
+1425:  4023f4:	24a54b18 	addiu	a1,a1,19224
+1426-  4023f8:	1000ffa2 	b	402284 <_ftext@@Base+0x1404>
+1427-  4023fc:	8fbc0020 	lw	gp,32(sp)
+1428-  402400:	8e420004 	lw	v0,4(s2)
+1429-  402404:	10400026 	beqz	v0,4024a0 <_ftext@@Base+0x1620>
+1430-  402408:	8f998024 	lw	t9,-32732(gp)
+1431-  40240c:	8f9980d0 	lw	t9,-32560(gp)
+1432-  402410:	0320f809 	jalr	t9
+1433-  402414:	2404001c 	li	a0,28
+1434-  402418:	8fbc0020 	lw	gp,32(sp)
+1435-  40241c:	10400047 	beqz	v0,40253c <_ftext@@Base+0x16bc>
+1436-  402420:	00408821 	move	s1,v0
+1437-  402424:	8e4300c4 	lw	v1,196(s2)
+1438-  402428:	26220004 	addiu	v0,s1,4
+1439-  40242c:	265300c0 	addiu	s3,s2,192
+1440-  402430:	ae330004 	sw	s3,4(s1)
+1441-  402434:	8e4400d0 	lw	a0,208(s2)
+1442-  402438:	ac620000 	sw	v0,0(v1)
+1443-  40243c:	8f858024 	lw	a1,-32732(gp)
+1444-  402440:	8e5400c0 	lw	s4,192(s2)
+1445-  402444:	24840001 	addiu	a0,a0,1
+1446-  402448:	24a51fa8 	addiu	a1,a1,8104
+1447-  40244c:	ae4200c4 	sw	v0,196(s2)
+1448-  402450:	ae250014 	sw	a1,20(s1)
+1449-  402454:	ae4400d0 	sw	a0,208(s2)
+1450-  402458:	ae320000 	sw	s2,0(s1)
+1451-  40245c:	ae230008 	sw	v1,8(s1)
+1452-  402460:	12740003 	beq	s3,s4,402470 <_ftext@@Base+0x15f0>
+1453-  402464:	ae300018 	sw	s0,24(s1)
+1454-  402468:	12820015 	beq	s4,v0,4024c0 <_ftext@@Base+0x1640>
+1455-  40246c:	26550008 	addiu	s5,s2,8
+1456-  402470:	8e420004 	lw	v0,4(s2)
+1457-  402474:	8c4302a0 	lw	v1,672(v0)
+1458-  402478:	244202a0 	addiu	v0,v0,672
+1459-  40247c:	10620073 	beq	v1,v0,40264c <_ftext@@Base+0x17cc>
+1460-  402480:	8f9980d8 	lw	t9,-32552(gp)
+1461-  402484:	1000ff82 	b	402290 <_ftext@@Base+0x1410>
+1462-  402488:	00008821 	move	s1,zero
+1463-  40248c:	02002021 	move	a0,s0
+1464-  402490:	0320f809 	jalr	t9
+1465-  402494:	00008821 	move	s1,zero
+1466-  402498:	1000ff7e 	b	402294 <_ftext@@Base+0x1414>
+1467-  40249c:	02201021 	move	v0,s1
+1468-  4024a0:	2739101c 	addiu	t9,t9,4124
+1469-  4024a4:	0320f809 	jalr	t9
+1470-  4024a8:	02402021 	move	a0,s2
+1471-  4024ac:	8fbc0020 	lw	gp,32(sp)
+1472-  4024b0:	1040ffd6 	beqz	v0,40240c <_ftext@@Base+0x158c>
+1473-  4024b4:	00408821 	move	s1,v0
+1474-  4024b8:	1000ff73 	b	402288 <_ftext@@Base+0x1408>
+1475-  4024bc:	8f9980f4 	lw	t9,-32524(gp)
+1476-  4024c0:	8e43000c 	lw	v1,12(s2)
+1477-  4024c4:	8e460008 	lw	a2,8(s2)
+1478-  4024c8:	8e440004 	lw	a0,4(s2)
+1479-  4024cc:	acc30004 	sw	v1,4(a2)
+1480-  4024d0:	8c8502a4 	lw	a1,676(a0)
+1481-  4024d4:	248202a0 	addiu	v0,a0,672
+1482-  4024d8:	ac660000 	sw	a2,0(v1)
+1483-  4024dc:	ae420008 	sw	v0,8(s2)
+1484-  4024e0:	acb50000 	sw	s5,0(a1)
+1485-  4024e4:	8c8302a0 	lw	v1,672(a0)
+1486-  4024e8:	ac9502a4 	sw	s5,676(a0)
+1487-  4024ec:	1062ffe5 	beq	v1,v0,402484 <_ftext@@Base+0x1604>
+1488-  4024f0:	ae45000c 	sw	a1,12(s2)
+1489-  4024f4:	8c8202a4 	lw	v0,676(a0)
+1490-  4024f8:	1462ffe2 	bne	v1,v0,402484 <_ftext@@Base+0x1604>
+1491-  4024fc:	8f998038 	lw	t9,-32712(gp)
+1492-  402500:	24840010 	addiu	a0,a0,16
+1493-  402504:	02003021 	move	a2,s0
+1494-  402508:	0320f809 	jalr	t9
+1495-  40250c:	2625000c 	addiu	a1,s1,12
+1496-  402510:	10400010 	beqz	v0,402554 <_ftext@@Base+0x16d4>
+1497-  402514:	8fbc0020 	lw	gp,32(sp)
+1498-  402518:	2403fff5 	li	v1,-11
+1499-  40251c:	1043ffd9 	beq	v0,v1,402484 <_ftext@@Base+0x1604>
+1500-  402520:	8f9980d8 	lw	t9,-32552(gp)
+1501-  402524:	8f848024 	lw	a0,-32732(gp)
+1502-  402528:	00008821 	move	s1,zero
+1503-  40252c:	0320f809 	jalr	t9
+1504-  402530:	24844c1c 	addiu	a0,a0,19484
+1505-  402534:	1000ff57 	b	402294 <_ftext@@Base+0x1414>
+1506-  402538:	02201021 	move	v0,s1
+1507-  40253c:	8f848024 	lw	a0,-32732(gp)
+1508-  402540:	8f9980d8 	lw	t9,-32552(gp)
+1509-  402544:	0320f809 	jalr	t9
+1510-  402548:	24844b68 	addiu	a0,a0,19304
+1511-  40254c:	1000ffb5 	b	402424 <_ftext@@Base+0x15a4>
+1512-  402550:	8fbc0020 	lw	gp,32(sp)
+1513-  402554:	8e240008 	lw	a0,8(s1)
+1514-  402558:	8e250004 	lw	a1,4(s1)
+1515-  40255c:	264600c8 	addiu	a2,s2,200
+1516-  402560:	8e420004 	lw	v0,4(s2)
+1517-  402564:	aca40004 	sw	a0,4(a1)
+1518-  402568:	8e4300cc 	lw	v1,204(s2)
+1519-  40256c:	ac850000 	sw	a1,0(a0)
+1520-  402570:	ae5400cc 	sw	s4,204(s2)
+1521-  402574:	ae260004 	sw	a2,4(s1)
+1522-  402578:	ae230008 	sw	v1,8(s1)
+1523-  40257c:	ac740000 	sw	s4,0(v1)
+1524-  402580:	8e44000c 	lw	a0,12(s2)
+1525-  402584:	8e450008 	lw	a1,8(s2)
+1526-  402588:	24460298 	addiu	a2,v0,664
+1527-  40258c:	ae200018 	sw	zero,24(s1)
+1528-  402590:	aca40004 	sw	a0,4(a1)
+1529-  402594:	8c43029c 	lw	v1,668(v0)
+1530-  402598:	ac850000 	sw	a1,0(a0)
+1531-  40259c:	ae460008 	sw	a2,8(s2)
+1532-  4025a0:	ac750000 	sw	s5,0(v1)
+1533-  4025a4:	8e4400c0 	lw	a0,192(s2)
+1534-  4025a8:	ac55029c 	sw	s5,668(v0)
+1535-  4025ac:	1264ffb5 	beq	s3,a0,402484 <_ftext@@Base+0x1604>
+1536-  4025b0:	ae43000c 	sw	v1,12(s2)
+1537-  4025b4:	8f848024 	lw	a0,-32732(gp)
+1538-  4025b8:	8f9980d8 	lw	t9,-32552(gp)
+1539-  4025bc:	00008821 	move	s1,zero
+1540-  4025c0:	0320f809 	jalr	t9
+1541-  4025c4:	24844c54 	addiu	a0,a0,19540
+1542-  4025c8:	1000ff32 	b	402294 <_ftext@@Base+0x1414>
+1543-  4025cc:	02201021 	move	v0,s1
+1544-  4025d0:	8e250014 	lw	a1,20(s1)
+1545-  4025d4:	10a0ff6d 	beqz	a1,40238c <_ftext@@Base+0x150c>
+1546-  4025d8:	8f99809c 	lw	t9,-32612(gp)
+1547-  4025dc:	8e260018 	lw	a2,24(s1)
+1548-  4025e0:	8cc20000 	lw	v0,0(a2)
+1549-  4025e4:	8c430000 	lw	v1,0(v0)
+1550-  4025e8:	24020001 	li	v0,1
+1551-  4025ec:	1462ff67 	bne	v1,v0,40238c <_ftext@@Base+0x150c>
+1552-  4025f0:	00c01821 	move	v1,a2
+1553-  4025f4:	00001021 	move	v0,zero
+1554-  4025f8:	10000005 	b	402610 <_ftext@@Base+0x1790>
+1555-  4025fc:	24070001 	li	a3,1
+1556-  402600:	8c640004 	lw	a0,4(v1)
+1557-  402604:	8c840000 	lw	a0,0(a0)
+1558-  402608:	1487ff5f 	bne	a0,a3,402388 <_ftext@@Base+0x1508>
+1559-  40260c:	24630004 	addiu	v1,v1,4
+1560-  402610:	24420001 	addiu	v0,v0,1
+1561-  402614:	0045202b 	sltu	a0,v0,a1
+1562-  402618:	1480fff9 	bnez	a0,402600 <_ftext@@Base+0x1780>
+1563-  40261c:	02402021 	move	a0,s2
+1564-  402620:	8e790014 	lw	t9,20(s3)
+1565-  402624:	24a5ffff 	addiu	a1,a1,-1
+1566-  402628:	0320f809 	jalr	t9
+1567-  40262c:	24c60004 	addiu	a2,a2,4
+1568-  402630:	8fbc0020 	lw	gp,32(sp)
+1569-  402634:	02202021 	move	a0,s1
+1570-  402638:	8f99809c 	lw	t9,-32612(gp)
+1571-  40263c:	0320f809 	jalr	t9
+1572-  402640:	00408821 	move	s1,v0
+1573-  402644:	1000ff13 	b	402294 <_ftext@@Base+0x1414>
+1574-  402648:	02201021 	move	v0,s1
+1575-  40264c:	8f848024 	lw	a0,-32732(gp)
+1576-  402650:	00008821 	move	s1,zero
+1577-  402654:	0320f809 	jalr	t9
+1578-  402658:	24844ca0 	addiu	a0,a0,19616
+1579-  40265c:	1000ff0d 	b	402294 <_ftext@@Base+0x1414>
+1580-  402660:	02201021 	move	v0,s1
+1581-  402664:	3c1c0002 	lui	gp,0x2
+1582-  402668:	279cad0c 	addiu	gp,gp,-21236
+1583-  40266c:	0399e021 	addu	gp,gp,t9
+1584-  402670:	27bdffc8 	addiu	sp,sp,-56
+1585-  402674:	afbf0034 	sw	ra,52(sp)
+1586-  402678:	afb50030 	sw	s5,48(sp)
+1587-  40267c:	afb4002c 	sw	s4,44(sp)
+1588-  402680:	afb30028 	sw	s3,40(sp)
+1589-  402684:	afb20024 	sw	s2,36(sp)
+1590-  402688:	afb10020 	sw	s1,32(sp)
+1591-  40268c:	afb0001c 	sw	s0,28(sp)
+1592-  402690:	afbc0010 	sw	gp,16(sp)
+1593-  402694:	8f9980d0 	lw	t9,-32560(gp)
+1594-  402698:	00808821 	move	s1,a0
+1595-  40269c:	0320f809 	jalr	t9
+1596-  4026a0:	24040288 	li	a0,648
+1597-  4026a4:	8fbc0010 	lw	gp,16(sp)
+1598-  4026a8:	10400057 	beqz	v0,402808 <_ftext@@Base+0x1988>
+1599-  4026ac:	00408021 	move	s0,v0
+1600-  4026b0:	8f9980dc 	lw	t9,-32548(gp)
+1601-  4026b4:	26130010 	addiu	s3,s0,16
+1602-  4026b8:	02602021 	move	a0,s3
+1603-  4026bc:	00002821 	move	a1,zero
+1604-  4026c0:	24060058 	li	a2,88
+1605-  4026c4:	ae110000 	sw	s1,0(s0)
+===== REDIS CLIENT EXECUTE / TRY EXECUTE =====
+===== ACCEPT / FRONTEND CLIENT LIFECYCLE =====
+===== FULL DYNAMIC RELOCS =====
+
+firmware-src/RootFS-unpacked/sbin/cmdsrv:     file format elf32-tradlittlemips
+
+DYNAMIC RELOCATION RECORDS
+OFFSET   TYPE              VALUE
+0041536c R_MIPS_JUMP_SLOT  __register_frame_info@GLIBC_2.0
+00415370 R_MIPS_JUMP_SLOT  __deregister_frame_info@GLIBC_2.0
+
+

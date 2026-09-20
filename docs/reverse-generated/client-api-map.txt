@@ -1,0 +1,2469 @@
+# Auto-generated MW6 local GetHostList query map
+
+===== confcli strings/symbols =====
+   27cd monitor_stop
+   27da check_app
+   27e4 monitor_start
+   27f2 sleep
+   27f8 send_force_upgrade
+   280b cm_poll_start
+   2819 cm_poll_stop
+   2826 system_init_core_dump
+   283c apmib_init
+   2847 check_product_is_simgle_image
+   2865 env_init
+   286e puts
+   2873 print_confctl_debug_list
+   288c signal
+   2893 send_self_upgrade
+   28a5 conf_msg_open
+   28b3 confctl_define_callback
+   28cb cm_init
+   28d3 redis_option_new
+   28e4 cmd_init
+   28ed start_event
+   28f9 assign_poll_start
+   290b stop_event
+   2916 assign_poll_stop
+   2927 conf_msg_all_cmds_init
+   293e uc_api_lib_init
+   294e upgrade_sched_reboot_init_cli
+   296c conf_msg_hander
+   297c cmd_sub
+   2984 confctl_report_assoc_msg
+   299d confctl_assistant_device_left_time
+   29c0 change_IGI_by_highdevice_mode
+   29de cm_run
+   29e5 hash_find
+   29ef strdup
+   29f6 hash_start
+   2a01 hash_next
+   2a0b hash_init
+   2a15 hash_remove
+   2a21 hash_insert
+   2a2d g_in_app_mamage
+   2a3d g_static_in_app_mamage
+   2a54 set_hw_nat_disable
+   2a67 set_hw_nat_enable
+   2a79 change_hw_fastpath
+   2a8c string_lower_mac
+   2a9d doSystemCmd
+   2aa9 set_mem_config
+   2ab8 check_hw_enable_status
+   2acf access
+   2ad6 fopen
+   2adc fgets
+   2ae2 strsep
+   2ae9 fclose
+   2af0 g_confctl_debug_list
+   2b05 putchar
+   2b0d confctl_get_master_wlan_cli
+   2b29 conf_msg_define
+   2b39 confctl_set_master_wlan_cli
+   2b55 confctl_get_guest_wlan_cli
+   2b70 confctl_set_guest_wlan_cli
+   2b8b confctl_set_wan_cfg_cli
+   2ba3 confctl_set_dhcps_cfg_cli
+   2bbd confctl_set_conflict_lanip
+   2bd8 confctl_set_conflict_guest_ip
+   2bf6 confctl_set_host_marks
+   2c0d confctl_update_remark_from_mpp
+   2c2c confctl_update_remark_request_init
+   2c4f confctl_update_grp_info_from_mpp
+   2c70 confctl_update_grp_info_request_init
+   2c95 confctl_set_sys_timezone
+   2cae confctl_set_sys_time
+   2cc3 confctl_set_app_language
+   2cdc conf_set_mf_cfg
+   2cec conf_set_port_fwd_cfg
+   2d02 confctl_pub_map_schedu_reboot
+   2d20 ucloud_add_node_cli
+   2d34 ucloud_del_node_cli
+   2d48 ucloud_set_led_cli
+   2d5b ucloud_set_node_location_cli
+   2d78 confctl_report_log
+   2d8b confctl_log_report_init
+   2da3 ucloud_set_upnp
+   2db3 ucloud_set_sched_reboot_cfg_cli
+   2dd3 confctl_set_allconfig_cli
+   2ded confctl_set_cloud_mng_status
+   2e0a confctl_clr_cloud_account_done
+   2e29 confctl_confirm_cloud_account
+   2e47 confctl_set_fast_done
+   2e5d conf_set_time_group_cfg
+   2e75 conf_set_user_group_cfg
+   2e8d conf_set_family_group_cfg
+   2ea7 conf_chang_map_guest
+   2ebc ucloud_get_fastroam
+   2ed0 ucloud_set_fastroam
+   2ee4 conf_get_upgrade_info_from_mpp
+   2f03 conf_get_download_info_from_mpp
+   2f23 conf_write_flash_from_mpp
+   2f3d conf_set_nos_cfg_cli
+   2f52 conf_set_assistant_cfg_map
+   2f6d confctl_do_restore_some_map
+   2f89 conf_change_somenode_channel_bandwidth_2g_map
+   2fb7 contype_app_to_sys
+   2fca set_if_changed
+   2fd9 UnSetValue
+   2fe4 __assert
+   2fed memcmp
+   2ff4 __errno_location
+   3005 update_remark_to_hash_table
+   3021 ifaddrs_ethaddr_aton
+   3036 device_mark_list__unpack
+   304f init_remark_hash_table
+   3066 get_all_client_remark
+   307c confctl_module_debug_en
+   3094 print_remark_hash_table
+   30ac device_mark_list__free_unpacked
+   30cc save_all_client_remark
+   30e3 free_the_hash_table
+   30f7 CommitCfm
+   3101 sscanf
+   3108 destory_mf_rule
+   3118 mf_rule__init
+   3126 fill_mf_rule
+   3133 atoll
+   3139 strlen
+   3140 mf_lists__descriptor
+--
+   3cc9 prod_check_ip_conflict
+   3ce0 prod_check_change_lanip_handle
+   3cff dhcp_cfg__free_unpacked
+   3d17 get_cloud_remark_hash_table
+   3d33 update_all_client_remark_to_local
+   3d55 del_client_assistant_device_cli
+   3d75 auto_maint__unpack
+   3d88 auto_maint__free_unpacked
+   3da2 opendir
+   3daa readdir
+   3db2 closedir
+   3dbb dir_is_empty
+   3dc8 confctl_log_timeout_check
+   3de2 upn_pcfg__descriptor
+   3df7 upn_pcfg__get_packed_size
+   3e11 upn_pcfg__pack
+   3e20 upn_pcfg__unpack
+   3e31 upn_pcfg__free_unpacked
+   3e49 qos_rule__get_packed_size
+   3e63 qos_rule__pack
+   3e72 wan_cfg__get_packed_size
+   3e8b wan_cfg__pack
+   3e99 dhcp_cfg__get_packed_size
+   3eb3 dhcp_cfg__pack
+   3ec2 auto_maint__get_packed_size
+--
+  306af <%H"
+  3071e @Q! 
+  3085f $# F
+  30987 <%H"
+  309f6 @Q! 
+  30ba8  0Fp 0
+  31a11 [;32m[ Debug ] [%9s:%5d] %s
+  31a35 [;33m[ Info  ] [%9s:%5d] %s
+  31a59 [;31m[ Error ] [%9s:%5d] %s
+  31a7d [;31m[ Error ] [%9s:%5d] %s
+  31aa0 oom at <../../cmdmgr/include/cm.h:77>
+  31b30 monitor
+  31b50 /var/pm_socket
+  31b94 timer
+  31bb4 /var/tm_socket
+  31bf8 cfms
+  31c18 /var/cfm_socket
+  31c5c logserver
+  31c7c /var/plog_socket
+  31cc0 netctrl
+  31ce0 /var/nt_socket
+  31d24 multiWAN
+  31d44 /var/mw_socket
+  31d88 network_check
+  31da8 /var/network_ck_socket
+  31dec cfmc
+  31e0c /var/cfmc_socket
+  31e50 dhcpc
+  31e70 /var/dhcpc
+  31eb4 httpd
+  31ed4 /var/httpd
+  31f18 apmng_svr
+  31f38 /var/apmng_svr
+  31f7c arp_receive
+  31f9c /var/arp_receive
+  32000 /var/ate
+  32044 auto_discover
+  32064 /var/auto_discover
+  320a8 device_list
+  320c8 /var/device_list_socket
+  3210c ucloud_ctl
+  32170 common_so
+  321d4 ap_common_so
+  32238 prod_common_so
+  322fc /var/mib.mem
+  3230c role
+  32314 serial.number
+  32324 %s%s
+  3232c node.location@
+  3233c sys.model
+  32348 sys.model.ver
+  32358 up.soft.ver
+  32364 %s(%s)
+  3236c V1.0.0.28
+  32378 5834
+  32380 sys.cfg.stamp
+  32390 sys.led.en
+  3239c confctl_cli.c
+  323ac        malloc   failed !     
+  323cc map_report
+  323d8 confctl_srv_key
+  323e8 wl.guest.dhcps_enable
+  32400 wl.guest.effective_time
+  3241c guest.stime
+  32430 ReportGuest
+  3243c assist.dev.stime
+  32450 assist.dev.ltime
+  32464 assist.dev.mac
+  32474  	  malloc   failed ! 	
+  3248c MapAssistantInfo
+  324a0 wl2g.lock.channel
+  324b4 wl2g.lock.bandwidth
+  324c8 [%s][%d][kg] malloc failed
+  324e4 UpdateHighDeviceList
+  324fc highdevice_en
+  3250c /dev/null
+  3251c /dev/ttyS0
+  32528 ucloud
+  32530 %s(%d)
+  32538 ucloud -l 0
+  32544 Unsupport Event: %d
+  3255c /tmp/log/crash
+  3256c Initialize AP MIB failed.
+  32588 Initialize env failed !
+  325a0 %s@%s
+  325a8 confctl_cli
+  325b4 uc_api_init failed
+  325c8 confctl_cli_key
+  325d8 confctl_force_upgrade_cli
+  325f4 check_mpp_highdevice_cfg
+  32650 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  326f8 monitor
+  32718 /var/pm_socket
+  3275c timer
+  3277c /var/tm_socket
+  327c0 cfms
+  327e0 /var/cfm_socket
+  32824 logserver
+  32844 /var/plog_socket
+  32888 netctrl
+  328a8 /var/nt_socket
+  328ec multiWAN
+  3290c /var/mw_socket
+  32950 network_check
+  32970 /var/network_ck_socket
+  329b4 cfmc
+  329d4 /var/cfmc_socket
+  32a18 dhcpc
+  32a38 /var/dhcpc
+  32a7c httpd
+  32a9c /var/httpd
+  32ae0 apmng_svr
+  32b00 /var/apmng_svr
+  32b44 arp_receive
+  32b64 /var/arp_receive
+  32bc8 /var/ate
+  32c0c auto_discover
+  32c2c /var/auto_discover
+  32c70 device_list
+  32c90 /var/device_list_socket
+  32cd4 ucloud_ctl
+  32d38 common_so
+  32d9c ap_common_so
+  32e00 prod_common_so
+  32ec4 ../confctl_extern.c
+  32ed8      malloc failed      
+  32ef4 [%s][%d][luminais] invalid param.
+  32f18 /var/mib.mem
+  32f28 assist.dev.stime
+  32f3c assist.dev.ltime
+  32f50 assist.dev.mac
+  32f60 echo "%s %d" > %s
+  32f74 /proc/hybrid_steering/fixed_2g
+  32f98 ERR command!
+  32fa8 DiagLogUpload
+  32fb8        malloc failed!      
+  32fd8 %s[%d]      cmd:%s      
+  32ff4 confctl_cli_key
+  33004 [%s][%d][luminais] %s [%d]
+  33020 mesh_node_a
+  3302c upload_device_start
+  33040 upload all client status to cloud
+  33064 dev_mark_list_a
+  33074 client remark list recorded on cloud
+  3309c device list status
+  330b0 all device list status uploaded by device_list
+  330e0 SetHostMarks
+  330f0 app set client remark
+  33108 update grp map
+  33118 update group config and node opt to MAP
+--
+  33198 get add new node result
+  331b0 GetTrafficInfo
+  331c0 get wan traffic info
+  331d8 SetWanCfg
+  331e4 send_all_node_status_list
+  33200 upload all node status to cloud
+  33220 GetWanDiag
+  3322c get wan diag status and error code
+  33250 print client list get online ip info(app)
+  3327c print client lists status(app)
+  3329c upload_status_start
+  332b0 upload client and node status start cmd
+  332d8 /var/confctl_debug
+  332f5 module_id	%-32s		%-32s
+  33310 module_name
+  3331c description
+  3332c 		%-32s
+  33334 usage : 
+  33340 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  33380 mib_save_manage
+  33390 mib_load_manage
+  333a0 mib_load_manage
+  333b0 conf_msg_cmd_init
+  333e0 GetWlanCfg
+  333ec SetWlanCfg
+  333f8 GetGuestCfg
+  33404 SetGuestCfg
+  33410 SetWanCfg
+  3341c SetDhcpsCfg
+  33428 SetConflictLanIp
+--
+  335ac SetFmlyGrp
+  335b8 ChangeGuest
+  335c4 GetWlRoaming
+  335d4 SetWlRoaming
+  335e4 MapUpgradeStart
+  335f4 MultiDownloadInfoReq
+  3360c MapWriteFlash
+  3361c SetNosCfg
+  33628 SetDevAssistantCfgMap
+  33640 restore_some_report
+  33654 ChangeChannelBandwidthMap
+  336d8 monitor
+  336f8 /var/pm_socket
+  3373c timer
+  3375c /var/tm_socket
+  337a0 cfms
+  337c0 /var/cfm_socket
+  33804 logserver
+  33824 /var/plog_socket
+  33868 netctrl
+  33888 /var/nt_socket
+  338cc multiWAN
+  338ec /var/mw_socket
+  33930 network_check
+  33950 /var/network_ck_socket
+  33994 cfmc
+  339b4 /var/cfmc_socket
+  339f8 dhcpc
+  33a18 /var/dhcpc
+  33a5c httpd
+  33a7c /var/httpd
+  33ac0 apmng_svr
+  33ae0 /var/apmng_svr
+  33b24 arp_receive
+  33b44 /var/arp_receive
+  33ba8 /var/ate
+  33bec auto_discover
+  33c0c /var/auto_discover
+  33c50 device_list
+  33c70 /var/device_list_socket
+  33cb4 ucloud_ctl
+  33d18 common_so
+  33d7c ap_common_so
+  33de0 prod_common_so
+  33ea4 [%s][%d][luminais] invalid param.
+  33ec8 %s %d:lilin| *pWanConnectType :%d
+  33ef0 wan%d.connecttype
+  33f04 	wan%d dns : 
+  33f14 	automic : %d
+  33f24 	dns1 : %s
+  33f30 	dns2 : %s
+  33f3c [%s][%d][lilin] invalid param.
+--
+  34454 	PPPoE cfg is NULL
+  34468 PPPoE RUSSIA : 
+  34478 	has: %d	autoip : %d
+  34490 	Russia PPPoE cfg is NULL
+  344ac PPTP : 
+  344b4 	pptpsrv : %s
+  344c4 	PPTP cfg is NULL
+  344d8 L2TP : 
+  344e0 	l2tpsrv : %s
+  344f0 	L2TP cfg is NULL
+  34504 [%s][%d][luminais] timestamp : %d	%llu
+  3452c app_mode != ((void *)0)
+  34544 ../confctl_wan_comm.c
+  3455c %s %d:lilin|sys_mode:%d app_mode:%d
+  34584 sys_mode != ((void *)0)
+  3459c contype_app_to_sys
+  345b0 contype_app_to_sys
+  345c4 contype_sys_to_app
+  345d8 contype_sys_to_app
+  345ec print_wan_cfg
+  345fc set_wan_russia_l2tp
+  34610 set_wan_russia_pptp
+  34624 set_wan_russia_pppoe
+  3463c set_wan_pppoe
+  3464c set_wan_static
+  3465c set_wan_ipnetcfg
+  34670 set_wan_dns
+  3467c print_wan_ipnetcfg
+  34690 print_wan_dns
+  346a0 set_wan_connect_type
+  34728 monitor
+  34748 /var/pm_socket
+  3478c timer
+  347ac /var/tm_socket
+  347f0 cfms
+  34810 /var/cfm_socket
+  34854 logserver
+  34874 /var/plog_socket
+  348b8 netctrl
+  348d8 /var/nt_socket
+  3491c multiWAN
+  3493c /var/mw_socket
+  34980 network_check
+  349a0 /var/network_ck_socket
+  349e4 cfmc
+  34a04 /var/cfmc_socket
+  34a48 dhcpc
+  34a68 /var/dhcpc
+  34aac httpd
+  34acc /var/httpd
+  34b10 apmng_svr
+  34b30 /var/apmng_svr
+  34b74 arp_receive
+  34b94 /var/arp_receive
+  34bf8 /var/ate
+  34c3c auto_discover
+  34c5c /var/auto_discover
+  34ca0 device_list
+  34cc0 /var/device_list_socket
+  34d04 ucloud_ctl
+  34d68 common_so
+  34dcc ap_common_so
+  34e30 prod_common_so
+  34f24 [%s][%d][luminais] invalid param.
+  34f48 [%s][%d][luminais] malloc failed. (%d)%m
+  34f74 client.remark.listnum
+  34f8c client.remark.list%d
+  34fa4 %s%s
+  34fb0 [%s][%d][luminais] remark_num = %d
+  34fd4 [%s][%d][luminais] <%d> : %s <--> %s
+  34ffc [%s][%d][luminais] device_mark_list__unpack failed.
+  35035 [1;32m[%s][%d] : 
+  3504b [1;35mprint local remark table
+  35071 [1;32m[%s][%d] : 
+  35087 [1;35mset remark %d
+  350a0 [%s][%d][luminais] invalid mac
+  350c1 [1;32m[%s][%d] : 
+  350d7 [1;35mset %s <--> %s
+  350f5 [1;32m[%s][%d] : 
+  3510b [1;35mprint last remark table
+  35130 %llu
+  35138 sys.cfg.stamp
+  35148 confctl_set_host_marks
+  35160 print_remark_hash_table
+  35178 update_all_client_remark_to_local
+  3519c update_cloud_client_remark_to_local
+  351c0 get_cloud_remark_hash_table
+  351dc save_all_client_remark
+  351f4 get_all_client_remark
+  3520c update_remark_to_hash_table
+  35228 add_new_remark_to_hash_table
+  35248 free_the_hash_table
+  352c8 monitor
+  352e8 /var/pm_socket
+  3532c timer
+  3534c /var/tm_socket
+  35390 cfms
+  353b0 /var/cfm_socket
+  353f4 logserver
+  35414 /var/plog_socket
+  35458 netctrl
+  35478 /var/nt_socket
+  354bc multiWAN
+  354dc /var/mw_socket
+  35520 network_check
+  35540 /var/network_ck_socket
+  35584 cfmc
+  355a4 /var/cfmc_socket
+  355e8 dhcpc
+  35608 /var/dhcpc
+  3564c httpd
+  3566c /var/httpd
+  356b0 apmng_svr
+  356d0 /var/apmng_svr
+  35714 arp_receive
+  35734 /var/arp_receive
+  35798 /var/ate
+  357dc auto_discover
+  357fc /var/auto_discover
+  35840 device_list
+  35860 /var/device_list_socket
+  358a4 ucloud_ctl
+  35908 common_so
+  3596c ap_common_so
+  359d0 prod_common_so
+  35a94 wl%dg.ssid0.maclist_num
+  35aac wl%dg.ssid0.maclist%d
+  35ac4 wl%dg.ssid1.maclist%d
+  35adc wl2g.ssid0.maclist%d
+  35af4 %17s;%*[^;];%s
+  35b04 wl2g.ssid0.maclist_num
+  35b1c sys.cfg.stamp
+  35b2c %s;1;%s
+  35b34 wl%dg.ssid1.macmode
+  35b4c deny
+  35b58 wl%dg.ssid1.maclist_num
+  35b70 [%s][%d][niuwu] Unpack failed %d
+  35b94 %llu
+  35b9c op=%d,wl_rate=24
+  35bb0 op=%d,wl_rate=5
+  35bc0 conf_set_mf_cfg
+  35c38 monitor
+  35c58 /var/pm_socket
+  35c9c timer
+  35cbc /var/tm_socket
+  35d00 cfms
+  35d20 /var/cfm_socket
+  35d64 logserver
+  35d84 /var/plog_socket
+  35dc8 netctrl
+  35de8 /var/nt_socket
+  35e2c multiWAN
+  35e4c /var/mw_socket
+  35e90 network_check
+  35eb0 /var/network_ck_socket
+  35ef4 cfmc
+  35f14 /var/cfmc_socket
+  35f58 dhcpc
+  35f78 /var/dhcpc
+  35fbc httpd
+  35fdc /var/httpd
+  36020 apmng_svr
+  36040 /var/apmng_svr
+  36084 arp_receive
+  360a4 /var/arp_receive
+  36108 /var/ate
+  3614c auto_discover
+  3616c /var/auto_discover
+  361b0 device_list
+  361d0 /var/device_list_socket
+  36214 ucloud_ctl
+  36278 common_so
+  362dc ap_common_so
+  36340 prod_common_so
+  36404 i = %d,k2=%c
+  36414 adv.virtualser.listnum
+  3642c adv.virtualser.list%d
+  36444 dhcps.static.listnum
+  3645c dhcps.static.list%d
+  36470 0;%d-%d;%d-%d;%s;%d;1;%s;
+  3648c 1	%s	%s	
+  3649c %d;%d-%d;%d-%d;%[^;];%d;1;%[^;]
+  364bc %d	%17[0-9a-fA-F:]	%s	%*s
+  364d8 sys.cfg.stamp
+  364e8 [%s][%d][niuwu] Unpack failed %d
+  3650c %llu
+  36514 advance_type=%d
+  36524 module_id=%d,op=%d
+  36538 conf_set_port_fwd_cfg
+  365b8 monitor
+  365d8 /var/pm_socket
+  3661c timer
+  3663c /var/tm_socket
+  36680 cfms
+  366a0 /var/cfm_socket
+  366e4 logserver
+  36704 /var/plog_socket
+  36748 netctrl
+  36768 /var/nt_socket
+  367ac multiWAN
+  367cc /var/mw_socket
+  36810 network_check
+  36830 /var/network_ck_socket
+  36874 cfmc
+  36894 /var/cfmc_socket
+  368d8 dhcpc
+  368f8 /var/dhcpc
+  3693c httpd
+  3695c /var/httpd
+  369a0 apmng_svr
+  369c0 /var/apmng_svr
+  36a04 arp_receive
+  36a24 /var/arp_receive
+  36a88 /var/ate
+  36acc auto_discover
+  36aec /var/auto_discover
+  36b30 device_list
+  36b50 /var/device_list_socket
+  36b94 ucloud_ctl
+  36bf8 common_so
+  36c5c ap_common_so
+  36cc0 prod_common_so
+  36d84 [%s][%d][luminais] invalid param.
+  36da8 sys.mesh.groupsn
+  36dbc [%s][%d][luminais] malloc failed. (%d)%m
+  36de8 %04d-%02d-%02d %02d:%02d:%02d
+  36e08 [%s][%d][luminais] date : %s
+  36e28 [%s][%d][luminais] gettimeofday failed.
+  36e54 [%s][%d][luminais] mesh_time_zone__unpack failed.
+  36e89 [1;32m[%s][%d] : 
+--
+  3702c [%s][%d][luminais] time_info__unpack failed.
+  3705d [1;32m[%s][%d] : 
+  37073 [1;35mtimezone offset : %s
+  37095 [1;32m[%s][%d] : 
+  370ab [1;35mset UTC time
+  370c5 [1;32m[%s][%d] : 
+  370db [1;35mset system time
+  370f8 [%s][%d][luminais] settimeofday failed. %lld
+  37128 /var/wan_detect_rst
+  3713c [%s][%d][luminais] applang__unpack failed.
+  37168 sys.app.lang
+  37178 fast.seting.red
+  3718c confctl_set_app_language
+  371a8 confctl_set_sys_time
+  371c0 confctl_set_sys_timezone
+  371dc is_time_updated
+  371ec print_tv_string
+  371fc confctl_get_is_suilt
+  37288 monitor
+  372a8 /var/pm_socket
+  372ec timer
+  3730c /var/tm_socket
+  37350 cfms
+  37370 /var/cfm_socket
+  373b4 logserver
+  373d4 /var/plog_socket
+  37418 netctrl
+  37438 /var/nt_socket
+  3747c multiWAN
+  3749c /var/mw_socket
+  374e0 network_check
+  37500 /var/network_ck_socket
+  37544 cfmc
+  37564 /var/cfmc_socket
+  375a8 dhcpc
+  375c8 /var/dhcpc
+  3760c httpd
+  3762c /var/httpd
+  37670 apmng_svr
+  37690 /var/apmng_svr
+  376d4 arp_receive
+  376f4 /var/arp_receive
+  37758 /var/ate
+  3779c auto_discover
+  377bc /var/auto_discover
+  37800 device_list
+  37820 /var/device_list_socket
+  37864 ucloud_ctl
+  378c8 common_so
+  3792c ap_common_so
+  37990 prod_common_so
+  37a84 [%s][%d][luminais] invalid param.
+  37aa8 [%s][%d][luminais] malloc failed. (%d)%m
+  37ad4 %s%s
+  37adc node.location@
+  37af0 [%s][%d][kg] groupsn = %s
+  37b0c sys.mesh.groupsn
+  37b20 serial.number
+  37b34 sys.led.en
+--
+  37db0 get_node_opt_hash_table
+  37dc8 update_node_opt_to_hash_table
+  37de8 same_node_opt_in_hash_table
+  37e04 add_node_opt_to_hash_table
+  37e20 save_this_node_led_conf
+  37e38 is_the_node_not_in_table
+  37e54 save_mesh_node_group_conf
+  37e70 save_mesh_node_conf
+  37e84 get_cloud_node_hash_table
+  37ea0 update_node_to_hash_table
+  37ebc add_node_to_hash_table
+  37f48 monitor
+  37f68 /var/pm_socket
+  37fac timer
+  37fcc /var/tm_socket
+  38010 cfms
+  38030 /var/cfm_socket
+  38074 logserver
+  38094 /var/plog_socket
+  380d8 netctrl
+  380f8 /var/nt_socket
+  3813c multiWAN
+  3815c /var/mw_socket
+  381a0 network_check
+  381c0 /var/network_ck_socket
+  38204 cfmc
+  38224 /var/cfmc_socket
+  38268 dhcpc
+  38288 /var/dhcpc
+  382cc httpd
+  382ec /var/httpd
+  38330 apmng_svr
+  38350 /var/apmng_svr
+  38394 arp_receive
+  383b4 /var/arp_receive
+  38418 /var/ate
+  3845c auto_discover
+  3847c /var/auto_discover
+  384c0 device_list
+  384e0 /var/device_list_socket
+  38524 ucloud_ctl
+  38588 common_so
+  385ec ap_common_so
+  38650 prod_common_so
+  38714 bhv.timegroup.listnum
+  3872c index=%d
+  38738 bhv.timegroup.list%d
+  38750 log.time.enable
+  38760 Debug->%s: %s(%d)--
+  38778 ../conf_time_group_api.c
+  38794 %d;%d;%s;%s;%s^%d-%d
+  387ac undefined
+--
+  38878 op=%d
+  38880 Debug->%s: %s(%d)--
+  38894 Unpack failed %d
+  388a8 %llu
+  388b0 conf_set_time_group_cfg
+  388c8 conf_get_time_group_cfg
+  388e0 set_time_group_rule
+  388f4 fill_time_group_rule_list
+  38910 destroy_time_group_list
+  38928 fill_time_group_rule
+  38940 addTimeGroup
+  389b8 monitor
+  389d8 /var/pm_socket
+  38a1c timer
+  38a3c /var/tm_socket
+  38a80 cfms
+  38aa0 /var/cfm_socket
+  38ae4 logserver
+  38b04 /var/plog_socket
+  38b48 netctrl
+  38b68 /var/nt_socket
+  38bac multiWAN
+  38bcc /var/mw_socket
+  38c10 network_check
+  38c30 /var/network_ck_socket
+  38c74 cfmc
+  38c94 /var/cfmc_socket
+  38cd8 dhcpc
+  38cf8 /var/dhcpc
+  38d3c httpd
+  38d5c /var/httpd
+  38da0 apmng_svr
+  38dc0 /var/apmng_svr
+  38e04 arp_receive
+  38e24 /var/arp_receive
+  38e88 /var/ate
+  38ecc auto_discover
+  38eec /var/auto_discover
+  38f30 device_list
+  38f50 /var/device_list_socket
+  38f94 ucloud_ctl
+  38ff8 common_so
+  3905c ap_common_so
+  390c0 prod_common_so
+  39188 log.family.enable
+  3919c Debug->%s: %s(%d)--
+  391b4 ../confctl_family_ctrl.c
+  391d0 filter.mac.listnum
+  391e4 filter.mac.list%d
+  391f8 family.group.listnum
+  39210 Debug->%s: %s(%d)--
+  39224 n_ref_tm_id=%d
+  39234 Debug->%s: %s(%d)--
+  39248 n_ref_tm_id_num=%d  id= %d
+  39264 Debug->%s: %s(%d)--
+  39278 n_ref_usr_id_num=%d id=%d
+  39294 dev.list%d
+  392a0 %d;%[^;];%[^;]
+  392b0 %30s
+--
+  39648 conf_set_user_group_cfg
+  39660 conf_get_user_group_cfg
+  39678 fill_user_group_rule_list
+  39694 fill_device_rule
+  396a8 destroy_user_group_list
+  396c0 destory_user_group_rule
+  396d8 set_user_group
+  396e8 set_dev_list
+  396f8 set_dev_list
+  39708 update_mac_filter_rule
+  39720 clear_mac_filter_config
+  397a8 monitor
+  397c8 /var/pm_socket
+  3980c timer
+  3982c /var/tm_socket
+  39870 cfms
+  39890 /var/cfm_socket
+  398d4 logserver
+  398f4 /var/plog_socket
+  39938 netctrl
+  39958 /var/nt_socket
+  3999c multiWAN
+  399bc /var/mw_socket
+  39a00 network_check
+  39a20 /var/network_ck_socket
+  39a64 cfmc
+  39a84 /var/cfmc_socket
+  39ac8 dhcpc
+  39ae8 /var/dhcpc
+  39b2c httpd
+  39b4c /var/httpd
+  39b90 apmng_svr
+  39bb0 /var/apmng_svr
+  39bf4 arp_receive
+  39c14 /var/arp_receive
+  39c78 /var/ate
+  39cbc auto_discover
+  39cdc /var/auto_discover
+  39d20 device_list
+  39d40 /var/device_list_socket
+  39d84 ucloud_ctl
+  39de8 common_so
+  39e4c ap_common_so
+  39eb0 prod_common_so
+  39f74 %s%s
+  39f80 %s%d
+  3a18c function entry!
+  3a19c input rule:%s index:%d
+  3a1b4 output item:%s
+  3a1c4 input indexs:%s delim:%s
+  3a1e0 %d%s
+  3a1e8 output indexs:%s
+  3a1fc adv.virtualser.listnum
+  3a214 adv.virtualser.list
+  3a228 sort_itemIndexs
+  3a238 get_item_in_rule
+  3a24c generate_rule_id
+  3a260 delete_rules_in_list
+  3a2e8 monitor
+  3a308 /var/pm_socket
+  3a34c timer
+  3a36c /var/tm_socket
+  3a3b0 cfms
+  3a3d0 /var/cfm_socket
+  3a414 logserver
+  3a434 /var/plog_socket
+  3a478 netctrl
+  3a498 /var/nt_socket
+  3a4dc multiWAN
+  3a4fc /var/mw_socket
+  3a540 network_check
+  3a560 /var/network_ck_socket
+  3a5a4 cfmc
+  3a5c4 /var/cfmc_socket
+  3a608 dhcpc
+  3a628 /var/dhcpc
+  3a66c httpd
+  3a68c /var/httpd
+  3a6d0 apmng_svr
+  3a6f0 /var/apmng_svr
+  3a734 arp_receive
+  3a754 /var/arp_receive
+  3a7b8 /var/ate
+  3a7fc auto_discover
+  3a81c /var/auto_discover
+  3a860 device_list
+  3a880 /var/device_list_socket
+  3a8c4 ucloud_ctl
+  3a928 common_so
+  3a98c ap_common_so
+  3a9f0 prod_common_so
+  3aab4 op=%d
+  3ab28 monitor
+  3ab48 /var/pm_socket
+  3ab8c timer
+  3abac /var/tm_socket
+  3abf0 cfms
+  3ac10 /var/cfm_socket
+  3ac54 logserver
+  3ac74 /var/plog_socket
+  3acb8 netctrl
+  3acd8 /var/nt_socket
+  3ad1c multiWAN
+  3ad3c /var/mw_socket
+  3ad80 network_check
+  3ada0 /var/network_ck_socket
+  3ade4 cfmc
+  3ae04 /var/cfmc_socket
+  3ae48 dhcpc
+  3ae68 /var/dhcpc
+  3aeac httpd
+  3aecc /var/httpd
+  3af10 apmng_svr
+  3af30 /var/apmng_svr
+  3af74 arp_receive
+  3af94 /var/arp_receive
+  3aff8 /var/ate
+  3b03c auto_discover
+  3b05c /var/auto_discover
+  3b0a0 device_list
+  3b0c0 /var/device_list_socket
+  3b104 ucloud_ctl
+  3b168 common_so
+  3b1cc ap_common_so
+  3b230 prod_common_so
+  3b2f4 api/node_manage.c
+  3b308     in is null !     
+  3b320      unpack failed !     
+  3b33c echo %s >> /proc/mesh/authorized
+  3b360 %llu
+  3b368 sys.cfg.stamp
+  3b378 [%s][%d][luminais] invalid param.
+  3b39c [%s][%d]node remove %s clear location info!!!
+--
+  3b530 [%s][%d]local_mesh_id = %s, mpp_mesh_id = %s 
+  3b560 [%s][%d] drop grp_info 
+  3b57d [1;32m[%s][%d] : 
+  3b593 [1;35mprint map recived node info
+  3b5bc [%s][%d][luminais] recv from mpp %s
+  3b5e4 [%s][%d][luminais] local saved group sn : %s
+  3b614 [%s][%d][luminais] group sn from mpp : 
+  3b640 /var/mib.mem
+  3b650 restore_zero
+  3b660 [%s][%d][luminais] reset button restore zero
+  3b690 [%s][%d][luminais] serial_num %s is not in group, restore zero
+  3b6d0 request_grp_info
+  3b6e4 confctl_srv_key
+  3b6f4 [%s][%d][luminais] GetValue serial.number failed
+  3b728 recv value is null!%s(%d)
+  3b744 [%s][%d]receive MPP %s restore some cmd
+  3b770 [%s][%d]stop some service before restore some
+  3b7a0 [%s][%d]start restore some
+  3b7bc confctl_do_restore_some_map
+  3b7d8 send_update_grp_info_request
+  3b7f8 confctl_update_grp_info_from_mpp
+  3b81c clear_remove_node_location
+  3b838 node_hash_table_find
+  3b850 ucloud_del_node_cli
+  3b864 del_node_location
+  3b8e8 monitor
+  3b908 /var/pm_socket
+  3b94c timer
+  3b96c /var/tm_socket
+  3b9b0 cfms
+  3b9d0 /var/cfm_socket
+  3ba14 logserver
+  3ba34 /var/plog_socket
+  3ba78 netctrl
+  3ba98 /var/nt_socket
+  3badc multiWAN
+  3bafc /var/mw_socket
+  3bb40 network_check
+  3bb60 /var/network_ck_socket
+  3bba4 cfmc
+  3bbc4 /var/cfmc_socket
+  3bc08 dhcpc
+  3bc28 /var/dhcpc
+  3bc6c httpd
+  3bc8c /var/httpd
+  3bcd0 apmng_svr
+  3bcf0 /var/apmng_svr
+  3bd34 arp_receive
+  3bd54 /var/arp_receive
+  3bdb8 /var/ate
+  3bdfc auto_discover
+  3be1c /var/auto_discover
+  3be60 device_list
+  3be80 /var/device_list_socket
+  3bec4 ucloud_ctl
+  3bf28 common_so
+  3bf8c ap_common_so
+  3bff0 prod_common_so
+  3c0b4 ../common/topology_map.c
+  3c0d0  invalid param.
+  3c0e8 open %s failed
+  3c0f8 Mesh MP_info
+  3c108 hwaddr
+  3c110 rssi:
+  3c118 MESH WIRED NEIGHBOR
+  3c12c %*s %[^ ] %[^ ] %[^ ]
+  3c144 %[^ ] %[^ ] %[^ ]
+  3c158 serial.number
+  3c168 /proc/wlan0/mesh_assoc_mpinfo
+  3c188 /proc/wlan1/mesh_assoc_mpinfo
+  3c1a8 /proc/link_loop
+  3c1b8        malloc   failed !     
+  3c1d8 ReportAssocMsg
+  3c1e8 confctl_srv_key
+  3c268 monitor
+  3c288 /var/pm_socket
+  3c2cc timer
+  3c2ec /var/tm_socket
+  3c330 cfms
+  3c350 /var/cfm_socket
+  3c394 logserver
+  3c3b4 /var/plog_socket
+  3c3f8 netctrl
+  3c418 /var/nt_socket
+  3c45c multiWAN
+  3c47c /var/mw_socket
+  3c4c0 network_check
+  3c4e0 /var/network_ck_socket
+  3c524 cfmc
+  3c544 /var/cfmc_socket
+  3c588 dhcpc
+  3c5a8 /var/dhcpc
+  3c5ec httpd
+  3c60c /var/httpd
+  3c650 apmng_svr
+  3c670 /var/apmng_svr
+  3c6b4 arp_receive
+  3c6d4 /var/arp_receive
+  3c738 /var/ate
+  3c77c auto_discover
+  3c79c /var/auto_discover
+  3c7e0 device_list
+  3c800 /var/device_list_socket
+  3c844 ucloud_ctl
+  3c8a8 common_so
+  3c90c ap_common_so
+  3c970 prod_common_so
+  3ca34 api/node_wifi_module.c
+  3ca4c       sec value is null!      
+  3ca6c wl%dg.ssid%d.security
+  3ca84 wl%dg.ssid%d.wpapsk_type
+  3caa0 none
+  3caa8 wpa-psk
+  3cab0 wpapsk
+  3cabc wpa2-psk
+--
+  3d154 mpp_guest_info->guest_time_out is %s____%s(%d)
+  3d184 recv value is null!%s(%d)
+  3d1a0 %d,%[^,],%s
+  3d1ac TD_ATE_SN
+  3d1b8 wl2g.lock.channel
+  3d1cc %s(%d)channel has changed %d
+  3d1ec highdevice_en
+  3d1fc wl2g.lock.bandwidth
+  3d214 %s(%d)channel has changed 0
+  3d234 %s(%d)channel init
+  3d250 conf_change_somenode_channel_bandwidth_2g_map
+  3d280 conf_chang_map_guest
+  3d298 confctl_set_guest_wlan_cli
+  3d2b4 confctl_get_guest_wlan_cli
+  3d2d0 confctl_get_master_wlan_cli
+  3d2ec confctl_set_master_wlan_cli
+  3d308 wlan_get_master_cfg
+  3d388 monitor
+  3d3a8 /var/pm_socket
+  3d3ec timer
+  3d40c /var/tm_socket
+  3d450 cfms
+  3d470 /var/cfm_socket
+  3d4b4 logserver
+  3d4d4 /var/plog_socket
+  3d518 netctrl
+  3d538 /var/nt_socket
+  3d57c multiWAN
+  3d59c /var/mw_socket
+  3d5e0 network_check
+  3d600 /var/network_ck_socket
+  3d644 cfmc
+  3d664 /var/cfmc_socket
+  3d6a8 dhcpc
+  3d6c8 /var/dhcpc
+  3d70c httpd
+  3d72c /var/httpd
+  3d770 apmng_svr
+  3d790 /var/apmng_svr
+  3d7d4 arp_receive
+  3d7f4 /var/arp_receive
+  3d858 /var/ate
+  3d89c auto_discover
+  3d8bc /var/auto_discover
+  3d900 device_list
+  3d920 /var/device_list_socket
+  3d964 ucloud_ctl
+  3d9c8 common_so
+  3da2c ap_common_so
+  3da90 prod_common_so
+  3db54 [%s][%d][luminais] invalid param.
+  3db78 [%s][%d][luminais] wan_cfg__unpack failed.
+  3dba4 sys.workmode
+  3dbb4 router
+  3dbc0 [%s][%d][luminais] not find the portcfg of wan %d
+  3dbf4 [%s][%d][luminais] Set wan%d dhcp OK!
+  3dc1c [%s][%d][luminais] Set wan%d static OK!
+  3dc48 ppoe
+  3dc50 [%s][%d][luminais] Set wan%d PPPoE OK!
+  3dc78 ganda_debug--[%s]%d
+  3dc90 pptp
+  3dc98 l2tp
+  3dca0 [%s][%d][luminais] Set wan%d L2TP OK!
+  3dcc8 [%s][%d][luminais] wan %d config change
+  3dcf4 /etc/ppp/wan%d_ppoe_auth_code
+  3dd14 op=%d,wan_id=%d
+  3dd24 [%s][%d][luminais] dns is changed
+  3dd48 op=%d
+  3dd50 %llu
+  3dd58 sys.cfg.stamp
+  3dd68 confctl_set_wan_cfg_cli
+  3dde8 monitor
+  3de08 /var/pm_socket
+  3de4c timer
+  3de6c /var/tm_socket
+  3deb0 cfms
+  3ded0 /var/cfm_socket
+  3df14 logserver
+  3df34 /var/plog_socket
+  3df78 netctrl
+  3df98 /var/nt_socket
+  3dfdc multiWAN
+  3dffc /var/mw_socket
+  3e040 network_check
+  3e060 /var/network_ck_socket
+  3e0a4 cfmc
+  3e0c4 /var/cfmc_socket
+  3e108 dhcpc
+  3e128 /var/dhcpc
+  3e16c httpd
+  3e18c /var/httpd
+  3e1d0 apmng_svr
+  3e1f0 /var/apmng_svr
+  3e234 arp_receive
+  3e254 /var/arp_receive
+  3e2b8 /var/ate
+  3e2fc auto_discover
+  3e31c /var/auto_discover
+  3e360 device_list
+  3e380 /var/device_list_socket
+  3e3c4 ucloud_ctl
+  3e428 common_so
+  3e48c ap_common_so
+  3e4f0 prod_common_so
+  3e5b4 %s    %d    param error.
+  3e5d0 wl.guest.dhcps_ip
+  3e5e4 wl.guest.dhcps_dns1
+  3e5f8 wl.guest.dhcps_dns2
+  3e60c %s    %d get start ip addr failed
+  3e630 wl.guest.dhcps_ipstart
+  3e648 %s    %d get end ip addr failed
+  3e66c wl.guest.dhcps_ipend
+--
+  3e73c lan.mask
+  3e748 [%s][%d][niuwu]  ip=%s 
+  3e764 %llu
+  3e76c sys.cfg.stamp
+  3e77c op=%d,wl_rate=%d
+  3e790 [%s][%d][luminais] len is %d, should be %s
+  3e7bc [%s][%d][luminais] ip : %s
+  3e7d8 [%s][%d][luminais] mask : %s
+  3e7f8 [%s][%d][luminais] gw : %s
+  3e814 [%s][%d][luminais] dns1 : %s
+  3e834 [%s][%d][luminais] dns2 : %s
+  3e854 wl.guest.dhcps_mask
+  3e868 confctl_set_conflict_guest_ip
+  3e888 confctl_set_conflict_lanip
+  3e8a4 confctl_set_dhcps_cfg_cli
+  3e8c0 change_wifi_guest_ip_cli
+  3e948 monitor
+  3e968 /var/pm_socket
+  3e9ac timer
+  3e9cc /var/tm_socket
+  3ea10 cfms
+  3ea30 /var/cfm_socket
+  3ea74 logserver
+  3ea94 /var/plog_socket
+  3ead8 netctrl
+  3eaf8 /var/nt_socket
+  3eb3c multiWAN
+  3eb5c /var/mw_socket
+  3eba0 network_check
+  3ebc0 /var/network_ck_socket
+  3ec04 cfmc
+  3ec24 /var/cfmc_socket
+  3ec68 dhcpc
+  3ec88 /var/dhcpc
+  3eccc httpd
+  3ecec /var/httpd
+  3ed30 apmng_svr
+  3ed50 /var/apmng_svr
+  3ed94 arp_receive
+  3edb4 /var/arp_receive
+  3ee18 /var/ate
+  3ee5c auto_discover
+  3ee7c /var/auto_discover
+  3eec0 device_list
+  3eee0 /var/device_list_socket
+  3ef24 ucloud_ctl
+  3ef88 common_so
+  3efec ap_common_so
+  3f050 prod_common_so
+  3f114 [%s][%d][luminais] invalid param.
+  3f138 sys.cfg.stamp
+  3f148 serial.number
+  3f158 update_remark_request
+  3f170 confctl_srv_key
+  3f180 [%s][%d][luminais] GetValue serial.number failed
+  3f1b4 /var/mib.mem
+  3f1c4 assist.dev.mac
+  3f1d4 iwpriv wlan0 del_sta %s
+  3f1ec %s(%d)
+  3f1f4 recv value is null!%s(%d)
+  3f210 %d,%s
+  3f218 recv_buf is error%s(%d)
+  3f238 echo "%s %d" > %s
+  3f24c /proc/hybrid_steering/fixed_2g
+  3f26c assist.dev.stime
+  3f280 assist.dev.ltime
+  3f298 conf_set_assistant_cfg_map
+  3f2b4 send_update_remark_request
+  3f2d0 confctl_update_remark_from_mpp
+  3f368 monitor
+  3f388 /var/pm_socket
+  3f3cc timer
+  3f3ec /var/tm_socket
+  3f430 cfms
+  3f450 /var/cfm_socket
+  3f494 logserver
+  3f4b4 /var/plog_socket
+  3f4f8 netctrl
+  3f518 /var/nt_socket
+  3f55c multiWAN
+  3f57c /var/mw_socket
+  3f5c0 network_check
+  3f5e0 /var/network_ck_socket
+  3f624 cfmc
+  3f644 /var/cfmc_socket
+  3f688 dhcpc
+  3f6a8 /var/dhcpc
+  3f6ec httpd
+  3f70c /var/httpd
+  3f750 apmng_svr
+  3f770 /var/apmng_svr
+  3f7b4 arp_receive
+  3f7d4 /var/arp_receive
+  3f838 /var/ate
+  3f87c auto_discover
+  3f89c /var/auto_discover
+  3f8e0 device_list
+  3f900 /var/device_list_socket
+  3f944 ucloud_ctl
+  3f9a8 common_so
+  3fa0c ap_common_so
+  3fa70 prod_common_so
+  3fb34 ......come here..sched reboot.
+  3fb54 date;reboot
+  3fb60 ......come here..sched reboot.[%s][%d]
+  3fb88 api/sched_reboot_cli.c
+  3fba0  invaild para ! 
+  3fbb4  unpackd failed ! 
+  3fbc8 sys.schedulereboot.enable
+  3fbe8 sys.schedulereboot.start_time
+  3fc08 sys.schedulereboot.wday
+  3fc24 sys.schedulereboot.type
+  3fc3c %llu
+  3fc44 sys.cfg.stamp
+  3fc54 confctl_pub_map_schedu_reboot
+  3fce8 monitor
+  3fd08 /var/pm_socket
+  3fd4c timer
+  3fd6c /var/tm_socket
+  3fdb0 cfms
+  3fdd0 /var/cfm_socket
+  3fe14 logserver
+  3fe34 /var/plog_socket
+  3fe78 netctrl
+  3fe98 /var/nt_socket
+  3fedc multiWAN
+  3fefc /var/mw_socket
+  3ff40 network_check
+  3ff60 /var/network_ck_socket
+  3ffa4 cfmc
+  3ffc4 /var/cfmc_socket
+  40008 dhcpc
+  40028 /var/dhcpc
+  4006c httpd
+  4008c /var/httpd
+  400d0 apmng_svr
+  400f0 /var/apmng_svr
+  40134 arp_receive
+  40154 /var/arp_receive
+  401b8 /var/ate
+  401fc auto_discover
+  4021c /var/auto_discover
+  40260 device_list
+  40280 /var/device_list_socket
+  402c4 ucloud_ctl
+  40328 common_so
+  4038c ap_common_so
+  403f0 prod_common_so
+  404b4 open error
+  404c0 readdir err!
+  404d0 log_upload &
+  404e0 /tmp/log/crash
+  40568 monitor
+  40588 /var/pm_socket
+  405cc timer
+  405ec /var/tm_socket
+  40630 cfms
+  40650 /var/cfm_socket
+  40694 logserver
+  406b4 /var/plog_socket
+  406f8 netctrl
+  40718 /var/nt_socket
+  4075c multiWAN
+  4077c /var/mw_socket
+  407c0 network_check
+  407e0 /var/network_ck_socket
+  40824 cfmc
+  40844 /var/cfmc_socket
+  40888 dhcpc
+  408a8 /var/dhcpc
+  408ec httpd
+  4090c /var/httpd
+  40950 apmng_svr
+  40970 /var/apmng_svr
+  409b4 arp_receive
+  409d4 /var/arp_receive
+  40a38 /var/ate
+  40a7c auto_discover
+  40a9c /var/auto_discover
+  40ae0 device_list
+  40b00 /var/device_list_socket
+  40b44 ucloud_ctl
+  40ba8 common_so
+  40c0c ap_common_so
+  40c70 prod_common_so
+  40d34 adv.upnp.en
+  40d40    in is null !
+  40d50 ../common/upnp.c
+  40d64    unpack  failed !  
+  40d84 %llu
+  40d8c sys.cfg.stamp
+  40d9c advance_type=%d
+  40e18 monitor
+  40e38 /var/pm_socket
+  40e7c timer
+  40e9c /var/tm_socket
+  40ee0 cfms
+  40f00 /var/cfm_socket
+  40f44 logserver
+  40f64 /var/plog_socket
+  40fa8 netctrl
+  40fc8 /var/nt_socket
+  4100c multiWAN
+  4102c /var/mw_socket
+  41070 network_check
+  41090 /var/network_ck_socket
+  410d4 cfmc
+  410f4 /var/cfmc_socket
+  41138 dhcpc
+  41158 /var/dhcpc
+  4119c httpd
+  411bc /var/httpd
+  41200 apmng_svr
+  41220 /var/apmng_svr
+  41264 arp_receive
+  41284 /var/arp_receive
+  412e8 /var/ate
+  4132c auto_discover
+  4134c /var/auto_discover
+  41390 device_list
+  413b0 /var/device_list_socket
+  413f4 ucloud_ctl
+  41458 common_so
+  414bc ap_common_so
+  41520 prod_common_so
+  415e4 api/allconfig_cli.c
+  415f8     malloc failed.    
+  41610   malloc failed.    
+  41628 /var/mib.mem
+  41638 mtd_restore
+  41644 [%s][%d][luminais] is doing mtd restore
+  41670    invailed para.    
+  41688    router cfg unpack failed.   
+--
+  41740    set dhcp cfg failed.   
+  4175c    set port fwd failed.   
+  41778    set upnp cfg failed.   
+  41794    set automaint failed.   
+  417b4    set timezone failed.   
+  417d0    set familygroup failed.   
+  417f0    set timegroup failed.   
+  41810    set usrgroup failed.   
+  4182c sys.manage.keys
+  41840 fast.seting.red
+  41850 %llu
+  41858 sys.cfg.stamp
+  41868 confctl_set_allconfig_cli
+  418f8 monitor
+  41918 /var/pm_socket
+  4195c timer
+  4197c /var/tm_socket
+  419c0 cfms
+  419e0 /var/cfm_socket
+  41a24 logserver
+  41a44 /var/plog_socket
+  41a88 netctrl
+  41aa8 /var/nt_socket
+  41aec multiWAN
+  41b0c /var/mw_socket
+  41b50 network_check
+  41b70 /var/network_ck_socket
+  41bb4 cfmc
+  41bd4 /var/cfmc_socket
+  41c18 dhcpc
+  41c38 /var/dhcpc
+  41c7c httpd
+  41c9c /var/httpd
+  41ce0 apmng_svr
+  41d00 /var/apmng_svr
+  41d44 arp_receive
+  41d64 /var/arp_receive
+  41dc8 /var/ate
+  41e0c auto_discover
+  41e2c /var/auto_discover
+  41e70 device_list
+  41e90 /var/device_list_socket
+  41ed4 ucloud_ctl
+  41f38 common_so
+  41f9c ap_common_so
+  42000 prod_common_so
+  420c4 function entry!
+  420d4 current_image_boot
+  420e8 image_boot
+  420f4 /var/image
+  42100 upgrade fw is fail.
+  4211c image_boot set error__%s(%d)
+  4213c image_boot save error__%s(%d)
+  4215c function exit!
+  4216c %s(%d)
+  42174 djc____buf.st_size is %d___%s(%d)
+  42198 djc__buf.st_size error____%s(%d)
+  421c0 UGW_COMMON_POINT_VALID__error____%s(%d)
+  421ec ck_result_is %d_____%s(%d)
+  42208 write_image_to_flash success___%s(%d)
+  42230 /proc/meminfo
+  42244 %*s %d %*s
+  42250 flash set is ok
+  42260        malloc   failed !     
+  42280 GetUcloudImage
+  42290 confctl_srv_key
+  422a0 ck = %d___%s(%d)
+  422b4 api/upgrade_cli.c
+  422c8 enable:             %d 
+  422e4 delay_en:           %d 
+  42300 count_num:          %d 
+  4231c start:              %ld 
+  42338 end:                %ld 
+  42354 flow_update_time:   %ld 
+  42370 last_check_time:    %ld 
+  4238c last_up:            %lld 
+  423a8 last_down:          %lld 
+  423c4 /var/mib.mem
+--
+  42ad0 map_handle_reboot_time
+  42ae8 ucloud_set_upgrade_reboot_cfg_cli
+  42b0c upgrade_sched_reboot_set_cfm_cli
+  42b30 map_send_success_msg_mpp
+  42b4c upgrade_map_disptach
+  42b64 upgrade_image_to_flash
+  42b7c systool_call_writeImage
+  42b94 mesh_systool_write_image
+  42bb0 mesh_systool_write_image
+  42c08 ucloud.en
+  42c14 sys.manage.keys
+  42c98 monitor
+  42cb8 /var/pm_socket
+  42cfc timer
+  42d1c /var/tm_socket
+  42d60 cfms
+  42d80 /var/cfm_socket
+  42dc4 logserver
+  42de4 /var/plog_socket
+  42e28 netctrl
+  42e48 /var/nt_socket
+  42e8c multiWAN
+  42eac /var/mw_socket
+  42ef0 network_check
+  42f10 /var/network_ck_socket
+  42f54 cfmc
+  42f74 /var/cfmc_socket
+  42fb8 dhcpc
+  42fd8 /var/dhcpc
+  4301c httpd
+  4303c /var/httpd
+  43080 apmng_svr
+  430a0 /var/apmng_svr
+  430e4 arp_receive
+  43104 /var/arp_receive
+  43168 /var/ate
+  431ac auto_discover
+  431cc /var/auto_discover
+  43210 device_list
+  43230 /var/device_list_socket
+  43274 ucloud_ctl
+  432d8 common_so
+  4333c ap_common_so
+  433a0 prod_common_so
+  43464 wlan.fastroam.enable
+  4347c    in is null !
+  4348c    unpack  failed !  
+  434a8 wl2g.public.dot11k
+  434c0 wl2g.public.dot11v
+  434d4 wl2g.public.dot11r
+  434e8 wl5g.public.dot11k
+  434fc wl5g.public.dot11v
+  43510 wl5g.public.dot11r
+  43524 %llu
+  4352c sys.cfg.stamp
+  4353c op=%d,wl_rate=%d
+  435b8 monitor
+  435d8 /var/pm_socket
+  4361c timer
+  4363c /var/tm_socket
+  43680 cfms
+  436a0 /var/cfm_socket
+  436e4 logserver
+  43704 /var/plog_socket
+  43748 netctrl
+  43768 /var/nt_socket
+  437ac multiWAN
+  437cc /var/mw_socket
+  43810 network_check
+  43830 /var/network_ck_socket
+  43874 cfmc
+  43894 /var/cfmc_socket
+  438d8 dhcpc
+  438f8 /var/dhcpc
+  4393c httpd
+  4395c /var/httpd
+  439a0 apmng_svr
+  439c0 /var/apmng_svr
+  43a04 arp_receive
+  43a24 /var/arp_receive
+  43a88 /var/ate
+  43acc auto_discover
+  43aec /var/auto_discover
+  43b30 device_list
+  43b50 /var/device_list_socket
+  43b94 ucloud_ctl
+  43bf8 common_so
+  43c5c ap_common_so
+  43cc0 prod_common_so
+  43d84 qos.en.app
+  43d90 wan1.uprate
+  43d9c wan1.downrate
+  43dac qos.timestamp
+  43dbc [%s::%d] malloc fail.
+  43dd4 [%s][%d][luminais] qos_rule__unpack failed.
+  43e04 %llu
+  43e0c sys.cfg.stamp
+  43e24 128000
+  43e2c op=0
+  43e34 log.time.enable
+  43e44 Debug->%s: %s(%d)--
+  43e5c ../confctl_nos_api.c
+  43e74 conf_set_nos_cfg_cli
+  43e8c conf_set_nos_cfg_cli
+  43ea4 conf_set_nos_cfg
+  43eb8 conf_set_nos_cfg
+  43ecc conf_get_nos_cfg
+  4478c GCC: (GNU) 3.3.2
+  4479d GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  46ab9 .shstrtab
+  46ac3 .interp
+  46acb .reginfo
+  46ad4 .dynamic
+  46add .hash
+     3: 00421aac  1084 FUNC    GLOBAL DEFAULT   12 confctl_get_master_wlan_cli
+     5: 00407358   308 FUNC    GLOBAL DEFAULT   12 conf_msg_define
+     6: 0041197c   852 FUNC    GLOBAL DEFAULT   12 confctl_set_app_language
+    14: 00423278  1388 FUNC    GLOBAL DEFAULT   12 conf_chang_map_guest
+    22: 00427570   112 FUNC    GLOBAL DEFAULT   12 confctl_log_report_init
+    23: 00408d60   488 FUNC    GLOBAL DEFAULT   12 set_wan_connect_type
+    27: 00427448   104 FUNC    GLOBAL DEFAULT   12 confctl_report_log
+    28: 00407210   328 FUNC    GLOBAL DEFAULT   12 conf_msg_hander
+    34: 00410f88  1476 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_timezone
+    40: 0041ebb0  1916 FUNC    GLOBAL DEFAULT   12 confctl_update_grp_info_from_mpp
+    45: 0042adcc  1016 FUNC    GLOBAL DEFAULT   12 conf_get_download_info_from_mpp
+    47: 004166d0   700 FUNC    GLOBAL DEFAULT   12 clear_mac_filter_config
+    50: 00420f40  2924 FUNC    GLOBAL DEFAULT   12 confctl_set_master_wlan_cli
+    52: 00411cd0   132 FUNC    GLOBAL DEFAULT   12 confctl_set_fast_done
+    53: 0041f56c   452 FUNC    GLOBAL DEFAULT   12 confctl_do_restore_some_map
+    62: 004274b0   192 FUNC    GLOBAL DEFAULT   12 confctl_log_timeout_check
+    65: 00421ee8  1512 FUNC    GLOBAL DEFAULT   12 confctl_get_guest_wlan_cli
+    66: 0042d2c8   132 FUNC    GLOBAL DEFAULT   12 confctl_clr_cloud_account_done
+    67: 00428c14  2356 FUNC    GLOBAL DEFAULT   12 confctl_set_allconfig_cli
+    72: 0042d200   200 FUNC    GLOBAL DEFAULT   12 confctl_set_cloud_mng_status
+    75: 00407548   224 FUNC    GLOBAL DEFAULT   12 conf_msg_all_cmds_init
+    76: 0040efe0   624 FUNC    GLOBAL DEFAULT   12 conf_set_mf_cfg
+    78: 0042d34c   216 FUNC    GLOBAL DEFAULT   12 confctl_confirm_cloud_account
+    80: 0040d970  1480 FUNC    GLOBAL DEFAULT   12 confctl_set_host_marks
+    82: 004132d4   404 FUNC    GLOBAL DEFAULT   12 save_this_node_led_conf
+   102: 00407628   104 FUNC    GLOBAL DEFAULT   12 conf_msg_open
+   103: 0042b23c   828 FUNC    GLOBAL DEFAULT   12 conf_get_upgrade_info_from_mpp
+   107: 00424040  3556 FUNC    GLOBAL DEFAULT   12 confctl_set_wan_cfg_cli
+   108: 0042c12c   412 FUNC    GLOBAL DEFAULT   12 conf_write_flash_from_mpp
+   111: 004237e4  2140 FUNC    GLOBAL DEFAULT   12 conf_change_somenode_channel_bandwidth_2g_map
+   114: 004200bc   604 FUNC    GLOBAL DEFAULT   12 confctl_report_assoc_msg
+   115: 0041154c  1072 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_time
+   116: 00426300   724 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_from_mpp
+   118: 00412f84   536 FUNC    GLOBAL DEFAULT   12 save_mesh_node_group_conf
+   123: 004267a0   116 FUNC    GLOBAL DEFAULT   12 confctl_update_remark_request_init
+   125: 00410874   640 FUNC    GLOBAL DEFAULT   12 conf_set_port_fwd_cfg
+   127: 00425d6c  1416 FUNC    GLOBAL DEFAULT   12 confctl_set_conflict_guest_ip
+   129: 00426a60  1164 FUNC    GLOBAL DEFAULT   12 conf_set_assistant_cfg_map
+   145: 00425828  1348 FUNC    GLOBAL DEFAULT   12 confctl_set_conflict_lanip
+   152: 0041f4f8   116 FUNC    GLOBAL DEFAULT   12 confctl_update_grp_info_request_init
+   153: 0040846c   536 FUNC    GLOBAL DEFAULT   12 print_confctl_debug_list
+   159: 0041b9ec   848 FUNC    GLOBAL DEFAULT   12 conf_set_family_group_cfg
+   163: 004224d0  3496 FUNC    GLOBAL DEFAULT   12 confctl_set_guest_wlan_cli
+   167: 00408690  1736 FUNC    GLOBAL DEFAULT   12 confctl_define_callback
+   172: 00407a78   676 FUNC    GLOBAL DEFAULT   12 confctl_assistant_device_left_time
+   179: 00408254   536 FUNC    GLOBAL DEFAULT   12 confctl_module_debug_en
+   180: 0042523c  1516 FUNC    GLOBAL DEFAULT   12 confctl_set_dhcps_cfg_cli
+   185: 00426f8c   168 FUNC    GLOBAL DEFAULT   12 confctl_pub_map_schedu_reboot
+   186: 00454060   192 OBJECT  GLOBAL DEFAULT   21 g_confctl_debug_list
+   189: 00416288   808 FUNC    GLOBAL DEFAULT   12 conf_set_time_group_cfg
+   190: 00419330  1144 FUNC    GLOBAL DEFAULT   12 conf_set_user_group_cfg
+   196: 0042e128  1044 FUNC    GLOBAL DEFAULT   12 conf_set_nos_cfg_cli
+   253: 00431680     0 FUNC    GLOBAL DEFAULT  UND cmd_init
+   288: 00431480     0 FUNC    GLOBAL DEFAULT  UND set_mem_config
+   356: 00431070     0 FUNC    GLOBAL DEFAULT  UND prod_check_ip_conflict
+   360: 00431030     0 FUNC    GLOBAL DEFAULT  UND get_mem_config
+   373: 00430f60     0 FUNC    GLOBAL DEFAULT  UND check_get_new_ipaddr_by_hostid
+  00454530 -31760(gp) 00431680 00431680 FUNC    UND cmd_init
+  004545bc -31620(gp) 00431480 00431480 FUNC    UND set_mem_config
+  004546cc -31348(gp) 00431070 00431070 FUNC    UND prod_check_ip_conflict
+  004546dc -31332(gp) 00431030 00431030 FUNC    UND get_mem_config
+  00454710 -31280(gp) 00430f60 00430f60 FUNC    UND check_get_new_ipaddr_by_hostid
+===== confcli call sites =====
+===== cmdctl_test GET reference =====
+    134 /lib/ld-uClibc.so.0
+    69d _fini
+    6a3 __uClibc_main
+    6b1 libcommon.so
+    6be _DYNAMIC_LINKING
+    6cf __RLD_MAP
+    6d9 _GLOBAL_OFFSET_TABLE_
+    6ef _Jv_RegisterClasses
+    703 libm.so.0
+    70d libz.so
+    715 libpthread.so.0
+    725 libapmib.so
+    731 librtlWifiSrc.so
+    742 libcommonprod.so
+    753 libcm.so
+    75c libredis.so
+    768 libcmdctl.so
+    775 libutil.so.0
+    782 redis_option_new
+    793 stderr
+    79a fprintf
+    7a2 exit
+    7a7 malloc
+    7ae cm_init
+    7b6 cmd_init
+    7bf cmd_sub
+    7c7 cm_timeout
+    7d2 cm_run
+    7d9 cm_abort
+    7e2 cm_time
+    7ea sprintf
+    7f2 strlen
+    7f9 cmd_pub
+    801 cmd_set
+    809 cmd_get
+    811 free
+    816 cm_strerror
+    822 strcmp
+    829 optarg
+    830 getopt
+    837 atof
+    83c optind
+    843 __ltdf2
+    84b libgcc_s.so.1
+    859 __register_frame_info
+    86f __deregister_frame_info
+    887 libc.so.0
+    891 _ftext
+    898 _fdata
+    89f _edata
+    8a6 __bss_start
+    8b2 _fbss
+    8b8 _end
+    8bd GLIBC_2.0
+    e72 R&!8`
+    e7b $!0@
+   1252 `P+ 
+   14a0 Usage: %s [OPTIONS]
+   14b4   -r Server address (default: %s)
+   14d6   -t Time interval in seconds (default: %g)
+   1502   -k Test key (default: %s)
+   1520 cmdctl
+   1528 oom at </home/work/workspace/NOVA_MESH_TD01/prod/cmdmgr/include/cm.h:77>
+   1574 r:t:i:
+   157c [%.3f cmdctl_test.c:22 %s] on_timer: %d
+   15ac [%.3f cmdctl_test.c:28 %s] cmd_pub() error: %s
+   15e0 [%.3f cmdctl_test.c:32 %s] cmd_set() error: %s
+   1614 [%.3f cmdctl_test.c:36 %s] cmd_get() error: %s
+   1648 [%.3f cmdctl_test.c:38 %s] cmd_get: %.*s
+   1674 cm_assert(strcmp(ctx->test_key, key) == 0) failure at <cmdctl_test.c:49>
+   16c0 [%.3f cmdctl_test.c:50 %s] on_sub: %s, %.*s
+   16f0 on_timer
+   16fc on_sub
+   17f4 GCC: (GNU) 3.3.2
+   1805 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+   1941 .shstrtab
+   194b .interp
+   1953 .reginfo
+   195c .dynamic
+   1965 .hash
+   196b .dynsym
+   1973 .dynstr
+   197b .gnu.version
+   1988 .gnu.version_r
+===== libcmdctl cmd_get =====
+
+firmware-src/RootFS-unpacked/lib/libcmdctl.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .text:
+
+00001eac <cmd_get>:
+    1eac:	3c1c0002 	lui	gp,0x2
+    1eb0:	279c88a4 	addiu	gp,gp,-30556
+    1eb4:	0399e021 	addu	gp,gp,t9
+    1eb8:	27bdffd0 	addiu	sp,sp,-48
+    1ebc:	afbf002c 	sw	ra,44(sp)
+    1ec0:	afbc0018 	sw	gp,24(sp)
+    1ec4:	acc00000 	sw	zero,0(a2)
+    1ec8:	00c01021 	move	v0,a2
+    1ecc:	00803821 	move	a3,a0
+    1ed0:	8f868024 	lw	a2,-32732(gp)
+    1ed4:	8f848024 	lw	a0,-32732(gp)
+    1ed8:	8f998024 	lw	t9,-32732(gp)
+    1edc:	00a01821 	move	v1,a1
+    1ee0:	aca00000 	sw	zero,0(a1)
+    1ee4:	2484159c 	addiu	a0,a0,5532
+    1ee8:	24c625e4 	addiu	a2,a2,9700
+    1eec:	27a50020 	addiu	a1,sp,32
+    1ef0:	afa30020 	sw	v1,32(sp)
+    1ef4:	afa20024 	sw	v0,36(sp)
+    1ef8:	afa00010 	sw	zero,16(sp)
+    1efc:	27391868 	addiu	t9,t9,6248
+    1f00:	0320f809 	jalr	t9
+    1f04:	afa00014 	sw	zero,20(sp)
+    1f08:	8fbf002c 	lw	ra,44(sp)
+    1f0c:	03e00008 	jr	ra
+    1f10:	27bd0030 	addiu	sp,sp,48
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== confsrv dispatcher =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+00409ee0 <conf_msg_hander@@Base>:
+  409ee0:	3c1c0009 	lui	gp,0x9
+  409ee4:	279cd280 	addiu	gp,gp,-11648
+  409ee8:	0399e021 	addu	gp,gp,t9
+  409eec:	27bdffa0 	addiu	sp,sp,-96
+  409ef0:	afbf005c 	sw	ra,92(sp)
+  409ef4:	afbe0058 	sw	s8,88(sp)
+  409ef8:	03a0f021 	move	s8,sp
+  409efc:	afbc0018 	sw	gp,24(sp)
+  409f00:	afc40060 	sw	a0,96(s8)
+  409f04:	afc50064 	sw	a1,100(s8)
+  409f08:	afc60068 	sw	a2,104(s8)
+  409f0c:	afc7006c 	sw	a3,108(s8)
+  409f10:	afc0002c 	sw	zero,44(s8)
+  409f14:	afc00028 	sw	zero,40(s8)
+  409f18:	afc00024 	sw	zero,36(s8)
+  409f1c:	afc00050 	sw	zero,80(s8)
+  409f20:	afc00020 	sw	zero,32(s8)
+  409f24:	8fc20064 	lw	v0,100(s8)
+  409f28:	14400004 	bnez	v0,409f3c <conf_msg_hander@@Base+0x5c>
+  409f2c:	00000000 	nop
+  409f30:	2402ffff 	li	v0,-1
+  409f34:	10000036 	b	40a010 <conf_msg_hander@@Base+0x130>
+  409f38:	00000000 	nop
+  409f3c:	8fc20064 	lw	v0,100(s8)
+  409f40:	afc2002c 	sw	v0,44(s8)
+  409f44:	8fc2002c 	lw	v0,44(s8)
+  409f48:	afc20040 	sw	v0,64(s8)
+  409f4c:	27c20034 	addiu	v0,s8,52
+  409f50:	8f83802c 	lw	v1,-32724(gp)
+  409f54:	2464fbc8 	addiu	a0,v1,-1080
+  409f58:	00402821 	move	a1,v0
+  409f5c:	8f8280a4 	lw	v0,-32604(gp)
+  409f60:	0040c821 	move	t9,v0
+  409f64:	0320f809 	jalr	t9
+  409f68:	00000000 	nop
+  409f6c:	8fdc0018 	lw	gp,24(s8)
+  409f70:	afc20030 	sw	v0,48(s8)
+  409f74:	8fc20030 	lw	v0,48(s8)
+  409f78:	10400024 	beqz	v0,40a00c <conf_msg_hander@@Base+0x12c>
+  409f7c:	00000000 	nop
+  409f80:	8fc20030 	lw	v0,48(s8)
+  409f84:	8c420010 	lw	v0,16(v0)
+  409f88:	10400020 	beqz	v0,40a00c <conf_msg_hander@@Base+0x12c>
+  409f8c:	00000000 	nop
+  409f90:	8fc20030 	lw	v0,48(s8)
+  409f94:	8c420010 	lw	v0,16(v0)
+  409f98:	8fc4002c 	lw	a0,44(s8)
+  409f9c:	8fc3002c 	lw	v1,44(s8)
+  409fa0:	24650024 	addiu	a1,v1,36
+  409fa4:	8fc30068 	lw	v1,104(s8)
+  409fa8:	2463ffdc 	addiu	v1,v1,-36
+  409fac:	00603021 	move	a2,v1
+  409fb0:	27c30050 	addiu	v1,s8,80
+  409fb4:	27c70054 	addiu	a3,s8,84
+  409fb8:	afa70010 	sw	a3,16(sp)
+  409fbc:	00603821 	move	a3,v1
+  409fc0:	0040c821 	move	t9,v0
+  409fc4:	0320f809 	jalr	t9
+  409fc8:	00000000 	nop
+  409fcc:	8fdc0018 	lw	gp,24(s8)
+  409fd0:	afc20020 	sw	v0,32(s8)
+  409fd4:	8fc20050 	lw	v0,80(s8)
+  409fd8:	10400009 	beqz	v0,40a000 <conf_msg_hander@@Base+0x120>
+  409fdc:	00000000 	nop
+  409fe0:	8fc20050 	lw	v0,80(s8)
+  409fe4:	00402021 	move	a0,v0
+  409fe8:	8f828614 	lw	v0,-31212(gp)
+  409fec:	0040c821 	move	t9,v0
+  409ff0:	0320f809 	jalr	t9
+  409ff4:	00000000 	nop
+  409ff8:	8fdc0018 	lw	gp,24(s8)
+  409ffc:	afc00050 	sw	zero,80(s8)
+  40a000:	00001021 	move	v0,zero
+  40a004:	10000002 	b	40a010 <conf_msg_hander@@Base+0x130>
+  40a008:	00000000 	nop
+  40a00c:	2402ffff 	li	v0,-1
+  40a010:	03c0e821 	move	sp,s8
+  40a014:	8fbf005c 	lw	ra,92(sp)
+  40a018:	8fbe0058 	lw	s8,88(sp)
+  40a01c:	27bd0060 	addiu	sp,sp,96
+  40a020:	03e00008 	jr	ra
+  40a024:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== confsrv command init =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== GetHostList =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .text:
+
+00434f9c <confctl_get_host_list@@Base>:
+  434f9c:	3c1c0006 	lui	gp,0x6
+  434fa0:	279c21c4 	addiu	gp,gp,8644
+  434fa4:	0399e021 	addu	gp,gp,t9
+  434fa8:	27bdffb8 	addiu	sp,sp,-72
+  434fac:	afbf0044 	sw	ra,68(sp)
+  434fb0:	afbe0040 	sw	s8,64(sp)
+  434fb4:	afb0003c 	sw	s0,60(sp)
+  434fb8:	03a0f021 	move	s8,sp
+  434fbc:	afbc0010 	sw	gp,16(sp)
+  434fc0:	afc40048 	sw	a0,72(s8)
+  434fc4:	afc5004c 	sw	a1,76(s8)
+  434fc8:	afc60050 	sw	a2,80(s8)
+  434fcc:	afc70054 	sw	a3,84(s8)
+  434fd0:	8fc20054 	lw	v0,84(s8)
+  434fd4:	10400004 	beqz	v0,434fe8 <confctl_get_host_list@@Base+0x4c>
+  434fd8:	00000000 	nop
+  434fdc:	8fc20058 	lw	v0,88(s8)
+  434fe0:	1440000f 	bnez	v0,435020 <confctl_get_host_list@@Base+0x84>
+  434fe4:	00000000 	nop
+  434fe8:	8f82822c 	lw	v0,-32212(gp)
+  434fec:	2442237c 	addiu	v0,v0,9084
+  434ff0:	00402021 	move	a0,v0
+  434ff4:	8f82822c 	lw	v0,-32212(gp)
+  434ff8:	24452f98 	addiu	a1,v0,12184
+  434ffc:	24060793 	li	a2,1939
+  435000:	8f8287c8 	lw	v0,-30776(gp)
+  435004:	0040c821 	move	t9,v0
+  435008:	0320f809 	jalr	t9
+  43500c:	00000000 	nop
+  435010:	8fdc0010 	lw	gp,16(s8)
+  435014:	2402ffff 	li	v0,-1
+  435018:	100000fb 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  43501c:	00000000 	nop
+  435020:	8f8288d0 	lw	v0,-30512(gp)
+  435024:	afc20024 	sw	v0,36(s8)
+  435028:	afc00028 	sw	zero,40(s8)
+  43502c:	afc0002c 	sw	zero,44(s8)
+  435030:	afc00030 	sw	zero,48(s8)
+  435034:	afc00034 	sw	zero,52(s8)
+  435038:	afc0001c 	sw	zero,28(s8)
+  43503c:	8f82802c 	lw	v0,-32724(gp)
+  435040:	2442fdf0 	addiu	v0,v0,-528
+  435044:	8c42020c 	lw	v0,524(v0)
+  435048:	afc20030 	sw	v0,48(s8)
+  43504c:	8fc20030 	lw	v0,48(s8)
+  435050:	afc20020 	sw	v0,32(s8)
+  435054:	8fc20020 	lw	v0,32(s8)
+  435058:	00021080 	sll	v0,v0,0x2
+  43505c:	00402021 	move	a0,v0
+  435060:	8f828904 	lw	v0,-30460(gp)
+  435064:	0040c821 	move	t9,v0
+  435068:	0320f809 	jalr	t9
+  43506c:	00000000 	nop
+  435070:	8fdc0010 	lw	gp,16(s8)
+  435074:	afc20034 	sw	v0,52(s8)
+  435078:	8fc20034 	lw	v0,52(s8)
+  43507c:	14400016 	bnez	v0,4350d8 <confctl_get_host_list@@Base+0x13c>
+  435080:	00000000 	nop
+  435084:	8f82822c 	lw	v0,-32212(gp)
+  435088:	24502404 	addiu	s0,v0,9220
+  43508c:	8f828684 	lw	v0,-31100(gp)
+  435090:	0040c821 	move	t9,v0
+  435094:	0320f809 	jalr	t9
+  435098:	00000000 	nop
+  43509c:	8fdc0010 	lw	gp,16(s8)
+  4350a0:	8c420000 	lw	v0,0(v0)
+  4350a4:	02002021 	move	a0,s0
+  4350a8:	8f83822c 	lw	v1,-32212(gp)
+  4350ac:	24652f98 	addiu	a1,v1,12184
+  4350b0:	240607a3 	li	a2,1955
+  4350b4:	00403821 	move	a3,v0
+  4350b8:	8f8287c8 	lw	v0,-30776(gp)
+  4350bc:	0040c821 	move	t9,v0
+  4350c0:	0320f809 	jalr	t9
+  4350c4:	00000000 	nop
+  4350c8:	8fdc0010 	lw	gp,16(s8)
+  4350cc:	2402ffff 	li	v0,-1
+  4350d0:	100000cd 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4350d4:	00000000 	nop
+  4350d8:	8fc30034 	lw	v1,52(s8)
+  4350dc:	8fc20020 	lw	v0,32(s8)
+  4350e0:	00021080 	sll	v0,v0,0x2
+  4350e4:	00602021 	move	a0,v1
+  4350e8:	00002821 	move	a1,zero
+  4350ec:	00403021 	move	a2,v0
+  4350f0:	8f828930 	lw	v0,-30416(gp)
+  4350f4:	0040c821 	move	t9,v0
+  4350f8:	0320f809 	jalr	t9
+  4350fc:	00000000 	nop
+  435100:	8fdc0010 	lw	gp,16(s8)
+  435104:	8fc20020 	lw	v0,32(s8)
+  435108:	000210c0 	sll	v0,v0,0x3
+  43510c:	000218c0 	sll	v1,v0,0x3
+  435110:	00621023 	subu	v0,v1,v0
+  435114:	00402021 	move	a0,v0
+  435118:	8f828904 	lw	v0,-30460(gp)
+  43511c:	0040c821 	move	t9,v0
+  435120:	0320f809 	jalr	t9
+  435124:	00000000 	nop
+  435128:	8fdc0010 	lw	gp,16(s8)
+  43512c:	afc20018 	sw	v0,24(s8)
+  435130:	8fc20018 	lw	v0,24(s8)
+  435134:	1440001d 	bnez	v0,4351ac <confctl_get_host_list@@Base+0x210>
+  435138:	00000000 	nop
+  43513c:	8f82822c 	lw	v0,-32212(gp)
+  435140:	24502404 	addiu	s0,v0,9220
+  435144:	8f828684 	lw	v0,-31100(gp)
+  435148:	0040c821 	move	t9,v0
+  43514c:	0320f809 	jalr	t9
+  435150:	00000000 	nop
+  435154:	8fdc0010 	lw	gp,16(s8)
+  435158:	8c420000 	lw	v0,0(v0)
+  43515c:	02002021 	move	a0,s0
+  435160:	8f83822c 	lw	v1,-32212(gp)
+  435164:	24652f98 	addiu	a1,v1,12184
+  435168:	240607ab 	li	a2,1963
+  43516c:	00403821 	move	a3,v0
+  435170:	8f8287c8 	lw	v0,-30776(gp)
+  435174:	0040c821 	move	t9,v0
+  435178:	0320f809 	jalr	t9
+  43517c:	00000000 	nop
+  435180:	8fdc0010 	lw	gp,16(s8)
+  435184:	8fc20034 	lw	v0,52(s8)
+  435188:	00402021 	move	a0,v0
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  435190:	0040c821 	move	t9,v0
+  435194:	0320f809 	jalr	t9
+  435198:	00000000 	nop
+  43519c:	8fdc0010 	lw	gp,16(s8)
+  4351a0:	2402ffff 	li	v0,-1
+  4351a4:	10000098 	b	435408 <confctl_get_host_list@@Base+0x46c>
+  4351a8:	00000000 	nop
+  4351ac:	8fc20020 	lw	v0,32(s8)
+  4351b0:	000210c0 	sll	v0,v0,0x3
+  4351b4:	000218c0 	sll	v1,v0,0x3
+  4351b8:	00621023 	subu	v0,v1,v0
+  4351bc:	8fc40018 	lw	a0,24(s8)
+  4351c0:	00002821 	move	a1,zero
+  4351c4:	00403021 	move	a2,v0
+  4351c8:	8f828930 	lw	v0,-30416(gp)
+  4351cc:	0040c821 	move	t9,v0
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	nop
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	move	a0,v0
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	move	t9,v0
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	nop
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	nop
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	move	a0,v0
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	move	a0,v0
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	li	a2,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	move	a0,v0
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	move	t9,v0
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	nop
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+  4352c0:	27c20024 	addiu	v0,s8,36
+  4352c4:	00402021 	move	a0,v0
+  4352c8:	8f828700 	lw	v0,-30976(gp)
+  4352cc:	0040c821 	move	t9,v0
+  4352d0:	0320f809 	jalr	t9
+  4352d4:	00000000 	nop
+  4352d8:	8fdc0010 	lw	gp,16(s8)
+  4352dc:	00401821 	move	v1,v0
+  4352e0:	8fc20058 	lw	v0,88(s8)
+  4352e4:	ac430000 	sw	v1,0(v0)
+  4352e8:	8fc20058 	lw	v0,88(s8)
+  4352ec:	8c420000 	lw	v0,0(v0)
+  4352f0:	00402021 	move	a0,v0
+  4352f4:	8f828904 	lw	v0,-30460(gp)
+  4352f8:	0040c821 	move	t9,v0
+  4352fc:	0320f809 	jalr	t9
+  435300:	00000000 	nop
+  435304:	8fdc0010 	lw	gp,16(s8)
+  435308:	00401821 	move	v1,v0
+  43530c:	8fc20054 	lw	v0,84(s8)
+  435310:	ac430000 	sw	v1,0(v0)
+  435314:	8fc20054 	lw	v0,84(s8)
+  435318:	8c420000 	lw	v0,0(v0)
+  43531c:	14400017 	bnez	v0,43537c <confctl_get_host_list@@Base+0x3e0>
+  435320:	00000000 	nop
+  435324:	8f82822c 	lw	v0,-32212(gp)
+  435328:	24502404 	addiu	s0,v0,9220
+  43532c:	8f828684 	lw	v0,-31100(gp)
+  435330:	0040c821 	move	t9,v0
+  435334:	0320f809 	jalr	t9
+  435338:	00000000 	nop
+  43533c:	8fdc0010 	lw	gp,16(s8)
+  435340:	8c420000 	lw	v0,0(v0)
+  435344:	02002021 	move	a0,s0
+  435348:	8f83822c 	lw	v1,-32212(gp)
+  43534c:	24652f98 	addiu	a1,v1,12184
+  435350:	240607c2 	li	a2,1986
+  435354:	00403821 	move	a3,v0
+  435358:	8f8287c8 	lw	v0,-30776(gp)
+  43535c:	0040c821 	move	t9,v0
+  435360:	0320f809 	jalr	t9
+  435364:	00000000 	nop
+  435368:	8fdc0010 	lw	gp,16(s8)
+  43536c:	2402ffff 	li	v0,-1
+  435370:	afc2001c 	sw	v0,28(s8)
+  435374:	1000000e 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  435378:	00000000 	nop
+  43537c:	8fc20054 	lw	v0,84(s8)
+  435380:	8c420000 	lw	v0,0(v0)
+  435384:	27c30024 	addiu	v1,s8,36
+  435388:	00602021 	move	a0,v1
+  43538c:	00402821 	move	a1,v0
+  435390:	8f828740 	lw	v0,-30912(gp)
+  435394:	0040c821 	move	t9,v0
+  435398:	0320f809 	jalr	t9
+  43539c:	00000000 	nop
+  4353a0:	8fdc0010 	lw	gp,16(s8)
+  4353a4:	10000002 	b	4353b0 <confctl_get_host_list@@Base+0x414>
+  4353a8:	00000000 	nop
+  4353ac:	00000000 	nop
+  4353b0:	27c20024 	addiu	v0,s8,36
+  4353b4:	00402021 	move	a0,v0
+  4353b8:	8f82832c 	lw	v0,-31956(gp)
+  4353bc:	244239e4 	addiu	v0,v0,14820
+  4353c0:	0040c821 	move	t9,v0
+  4353c4:	0320f809 	jalr	t9
+  4353c8:	00000000 	nop
+  4353cc:	8fdc0010 	lw	gp,16(s8)
+  4353d0:	8fc20034 	lw	v0,52(s8)
+  4353d4:	00402021 	move	a0,v0
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353dc:	0040c821 	move	t9,v0
+  4353e0:	0320f809 	jalr	t9
+  4353e4:	00000000 	nop
+  4353e8:	8fdc0010 	lw	gp,16(s8)
+  4353ec:	8fc40018 	lw	a0,24(s8)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4353f4:	0040c821 	move	t9,v0
+  4353f8:	0320f809 	jalr	t9
+  4353fc:	00000000 	nop
+  435400:	8fdc0010 	lw	gp,16(s8)
+  435404:	8fc2001c 	lw	v0,28(s8)
+  435408:	03c0e821 	move	sp,s8
+  43540c:	8fbf0044 	lw	ra,68(sp)
+  435410:	8fbe0040 	lw	s8,64(sp)
+  435414:	8fb0003c 	lw	s0,60(sp)
+  435418:	27bd0048 	addiu	sp,sp,72
+  43541c:	03e00008 	jr	ra
+  435420:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+Disassembly of section .fini:
+===== protobuf host definitions =====
+   51ee node_led_status__descriptor
+   520a node_led_status__pack
+   5220 node_led_status__pack_to_buffer
+   5240 node_led_status__unpack
+   5258 node_led_status__free_unpacked
+   5277 manual_node_info__init
+   528e manual_node_info__get_packed_size
+   52b0 manual_node_info__descriptor
+   52cd manual_node_info__pack
+   52e4 manual_node_info__pack_to_buffer
+   5305 manual_node_info__unpack
+   531e manual_node_info__free_unpacked
+   533e host_info__init
+   534e host_info__get_packed_size
+   5369 host_info__descriptor
+   537f host_info__pack
+   538f host_info__pack_to_buffer
+   53a9 host_info__unpack
+   53bb host_info__free_unpacked
+   53d4 host_lists__init
+   53e5 host_lists__get_packed_size
+   5401 host_lists__descriptor
+   5418 host_lists__pack
+   5429 host_lists__pack_to_buffer
+   5444 host_lists__unpack
+   5457 host_lists__free_unpacked
+   5471 devic_marks__init
+   5483 devic_marks__get_packed_size
+   54a0 devic_marks__descriptor
+   54b8 devic_marks__pack
+   54ca devic_marks__pack_to_buffer
+   54e6 devic_marks__unpack
+   54fa devic_marks__free_unpacked
+   5515 device_mark_list__init
+   552c device_mark_list__get_packed_size
+   554e device_mark_list__descriptor
+   556b device_mark_list__pack
+   5582 device_mark_list__pack_to_buffer
+--
+  25e14 message->base.descriptor == &port_fwd_cfg__descriptor
+  25e4c message->base.descriptor == &port_fwd_list__descriptor
+  25e84 message->base.descriptor == &upn_pcfg__descriptor
+  25eb8 message->base.descriptor == &auto_maint__descriptor
+  25eec message->base.descriptor == &qos_rule__descriptor
+  25f20 message->base.descriptor == &device_assistant__descriptor
+  25f5c message->base.descriptor == &elink_config__descriptor
+  25f94 message->base.descriptor == &high_device_config__descriptor
+  25fd0 lanip
+  25fd8 dhcpmask
+  25fe4 timestamp
+  2600c DhcpCfg
+  26018 ethaddr
+  26020 protocol
+  2602c in_port
+  26034 ext_port
+  26040 ipadr
+  26048 name
+  26050 in_port_end
+  2605c ext_port_end
+  2609c PortFwdCfg
+  260a8 rule
+  260c8 PortFwdList
+  260d4 status
+  260fc UPnPCfg
+--
+  26de4 device_bind__free_unpacked
+  26e00 device_bind__pack_to_buffer
+  26e1c device_bind__pack
+  26e30 device_bind__get_packed_size
+  26e50 message->base.descriptor == &device_info__descriptor
+  26e88 family.pb-c.c
+  26e98 message->base.descriptor == &user_group__descriptor
+  26ecc message->base.descriptor == &time_rule__descriptor
+  26f00 message->base.descriptor == &time_group__descriptor
+  26f34 message->base.descriptor == &family_rule__descriptor
+  26f6c message->base.descriptor == &family_group__descriptor
+  26fa8 name
+  26fb0 ethaddr
+  26fd4 DeviceInfo
+  26fe8 timestamp
+  2700c UserGroup
+  27018 desc
+  27020 enable
+  27028 week
+  27030 begin_in_min
+  27040 end_in_min
+  27074 TimeRule
+  27080 tm_rule
+  270a0 TimeGroup
+  270ac ref_tm_id
+--
+  272e4 time_rule__get_packed_size
+  27300 user_group__free_unpacked
+  2731c user_group__pack_to_buffer
+  27338 user_group__pack
+  2734c user_group__get_packed_size
+  27368 device_info__free_unpacked
+  27384 device_info__pack_to_buffer
+  273a0 device_info__pack
+  273b4 device_info__get_packed_size
+  273e0 message->base.descriptor == &mf_rule__descriptor
+  27414 macfilter.pb-c.c
+  27428 message->base.descriptor == &mf_lists__descriptor
+  2745c ethaddr
+  27464 name
+  27484 mf_rule
+  2748c MfRule
+  27498 mode
+  274a0 rules
+  274a8 timestamp
+  274d0 mf_lists
+  274dc MfLists
+  274e4 MESH_MF_BLACK
+  274f4 MESH__MF__T__MESH_MF_BLACK
+  27510 MESH_MF_WHITE
+  27520 MESH__MF__T__MESH_MF_WHITE
+--
+  275d8 mf_rule__pack_to_buffer
+  275f0 mf_rule__pack
+  27600 mf_rule__get_packed_size
+  27620 message->base.descriptor == &assoc_node_info__descriptor
+  2765c node.pb-c.c
+  27668 message->base.descriptor == &mxp_info__descriptor
+  2769c message->base.descriptor == &mesh_node_list__descriptor
+  276d4 message->base.descriptor == &mxp_manage__descriptor
+  27708 message->base.descriptor == &mxp_manage_list__descriptor
+  27744 message->base.descriptor == &node_location__descriptor
+  2777c message->base.descriptor == &node_led_status__descriptor
+  277b8 message->base.descriptor == &manual_node_info__descriptor
+  277f4 assoc_sn
+  27800 wl2g_rssi
+  2780c wl5g_rssi
+  27818 wired_en
+  27844 AssocNodeInfo
+  27858 serialNum
+  27864 role
+  2786c status
+  27874 location
+  27884 mode
+  2788c fwversion
+  27898 ipaddr
+  278a0 ethaddr_l
+  278ac ethaddr_r
+  278b8 bssid_nband
+  278c4 bssid_aband
+  278d0 assoc_list
+  27920 MxpInfo
+  27928 node
+  27944 MeshNodeList
+  27970 MxpManage
+  27980 timestamp
+  279a4 MxpManageList
+  279d0 NodeLocation
+  27a00 NodeLedStatus
+  27a10 serialNumMd5
+--
+  27c9c mesh_node_list__free_unpacked
+  27cbc mesh_node_list__pack_to_buffer
+  27cdc mesh_node_list__pack
+  27cf4 mesh_node_list__get_packed_size
+  27d14 mxp_info__free_unpacked
+  27d2c mxp_info__pack_to_buffer
+  27d48 mxp_info__pack
+  27d58 mxp_info__get_packed_size
+  27d74 assoc_node_info__free_unpacked
+  27d94 assoc_node_info__pack_to_buffer
+  27db4 assoc_node_info__pack
+  27dcc assoc_node_info__get_packed_size
+  27df0 message->base.descriptor == &host_info__descriptor
+  27e24 onhosts.pb-c.c
+  27e34 message->base.descriptor == &host_lists__descriptor
+  27e68 message->base.descriptor == &devic_marks__descriptor
+  27ea0 message->base.descriptor == &device_mark_list__descriptor
+  27edc ipaddr
+  27ee4 ethaddr
+  27eec access
+  27ef4 assoc_sn
+  27f00 condtion_time
+  27f10 online
+  27f18 uprate
+  27f20 downrate
+  27f2c signal
+  27f34 name
+  27f74 hostInfo
+  27f80 HostInfo
+  27f90 hosts
+  27fac hostLists
+  27fb8 HostLists
+  27fc4 remark
+  27fe4 DevicMarks
+  27ff0 marks
+  27ff8 timestamp
+  2801c DeviceMarkList
+  2802c device_mark_list__free_unpacked
+  2804c device_mark_list__pack_to_buffer
+  28070 device_mark_list__pack
+  28088 device_mark_list__get_packed_size
+  280ac devic_marks__free_unpacked
+  280c8 devic_marks__pack_to_buffer
+  280e4 devic_marks__pack
+  280f8 devic_marks__get_packed_size
+  28118 host_lists__free_unpacked
+  28134 host_lists__pack_to_buffer
+  28150 host_lists__pack
+  28164 host_lists__get_packed_size
+  28180 host_info__free_unpacked
+  2819c host_info__pack_to_buffer
+  281b8 host_info__pack
+  281c8 host_info__get_packed_size
+  281f0 1.1.1
+  281fc protobuf-c.c
+  28294 ((message)->descriptor)->magic == 0x28aaeef9
+  2834c actual_length_size == length_size_min + 1
+  28464 tmp == payload_len
+  28570 (desc)->magic == 0x28aaeef9
+  2858c rv->descriptor != ((void *)0)
+  285ac method_index < service->descriptor->n_methods
+  285dc (descriptor)->magic == 0x14159bc3
+  28600 protobuf_c_service_generated_init
+  28624 protobuf_c_service_invoke_internal
+  28648 protobuf_c_message_free_unpacked
+--
+  2a574 message->base.descriptor == &russia_pptpcfg__descriptor
+  2a5ac message->base.descriptor == &russia_l2tp_cfg__descriptor
+  2a5e8 status
+  2a604 WanPortPower
+  2a618 conntype
+  2a624 RsaCntType
+  2a648 WanConnType
+  2a658 errcode
+  2a67c WanDiag
+  2a684 diags
+  2a6a0 nWanDiag
+  2a6ac NWanDiag
+  2a6b8 uprate
+  2a6c0 downrate
+  2a6cc total_up
+  2a6d8 total_down
+  2a708 WanPortRate
+  2a72c WanRate
+  2a734 mode
+  2a73c ipaddr
+  2a744 mask
+  2a74c gateway
+  2a754 dns1
+  2a75c dns2
+  2a790 WanPortStatus
+  2a7b4 WanStatus
+  2a7c0 uname
+  2a7c8 passwd
+  2a7d8 service_name
+  2a7e8 server_name
+  2a820 AdslCfg
+  2a850 StaticCfg
+0003eec0  0001f603 R_MIPS_REL32           0003ee6c   host_info__descriptor
+00041218  0001f603 R_MIPS_REL32           0003ee6c   host_info__descriptor
+00041204  00021b03 R_MIPS_REL32           0003eed8   host_lists__descriptor
+0003ef04  00022403 R_MIPS_REL32           00011c1c   host_lists__init
+0003ee98  00025303 R_MIPS_REL32           000118d0   host_info__init
+    44: 0001193c   152 FUNC    GLOBAL DEFAULT   10 host_info__get_packed_size
+   101: 000119d4   160 FUNC    GLOBAL DEFAULT   10 host_info__pack
+   159: 00011dc4   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack_to_buffer
+   187: 00011c8c   152 FUNC    GLOBAL DEFAULT   10 host_lists__get_packed_size
+   207: 00011d24   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack
+   223: 00011ecc   160 FUNC    GLOBAL DEFAULT   10 host_lists__free_unpacked
+   280: 00011e64   104 FUNC    GLOBAL DEFAULT   10 host_lists__unpack
+   354: 00011a74   160 FUNC    GLOBAL DEFAULT   10 host_info__pack_to_buffer
+   381: 00011b7c   160 FUNC    GLOBAL DEFAULT   10 host_info__free_unpacked
+   412: 00011b14   104 FUNC    GLOBAL DEFAULT   10 host_info__unpack
+   502: 0003ee6c    60 OBJECT  GLOBAL DEFAULT   18 host_info__descriptor
+   539: 0003eed8    60 OBJECT  GLOBAL DEFAULT   18 host_lists__descriptor
+   548: 00011c1c   112 FUNC    GLOBAL DEFAULT   10 host_lists__init
+   595: 000118d0   108 FUNC    GLOBAL DEFAULT   10 host_info__init
+  000418cc -32468(gp) 0003ee6c 0003ee6c OBJECT   18 host_info__descriptor
+  00041960 -32320(gp) 0003eed8 0003eed8 OBJECT   18 host_lists__descriptor
+  00041984 -32284(gp) 00011c1c 00011c1c FUNC     10 host_lists__init
+  00041a40 -32096(gp) 000118d0 000118d0 FUNC     10 host_info__init

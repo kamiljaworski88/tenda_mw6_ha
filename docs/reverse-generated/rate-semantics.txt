@@ -1,0 +1,1231 @@
+===== RUN 35 GOAL =====
+Resolve exact DL/UL field mapping, units, rate write path, and HostInfo protobuf field numbers.
+===== RATE WRITE WINDOW =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+004346f0 <confctl_rqst_client_hostname@@Base+0xf94>:
+  4346f0:	8f8289cc 	lw	v0,-30260(gp)
+  4346f4:	8c430000 	lw	v1,0(v0)
+  4346f8:	8fc20068 	lw	v0,104(s8)
+  4346fc:	27c5006c 	addiu	a1,s8,108
+  434700:	8fc40030 	lw	a0,48(s8)
+  434704:	00603021 	move	a2,v1
+  434708:	00403821 	move	a3,v0
+  43470c:	8f82832c 	lw	v0,-31956(gp)
+  434710:	244240cc 	addiu	v0,v0,16588
+  434714:	0040c821 	move	t9,v0
+  434718:	0320f809 	jalr	t9
+  43471c:	00000000 	nop
+  434720:	8fdc0028 	lw	gp,40(s8)
+  434724:	afc20038 	sw	v0,56(s8)
+  434728:	8fc20038 	lw	v0,56(s8)
+  43472c:	1040008a 	beqz	v0,434958 <confctl_rqst_client_hostname@@Base+0x11fc>
+  434730:	00000000 	nop
+  434734:	8fc20038 	lw	v0,56(s8)
+  434738:	8c440028 	lw	a0,40(v0)
+  43473c:	8c45002c 	lw	a1,44(v0)
+  434740:	8fc20038 	lw	v0,56(s8)
+  434744:	8c430034 	lw	v1,52(v0)
+  434748:	8c420030 	lw	v0,48(v0)
+  43474c:	0065302b 	sltu	a2,v1,a1
+  434750:	14c00007 	bnez	a2,434770 <confctl_rqst_client_hostname@@Base+0x1014>
+  434754:	00000000 	nop
+  434758:	00603021 	move	a2,v1
+  43475c:	14a60031 	bne	a1,a2,434824 <confctl_rqst_client_hostname@@Base+0x10c8>
+  434760:	00000000 	nop
+  434764:	0044102b 	sltu	v0,v0,a0
+  434768:	1040002e 	beqz	v0,434824 <confctl_rqst_client_hostname@@Base+0x10c8>
+  43476c:	00000000 	nop
+  434770:	8fc20038 	lw	v0,56(s8)
+  434774:	8c440028 	lw	a0,40(v0)
+  434778:	8c45002c 	lw	a1,44(v0)
+  43477c:	8fc20038 	lw	v0,56(s8)
+  434780:	8c460030 	lw	a2,48(v0)
+  434784:	8c470034 	lw	a3,52(v0)
+  434788:	00861023 	subu	v0,a0,a2
+  43478c:	0082402b 	sltu	t0,a0,v0
+  434790:	00a71823 	subu	v1,a1,a3
+  434794:	00682023 	subu	a0,v1,t0
+  434798:	00801821 	move	v1,a0
+  43479c:	8f868370 	lw	a2,-31888(gp)
+  4347a0:	00402021 	move	a0,v0
+  4347a4:	00602821 	move	a1,v1
+  4347a8:	00c0c821 	move	t9,a2
+  4347ac:	0320f809 	jalr	t9
+  4347b0:	00000000 	nop
+  4347b4:	8fdc0028 	lw	gp,40(s8)
+  4347b8:	00401821 	move	v1,v0
+  4347bc:	8f828374 	lw	v0,-31884(gp)
+  4347c0:	00602021 	move	a0,v1
+  4347c4:	8fc5003c 	lw	a1,60(s8)
+  4347c8:	0040c821 	move	t9,v0
+  4347cc:	0320f809 	jalr	t9
+  4347d0:	00000000 	nop
+  4347d4:	8fdc0028 	lw	gp,40(s8)
+  4347d8:	00402021 	move	a0,v0
+  4347dc:	8f83822c 	lw	v1,-32212(gp)
+  4347e0:	8f828374 	lw	v0,-31884(gp)
+  4347e4:	8c653360 	lw	a1,13152(v1)
+  4347e8:	0040c821 	move	t9,v0
+  4347ec:	0320f809 	jalr	t9
+  4347f0:	00000000 	nop
+  4347f4:	8fdc0028 	lw	gp,40(s8)
+  4347f8:	00401821 	move	v1,v0
+  4347fc:	8f828380 	lw	v0,-31872(gp)
+  434800:	00602021 	move	a0,v1
+  434804:	0040c821 	move	t9,v0
+  434808:	0320f809 	jalr	t9
+  43480c:	00000000 	nop
+  434810:	8fdc0028 	lw	gp,40(s8)
+  434814:	afc20040 	sw	v0,64(s8)
+  434818:	afc30044 	sw	v1,68(s8)
+  43481c:	10000005 	b	434834 <confctl_rqst_client_hostname@@Base+0x10d8>
+  434820:	00000000 	nop
+  434824:	00001021 	move	v0,zero
+  434828:	00001821 	move	v1,zero
+  43482c:	afc20040 	sw	v0,64(s8)
+  434830:	afc30044 	sw	v1,68(s8)
+  434834:	8fc20038 	lw	v0,56(s8)
+  434838:	8c440018 	lw	a0,24(v0)
+  43483c:	8c45001c 	lw	a1,28(v0)
+  434840:	8fc20038 	lw	v0,56(s8)
+  434844:	8c430024 	lw	v1,36(v0)
+  434848:	8c420020 	lw	v0,32(v0)
+  43484c:	0065302b 	sltu	a2,v1,a1
+  434850:	14c00007 	bnez	a2,434870 <confctl_rqst_client_hostname@@Base+0x1114>
+  434854:	00000000 	nop
+  434858:	00603021 	move	a2,v1
+  43485c:	14a60031 	bne	a1,a2,434924 <confctl_rqst_client_hostname@@Base+0x11c8>
+  434860:	00000000 	nop
+  434864:	0044102b 	sltu	v0,v0,a0
+  434868:	1040002e 	beqz	v0,434924 <confctl_rqst_client_hostname@@Base+0x11c8>
+  43486c:	00000000 	nop
+  434870:	8fc20038 	lw	v0,56(s8)
+  434874:	8c440018 	lw	a0,24(v0)
+  434878:	8c45001c 	lw	a1,28(v0)
+  43487c:	8fc20038 	lw	v0,56(s8)
+  434880:	8c460020 	lw	a2,32(v0)
+  434884:	8c470024 	lw	a3,36(v0)
+  434888:	00861023 	subu	v0,a0,a2
+  43488c:	0082402b 	sltu	t0,a0,v0
+  434890:	00a71823 	subu	v1,a1,a3
+  434894:	00682023 	subu	a0,v1,t0
+  434898:	00801821 	move	v1,a0
+  43489c:	8f868370 	lw	a2,-31888(gp)
+  4348a0:	00402021 	move	a0,v0
+  4348a4:	00602821 	move	a1,v1
+  4348a8:	00c0c821 	move	t9,a2
+  4348ac:	0320f809 	jalr	t9
+  4348b0:	00000000 	nop
+  4348b4:	8fdc0028 	lw	gp,40(s8)
+  4348b8:	00401821 	move	v1,v0
+  4348bc:	8f828374 	lw	v0,-31884(gp)
+  4348c0:	00602021 	move	a0,v1
+  4348c4:	8fc5003c 	lw	a1,60(s8)
+  4348c8:	0040c821 	move	t9,v0
+  4348cc:	0320f809 	jalr	t9
+  4348d0:	00000000 	nop
+  4348d4:	8fdc0028 	lw	gp,40(s8)
+  4348d8:	00402021 	move	a0,v0
+  4348dc:	8f83822c 	lw	v1,-32212(gp)
+  4348e0:	8f828374 	lw	v0,-31884(gp)
+  4348e4:	8c653360 	lw	a1,13152(v1)
+  4348e8:	0040c821 	move	t9,v0
+  4348ec:	0320f809 	jalr	t9
+  4348f0:	00000000 	nop
+  4348f4:	8fdc0028 	lw	gp,40(s8)
+  4348f8:	00401821 	move	v1,v0
+  4348fc:	8f828380 	lw	v0,-31872(gp)
+  434900:	00602021 	move	a0,v1
+  434904:	0040c821 	move	t9,v0
+  434908:	0320f809 	jalr	t9
+  43490c:	00000000 	nop
+  434910:	8fdc0028 	lw	gp,40(s8)
+  434914:	afc20048 	sw	v0,72(s8)
+  434918:	afc3004c 	sw	v1,76(s8)
+  43491c:	10000005 	b	434934 <confctl_rqst_client_hostname@@Base+0x11d8>
+  434920:	00000000 	nop
+  434924:	00001021 	move	v0,zero
+  434928:	00001821 	move	v1,zero
+  43492c:	afc20048 	sw	v0,72(s8)
+  434930:	afc3004c 	sw	v1,76(s8)
+  434934:	8fc30040 	lw	v1,64(s8)
+  434938:	8fc20034 	lw	v0,52(s8)
+  43493c:	ac430028 	sw	v1,40(v0)
+  434940:	8fc30048 	lw	v1,72(s8)
+  434944:	8fc20034 	lw	v0,52(s8)
+  434948:	ac430024 	sw	v1,36(v0)
+  43494c:	10000002 	b	434958 <confctl_rqst_client_hostname@@Base+0x11fc>
+  434950:	00000000 	nop
+  434954:	00000000 	nop
+  434958:	8fc20050 	lw	v0,80(s8)
+  43495c:	24420001 	addiu	v0,v0,1
+  434960:	afc20050 	sw	v0,80(s8)
+  434964:	8fc30050 	lw	v1,80(s8)
+  434968:	8fc20098 	lw	v0,152(s8)
+  43496c:	8c42000c 	lw	v0,12(v0)
+===== ALL GOT SYMBOLS USED BY RATE WINDOW =====
+  407e48:	8f828614 	lw	v0,-31212(gp)
+  407fc0:	8f828614 	lw	v0,-31212(gp)
+  408018:	8f828614 	lw	v0,-31212(gp)
+  408200:	8f828614 	lw	v0,-31212(gp)
+  408490:	8f828614 	lw	v0,-31212(gp)
+  4084d4:	8f828614 	lw	v0,-31212(gp)
+  408688:	8f828614 	lw	v0,-31212(gp)
+  409fe8:	8f828614 	lw	v0,-31212(gp)
+  40a4b0:	8f828614 	lw	v0,-31212(gp)
+  40a4c8:	8f828614 	lw	v0,-31212(gp)
+  40abcc:	8f828614 	lw	v0,-31212(gp)
+  40ae30:	8f828614 	lw	v0,-31212(gp)
+  40fae8:	8f828614 	lw	v0,-31212(gp)
+  40fb24:	8f828614 	lw	v0,-31212(gp)
+  4106cc:	8f8287d0 	lw	v0,-30768(gp)
+  410f14:	8f8287d0 	lw	v0,-30768(gp)
+  4115f4:	8f828614 	lw	v0,-31212(gp)
+  4116c0:	8f828614 	lw	v0,-31212(gp)
+  411714:	8f828614 	lw	v0,-31212(gp)
+  411820:	8f828614 	lw	v0,-31212(gp)
+  411858:	8f828614 	lw	v0,-31212(gp)
+  4119f8:	8f828614 	lw	v0,-31212(gp)
+  412f00:	8f828614 	lw	v0,-31212(gp)
+  412f54:	8f828614 	lw	v0,-31212(gp)
+  412fa8:	8f828614 	lw	v0,-31212(gp)
+  4130b4:	8f828614 	lw	v0,-31212(gp)
+  4130ec:	8f828614 	lw	v0,-31212(gp)
+  413268:	8f828614 	lw	v0,-31212(gp)
+  4132e0:	8f828614 	lw	v0,-31212(gp)
+  413318:	8f828614 	lw	v0,-31212(gp)
+  4137e4:	8f828614 	lw	v0,-31212(gp)
+  416cc0:	8f828614 	lw	v0,-31212(gp)
+  418574:	8f828614 	lw	v0,-31212(gp)
+  41864c:	8f828614 	lw	v0,-31212(gp)
+  4186a0:	8f828614 	lw	v0,-31212(gp)
+  418840:	8f828614 	lw	v0,-31212(gp)
+  418878:	8f828614 	lw	v0,-31212(gp)
+  418aac:	8f828614 	lw	v0,-31212(gp)
+  419d98:	8f828614 	lw	v0,-31212(gp)
+  419e94:	8f828614 	lw	v0,-31212(gp)
+  41a780:	8f828614 	lw	v0,-31212(gp)
+  41b21c:	8f828614 	lw	v0,-31212(gp)
+  41b270:	8f828614 	lw	v0,-31212(gp)
+  41b4a4:	8f828614 	lw	v0,-31212(gp)
+  41b4dc:	8f828614 	lw	v0,-31212(gp)
+  41b714:	8f828614 	lw	v0,-31212(gp)
+  41b764:	8f828614 	lw	v0,-31212(gp)
+  41b79c:	8f828614 	lw	v0,-31212(gp)
+  41bc58:	8f828614 	lw	v0,-31212(gp)
+  41dd04:	8f828614 	lw	v0,-31212(gp)
+  41dd58:	8f828614 	lw	v0,-31212(gp)
+  41ddac:	8f828614 	lw	v0,-31212(gp)
+  41dfe0:	8f828614 	lw	v0,-31212(gp)
+  41e018:	8f828614 	lw	v0,-31212(gp)
+  41e2ec:	8f828614 	lw	v0,-31212(gp)
+  41e370:	8f828614 	lw	v0,-31212(gp)
+  41e3a8:	8f828614 	lw	v0,-31212(gp)
+  41e714:	8f828614 	lw	v0,-31212(gp)
+  420140:	8f828614 	lw	v0,-31212(gp)
+  42082c:	8f828614 	lw	v0,-31212(gp)
+  4211c8:	8f828614 	lw	v0,-31212(gp)
+  421d78:	8f828614 	lw	v0,-31212(gp)
+  423954:	8f828614 	lw	v0,-31212(gp)
+  4241cc:	8f828614 	lw	v0,-31212(gp)
+  4241e8:	8f828614 	lw	v0,-31212(gp)
+  4255fc:	8f828614 	lw	v0,-31212(gp)
+  4256f0:	8f828614 	lw	v0,-31212(gp)
+  42574c:	8f828614 	lw	v0,-31212(gp)
+  426338:	8f828614 	lw	v0,-31212(gp)
+  42639c:	8f828614 	lw	v0,-31212(gp)
+  4263b4:	8f828614 	lw	v0,-31212(gp)
+  4297f4:	8f828614 	lw	v0,-31212(gp)
+  429d4c:	8f828614 	lw	v0,-31212(gp)
+  42b6dc:	8f828614 	lw	v0,-31212(gp)
+  42cc84:	8f828614 	lw	v0,-31212(gp)
+  42ce34:	8f828614 	lw	v0,-31212(gp)
+  42ceac:	8f828614 	lw	v0,-31212(gp)
+  42cf9c:	8f828614 	lw	v0,-31212(gp)
+  42d014:	8f828614 	lw	v0,-31212(gp)
+  42d194:	8f828550 	lw	v0,-31408(gp)
+  42dfac:	8f828550 	lw	v0,-31408(gp)
+  42f828:	8f828614 	lw	v0,-31212(gp)
+  4319fc:	8f828614 	lw	v0,-31212(gp)
+  432d44:	8f828614 	lw	v0,-31212(gp)
+  433724:	8f828614 	lw	v0,-31212(gp)
+  4338f0:	8f828614 	lw	v0,-31212(gp)
+  433928:	8f828614 	lw	v0,-31212(gp)
+  433960:	8f828614 	lw	v0,-31212(gp)
+  433998:	8f828614 	lw	v0,-31212(gp)
+  434318:	8f828610 	lw	v0,-31216(gp)
+  4343dc:	8f828614 	lw	v0,-31212(gp)
+  434400:	8f828550 	lw	v0,-31408(gp)
+  434428:	8f828610 	lw	v0,-31216(gp)
+  4344a4:	8f868370 	lw	a2,-31888(gp)
+  4344c8:	8f828374 	lw	v0,-31884(gp)
+  4344e8:	8f828378 	lw	v0,-31880(gp)
+  434560:	8f82837c 	lw	v0,-31876(gp)
+  434644:	8f828888 	lw	v0,-30584(gp)
+  434694:	8f8287d0 	lw	v0,-30768(gp)
+  43479c:	8f868370 	lw	a2,-31888(gp)
+  4347bc:	8f828374 	lw	v0,-31884(gp)
+  4347e0:	8f828374 	lw	v0,-31884(gp)
+  4347fc:	8f828380 	lw	v0,-31872(gp)
+  43489c:	8f868370 	lw	a2,-31888(gp)
+  4348bc:	8f828374 	lw	v0,-31884(gp)
+  4348e0:	8f828374 	lw	v0,-31884(gp)
+  4348fc:	8f828380 	lw	v0,-31872(gp)
+  434998:	8f828614 	lw	v0,-31212(gp)
+  434a38:	8f828614 	lw	v0,-31212(gp)
+  434a70:	8f828614 	lw	v0,-31212(gp)
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4357c0:	8f828614 	lw	v0,-31212(gp)
+  435a00:	8f828614 	lw	v0,-31212(gp)
+  435a18:	8f828614 	lw	v0,-31212(gp)
+  435b44:	8f828614 	lw	v0,-31212(gp)
+  436218:	8f828614 	lw	v0,-31212(gp)
+  43650c:	8f828614 	lw	v0,-31212(gp)
+  436f9c:	8f828614 	lw	v0,-31212(gp)
+  437214:	8f828610 	lw	v0,-31216(gp)
+  43728c:	8f828614 	lw	v0,-31212(gp)
+  4372b0:	8f828550 	lw	v0,-31408(gp)
+  4372d8:	8f828610 	lw	v0,-31216(gp)
+  437354:	8f868370 	lw	a2,-31888(gp)
+  437378:	8f828374 	lw	v0,-31884(gp)
+  437398:	8f828378 	lw	v0,-31880(gp)
+  437420:	8f828888 	lw	v0,-30584(gp)
+  437470:	8f8287d0 	lw	v0,-30768(gp)
+  437578:	8f868370 	lw	a2,-31888(gp)
+  437598:	8f828374 	lw	v0,-31884(gp)
+  4375bc:	8f828374 	lw	v0,-31884(gp)
+  4375d8:	8f828380 	lw	v0,-31872(gp)
+  437678:	8f868370 	lw	a2,-31888(gp)
+  437698:	8f828374 	lw	v0,-31884(gp)
+  4376bc:	8f828374 	lw	v0,-31884(gp)
+  4376d8:	8f828380 	lw	v0,-31872(gp)
+  43779c:	8f828614 	lw	v0,-31212(gp)
+  437a70:	8f828614 	lw	v0,-31212(gp)
+  437da0:	8f8287d0 	lw	v0,-30768(gp)
+  437fe0:	8f8287d0 	lw	v0,-30768(gp)
+  438b0c:	8f828614 	lw	v0,-31212(gp)
+  439e4c:	8f828550 	lw	v0,-31408(gp)
+  439e84:	8f828550 	lw	v0,-31408(gp)
+  43a508:	8f828550 	lw	v0,-31408(gp)
+  43b6f0:	8f828614 	lw	v0,-31212(gp)
+  43b728:	8f828614 	lw	v0,-31212(gp)
+  43b748:	8f828614 	lw	v0,-31212(gp)
+  43b7d0:	8f828614 	lw	v0,-31212(gp)
+  43b808:	8f828614 	lw	v0,-31212(gp)
+  43b840:	8f828614 	lw	v0,-31212(gp)
+  43b878:	8f828614 	lw	v0,-31212(gp)
+  43b898:	8f828614 	lw	v0,-31212(gp)
+  43b944:	8f828614 	lw	v0,-31212(gp)
+  43b9cc:	8f828614 	lw	v0,-31212(gp)
+  43ba04:	8f828614 	lw	v0,-31212(gp)
+  43ba3c:	8f828614 	lw	v0,-31212(gp)
+  43ba98:	8f828614 	lw	v0,-31212(gp)
+  43bb20:	8f828614 	lw	v0,-31212(gp)
+  43bb58:	8f828614 	lw	v0,-31212(gp)
+  43bb90:	8f828614 	lw	v0,-31212(gp)
+  43bbc8:	8f828614 	lw	v0,-31212(gp)
+  43bc24:	8f828614 	lw	v0,-31212(gp)
+  43bcac:	8f828614 	lw	v0,-31212(gp)
+  43bce4:	8f828614 	lw	v0,-31212(gp)
+  43bd1c:	8f828614 	lw	v0,-31212(gp)
+  43bd54:	8f828614 	lw	v0,-31212(gp)
+  43bdb0:	8f828614 	lw	v0,-31212(gp)
+  43be38:	8f828614 	lw	v0,-31212(gp)
+  43be70:	8f828614 	lw	v0,-31212(gp)
+  43bea8:	8f828614 	lw	v0,-31212(gp)
+  43bf04:	8f828614 	lw	v0,-31212(gp)
+  43bf8c:	8f828614 	lw	v0,-31212(gp)
+  43bfc4:	8f828614 	lw	v0,-31212(gp)
+  43bffc:	8f828614 	lw	v0,-31212(gp)
+  43c058:	8f828614 	lw	v0,-31212(gp)
+  440a40:	8f828614 	lw	v0,-31212(gp)
+  440a78:	8f828614 	lw	v0,-31212(gp)
+  440ab0:	8f828614 	lw	v0,-31212(gp)
+  440ae8:	8f828614 	lw	v0,-31212(gp)
+  440b20:	8f828614 	lw	v0,-31212(gp)
+  443c5c:	8f828614 	lw	v0,-31212(gp)
+  443ea8:	8f828614 	lw	v0,-31212(gp)
+  443ec0:	8f828614 	lw	v0,-31212(gp)
+  4442e0:	8f828614 	lw	v0,-31212(gp)
+  44454c:	8f828614 	lw	v0,-31212(gp)
+  444564:	8f828614 	lw	v0,-31212(gp)
+  4447fc:	8f828614 	lw	v0,-31212(gp)
+  444a68:	8f828614 	lw	v0,-31212(gp)
+  444a80:	8f828614 	lw	v0,-31212(gp)
+  444fd0:	8f828614 	lw	v0,-31212(gp)
+  4452d4:	8f828614 	lw	v0,-31212(gp)
+  4452ec:	8f828614 	lw	v0,-31212(gp)
+  446ef8:	8f828614 	lw	v0,-31212(gp)
+  44701c:	8f828614 	lw	v0,-31212(gp)
+  447bc4:	8f828614 	lw	v0,-31212(gp)
+  447c20:	8f828614 	lw	v0,-31212(gp)
+  448214:	8f828614 	lw	v0,-31212(gp)
+  448d34:	8f828614 	lw	v0,-31212(gp)
+  44a130:	8f828614 	lw	v0,-31212(gp)
+  44b774:	8f828614 	lw	v0,-31212(gp)
+  44bb74:	8f828614 	lw	v0,-31212(gp)
+  44bf90:	8f828614 	lw	v0,-31212(gp)
+  44c138:	8f828614 	lw	v0,-31212(gp)
+  44d468:	8f828614 	lw	v0,-31212(gp)
+  450b4c:	8f828614 	lw	v0,-31212(gp)
+  450b84:	8f828614 	lw	v0,-31212(gp)
+  450cd4:	8f828614 	lw	v0,-31212(gp)
+  450d00:	8f828614 	lw	v0,-31212(gp)
+  452afc:	8f828614 	lw	v0,-31212(gp)
+  452b18:	8f828614 	lw	v0,-31212(gp)
+  4530e4:	8f828614 	lw	v0,-31212(gp)
+  453100:	8f828614 	lw	v0,-31212(gp)
+  454404:	8f828614 	lw	v0,-31212(gp)
+  454a74:	8f828614 	lw	v0,-31212(gp)
+  454be0:	8f828614 	lw	v0,-31212(gp)
+  454c28:	8f828614 	lw	v0,-31212(gp)
+  455e74:	8f828614 	lw	v0,-31212(gp)
+  4567e8:	8f828614 	lw	v0,-31212(gp)
+  457ef4:	8f828614 	lw	v0,-31212(gp)
+  4582c8:	8f828614 	lw	v0,-31212(gp)
+  45b9d0:	8f828614 	lw	v0,-31212(gp)
+  45be5c:	8f828614 	lw	v0,-31212(gp)
+  45c714:	8f828614 	lw	v0,-31212(gp)
+  45c8ac:	8f828614 	lw	v0,-31212(gp)
+  45ca44:	8f828614 	lw	v0,-31212(gp)
+  45cbdc:	8f828614 	lw	v0,-31212(gp)
+  45cd74:	8f828614 	lw	v0,-31212(gp)
+  45cf0c:	8f828614 	lw	v0,-31212(gp)
+  45d0a4:	8f828614 	lw	v0,-31212(gp)
+  45d23c:	8f828614 	lw	v0,-31212(gp)
+  45d3d4:	8f828614 	lw	v0,-31212(gp)
+  45d704:	8f828614 	lw	v0,-31212(gp)
+  45d89c:	8f828614 	lw	v0,-31212(gp)
+  45da34:	8f828614 	lw	v0,-31212(gp)
+  45e6ec:	8f828614 	lw	v0,-31212(gp)
+  45e850:	8f828614 	lw	v0,-31212(gp)
+  45e9b8:	8f828614 	lw	v0,-31212(gp)
+  45eb20:	8f828614 	lw	v0,-31212(gp)
+  45ec88:	8f828614 	lw	v0,-31212(gp)
+  45edf0:	8f828614 	lw	v0,-31212(gp)
+  45ef58:	8f828614 	lw	v0,-31212(gp)
+  45f0c0:	8f828614 	lw	v0,-31212(gp)
+  45f228:	8f828614 	lw	v0,-31212(gp)
+  45f390:	8f828614 	lw	v0,-31212(gp)
+  45f4f8:	8f828614 	lw	v0,-31212(gp)
+  45f660:	8f828614 	lw	v0,-31212(gp)
+  45f7c8:	8f828614 	lw	v0,-31212(gp)
+  4603a4:	8f828614 	lw	v0,-31212(gp)
+  46083c:	8f828614 	lw	v0,-31212(gp)
+  461d34:	8f99837c 	lw	t9,-31876(gp)
+===== DYNAMIC SYMBOL TABLE RELEVANT NAMES =====
+     3: 00461fb0  1184 FUNC    GLOBAL HIDDEN    12 __divdi3
+     8: 0044a1e8   392 FUNC    GLOBAL DEFAULT   12 conf_send_download_state
+    20: 00490430     4 OBJECT  GLOBAL DEFAULT   26 g_delay_in_time_flag
+    30: 0045af84   212 FUNC    GLOBAL DEFAULT   12 sched_reboot_time_check
+    34: 00458f98   308 FUNC    GLOBAL DEFAULT   12 add_results_timeout_check
+    42: 004185f0   228 FUNC    GLOBAL DEFAULT   12 destory_time_group_rule
+    56: 004141f8  1476 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_timezone
+    57: 0044b0cc   212 FUNC    GLOBAL DEFAULT   12 sched_reboot_time_check_srv
+    66: 0044b1a0  2704 FUNC    GLOBAL DEFAULT   12 upgrade_sched_reboot_timeout_check_srv
+    78: 0040a614   120 FUNC    GLOBAL DEFAULT   12 check_hw_enable_status
+    84: 004294cc   920 FUNC    GLOBAL DEFAULT   12 send_all_node_status_list
+    88: 004439f0  1284 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_status
+    91: 00456ff4   424 FUNC    GLOBAL DEFAULT   12 unregister_timeout_check
+    94: 0044bc30   128 FUNC    GLOBAL DEFAULT   12 upgrade_sched_reboot_timeout_event_srv
+   102: 00448244   604 FUNC    GLOBAL DEFAULT   12 conf_send_downloadend_state
+   108: 004464c0   192 FUNC    GLOBAL DEFAULT   12 confctl_log_timeout_check
+   124: 00418d58  1184 FUNC    GLOBAL DEFAULT   12 set_time_group_rule
+   126: 004609c0   200 FUNC    GLOBAL DEFAULT   12 confctl_set_cloud_mng_status
+   141: 00410be0  1480 FUNC    GLOBAL DEFAULT   12 confctl_set_host_marks
+   145: 00449b24   392 FUNC    GLOBAL DEFAULT   12 conf_send_downloading_state
+   148: 004603f8   732 FUNC    GLOBAL DEFAULT   12 dev_config_time_a
+   159: 0040ce24  1376 FUNC    GLOBAL DEFAULT   12 set_wan_static
+   175: 0045bf30   128 FUNC    GLOBAL DEFAULT   12 sched_reboot_timeout_event
+   188: 00448a50   392 FUNC    GLOBAL DEFAULT   12 conf_send_init_server_state
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   195: 0043375c   328 FUNC    GLOBAL DEFAULT   12 confctl_rqst_client_hostname
+   197: 00408c1c   608 FUNC    GLOBAL DEFAULT   12 check_mpp_highdevice_states
+   202: 004147bc  1072 FUNC    GLOBAL DEFAULT   12 confctl_set_sys_time
+   204: 0044e340    88 FUNC    GLOBAL DEFAULT   12 get_internet_status
+   213: 004377e0   768 FUNC    GLOBAL DEFAULT   12 send_all_client_status_list
+   214: 0048fbc4     4 OBJECT  GLOBAL DEFAULT   26 g_static_in_app_mamage
+   215: 004396fc   156 FUNC    GLOBAL DEFAULT   12 assistant_device_handle_error_time
+   229: 0045b3bc  2932 FUNC    GLOBAL DEFAULT   12 sched_reboot_timeout_check
+   230: 004484a0  1456 FUNC    GLOBAL DEFAULT   12 conf_send_connect_server_state
+   231: 00417da0   436 FUNC    GLOBAL DEFAULT   12 clear_all_time_group_mib
+   232: 00457370   356 FUNC    GLOBAL DEFAULT   12 rtl_ethaddr_ntoa
+   233: 00418280   880 FUNC    GLOBAL DEFAULT   12 fill_time_group_rule
+   235: 00417f54   812 FUNC    GLOBAL DEFAULT   12 addTimeGroup
+   237: 004608b0   272 FUNC    GLOBAL DEFAULT   12 confctl_get_cloud_mng_status
+   249: 00462450  1072 FUNC    GLOBAL HIDDEN    12 __udivdi3
+   257: 00432aa8   228 FUNC    GLOBAL DEFAULT   12 confctl_device_list_status_init
+   276: 004634a0  1620 FUNC    GLOBAL HIDDEN    12 __divdf3
+   289: 0040a748   676 FUNC    GLOBAL DEFAULT   12 confctl_assistant_device_left_time
+   300: 00462880   772 FUNC    GLOBAL HIDDEN    12 __divsf3
+   313: 0041893c  1052 FUNC    GLOBAL DEFAULT   12 fill_time_group_rule_list
+   314: 004194f8   808 FUNC    GLOBAL DEFAULT   12 conf_set_time_group_cfg
+   316: 004191f8   768 FUNC    GLOBAL DEFAULT   12 conf_get_time_group_cfg
+   338: 00465ee0     0 FUNC    GLOBAL DEFAULT  UND wan_rate__get_packed_size
+   339: 00465ed0     0 FUNC    GLOBAL DEFAULT  UND usleep
+   343: 00465e90     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__get_packed_size
+   347: 00465e50     0 FUNC    GLOBAL DEFAULT  UND host_info__init
+   351: 00465e10     0 FUNC    GLOBAL DEFAULT  UND time_group__pack
+   370: 00465cf0     0 FUNC    GLOBAL DEFAULT  UND wlan_time_choice__init
+   373: 00465cc0     0 FUNC    GLOBAL DEFAULT  UND inet_ntoa
+   383: 00465c20     0 FUNC    GLOBAL DEFAULT  UND stat
+   387: 00465be0     0 FUNC    GLOBAL DEFAULT  UND netlink_get_statistic_info
+   395: 00465b60     0 FUNC    GLOBAL DEFAULT  UND wan_port_status__init
+   402: 00465b00     0 FUNC    GLOBAL DEFAULT  UND localtime
+   403: 00465af0     0 FUNC    GLOBAL DEFAULT  UND time_group__unpack
+   404: 00465ae0     0 FUNC    GLOBAL DEFAULT  UND node_led_status__unpack
+   419: 00465a10     0 FUNC    GLOBAL DEFAULT  UND static_cfg__init
+   426: 00000000     0 OBJECT  GLOBAL DEFAULT  UND time_group__descriptor
+   427: 004659b0     0 FUNC    GLOBAL DEFAULT  UND hal_get_port_link_status
+   432: 00465970     0 FUNC    GLOBAL DEFAULT  UND system_wan_get_link_status
+   434: 00465950     0 FUNC    GLOBAL DEFAULT  UND cm_timeout
+   441: 00465900     0 FUNC    GLOBAL DEFAULT  UND wan_status__get_packed_size
+   444: 004658d0     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__unpack
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   452: 00465860     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__free_unpacked
+   460: 004657e0     0 FUNC    GLOBAL DEFAULT  UND wan_status__pack
+   461: 004657d0     0 FUNC    GLOBAL DEFAULT  UND settimeofday
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   467: 00465770     0 FUNC    GLOBAL DEFAULT  UND system_get_uptime
+   488: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_status__descriptor
+   499: 004655a0     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_aton
+   536: 00000000     0 OBJECT  GLOBAL DEFAULT  UND mesh_time_zone__descriptor
+   544: 00465330     0 FUNC    GLOBAL DEFAULT  UND sleep
+   545: 00465320     0 FUNC    GLOBAL DEFAULT  UND inet_addr
+   555: 00465280     0 FUNC    GLOBAL DEFAULT  UND get_interface_statistics
+   558: 00465260     0 FUNC    GLOBAL DEFAULT  UND time_group__free_unpacked
+   560: 00465240     0 FUNC    GLOBAL DEFAULT  UND wan_rate__pack
+   561: 00465230     0 FUNC    GLOBAL DEFAULT  UND time_group__get_packed_size
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   566: 004651f0     0 FUNC    GLOBAL DEFAULT  UND wan_port_rate__init
+   589: 00465090     0 FUNC    GLOBAL DEFAULT  UND time_rule__init
+   591: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_rate__descriptor
+   593: 00465060     0 FUNC    GLOBAL DEFAULT  UND time
+   595: 00465040     0 FUNC    GLOBAL DEFAULT  UND time_info__unpack
+   597: 00465030     0 FUNC    GLOBAL DEFAULT  UND strcmp
+   600: 00465010     0 FUNC    GLOBAL DEFAULT  UND is_rst_some_status
+   601: 00465000     0 FUNC    GLOBAL DEFAULT  UND check_get_new_ipaddr_by_hostid
+   604: 00464fd0     0 FUNC    GLOBAL DEFAULT  UND mesh_time_zone__pack
+   606: 00464fb0     0 FUNC    GLOBAL DEFAULT  UND get_wan_statistics
+   621: 00464ef0     0 FUNC    GLOBAL DEFAULT  UND gettimeofday
+   623: 00464ee0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_node_status
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+   628: 00464ea0     0 FUNC    GLOBAL DEFAULT  UND time_info__free_unpacked
+   634: 00464e50     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+   642: 00464de0     0 FUNC    GLOBAL DEFAULT  UND node_led_status__free_unpacked
+===== HOSTINFO PROTOBUF SYMBOLS =====
+    44: 0001193c   152 FUNC    GLOBAL DEFAULT   10 host_info__get_packed_size
+   101: 000119d4   160 FUNC    GLOBAL DEFAULT   10 host_info__pack
+   159: 00011dc4   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack_to_buffer
+   187: 00011c8c   152 FUNC    GLOBAL DEFAULT   10 host_lists__get_packed_size
+   207: 00011d24   160 FUNC    GLOBAL DEFAULT   10 host_lists__pack
+   223: 00011ecc   160 FUNC    GLOBAL DEFAULT   10 host_lists__free_unpacked
+   280: 00011e64   104 FUNC    GLOBAL DEFAULT   10 host_lists__unpack
+   354: 00011a74   160 FUNC    GLOBAL DEFAULT   10 host_info__pack_to_buffer
+   381: 00011b7c   160 FUNC    GLOBAL DEFAULT   10 host_info__free_unpacked
+   412: 00011b14   104 FUNC    GLOBAL DEFAULT   10 host_info__unpack
+   502: 0003ee6c    60 OBJECT  GLOBAL DEFAULT   18 host_info__descriptor
+   539: 0003eed8    60 OBJECT  GLOBAL DEFAULT   18 host_lists__descriptor
+   548: 00011c1c   112 FUNC    GLOBAL DEFAULT   10 host_lists__init
+   595: 000118d0   108 FUNC    GLOBAL DEFAULT   10 host_info__init
+===== HOSTINFO DESCRIPTOR/STRINGS =====
+  2769c message->base.descriptor == &mesh_node_list__descriptor
+  276d4 message->base.descriptor == &mxp_manage__descriptor
+  27708 message->base.descriptor == &mxp_manage_list__descriptor
+  27744 message->base.descriptor == &node_location__descriptor
+  2777c message->base.descriptor == &node_led_status__descriptor
+  277b8 message->base.descriptor == &manual_node_info__descriptor
+  277f4 assoc_sn
+  27800 wl2g_rssi
+  2780c wl5g_rssi
+  27818 wired_en
+  27844 AssocNodeInfo
+  27858 serialNum
+  27864 role
+  2786c status
+  27874 location
+  27884 mode
+  2788c fwversion
+  27898 ipaddr
+  278a0 ethaddr_l
+--
+  27e34 message->base.descriptor == &host_lists__descriptor
+  27e68 message->base.descriptor == &devic_marks__descriptor
+  27ea0 message->base.descriptor == &device_mark_list__descriptor
+  27edc ipaddr
+  27ee4 ethaddr
+  27eec access
+  27ef4 assoc_sn
+  27f00 condtion_time
+  27f10 online
+  27f18 uprate
+  27f20 downrate
+  27f2c signal
+  27f34 name
+  27f74 hostInfo
+  27f80 HostInfo
+  27f90 hosts
+  27fac hostLists
+  27fb8 HostLists
+  27fc4 remark
+  27fe4 DevicMarks
+  27ff0 marks
+  27ff8 timestamp
+  2801c DeviceMarkList
+  2802c device_mark_list__free_unpacked
+  2804c device_mark_list__pack_to_buffer
+  28070 device_mark_list__pack
+  28088 device_mark_list__get_packed_size
+  280ac devic_marks__free_unpacked
+  280c8 devic_marks__pack_to_buffer
+  280e4 devic_marks__pack
+--
+  2a648 WanConnType
+  2a658 errcode
+  2a67c WanDiag
+  2a684 diags
+  2a6a0 nWanDiag
+  2a6ac NWanDiag
+  2a6b8 uprate
+  2a6c0 downrate
+  2a6cc total_up
+  2a6d8 total_down
+  2a708 WanPortRate
+  2a72c WanRate
+  2a734 mode
+  2a73c ipaddr
+  2a744 mask
+  2a74c gateway
+  2a754 dns1
+  2a75c dns2
+  2a790 WanPortStatus
+  2a7b4 WanStatus
+===== PROTOBUF DESCRIPTOR WINDOW =====
+517- 27dd0 635f6e6f 64655f69 6e666f5f 5f676574  c_node_info__get
+518- 27de0 5f706163 6b65645f 73697a65 00000000  _packed_size....
+519- 27df0 6d657373 6167652d 3e626173 652e6465  message->base.de
+520- 27e00 73637269 70746f72 203d3d20 26686f73  scriptor == &hos
+521- 27e10 745f696e 666f5f5f 64657363 72697074  t_info__descript
+522- 27e20 6f720000 6f6e686f 7374732e 70622d63  or..onhosts.pb-c
+523- 27e30 2e630000 6d657373 6167652d 3e626173  .c..message->bas
+524- 27e40 652e6465 73637269 70746f72 203d3d20  e.descriptor == 
+525- 27e50 26686f73 745f6c69 7374735f 5f646573  &host_lists__des
+526- 27e60 63726970 746f7200 6d657373 6167652d  criptor.message-
+527- 27e70 3e626173 652e6465 73637269 70746f72  >base.descriptor
+528- 27e80 203d3d20 26646576 69635f6d 61726b73   == &devic_marks
+529- 27e90 5f5f6465 73637269 70746f72 00000000  __descriptor....
+530- 27ea0 6d657373 6167652d 3e626173 652e6465  message->base.de
+531- 27eb0 73637269 70746f72 203d3d20 26646576  scriptor == &dev
+532- 27ec0 6963655f 6d61726b 5f6c6973 745f5f64  ice_mark_list__d
+533- 27ed0 65736372 6970746f 72000000 69706164  escriptor...ipad
+534- 27ee0 64720000 65746861 64647200 61636365  dr..ethaddr.acce
+535- 27ef0 73730000 6173736f 635f736e 00000000  ss..assoc_sn....
+536- 27f00 636f6e64 74696f6e 5f74696d 65000000  condtion_time...
+537: 27f10 6f6e6c69 6e650000 75707261 74650000  online..uprate..
+538: 27f20 646f776e 72617465 00000000 7369676e  downrate....sign
+539- 27f30 616c0000 6e616d65 00000000 02000000  al..name........
+540- 27f40 03000000 04000000 07000000 01000000  ................
+541- 27f50 00000000 09000000 05000000 08000000  ................
+542- 27f60 06000000 01000000 00000000 00000000  ................
+543- 27f70 0a000000 686f7374 496e666f 00000000  ....hostInfo....
+544- 27f80 486f7374 496e666f 00000000 00000000  HostInfo........
+545- 27f90 686f7374 73000000 00000000 01000000  hosts...........
+546- 27fa0 00000000 00000000 01000000 686f7374  ............host
+547- 27fb0 4c697374 73000000 486f7374 4c697374  Lists...HostList
+548- 27fc0 73000000 72656d61 726b0000 00000000  s...remark......
+549- 27fd0 01000000 01000000 00000000 00000000  ................
+550- 27fe0 02000000 44657669 634d6172 6b730000  ....DevicMarks..
+551- 27ff0 6d61726b 73000000 74696d65 7374616d  marks...timestam
+552- 28000 70000000 00000000 01000000 01000000  p...............
+553- 28010 00000000 00000000 02000000 44657669  ............Devi
+554- 28020 63654d61 726b4c69 73740000 64657669  ceMarkList..devi
+555- 28030 63655f6d 61726b5f 6c697374 5f5f6672  ce_mark_list__fr
+556- 28040 65655f75 6e706163 6b656400 64657669  ee_unpacked.devi
+557- 28050 63655f6d 61726b5f 6c697374 5f5f7061  ce_mark_list__pa
+558- 28060 636b5f74 6f5f6275 66666572 00000000  ck_to_buffer....
+559- 28070 64657669 63655f6d 61726b5f 6c697374  device_mark_list
+560- 28080 5f5f7061 636b0000 64657669 63655f6d  __pack..device_m
+561- 28090 61726b5f 6c697374 5f5f6765 745f7061  ark_list__get_pa
+562- 280a0 636b6564 5f73697a 65000000 64657669  cked_size...devi
+563- 280b0 635f6d61 726b735f 5f667265 655f756e  c_marks__free_un
+564- 280c0 7061636b 65640000 64657669 635f6d61  packed..devic_ma
+565- 280d0 726b735f 5f706163 6b5f746f 5f627566  rks__pack_to_buf
+566- 280e0 66657200 64657669 635f6d61 726b735f  fer.devic_marks_
+567- 280f0 5f706163 6b000000 64657669 635f6d61  _pack...devic_ma
+568- 28100 726b735f 5f676574 5f706163 6b65645f  rks__get_packed_
+569- 28110 73697a65 00000000 686f7374 5f6c6973  size....host_lis
+570- 28120 74735f5f 66726565 5f756e70 61636b65  ts__free_unpacke
+571- 28130 64000000 686f7374 5f6c6973 74735f5f  d...host_lists__
+572- 28140 7061636b 5f746f5f 62756666 65720000  pack_to_buffer..
+573- 28150 686f7374 5f6c6973 74735f5f 7061636b  host_lists__pack
+574- 28160 00000000 686f7374 5f6c6973 74735f5f  ....host_lists__
+575- 28170 6765745f 7061636b 65645f73 697a6500  get_packed_size.
+576- 28180 686f7374 5f696e66 6f5f5f66 7265655f  host_info__free_
+577- 28190 756e7061 636b6564 00000000 686f7374  unpacked....host
+578- 281a0 5f696e66 6f5f5f70 61636b5f 746f5f62  _info__pack_to_b
+579- 281b0 75666665 72000000 686f7374 5f696e66  uffer...host_inf
+580- 281c0 6f5f5f70 61636b00 686f7374 5f696e66  o__pack.host_inf
+581- 281d0 6f5f5f67 65745f70 61636b65 645f7369  o__get_packed_si
+582- 281e0 7a650000 00000000 00000000 00000000  ze..............
+583- 281f0 312e312e 31000000 30000000 70726f74  1.1.1...0...prot
+584- 28200 6f627566 2d632e63 00000000 7898fcff  obuf-c.c....x...
+585- 28210 4098fcff 6899fcff 2899fcff e898fcff  @...h...(.......
+586- 28220 7899fcff b098fcff 6899fcff 2899fcff  x.......h...(...
+587- 28230 7899fcff 9899fcff a899fcff 8899fcff  x...............
+588- 28240 b899fcff f099fcff 689afcff ac9afcff  ........h.......
+589- 28250 789efcff 089efcff 48a0fcff d09ffcff  x.......H.......
+590- 28260 589ffcff 64a0fcff e89efcff 48a0fcff  X...d.......H...
+591- 28270 d09ffcff 64a0fcff 48a0fcff 64a0fcff  ....d...H...d...
+592- 28280 80a0fcff e89efcff 98a0fcff 30a1fcff  ............0...
+593- 28290 b0a1fcff 28286d65 73736167 65292d3e  ....((message)->
+594- 282a0 64657363 72697074 6f72292d 3e6d6167  descriptor)->mag
+595- 282b0 6963203d 3d203078 32386161 65656639  ic == 0x28aaeef9
+596- 282c0 00000000 3cb1fcff e4b0fcff a8b2fcff  ....<...........
+597- 282d0 4cb2fcff f0b1fcff 08b3fcff 98b1fcff  L...............
+598- 282e0 a8b2fcff 4cb2fcff 08b3fcff a8b2fcff  ....L...........
+599- 282f0 08b3fcff 6cb3fcff 98b1fcff c4b3fcff  ....l...........
+600- 28300 24b4fcff 80b4fcff 58b7fcff 58b7fcff  $.......X...X...
+601- 28310 58b7fcff 64b7fcff 64b7fcff 64b7fcff  X...d...d...d...
+602- 28320 58b7fcff 58b7fcff 64b7fcff 64b7fcff  X...X...d...d...
+603- 28330 58b7fcff 64b7fcff 70b7fcff 58b7fcff  X...d...p...X...
+604- 28340 7cb7fcff 88b7fcff 7cb7fcff 61637475  |.......|...actu
+605- 28350 616c5f6c 656e6774 685f7369 7a65203d  al_length_size =
+606- 28360 3d206c65 6e677468 5f73697a 655f6d69  = length_size_mi
+607- 28370 6e202b20 31000000 30bbfcff acbbfcff  n + 1...0.......
+608- 28380 b0bafcff 28bdfcff 28bcfcff f0bafcff  ....(...(.......
+609- 28390 acbcfcff b0bafcff 28bdfcff f0bafcff  ........(.......
+610- 283a0 b0bafcff f0bafcff acbdfcff acbcfcff  ................
+611- 283b0 ecc4fcff 74c4fcff d0c6fcff 58c6fcff  ....t.......X...
+612- 283c0 e0c5fcff 50c7fcff 68c5fcff d0c6fcff  ....P...h.......
+613- 283d0 58c6fcff 50c7fcff d0c6fcff 50c7fcff  X...P.......P...
+614- 283e0 d0c7fcff 68c5fcff 48c8fcff 38c9fcff  ....h...H...8...
+615- 283f0 00cafcff 28cefcff a0cefcff 08cefcff  ....(...........
+616- 28400 10d0fcff 90cffcff 18cefcff 18cffcff  ................
+617- 28410 08cefcff 10d0fcff 18cefcff 08cefcff  ................
+618- 28420 18cefcff 90d0fcff 18cffcff 74d1fcff  ............t...
+--
+1151- 2a570 00000000 6d657373 6167652d 3e626173  ....message->bas
+1152- 2a580 652e6465 73637269 70746f72 203d3d20  e.descriptor == 
+1153- 2a590 26727573 7369615f 70707470 6366675f  &russia_pptpcfg_
+1154- 2a5a0 5f646573 63726970 746f7200 6d657373  _descriptor.mess
+1155- 2a5b0 6167652d 3e626173 652e6465 73637269  age->base.descri
+1156- 2a5c0 70746f72 203d3d20 26727573 7369615f  ptor == &russia_
+1157- 2a5d0 6c327470 5f636667 5f5f6465 73637269  l2tp_cfg__descri
+1158- 2a5e0 70746f72 00000000 73746174 75730000  ptor....status..
+1159- 2a5f0 00000000 01000000 00000000 00000000  ................
+1160- 2a600 01000000 57616e50 6f727450 6f776572  ....WanPortPower
+1161- 2a610 00000000 00000000 636f6e6e 74797065  ........conntype
+1162- 2a620 00000000 52736143 6e745479 70650000  ....RsaCntType..
+1163- 2a630 01000000 00000000 01000000 00000000  ................
+1164- 2a640 00000000 02000000 57616e43 6f6e6e54  ........WanConnT
+1165- 2a650 79706500 69647800 65727263 6f646500  ype.idx.errcode.
+1166- 2a660 02000000 00000000 01000000 01000000  ................
+1167- 2a670 00000000 00000000 03000000 57616e44  ............WanD
+1168- 2a680 69616700 64696167 73000000 00000000  iag.diags.......
+1169- 2a690 01000000 00000000 00000000 01000000  ................
+1170- 2a6a0 6e57616e 44696167 00000000 4e57616e  nWanDiag....NWan
+1171: 2a6b0 44696167 00000000 75707261 74650000  Diag....uprate..
+1172: 2a6c0 646f776e 72617465 00000000 746f7461  downrate....tota
+1173- 2a6d0 6c5f7570 00000000 746f7461 6c5f646f  l_up....total_do
+1174- 2a6e0 776e0000 02000000 00000000 04000000  wn..............
+1175- 2a6f0 03000000 01000000 01000000 00000000  ................
+1176- 2a700 00000000 05000000 57616e50 6f727452  ........WanPortR
+1177- 2a710 61746500 77616e00 00000000 01000000  ate.wan.........
+1178- 2a720 00000000 00000000 01000000 57616e52  ............WanR
+1179- 2a730 61746500 6d6f6465 00000000 69706164  ate.mode....ipad
+1180- 2a740 64720000 6d61736b 00000000 67617465  dr..mask....gate
+1181- 2a750 77617900 646e7331 00000000 646e7332  way.dns1....dns2
+1182- 2a760 00000000 05000000 06000000 04000000  ................
+1183- 2a770 00000000 02000000 03000000 01000000  ................
+1184- 2a780 01000000 00000000 00000000 07000000  ................
+1185- 2a790 57616e50 6f727453 74617475 73000000  WanPortStatus...
+1186- 2a7a0 00000000 01000000 00000000 00000000  ................
+1187- 2a7b0 01000000 57616e53 74617475 73000000  ....WanStatus...
+1188- 2a7c0 756e616d 65000000 70617373 77640000  uname...passwd..
+1189- 2a7d0 646e7300 6d747500 73657276 6963655f  dns.mtu.service_
+1190- 2a7e0 6e616d65 00000000 73657276 65725f6e  name....server_n
+1191- 2a7f0 616d6500 03000000 02000000 04000000  ame.............
+1192- 2a800 01000000 06000000 05000000 00000000  ................
+1193- 2a810 01000000 00000000 00000000 07000000  ................
+1194- 2a820 4164736c 43666700 03000000 02000000  AdslCfg.........
+1195- 2a830 00000000 01000000 01000000 00000000  ................
+1196- 2a840 06000000 03000000 00000000 04000000  ................
+1197- 2a850 53746174 69634366 67000000 00000000  StaticCfg.......
+1198- 2a860 01000000 00000000 00000000 01000000  ................
+1199- 2a870 44796e61 6d696343 66670000 6164736c  DynamicCfg..adsl
+1200- 2a880 00000000 73746174 69635f69 6e666f00  ....static_info.
+1201- 2a890 64686370 00000000 72736164 736c0000  dhcp....rsadsl..
+1202- 2a8a0 72736170 70747000 7273616c 32747000  rsapptp.rsal2tp.
+1203- 2a8b0 02000000 04000000 00000000 01000000  ................
+1204- 2a8c0 05000000 07000000 06000000 03000000  ................
+1205- 2a8d0 01000000 00000000 00000000 08000000  ................
+1206- 2a8e0 57616e50 6f727443 66670000 74696d65  WanPortCfg..time
+1207- 2a8f0 7374616d 70000000 01000000 00000000  stamp...........
+1208- 2a900 01000000 00000000 00000000 02000000  ................
+1209- 2a910 57616e43 66670000 6175746f 6d696300  WanCfg..automic.
+1210- 2a920 00000000 01000000 02000000 01000000  ................
+1211- 2a930 00000000 00000000 03000000 57616e44  ............WanD
+1212- 2a940 6e734366 67000000 00000000 04000000  nsCfg...........
+1213- 2a950 05000000 03000000 01000000 02000000  ................
+1214- 2a960 01000000 00000000 00000000 06000000  ................
+1215- 2a970 49706e65 74436667 00000000 6175746f  IpnetCfg....auto
+1216- 2a980 49700000 73657276 69636500 7372764e  Ip..service.srvN
+1217- 2a990 616d6500 6e657463 66670000 03000000  ame.netcfg......
+1218- 2a9a0 02000000 06000000 01000000 04000000  ................
+1219- 2a9b0 05000000 00000000 01000000 00000000  ................
+1220- 2a9c0 00000000 07000000 52757373 69614164  ........RussiaAd
+1221- 2a9d0 736c4366 67000000 70707470 53727600  slCfg...pptpSrv.
+1222- 2a9e0 04000000 03000000 05000000 02000000  ................
+1223- 2a9f0 00000000 01000000 01000000 00000000  ................
+1224- 2aa00 00000000 06000000 52757373 69615050  ........RussiaPP
+1225- 2aa10 54504366 67000000 6c327470 53727600  TPCfg...l2tpSrv.
+1226- 2aa20 04000000 00000000 03000000 05000000  ................
+1227- 2aa30 02000000 01000000 01000000 00000000  ................
+1228- 2aa40 00000000 06000000 52757373 69614c32  ........RussiaL2
+1229- 2aa50 74704366 67000000 4d455348 5f554e50  tpCfg...MESH_UNP
+1230- 2aa60 4c554700 4d455348 5f5f434f 4e4e5f5f  LUG.MESH__CONN__
+1231- 2aa70 54595045 5f5f4d45 53485f55 4e504c55  TYPE__MESH_UNPLU
+1232- 2aa80 47000000 4d455348 5f444543 54494e47  G...MESH_DECTING
+1233- 2aa90 00000000 4d455348 5f5f434f 4e4e5f5f  ....MESH__CONN__
+1234- 2aaa0 54595045 5f5f4d45 53485f44 45435449  TYPE__MESH_DECTI
+1235- 2aab0 4e470000 4d455348 5f444843 50000000  NG..MESH_DHCP...
+1236- 2aac0 4d455348 5f5f434f 4e4e5f5f 54595045  MESH__CONN__TYPE
+1237- 2aad0 5f5f4d45 53485f44 48435000 4d455348  __MESH_DHCP.MESH
+1238- 2aae0 5f535441 54494300 4d455348 5f5f434f  _STATIC.MESH__CO
+1239- 2aaf0 4e4e5f5f 54595045 5f5f4d45 53485f53  NN__TYPE__MESH_S
+1240- 2ab00 54415449 43000000 4d455348 5f414453  TATIC...MESH_ADS
+1241- 2ab10 4c000000 4d455348 5f5f434f 4e4e5f5f  L...MESH__CONN__
+1242- 2ab20 54595045 5f5f4d45 53485f41 44534c00  TYPE__MESH_ADSL.
+1243- 2ab30 4d455348 5f525553 5349415f 4144534c  MESH_RUSSIA_ADSL
+1244- 2ab40 00000000 4d455348 5f5f434f 4e4e5f5f  ....MESH__CONN__
+1245- 2ab50 54595045 5f5f4d45 53485f52 55535349  TYPE__MESH_RUSSI
+1246- 2ab60 415f4144 534c0000 4d455348 5f525553  A_ADSL..MESH_RUS
+1247- 2ab70 5349415f 50505450 00000000 4d455348  SIA_PPTP....MESH
+1248- 2ab80 5f5f434f 4e4e5f5f 54595045 5f5f4d45  __CONN__TYPE__ME
+1249- 2ab90 53485f52 55535349 415f5050 54500000  SH_RUSSIA_PPTP..
+1250- 2aba0 4d455348 5f525553 5349415f 4c325450  MESH_RUSSIA_L2TP
+1251- 2abb0 00000000 4d455348 5f5f434f 4e4e5f5f  ....MESH__CONN__
+1252- 2abc0 54595045 5f5f4d45 53485f52 55535349  TYPE__MESH_RUSSI
+===== RATE DEBUG STRINGS IN CONFSRV =====
+  6692c /var/confsrv_socket
+  66940 [%s][%d][luminais] init_unix_socket_server %s failed.
+  66978 image_boot
+  66984 ****image_boot = 1,set image_boot=0********
+  669b4 *****image_boot = 0,set image_boot=1 *********
+  669e8 /dev/null
+  669f8 /dev/ttyS0
+  66a04 %s(%d)
+  66a0c test_sn
+  66a14 echo %s >> /proc/mesh/authorized
+  66a38 wl2g.lock.channel
+  66a4c wl2g.lock.bandwidth
+  66a68 op=%d,wl_rate=%d
+  66a7c TD_FINISH_TSTFLAG
+  66a90 highdevice_en
+  66aa0 [%s::%d] malloc fail.
+  66ab8 /tmp/log/crash
+  66ac8 confctl_srv.c
+  66ad8 Initialize AP MIB failed !
+  66af4 Initialize env failed !
+  66b0c [%s][%d][luminais] init_confctl_unix_sock failed
+  66b40 uc_api_init failed
+  66b54 confctl_srv_key
+  66b64 main
+  66b6c make_highdevice_list_cfg
+  66b88 confctl_force_upgrade
+  66ba0 init_confsrv_unix_sock
+  66bb8 confsrv_unix_accept_event_handle
+  66bdc confsrv_unix_read_event_handle
+  66c30 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  66cd8 monitor
+  66cf8 /var/pm_socket
+  66d3c timer
+--
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+--
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+--
+  73e58 %s %d send msg NETCTRL_MODULE_QOS to netctrl failed
+  73e90 op=%d,wl_rate=24
+  73ea4 %s %d send msg NETCTRL_MODULE_WIFI to netctrl failed
+  73edc [%s][%d][luminais] invalid param.
+  73f00 dhcp_cfg__unpack failed
+  73f18 [%s][%d][niuwu]  ip=%s mask=%s 
+  73f3c [%s][%d]lan.ip = %s  lan.mask = %s
+  73f60 lan.ip
+  73f68 lan.mask
+  73f74 [%s][%d][niuwu]  ip=%s 
+  73f90 %llu
+  73f98 sys.cfg.stamp
+  73fa8 op=%d,wl_rate=%d
+  73fbc wl.guest.dhcps_enable
+  73fd4 malloc failed. (%d)%m
+  73fec confctl_set_dhcps_cfg
+  74004 change_wifi_guest_ip
+  74088 monitor
+  740a8 /var/pm_socket
+  740ec timer
+  7410c /var/tm_socket
+  74150 cfms
+  74170 /var/cfm_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  74218 netctrl
+  74238 /var/nt_socket
+  7427c multiWAN
+  7429c /var/mw_socket
+  742e0 network_check
+  74300 /var/network_ck_socket
+  74344 cfmc
+  74364 /var/cfmc_socket
+--
+  744f4 /var/arp_receive
+  74558 /var/ate
+  7459c auto_discover
+  745bc /var/auto_discover
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+--
+  74d7c dns2
+  74d84 %s %d:lilin| fill default router mode wan status 
+  74db8 [%s][%d][luminais] file_wan_ip_info_get failed.
+  74dec %s %d:lilin| fill default router mode dns status 
+  74e20 %s %d:lilin| router mode status 
+  74e44 /etc/ppp/wan%d_ppoe_auth_code
+  74e68 [%s][%d][luminais] unknow link_status
+  74e91 [1;32m[%s][%d] : 
+  74ea7 [1;35m<%d> ret = %d
+  74ec1 [1;32m[%s][%d] : 
+  74ed7 [1;35m<%d> up = %llu, down = %llu
+  74f01 [1;32m[%s][%d] : 
+  74f17 [1;35m<%d> up_rate = %d, down_rate = %d
+  74f45 [1;32m[%s][%d] : 
+  74f5b [1;35mwan_id = %d, link_status = %d
+  74f85 [1;32m[%s][%d] : 
+  74f9b [1;35mtotal_up = %d, total_up_last = %d
+  74fc9 [1;32m[%s][%d] : 
+  74fdf [1;35mtotal_down = %d, total_down_last = %d
+  75010 sys.model
+  75020 wans.flag
+  7502c sys.workmode
+  7503c router
+  75048 [%s][%d][luminais] n_diags = %d
+  7506c [%s][%d][luminais] <%d> : 
+  75088 	idx : %d
+  75094 	status : %d
+  750a4 	errcode : %d
+  750b4 sys.cfg.stamp
+  750c4 wan1.connecttype
+  750d8 op=%d,wan_id=%d
+  750e8 [%s][%d][luminais] wan_cfg__unpack failed.
+  75114 [%s][%d][luminais] not find the portcfg of wan %d
+--
+  78958 wl5g.ssid0.wpapsk_psk
+  78970 wl5g.ssid0.security
+  78984 [%s][%d][Arainc] 5g passwd is null
+  789a8 [%s][%d][Arainc] config band is error 
+  789d0 djc___wlan_master->timestamp = %llu_____%s(%d)
+  78a00 %llu
+  78a08 sys.cfg.stamp
+  78a18 iConfChanged_pwd is %d___%s(%d)
+  78a3c iConfChanged is %d___%s(%d)
+  78a5c is_fast_set
+  78a68 quick.flag
+  78a74 quick__set___%s(%d)
+  78a8c op=%d,wl_rate=%d
+  78aa0 nomarl__set_wifi_config___%s(%d)
+  78ac4 WlanCfg alloc memory Failed
+  78ae4 WlanCfg array alloc memory Failed
+  78b08 djc__WlanCfg alloc memory Failed
+  78b2c djc___WlanCfg array alloc memory Failed
+  78b54 wl.guest.dhcps_enable
+  78b70 djc______%s(%d)
+  78b84 WlanTimeChoice array alloc memory Failed
+  78bb0       recv value is null!      
+  78bd4 wlan_guest->from_app = %d__%s(%d)
+  78bf8 wl.guest.dhcps_ip
+  78c0c wl.guest.dhcps_mask
+  78c20 wl2g.ssid1.ssid
+  78c30 wl2g.ssid1.wpapsk_psk
+  78c48 wl2g.ssid1.security
+  78c60 wl5g.ssid1.ssid
+  78c70 wl5g.ssid1.wpapsk_psk
+  78c88 wl5g.ssid1.security
+  78c9c 		band error !		
+  78cb0 djc___wlan_guest->timestamp = %llu_____%s(%d)
+--
+  7e2b0 prod_common_so
+  7e374 wlan.fastroam.enable
+  7e38c    in is null !
+  7e39c    unpack  failed !  
+  7e3b8 wl2g.public.dot11k
+  7e3d0 wl2g.public.dot11v
+  7e3e4 wl2g.public.dot11r
+  7e3f8 wl5g.public.dot11k
+  7e40c wl5g.public.dot11v
+  7e420 wl5g.public.dot11r
+  7e434 %llu
+  7e43c sys.cfg.stamp
+  7e44c op=%d,wl_rate=%d
+  7e4c8 monitor
+  7e4e8 /var/pm_socket
+  7e52c timer
+  7e54c /var/tm_socket
+  7e590 cfms
+  7e5b0 /var/cfm_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+  7e658 netctrl
+  7e678 /var/nt_socket
+  7e6bc multiWAN
+  7e6dc /var/mw_socket
+  7e720 network_check
+  7e740 /var/network_ck_socket
+  7e784 cfmc
+  7e7a4 /var/cfmc_socket
+  7e7e8 dhcpc
+  7e808 /var/dhcpc
+  7e84c httpd
+  7e86c /var/httpd
+--
+  7e914 arp_receive
+  7e934 /var/arp_receive
+  7e998 /var/ate
+  7e9dc auto_discover
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+===== FEATURE 14/15 GATES INSIDE GETHOSTLIST/RATE =====
+  434360:	3c040007 	lui	a0,0x7
+  434364:	3484a120 	ori	a0,a0,0xa120
+  434368:	0044102b 	sltu	v0,v0,a0
+  43436c:	10400033 	beqz	v0,43443c <confctl_rqst_client_hostname@@Base+0xce0>
+  434370:	00000000 	nop
+  434374:	2404000e 	li	a0,14
+  434378:	8f828240 	lw	v0,-32192(gp)
+  43437c:	0040c821 	move	t9,v0
+  434380:	0320f809 	jalr	t9
+  434384:	00000000 	nop
+  434388:	8fdc0028 	lw	gp,40(s8)
+  43438c:	1040000c 	beqz	v0,4343c0 <confctl_rqst_client_hostname@@Base+0xc64>
+  434390:	00000000 	nop
+  434394:	8f82822c 	lw	v0,-32212(gp)
+--
+  434514:	10400004 	beqz	v0,434528 <confctl_rqst_client_hostname@@Base+0xdcc>
+  434518:	00000000 	nop
+  43451c:	8f82822c 	lw	v0,-32212(gp)
+  434520:	8c423358 	lw	v0,13144(v0)
+  434524:	afc2003c 	sw	v0,60(s8)
+  434528:	2404000e 	li	a0,14
+  43452c:	8f828240 	lw	v0,-32192(gp)
+  434530:	0040c821 	move	t9,v0
+  434534:	0320f809 	jalr	t9
+  434538:	00000000 	nop
+  43453c:	8fdc0028 	lw	gp,40(s8)
+  434540:	1040001c 	beqz	v0,4345b4 <confctl_rqst_client_hostname@@Base+0xe58>
+  434544:	00000000 	nop
+  434548:	8f82822c 	lw	v0,-32212(gp)
+--
+  4345a0:	8f8287c8 	lw	v0,-30776(gp)
+  4345a4:	0040c821 	move	t9,v0
+  4345a8:	0320f809 	jalr	t9
+  4345ac:	00000000 	nop
+  4345b0:	8fdc0028 	lw	gp,40(s8)
+  4345b4:	2404000e 	li	a0,14
+  4345b8:	8f828240 	lw	v0,-32192(gp)
+  4345bc:	0040c821 	move	t9,v0
+  4345c0:	0320f809 	jalr	t9
+  4345c4:	00000000 	nop
+  4345c8:	8fdc0028 	lw	gp,40(s8)
+  4345cc:	1040000c 	beqz	v0,434600 <confctl_rqst_client_hostname@@Base+0xea4>
+  4345d0:	00000000 	nop
+  4345d4:	8f8289cc 	lw	v0,-30260(gp)
+--
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+--
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36

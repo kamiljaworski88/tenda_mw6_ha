@@ -1,0 +1,188 @@
+===== RUN 121: locate kernel owner of AF_NETLINK protocol 31 =====
+
+===== MODULE firmware-src/RootFS-unpacked/lib/modules/bm.ko =====
+         U __netlink_kernel_create
+00002690 T bm_netlink_msg_create
+000025b8 T bm_netlink_msg_send
+         U clear_online_ip_flag
+         U netlink_broadcast
+         U netlink_kernel_release
+         U netlink_rcv_skb
+         U online_ip_hash
+         U online_ip_hash_size
+-- create contexts --
+1920-    1db0:	00739823 	subu	s3,v1,s3
+1921-    1db4:	001320c0 	sll	a0,s3,0x3
+1922-    1db8:	00932023 	subu	a0,a0,s3
+1923-    1dbc:	00442021 	addu	a0,v0,a0
+1924-    1dc0:	3c020000 	lui	v0,0x0	1dc0: R_MIPS_HI16	memcpy
+1925-    1dc4:	02402821 	move	a1,s2
+1926-    1dc8:	240600a8 	li	a2,168
+1927-    1dcc:	080006d5 	j	1b54 <init_log+0xb74>	1dcc: R_MIPS_26	.text
+1928-    1dd0:	24420000 	addiu	v0,v0,0	1dd0: R_MIPS_LO16	memcpy
+1929-
+1930-00001dd4 <bm_u2k_info_init>:
+1931-    1dd4:	27bdffc0 	addiu	sp,sp,-64
+1932-    1dd8:	afbf003c 	sw	ra,60(sp)
+1933-    1ddc:	afb30038 	sw	s3,56(sp)
+1934-    1de0:	afb20034 	sw	s2,52(sp)
+1935-    1de4:	afb10030 	sw	s1,48(sp)
+1936-    1de8:	afb0002c 	sw	s0,44(sp)
+1937-    1dec:	3c130000 	lui	s3,0x0	1dec: R_MIPS_HI16	init_net
+1938-    1df0:	3c120000 	lui	s2,0x0	1df0: R_MIPS_HI16	__this_module
+1939-    1df4:	27b10010 	addiu	s1,sp,16
+1940:    1df8:	3c100000 	lui	s0,0x0	1df8: R_MIPS_HI16	__netlink_kernel_create
+1941-    1dfc:	3c020000 	lui	v0,0x0	1dfc: R_MIPS_HI16	.text
+1942-    1e00:	244210d4 	addiu	v0,v0,4308	1e00: R_MIPS_LO16	.text
+1943:    1e04:	26100000 	addiu	s0,s0,0	1e04: R_MIPS_LO16	__netlink_kernel_create
+1944-    1e08:	26640000 	addiu	a0,s3,0	1e08: R_MIPS_LO16	init_net
+1945-    1e0c:	2405001e 	li	a1,30
+1946-    1e10:	26460000 	addiu	a2,s2,0	1e10: R_MIPS_LO16	__this_module
+1947-    1e14:	02203821 	move	a3,s1
+1948-    1e18:	afa20018 	sw	v0,24(sp)
+1949-    1e1c:	afa00010 	sw	zero,16(sp)
+1950-    1e20:	afa00014 	sw	zero,20(sp)
+1951-    1e24:	afa0001c 	sw	zero,28(sp)
+1952-    1e28:	0200f809 	jalr	s0
+1953-    1e2c:	afa00020 	sw	zero,32(sp)
+1954-    1e30:	3c030000 	lui	v1,0x0	1e30: R_MIPS_HI16	.bss
+1955-    1e34:	1040002e 	beqz	v0,1ef0 <bm_u2k_info_init+0x11c>
+1956-    1e38:	ac621720 	sw	v0,5920(v1)	1e38: R_MIPS_LO16	.bss
+1957-    1e3c:	3c020000 	lui	v0,0x0	1e3c: R_MIPS_HI16	.text
+1958-    1e40:	244210ec 	addiu	v0,v0,4332	1e40: R_MIPS_LO16	.text
+1959-    1e44:	26640000 	addiu	a0,s3,0	1e44: R_MIPS_LO16	init_net
+1960-    1e48:	26460000 	addiu	a2,s2,0	1e48: R_MIPS_LO16	__this_module
+1961-    1e4c:	02203821 	move	a3,s1
+1962-    1e50:	24050020 	li	a1,32
+1963-    1e54:	afa20018 	sw	v0,24(sp)
+1964-    1e58:	afa00010 	sw	zero,16(sp)
+1965-    1e5c:	afa00014 	sw	zero,20(sp)
+1966-    1e60:	afa0001c 	sw	zero,28(sp)
+1967-    1e64:	0200f809 	jalr	s0
+1968-    1e68:	afa00020 	sw	zero,32(sp)
+1969-    1e6c:	3c030000 	lui	v1,0x0	1e6c: R_MIPS_HI16	.bss
+1970-    1e70:	1040002a 	beqz	v0,1f1c <bm_u2k_info_init+0x148>
+1971-    1e74:	ac621724 	sw	v0,5924(v1)	1e74: R_MIPS_LO16	.bss
+-- immediate protocol candidates --
+
+===== MODULE firmware-src/RootFS-unpacked/lib/modules/dhcp_options.ko =====
+         U __netlink_kernel_create
+         U netlink_broadcast
+         U netlink_kernel_release
+-- create contexts --
+420-  30:	24420000 	addiu	v0,v0,0	30: R_MIPS_LO16	nf_unregister_hooks
+421-  34:	0040f809 	jalr	v0
+422-  38:	24050001 	li	a1,1
+423-  3c:	8fbf0014 	lw	ra,20(sp)
+424-  40:	3c040000 	lui	a0,0x0	40: R_MIPS_HI16	$LC0
+425-  44:	3c190000 	lui	t9,0x0	44: R_MIPS_HI16	printk
+426-  48:	24840000 	addiu	a0,a0,0	48: R_MIPS_LO16	$LC0
+427-  4c:	27390000 	addiu	t9,t9,0	4c: R_MIPS_LO16	printk
+428-  50:	03200008 	jr	t9
+429-  54:	27bd0018 	addiu	sp,sp,24
+430-
+431-Disassembly of section .init.text:
+432-
+433-00000000 <init_module>:
+434-   0:	27bdffd0 	addiu	sp,sp,-48
+435-   4:	afbf002c 	sw	ra,44(sp)
+436-   8:	24020002 	li	v0,2
+437-   c:	afa20010 	sw	v0,16(sp)
+438-  10:	3c040000 	lui	a0,0x0	10: R_MIPS_HI16	init_net
+439-  14:	3c060000 	lui	a2,0x0	14: R_MIPS_HI16	__this_module
+440:  18:	3c020000 	lui	v0,0x0	18: R_MIPS_HI16	__netlink_kernel_create
+441-  1c:	24840000 	addiu	a0,a0,0	1c: R_MIPS_LO16	init_net
+442-  20:	24c60000 	addiu	a2,a2,0	20: R_MIPS_LO16	__this_module
+443-  24:	24050014 	li	a1,20
+444-  28:	27a70010 	addiu	a3,sp,16
+445-  2c:	afa00014 	sw	zero,20(sp)
+446-  30:	afa00018 	sw	zero,24(sp)
+447-  34:	afa0001c 	sw	zero,28(sp)
+448:  38:	24420000 	addiu	v0,v0,0	38: R_MIPS_LO16	__netlink_kernel_create
+449-  3c:	0040f809 	jalr	v0
+450-  40:	afa00020 	sw	zero,32(sp)
+451-  44:	3c030000 	lui	v1,0x0	44: R_MIPS_HI16	.bss
+452-  48:	14400008 	bnez	v0,6c <init_module+0x6c>
+453-  4c:	ac620000 	sw	v0,0(v1)	4c: R_MIPS_LO16	.bss
+454-  50:	3c040000 	lui	a0,0x0	50: R_MIPS_HI16	$LC1
+455-  54:	3c020000 	lui	v0,0x0	54: R_MIPS_HI16	printk
+456-  58:	24420000 	addiu	v0,v0,0	58: R_MIPS_LO16	printk
+457-  5c:	0040f809 	jalr	v0
+458-  60:	24840000 	addiu	a0,a0,0	60: R_MIPS_LO16	$LC1
+459-  64:	08000023 	j	8c <init_module+0x8c>	64: R_MIPS_26	.init.text
+460-  68:	2402ffff 	li	v0,-1
+461-  6c:	3c040000 	lui	a0,0x0	6c: R_MIPS_HI16	.data..read_mostly
+462-  70:	3c020000 	lui	v0,0x0	70: R_MIPS_HI16	nf_register_hooks
+463-  74:	24840000 	addiu	a0,a0,0	74: R_MIPS_LO16	.data..read_mostly
+464-  78:	24420000 	addiu	v0,v0,0	78: R_MIPS_LO16	nf_register_hooks
+465-  7c:	0040f809 	jalr	v0
+466-  80:	24050001 	li	a1,1
+467-  84:	28430001 	slti	v1,v0,1
+468-  88:	0003100a 	movz	v0,zero,v1
+469-  8c:	8fbf002c 	lw	ra,44(sp)
+470-  90:	03e00008 	jr	ra
+471-  94:	27bd0030 	addiu	sp,sp,48
+-- immediate protocol candidates --
+
+===== MODULE firmware-src/RootFS-unpacked/lib/modules/common_netlink.ko =====
+         U __netlink_kernel_create
+00000000 T common_netlink_exit
+00000000 T common_netlink_init
+00000000 T common_netlink_send_to_user
+         U netlink_broadcast
+         U netlink_kernel_release
+         U netlink_msg_to_user
+-- create contexts --
+93-  14:	24420000 	addiu	v0,v0,0	14: R_MIPS_LO16	netlink_kernel_release
+94-  18:	0040f809 	jalr	v0
+95-  1c:	00000000 	nop
+96-  20:	8fbf0014 	lw	ra,20(sp)
+97-  24:	3c040000 	lui	a0,0x0	24: R_MIPS_HI16	$LC0
+98-  28:	3c190000 	lui	t9,0x0	28: R_MIPS_HI16	printk
+99-  2c:	3c020000 	lui	v0,0x0	2c: R_MIPS_HI16	netlink_msg_to_user
+100-  30:	24840000 	addiu	a0,a0,0	30: R_MIPS_LO16	$LC0
+101-  34:	27390000 	addiu	t9,t9,0	34: R_MIPS_LO16	printk
+102-  38:	ac400000 	sw	zero,0(v0)	38: R_MIPS_LO16	netlink_msg_to_user
+103-  3c:	03200008 	jr	t9
+104-  40:	27bd0018 	addiu	sp,sp,24
+105-
+106-Disassembly of section .init.text:
+107-
+108-00000000 <common_netlink_init>:
+109-   0:	27bdffd0 	addiu	sp,sp,-48
+110-   4:	afbf002c 	sw	ra,44(sp)
+111-   8:	3c040000 	lui	a0,0x0	8: R_MIPS_HI16	init_net
+112-   c:	3c060000 	lui	a2,0x0	c: R_MIPS_HI16	__this_module
+113:  10:	3c020000 	lui	v0,0x0	10: R_MIPS_HI16	__netlink_kernel_create
+114-  14:	24840000 	addiu	a0,a0,0	14: R_MIPS_LO16	init_net
+115-  18:	24c60000 	addiu	a2,a2,0	18: R_MIPS_LO16	__this_module
+116-  1c:	24050021 	li	a1,33
+117-  20:	27a70010 	addiu	a3,sp,16
+118-  24:	afa00010 	sw	zero,16(sp)
+119-  28:	afa00014 	sw	zero,20(sp)
+120-  2c:	afa00018 	sw	zero,24(sp)
+121-  30:	afa0001c 	sw	zero,28(sp)
+122:  34:	24420000 	addiu	v0,v0,0	34: R_MIPS_LO16	__netlink_kernel_create
+123-  38:	0040f809 	jalr	v0
+124-  3c:	afa00020 	sw	zero,32(sp)
+125-  40:	3c030000 	lui	v1,0x0	40: R_MIPS_HI16	.bss
+126-  44:	14400008 	bnez	v0,68 <common_netlink_init+0x68>
+127-  48:	ac620000 	sw	v0,0(v1)	48: R_MIPS_LO16	.bss
+128-  4c:	3c040000 	lui	a0,0x0	4c: R_MIPS_HI16	$LC1
+129-  50:	3c020000 	lui	v0,0x0	50: R_MIPS_HI16	printk
+130-  54:	24420000 	addiu	v0,v0,0	54: R_MIPS_LO16	printk
+131-  58:	0040f809 	jalr	v0
+132-  5c:	24840000 	addiu	a0,a0,0	5c: R_MIPS_LO16	$LC1
+133-  60:	0800001f 	j	7c <common_netlink_init+0x7c>	60: R_MIPS_26	.init.text
+134-  64:	2402ffff 	li	v0,-1
+135-  68:	3c030000 	lui	v1,0x0	68: R_MIPS_HI16	common_netlink_send_to_user
+136-  6c:	3c020000 	lui	v0,0x0	6c: R_MIPS_HI16	netlink_msg_to_user
+137-  70:	24630000 	addiu	v1,v1,0	70: R_MIPS_LO16	common_netlink_send_to_user
+138-  74:	ac430000 	sw	v1,0(v0)	74: R_MIPS_LO16	netlink_msg_to_user
+139-  78:	00001021 	move	v0,zero
+140-  7c:	8fbf002c 	lw	ra,44(sp)
+141-  80:	03e00008 	jr	ra
+142-  84:	27bd0030 	addiu	sp,sp,48
+-- immediate protocol candidates --
+
+===== ALL MODULES WITH LITERAL protocol 31 NEAR netlink create =====

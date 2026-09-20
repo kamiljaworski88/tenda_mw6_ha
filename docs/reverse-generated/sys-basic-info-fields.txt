@@ -1,0 +1,30 @@
+===== RUN 58 GOAL =====
+Find concrete BasicInfo response field names, especially serial-related fields, without generic protobuf noise.
+===== RELEVANT STRINGS =====
+   2bcd uc_api_lib_sys_basic_info_hdl_reg
+   2d9a uc_api_m_cloud_info_send_sys_basic_info
+   3138 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   323d uc_api_set_basic_info
+   3464 send_sync_firmware
+   3efe cgi_ucloud_sys_basic_info_get
+  1ec90 CMD_SYS_BASIC_INFO_GET
+  1f2e0 CMD_CLOUD_INFO_UPLOAD_SYS_BASIC_INFO_START
+  2019c GetBasicInfo
+  2023c Basic Info already registerd , drop this request(%d:%d)
+===== RODATA AROUND CONFIG/FIELD CLUSTER 0x423f0..0x42980 =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+===== SYMBOLS CONTAINING BASIC / SYS / SERIAL =====
+    14: 000074d0    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_sys_basic_info
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+    62: 0000a3fc   160 FUNC    GLOBAL DEFAULT   10 enable_cloud_get_sys_basic
+    85: 00015c3c    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_advance_info_get
+    99: 00015c94    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_basic_info_get
+   162: 00017390    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_basic_get_hdl_reg
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   217: 0001679c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_advance_info_hdl_reg
+   260: 00017be4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_basic_set_hdl_reg
+   302: 00017348    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_basic_set_hdl_reg
+   310: 0001b8d4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   322: 00017b9c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_basic_get_hdl_reg

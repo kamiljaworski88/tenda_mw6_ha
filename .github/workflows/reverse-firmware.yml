@@ -1,0 +1,48 @@
+name: Reverse MW6 firmware
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reverse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils-mipsel-linux-gnu git
+      - name: Map per-client accounting exposure
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Pinned public firmware-source revision; update only after review.
+          git init firmware-src
+          git -C firmware-src remote add origin https://github.com/latonita/tenda-reverse.git
+          git -C firmware-src fetch --depth 1 origin bae969cb336b5d4c8b3a3ac5eac1e1f1114ef72d
+          git -C firmware-src checkout --detach FETCH_HEAD
+          mkdir -p docs/reverse-generated
+          root='firmware-src/RootFS-unpacked'
+          out='docs/reverse-generated/run184-online-ip-exposure.txt'
+          {
+            echo '===== RUN 184: online_ip exposure map ====='
+            echo 'Static public-firmware analysis only. No router traffic.'
+            echo
+            echo '===== confsrv symbol inventory ====='
+            mipsel-linux-gnu-readelf -Ws "$root/bin/confsrv" | grep -Ei               'host.?list|online_ip|g_ip_info|client.*(list|info)|debug.*switch|wan.*diag' || true
+            echo
+            echo '===== device_list symbol inventory ====='
+            mipsel-linux-gnu-readelf -Ws "$root/bin/device_list" | grep -Ei               'online_ip|g_ip_info|host.?list|debug.*switch|client.*(list|info)' || true
+            echo
+            echo '===== conclusion inputs ====='
+            echo 'Inspect whether a public RPC command names online_ip/g_ip_info directly.'
+            echo 'A debug function name alone is not a remotely invocable read-only API.'
+          } > "$out"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: run184-online-ip-exposure
+          path: docs/reverse-generated/run184-online-ip-exposure.txt
+          retention-days: 7

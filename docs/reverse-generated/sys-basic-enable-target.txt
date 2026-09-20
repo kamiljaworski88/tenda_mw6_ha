@@ -1,0 +1,365 @@
+===== RUN 60 GOAL =====
+Resolve t9 target gp-31940 and a3 object source in enable_cloud_get_sys_basic.
+===== KNOWN VALUES =====
+function=0x0000a3fc
+gp=0x00039ed0
+t9_slot=gp-31940=0x0003220c
+a3_base_slot=gp-32732=0x00031ef4
+a3_adjust=-3360 (0xfffff2e0)
+===== GOT BYTES AROUND 0x31ef4 AND 0x3220c =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+Contents of section .got:
+ 31ee0 00000000 00000080 00000300 c4220300  ............."..
+ 31ef0 20170300 00000200 00000000 00000100   ...............
+ 31f00 90c70100 50c70100 70df0100 70e00100  ....P...p...p...
+ 31f10 f0df0100 10d00100 00d70100 b0d10100  ................
+ 31f20 a0d00100 c0d20100 c0c70100 00000000  ................
+ 31f30 00000000 00000000 00000000 00000000  ................
+ 31f40 f4b20000 80820100 00000000 10e50100  ................
+ 31f50 60420100 3cba0100 00e50100 94520100  `B..<........R..
+ 31f60 d09d0100 00000000 90a70100 f0e40100  ................
+ 31f70 443c0100 e0e40100 d0e40100 c0e40100  D<..............
+ 31f80 58830100 00000000 c01e0300 b0e40100  X...............
+ 31f90 f0c20100 f8cf0000 cc040100 a0e40100  ................
+ 31fa0 90e40100 884e0100 80e40100 28720100  .....N......(r..
+ 31fb0 4cb20000 8cb20100 c0840100 90730100  L............s..
+ 31fc0 70040100 00f20000 a0830100 70e40100  p...........p...
+ 31fd0 1c4b0100 fcb10100 40110100 20a80100  .K......@... ...
+ 31fe0 60e40100 109b0000 50e40100 84ba0100  `.......P.......
+ 31ff0 908a0000 74960100 5c550100 64b90100  ....t...\U..d...
+ 32000 40e40100 685f0100 f4570000 e4670100  @...h_...W...g..
+ 32010 0c020100 946e0000 d4b20100 ccba0100  .....n..........
+ 32020 686d0100 30e40100 3c870000 20e40100  hm..0...<... ...
+ 32030 849a0000 28860100 68a80100 280f0100  ....(...h...(...
+ 32040 10ac0000 14bb0100 24fc0000 a0be0000  ........$.......
+ 32050 34050100 84450100 f8150100 30770000  4....E......0w..
+ 32060 64020100 70720100 10e40100 5cbb0100  d...pr......\...
+ 32070 e8830100 2c7c0100 a84a0100 00e40100  ....,|...J......
+ 32080 1cb90100 900b0100 f0e30100 8cb80100  ................
+ 32090 e4300100 d4f30000 9c670100 20ac0000  .0.......g.. ...
+ 320a0 68500000 e0e30100 98850100 d0e30100  hP..............
+ 320b0 c0e30100 b0e30100 b8490100 6c0b0100  .........I..l...
+ 320c0 b0560100 64190100 c0040100 184d0100  .V..d........M..
+ 320d0 dc490100 a0e30100 90e30100 80e30100  .I..............
+ 320e0 70e30100 e4950100 60e30100 0c0d0100  p.......`.......
+ 320f0 14e10000 c8660100 50e30100 b8720100  .....f..P....r..
+ 32100 40e30100 30e30100 18740000 48a70100  @...0....t..H...
+ 32110 28a50000 20a20100 409d0100 b44f0000  (... ...@....O..
+ 32120 78840100 d0220300 fc3a0100 20e30100  x...."...:.. ...
+ 32130 0c310100 10e30100 80110100 00e30100  .1..............
+ 32140 f4b90100 e47b0100 54540100 f0e20100  .....{..TT......
+ 32150 00000000 6c890000 b80d0100 e0e20100  ....l...........
+ 32160 80620100 40410100 3caf0100 84040100  .b..@A..<.......
+ 32170 d0e20100 00730100 547b0100 e46e0100  .....s..T{...n..
+ 32180 10830100 48510100 10670100 086d0000  ....HQ...g...m..
+ 32190 c0e20100 b0e20100 50850100 144f0100  ........P....O..
+ 321a0 e0850100 44c60100 70860100 acb90100  ....D...p.......
+ 321b0 44b20100 889d0100 a0e20100 90e20100  D...............
+ 321c0 e4050100 c8820100 bc4f0100 0c950100  .........O......
+ 321d0 98710100 d01e0300 80e20100 cc3d0100  .q...........=..
+ 321e0 70e20100 00000000 d44b0100 48730100  p........K..Hs..
+ 321f0 00000000 60e20100 b0a20100 08850100  ....`...........
+ 32200 50e20100 40e20100 2c960100 d4b80100  P...@...,.......
+ 32210 e0710100 40eb0000 6c780000 58670100  .q..@...lx..Xg..
+ 32220 68a20100 d8a70100 00000000 30e20100  h...........0...
+===== SYMBOLS / ADDRESSES NEAR GOT TARGET VALUES =====
+     2: 00010010   508 FUNC    GLOBAL DEFAULT   10 sockopt_keepalive
+     3: 00010c70   156 FUNC    GLOBAL DEFAULT   10 ccJSON_AddItemToObjectCS
+     8: 00011a7c    88 FUNC    GLOBAL DEFAULT   10 ccJSON_AddItemReferenceToObject
+     9: 00014490   180 FUNC    GLOBAL DEFAULT   10 ccJSON_PrintValueToBuffer
+    11: 00011480    68 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateBool
+    12: 00011244   180 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateDoubleArray
+    13: 00011ad4    80 FUNC    GLOBAL DEFAULT   10 ccJSON_AddItemReferenceToArray
+    14: 000074d0    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_sys_basic_info
+    15: 00015848   188 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_set_manage_en
+    16: 0000aed4   100 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_descriptor_get_field
+    17: 00011850   276 FUNC    GLOBAL DEFAULT   10 ccJSON_ReplaceItemInObject
+    18: 0000ae70   100 FUNC    GLOBAL DEFAULT   10 protobuf_c_enum_descriptor_get_value
+    19: 00011540    64 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateNull
+    23: 00014568    28 FUNC    GLOBAL DEFAULT   10 get_ucloud_errno
+    24: 00013fbc   388 FUNC    GLOBAL DEFAULT   10 simple_str2struct
+    25: 0000a10c   524 FUNC    GLOBAL DEFAULT   10 enable_conn_innernet
+    27: 000160a0    28 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_policy_upgrade_enable
+    28: 00010544    44 FUNC    GLOBAL DEFAULT   10 uc_list_splice
+    29: 00008348   588 FUNC    GLOBAL DEFAULT   10 uc_api_set_basic_info
+    30: 000159a0   156 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_query_uc_account
+    31: 0000af38   272 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_descriptor_get_method_by_name
+    32: 00015b8c    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_reset
+    33: 000104a0    32 FUNC    GLOBAL DEFAULT   10 uc_list_add_tail
+    35: 000157ac   156 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_get_manage_en
+    37: 00010fac   308 FUNC    GLOBAL DEFAULT   10 ccJSON_Minify
+    40: 00015b10   124 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_set_time_zone
+    41: 00010374   160 FUNC    GLOBAL DEFAULT   10 sockopt_bind_local_interface
+    42: 000114c4    60 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateFalse
+    50: 000117a0   176 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateStringArray
+    51: 00016258    32 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_query_version
+    54: 00015a3c   212 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_common_test
+    55: 0000a6b0    24 FUNC    GLOBAL DEFAULT   10 protobuf_c_version
+    56: 00016360   164 FUNC    GLOBAL DEFAULT   10 unregister_conn_estab_notify_cb
+    60: 0000a318   228 FUNC    GLOBAL DEFAULT   10 enable_upgrade_hdl
+    61: 00016238    32 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_policy_query_version
+    62: 0000a3fc   160 FUNC    GLOBAL DEFAULT   10 enable_cloud_get_sys_basic
+    64: 00015d50   164 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_update_pwd
+    65: 00016404   244 FUNC    GLOBAL DEFAULT   10 register_conn_esta_notify_cb
+    67: 0000a68c    28 FUNC    GLOBAL DEFAULT   10 send_force_upgrade
+    69: 00015048   256 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_init
+    70: 00015df4   164 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_login
+    73: 0000ae64    12 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_destroy
+    75: 000104ec    72 FUNC    GLOBAL DEFAULT   10 uc_list_del_init
+    77: 0000a6c8    12 FUNC    GLOBAL DEFAULT   10 protobuf_c_version_number
+    78: 00015904   156 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_update_uc_account
+    79: 0000a654    28 FUNC    GLOBAL DEFAULT   10 send_self_upgrade
+    80: 0000a49c   140 FUNC    GLOBAL DEFAULT   10 eanble_inter_chk_request
+    81: 00013d50   124 FUNC    GLOBAL DEFAULT   10 simple_struct2str
+    82: 00011500    64 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateTrue
+    85: 00015c3c    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_advance_info_get
+    86: 00012c3c   124 FUNC    GLOBAL DEFAULT   10 ccJSON_PrintBuffered
+    87: 0000a670    28 FUNC    GLOBAL DEFAULT   10 send_sync_firmware
+    89: 00010b4c    32 FUNC    GLOBAL DEFAULT   10 ccJSON_GetArraySize
+    90: 0001e530    28 FUNC    GLOBAL DEFAULT   12 _fini
+    94: 00015e98   208 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_speedtest_enable
+    98: 00010570    24 FUNC    GLOBAL DEFAULT   10 ccJSON_GetErrorPtr
+    99: 00015c94    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_basic_info_get
+   102: 000160bc    28 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_upgrade_enable
+   111: 00010588    92 FUNC    GLOBAL DEFAULT   10 ccJSON_InitHooks
+   112: 000113bc   196 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateIntArray
+   113: 000162d8   136 FUNC    GLOBAL DEFAULT   10 flush_conn_estab_cbs
+   117: 00010ec0   104 FUNC    GLOBAL DEFAULT   10 ccJSON_InsertItemInArray
+   119: 000112f8   196 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateFloatArray
+   120: 00014924   148 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_destory
+   121: 00015be4    88 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_sys_reboot
+   122: 00010e84    60 FUNC    GLOBAL DEFAULT   10 ccJSON_DeleteItemFromObject
+   125: 00015cec   100 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_login_sta_update
+   129: 0000a0b0    92 FUNC    GLOBAL DEFAULT   10 enable_device_id_hdl
+   130: 00010d7c    60 FUNC    GLOBAL DEFAULT   10 ccJSON_DeleteItemFromArray
+   132: 00018280    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_blacklist_del_hdl_reg
+   134: 0001e510     0 FUNC    GLOBAL DEFAULT  UND vfprintf
+   135: 00014260   560 FUNC    GLOBAL DEFAULT   10 ccJSON_PrintObjValueToBuffer
+   136: 0001ba3c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_account_info_a_hdl_reg
+   137: 0001e500     0 FUNC    GLOBAL DEFAULT  UND close
+   138: 00015294   448 FUNC    GLOBAL DEFAULT   10 cgi_recv_from_ucloud
+   139: 00019dd0    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_login_hdl_reg
+   141: 0001a790    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_set_genable_hdl_reg
+   142: 0001e4f0     0 FUNC    GLOBAL DEFAULT  UND mkdir
+   143: 00013c44   268 FUNC    GLOBAL DEFAULT   10 struct2json
+   144: 0001e4e0     0 FUNC    GLOBAL DEFAULT  UND pthread_join
+   145: 0001e4d0     0 FUNC    GLOBAL DEFAULT  UND fcntl
+   146: 0001e4c0     0 FUNC    GLOBAL DEFAULT  UND pthread_attr_setdetachstate
+   147: 00018358    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_whitelist_del_hdl_reg
+   150: 0001e4b0     0 FUNC    GLOBAL DEFAULT  UND closedir
+   151: 0001c2f0    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_dev_nickname_get_hdl_reg
+   153: 000104cc    32 FUNC    GLOBAL DEFAULT   10 uc_list_del
+   154: 0001e4a0     0 FUNC    GLOBAL DEFAULT  UND strchr
+   155: 0001e490     0 FUNC    GLOBAL DEFAULT  UND strlen
+   156: 00014e88   140 FUNC    GLOBAL DEFAULT   10 do_cgi_header_recv
+   157: 0001e480     0 FUNC    GLOBAL DEFAULT  UND pthread_mutex_init
+   158: 00017228    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_channel_set_hdl_reg
+   160: 0001b28c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_dns_optimize_hdl_reg
+   161: 000184c0    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_black_list_flush_hdl_reg
+   162: 00017390    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_basic_get_hdl_reg
+   163: 00010470    20 FUNC    GLOBAL DEFAULT   10 uc__list_add
+   165: 000183a0    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_whitelist_add_hdl_reg
+   166: 0001e470     0 FUNC    GLOBAL DEFAULT  UND atoi
+   167: 00014b1c   184 FUNC    GLOBAL DEFAULT   10 _cgi_send
+   168: 0001b1fc    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_guard_set_hdl_reg
+   169: 00011140    64 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateObject
+   170: 0001a820    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_set_hdl_reg
+   171: 0001e460     0 FUNC    GLOBAL DEFAULT  UND __errno_location
+   173: 0001e450     0 FUNC    GLOBAL DEFAULT  UND pthread_mutex_lock
+   174: 0001ba84    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_mesh_node_a_hdl_reg
+   176: 00019674    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_led_get_hdl_reg
+   177: 0001555c   340 FUNC    GLOBAL DEFAULT   10 cgi_send_to_ucloud
+   178: 0001b964    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_dev_mark_list_a_hdl_reg
+   179: 0001e440     0 FUNC    GLOBAL DEFAULT  UND pthread_mutex_destroy
+   180: 00015f68   312 FUNC    GLOBAL DEFAULT   10 _cgi_ucloud_upgrade_enable
+   182: 000167e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_basic_info_hdl_reg
+   183: 0001020c    88 FUNC    GLOBAL DEFAULT   10 sockopt_reuseaddr
+   185: 0001b2d4    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_safe_check_hdl_reg
+   186: 0001bacc    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_clear_account_ack_hdl_reg
+   187: 00016d68    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_check_memory_hdl_reg
+   188: 0001e430     0 FUNC    GLOBAL DEFAULT  UND localtime_r
+   190: 0001e420     0 FUNC    GLOBAL DEFAULT  UND pthread_self
+   192: 00018628    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_rub_net_get_hdl_reg
+   193: 0001a868    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_hdl_reg
+   194: 00010f28   132 FUNC    GLOBAL DEFAULT   10 ccJSON_ReplaceItemInArray
+   195: 0000ac10    16 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_init
+   196: 0001bb14    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_manage_en_set_hdl_reg
+   199: 00010534    16 FUNC    GLOBAL DEFAULT   10 uc_list_empty
+   200: 00014584   928 FUNC    GLOBAL DEFAULT   10 cgi_common_err_handle
+   201: 000115f8   320 FUNC    GLOBAL DEFAULT   10 ccJSON_Duplicate
+   203: 00010264   272 FUNC    GLOBAL DEFAULT   10 create_tcp_server
+   204: 00017270    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_channel_get_hdl_reg
+   205: 0001e410     0 FUNC    GLOBAL DEFAULT  UND sprintf
+   206: 0001bb5c    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_manage_en_get_hdl_reg
+   207: 000183e8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_whitelist_get_hdl_reg
+   208: 00017c2c    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_rate_get_hdl_reg
+   209: 00014aa8   116 FUNC    GLOBAL DEFAULT   10 cgi_check_header
+   210: 0001e400     0 FUNC    GLOBAL DEFAULT  UND pthread_mutex_unlock
+   211: 0001b91c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_dev_config_time_a_hdl_reg
+   212: 00010b90   172 FUNC    GLOBAL DEFAULT   10 ccJSON_GetObjectItem
+   213: 0001e3f0     0 FUNC    GLOBAL DEFAULT  UND strcmp
+   214: 0001b88c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_web_auth_config_time_a_hdl_reg
+   215: 000130e4    40 FUNC    GLOBAL DEFAULT   10 ccJSON_PrintUnformatted
+   217: 0001679c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_advance_info_hdl_reg
+   218: 0000ac20   580 FUNC    GLOBAL DEFAULT   10 protobuf_c_message_check
+   220: 0001e3e0     0 FUNC    GLOBAL DEFAULT  UND opendir
+   221: 00018598    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_history_list_get_hdl_reg
+   222: 0001e3d0     0 FUNC    GLOBAL DEFAULT  UND memset
+   223: 0001e3c0     0 FUNC    GLOBAL DEFAULT  UND gettimeofday
+   224: 0001e3b0     0 FUNC    GLOBAL DEFAULT  UND strdup
+   225: 000149b8    36 FUNC    GLOBAL DEFAULT   10 cgi_sock_close
+   226: 00010b6c    36 FUNC    GLOBAL DEFAULT   10 ccJSON_GetArrayItem
+   227: 000156b0   252 FUNC    GLOBAL DEFAULT   10 cgi_ucloud_common_send
+   228: 00011964   156 FUNC    GLOBAL DEFAULT   10 ccJSON_AddItemToObject
+   229: 000104c0    12 FUNC    GLOBAL DEFAULT   10 uc__list_del
+   230: 00014d18   224 FUNC    GLOBAL DEFAULT   10 cgi_select_recv
+   231: 000149dc   204 FUNC    GLOBAL DEFAULT   10 _cgi_recv
+   232: 0001e3a0     0 FUNC    GLOBAL DEFAULT  UND listen
+   233: 0001e390     0 FUNC    GLOBAL DEFAULT  UND realloc
+   234: 0001e380     0 FUNC    GLOBAL DEFAULT  UND unlink
+   235: 0001e370     0 FUNC    GLOBAL DEFAULT  UND strncpy
+   236: 000195e4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wl_timer_get_hdl_reg
+   237: 0001e360     0 FUNC    GLOBAL DEFAULT  UND pow
+   238: 00010d0c   112 FUNC    GLOBAL DEFAULT   10 ccJSON_DetachItemFromArray
+   240: 000166c8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_time_zone_hdl_reg
+   241: 0001e350     0 FUNC    GLOBAL DEFAULT  UND strncmp
+   242: 000172b8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_guest_set_hdl_reg
+   243: 0001e340     0 FUNC    GLOBAL DEFAULT  UND read
+   244: 0001e330     0 FUNC    GLOBAL DEFAULT  UND signal
+   246: 0001a748    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_uplimit_hdl_reg
+   247: 0000a528   168 FUNC    GLOBAL DEFAULT   10 _lib_inet_chk_hdl
+   248: 0001a220    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_parent_control_get_type_hdl_reg
+   249: 00019d40    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_get_pwd_sta_hdl_reg
+   251: 00018478    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_macfilter_mode_get_hdl_reg
+   253: 00013afc    32 FUNC    GLOBAL DEFAULT   10 ccJSON_Parse
+   254: 0001e320     0 FUNC    GLOBAL DEFAULT  UND setsockopt
+   255: 0001310c    40 FUNC    GLOBAL DEFAULT   10 ccJSON_Print
+   256: 0001e310     0 FUNC    GLOBAL DEFAULT  UND bind
+   257: 00011180    64 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateArray
+   258: 0001e300     0 FUNC    GLOBAL DEFAULT  UND fprintf
+   259: 0001b9f4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_status_start_hdl_reg
+   260: 00017be4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_basic_set_hdl_reg
+   261: 00015454   264 FUNC    GLOBAL DEFAULT   10 do_cgi_send_and_conn
+   262: 0001e2f0     0 FUNC    GLOBAL DEFAULT  UND write
+   265: 00010db8   204 FUNC    GLOBAL DEFAULT   10 ccJSON_DetachItemFromObject
+   266: 0001e2e0     0 FUNC    GLOBAL DEFAULT  UND strrchr
+   267: 00016280    88 FUNC    GLOBAL DEFAULT   10 active_queue_cb
+   268: 00014140   288 FUNC    GLOBAL DEFAULT   10 ccJSON_PrintArrayToBuffer
+   269: 0001af3c   260 FUNC    GLOBAL DEFAULT   10 uc_api_lib_ol_hosts_get_hdl_reg
+   270: 00010484    28 FUNC    GLOBAL DEFAULT   10 uc_list_add
+   271: 0001e2d0     0 FUNC    GLOBAL DEFAULT  UND accept
+   272: 00017300    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_guest_get_hdl_reg
+   273: 00017b54    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_detect_type_hdl_reg
+   274: 00016ee4   172 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upgrade_dir_set
+   275: 00018310    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_whitelist_flush_hdl_reg
+   276: 00015148   332 FUNC    GLOBAL DEFAULT   10 cgi_connect_ucloud
+   277: 00016710    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_reboot_hdl_reg
+   279: 0001e2c0     0 FUNC    GLOBAL DEFAULT  UND abort
+   280: 0001e2b0     0 FUNC    GLOBAL DEFAULT  UND send
+   281: 00018550    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_history_list_clear_hdl_reg
+   282: 00014f14   168 FUNC    GLOBAL DEFAULT   10 cgi_select_send
+   283: 000185e0    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_rub_net_set_hdl_reg
+   284: 0001c644   260 FUNC    GLOBAL DEFAULT   10 uc_api_lib_usb_supt_reg
+   285: 00018670    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_access_user_hdl_reg
+   286: 0001b9ac    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_device_start_hdl_reg
+   287: 0001b244    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_guard_get_hdl_reg
+   288: 00019d88    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_up_pwd_hdl_reg
+   289: 0001e2a0     0 FUNC    GLOBAL DEFAULT  UND select
+   290: 0001e290     0 FUNC    GLOBAL DEFAULT  UND socket
+   291: 000105e4   204 FUNC    GLOBAL DEFAULT   10 ccJSON_Delete
+   292: 000182c8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_blacklist_add_hdl_reg
+   293: 00014fbc   140 FUNC    GLOBAL DEFAULT   10 do_cgi_send
+   294: 0001950c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_energy_mode_set_hdl_reg
+   295: 00017198    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_power_set_hdl_reg
+   297: 0001e280     0 FUNC    GLOBAL DEFAULT  UND vsnprintf
+   298: 00013dcc   496 FUNC    GLOBAL DEFAULT   10 json2struct
+   299: 0001e270     0 FUNC    GLOBAL DEFAULT  UND sleep
+   301: 00014bd4   324 FUNC    GLOBAL DEFAULT   10 select_timeout
+   302: 00017348    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_basic_set_hdl_reg
+   304: 0001e260     0 FUNC    GLOBAL DEFAULT  UND puts
+   305: 0001a2b0    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_parent_control_get_hdl_reg
+   306: 00018508    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_black_list_get_hdl_reg
+   307: 0001e250     0 FUNC    GLOBAL DEFAULT  UND pthread_cancel
+   308: 0001e240     0 FUNC    GLOBAL DEFAULT  UND memcpy
+   309: 0001962c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_led_set_hdl_reg
+   310: 0001b8d4    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_cloud_info_upload_sys_basic_info_start_hdl_reg
+   311: 000171e0    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wifi_power_get_hdl_reg
+   314: 00016758    68 FUNC    GLOBAL DEFAULT   10 uc_api_lib_sys_reset_hdl_reg
+   315: 0001a268    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_parent_control_set_hdl_reg
+   316: 0001a7d8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_hand_qos_get_genable_hdl_reg
+   318: 0001e230     0 FUNC    GLOBAL DEFAULT  UND floor
+   319: 00019554    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_energy_mode_get_hdl_reg
+   320: 00016d20    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_begin_upgrade_hdl_reg
+   321: 000111c0   132 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateNumber
+   322: 00017b9c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wan_basic_get_hdl_reg
+   323: 00014550    24 FUNC    GLOBAL DEFAULT   10 set_ucloud_errno
+   324: 000139cc   304 FUNC    GLOBAL DEFAULT   10 ccJSON_ParseWithOpts
+   326: 0001e220     0 FUNC    GLOBAL DEFAULT  UND snprintf
+   327: 0001e210     0 FUNC    GLOBAL DEFAULT  UND memmove
+   329: 0001e200     0 FUNC    GLOBAL DEFAULT  UND pthread_attr_init
+   330: 00013b20   292 FUNC    GLOBAL DEFAULT   10 json2str
+   331: 0001e1f0     0 FUNC    GLOBAL DEFAULT  UND strerror
+   332: 0001e1e0     0 FUNC    GLOBAL DEFAULT  UND pthread_create
+   333: 00010420    76 FUNC    GLOBAL DEFAULT   10 _cs_assert
+   334: 0001e1d0     0 FUNC    GLOBAL DEFAULT  UND connect
+   335: 0001e1c0     0 FUNC    GLOBAL DEFAULT  UND recv
+   336: 0001e1b0     0 FUNC    GLOBAL DEFAULT  UND pthread_attr_destroy
+   337: 0001959c    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_wl_timer_set_hdl_reg
+   339: 0001e1a0     0 FUNC    GLOBAL DEFAULT  UND printf
+   340: 00014df8   144 FUNC    GLOBAL DEFAULT   10 do_cgi_data_recv
+   341: 00010c3c    52 FUNC    GLOBAL DEFAULT   10 ccJSON_AddItemToArray
+   342: 00018430    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_macfilter_mode_set_hdl_reg
+   343: 00011738   104 FUNC    GLOBAL DEFAULT   10 ccJSON_CreateString
+   344: 0001c2a8    72 FUNC    GLOBAL DEFAULT   10 uc_api_lib_dev_nickname_set_hdl_reg
+   345: 0001e190     0 FUNC    GLOBAL DEFAULT  UND ioctl
+   348: 0001e180     0 FUNC    GLOBAL DEFAULT  UND strcpy
+===== ENABLE FUNCTION CHECK =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0000a3fc <enable_cloud_get_sys_basic@@Base>:
+    a3fc:	3c1c0003 	lui	gp,0x3
+    a400:	279cfad4 	addiu	gp,gp,-1324
+    a404:	0399e021 	addu	gp,gp,t9
+    a408:	27bdffd8 	addiu	sp,sp,-40
+    a40c:	afbf0024 	sw	ra,36(sp)
+    a410:	afbc0018 	sw	gp,24(sp)
+    a414:	1080001d 	beqz	a0,a48c <enable_cloud_get_sys_basic@@Base+0x90>
+    a418:	8f878024 	lw	a3,-32732(gp)
+    a41c:	afa50014 	sw	a1,20(sp)
+    a420:	8f858024 	lw	a1,-32732(gp)
+    a424:	8f99833c 	lw	t9,-31940(gp)
+    a428:	afa40010 	sw	a0,16(sp)
+    a42c:	24a5f018 	addiu	a1,a1,-4072
+    a430:	24e7f2e0 	addiu	a3,a3,-3360
+    a434:	24040008 	li	a0,8
+    a438:	0320f809 	jalr	t9
+    a43c:	2406001c 	li	a2,28
+    a440:	2403ffff 	li	v1,-1
+    a444:	14430011 	bne	v0,v1,a48c <enable_cloud_get_sys_basic@@Base+0x90>
+    a448:	8fbc0018 	lw	gp,24(sp)
+    a44c:	8f8283ac 	lw	v0,-31828(gp)
+    a450:	8f868024 	lw	a2,-32732(gp)
+    a454:	8f878024 	lw	a3,-32732(gp)
+    a458:	8c440000 	lw	a0,0(v0)
+    a45c:	2402006f 	li	v0,111
+    a460:	afa20010 	sw	v0,16(sp)
+    a464:	8f828024 	lw	v0,-32732(gp)
+    a468:	8f9981c4 	lw	t9,-32316(gp)
+    a46c:	24c60308 	addiu	a2,a2,776
+    a470:	2442f098 	addiu	v0,v0,-3944
+    a474:	afa20014 	sw	v0,20(sp)
+    a478:	24e7022c 	addiu	a3,a3,556
+    a47c:	0320f809 	jalr	t9
+    a480:	24050002 	li	a1,2
+    a484:	10000002 	b	a490 <enable_cloud_get_sys_basic@@Base+0x94>
+    a488:	2402ffff 	li	v0,-1
+    a48c:	00001021 	move	v0,zero
+    a490:	8fbf0024 	lw	ra,36(sp)
+    a494:	03e00008 	jr	ra
+    a498:	27bd0028 	addiu	sp,sp,40

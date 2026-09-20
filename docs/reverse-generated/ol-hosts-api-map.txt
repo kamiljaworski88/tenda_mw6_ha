@@ -1,0 +1,174 @@
+===== RUN 64 GOAL =====
+Map the legacy online-hosts API (M_OL_HOST/CMD_OL_HOSTS_GET): module id, command id, handler, and response schema clues. This is a candidate for live per-client rates because M_MESH_HOSTS returns zero uprate/downrate.
+===== RELEVANT SYMBOLS =====
+    22: 00005ef4   152 FUNC    GLOBAL DEFAULT   10 uc_api_enable_m_ol_host
+   269: 0001af3c   260 FUNC    GLOBAL DEFAULT   10 uc_api_lib_ol_hosts_get_hdl_reg
+===== uc_api_enable_m_ol_host DISASSEMBLY =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00005ef4 <uc_api_enable_m_ol_host@@Base>:
+    5ef4:	3c1c0003 	lui	gp,0x3
+    5ef8:	279c3fdc 	addiu	gp,gp,16348
+    5efc:	0399e021 	addu	gp,gp,t9
+    5f00:	27bdffd8 	addiu	sp,sp,-40
+    5f04:	afbf0024 	sw	ra,36(sp)
+    5f08:	afb00020 	sw	s0,32(sp)
+    5f0c:	afbc0018 	sw	gp,24(sp)
+    5f10:	14800009 	bnez	a0,5f38 <uc_api_enable_m_ol_host@@Base+0x44>
+    5f14:	00808021 	move	s0,a0
+    5f18:	8f848024 	lw	a0,-32732(gp)
+    5f1c:	8f868024 	lw	a2,-32732(gp)
+    5f20:	8f998398 	lw	t9,-31848(gp)
+    5f24:	2484e580 	addiu	a0,a0,-6784
+    5f28:	24c6e72c 	addiu	a2,a2,-6356
+    5f2c:	0320f809 	jalr	t9
+    5f30:	240505bc 	li	a1,1468
+    5f34:	8fbc0018 	lw	gp,24(sp)
+    5f38:	8e020000 	lw	v0,0(s0)
+    5f3c:	1040000d 	beqz	v0,5f74 <uc_api_enable_m_ol_host@@Base+0x80>
+    5f40:	8f858024 	lw	a1,-32732(gp)
+    5f44:	8e030004 	lw	v1,4(s0)
+    5f48:	8f878024 	lw	a3,-32732(gp)
+    5f4c:	8f998298 	lw	t9,-32104(gp)
+    5f50:	afa30014 	sw	v1,20(sp)
+    5f54:	afa20010 	sw	v0,16(sp)
+    5f58:	24a5e8f8 	addiu	a1,a1,-5896
+    5f5c:	24e7e904 	addiu	a3,a3,-5884
+    5f60:	2404000a 	li	a0,10
+    5f64:	0320f809 	jalr	t9
+    5f68:	00003021 	move	a2,zero
+    5f6c:	10400002 	beqz	v0,5f78 <uc_api_enable_m_ol_host@@Base+0x84>
+    5f70:	00001821 	move	v1,zero
+    5f74:	2403ffff 	li	v1,-1
+    5f78:	8fbf0024 	lw	ra,36(sp)
+    5f7c:	8fb00020 	lw	s0,32(sp)
+    5f80:	00601021 	move	v0,v1
+    5f84:	03e00008 	jr	ra
+    5f88:	27bd0028 	addiu	sp,sp,40
+
+00005f8c <uc_api_enable_m_rub_net@@Base>:
+    5f8c:	3c1c0003 	lui	gp,0x3
+    5f90:	279c3f44 	addiu	gp,gp,16196
+    5f94:	0399e021 	addu	gp,gp,t9
+    5f98:	27bdffd0 	addiu	sp,sp,-48
+    5f9c:	afbf002c 	sw	ra,44(sp)
+===== ol_hosts_get HANDLER DISASSEMBLY =====
+
+firmware-src/RootFS-unpacked/lib/libucapi.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0001af3c <uc_api_lib_ol_hosts_get_hdl_reg@@Base>:
+   1af3c:	3c1c0002 	lui	gp,0x2
+   1af40:	279cef94 	addiu	gp,gp,-4204
+   1af44:	0399e021 	addu	gp,gp,t9
+   1af48:	27bdffb8 	addiu	sp,sp,-72
+   1af4c:	afbf0044 	sw	ra,68(sp)
+   1af50:	afb10040 	sw	s1,64(sp)
+   1af54:	afb0003c 	sw	s0,60(sp)
+   1af58:	afbc0020 	sw	gp,32(sp)
+   1af5c:	8fb00058 	lw	s0,88(sp)
+   1af60:	12000023 	beqz	s0,1aff0 <uc_api_lib_ol_hosts_get_hdl_reg@@Base+0xb4>
+   1af64:	00808821 	move	s1,a0
+   1af68:	8f998314 	lw	t9,-31980(gp)
+   1af6c:	afa50028 	sw	a1,40(sp)
+   1af70:	afa6002c 	sw	a2,44(sp)
+   1af74:	afa70030 	sw	a3,48(sp)
+   1af78:	0320f809 	jalr	t9
+   1af7c:	24040008 	li	a0,8
+   1af80:	8fbc0020 	lw	gp,32(sp)
+   1af84:	8fa50028 	lw	a1,40(sp)
+   1af88:	8fa6002c 	lw	a2,44(sp)
+   1af8c:	10400010 	beqz	v0,1afd0 <uc_api_lib_ol_hosts_get_hdl_reg@@Base+0x94>
+   1af90:	8fa70030 	lw	a3,48(sp)
+   1af94:	ac500000 	sw	s0,0(v0)
+   1af98:	8fa3005c 	lw	v1,92(sp)
+   1af9c:	8f998348 	lw	t9,-31928(gp)
+   1afa0:	02202021 	move	a0,s1
+   1afa4:	ac430004 	sw	v1,4(v0)
+   1afa8:	24030001 	li	v1,1
+   1afac:	afa30010 	sw	v1,16(sp)
+   1afb0:	8f838024 	lw	v1,-32732(gp)
+   1afb4:	afa2001c 	sw	v0,28(sp)
+   1afb8:	afa00014 	sw	zero,20(sp)
+   1afbc:	2463ada0 	addiu	v1,v1,-21088
+   1afc0:	0320f809 	jalr	t9
+   1afc4:	afa30018 	sw	v1,24(sp)
+   1afc8:	10000019 	b	1b030 <uc_api_lib_ol_hosts_get_hdl_reg@@Base+0xf4>
+   1afcc:	8fbf0044 	lw	ra,68(sp)
+   1afd0:	8f8283ac 	lw	v0,-31828(gp)
+   1afd4:	8f9981c4 	lw	t9,-32316(gp)
+   1afd8:	8c440000 	lw	a0,0(v0)
+   1afdc:	24020077 	li	v0,119
+   1afe0:	afa20010 	sw	v0,16(sp)
+   1afe4:	8f828024 	lw	v0,-32732(gp)
+   1afe8:	10000008 	b	1b00c <uc_api_lib_ol_hosts_get_hdl_reg@@Base+0xd0>
+   1afec:	2442e624 	addiu	v0,v0,-6620
+   1aff0:	8f8283ac 	lw	v0,-31828(gp)
+   1aff4:	8f9981c4 	lw	t9,-32316(gp)
+   1aff8:	8c440000 	lw	a0,0(v0)
+   1affc:	2402007b 	li	v0,123
+   1b000:	afa20010 	sw	v0,16(sp)
+   1b004:	8f828024 	lw	v0,-32732(gp)
+   1b008:	24421070 	addiu	v0,v0,4208
+   1b00c:	8f868024 	lw	a2,-32732(gp)
+   1b010:	8f878024 	lw	a3,-32732(gp)
+   1b014:	afa20014 	sw	v0,20(sp)
+   1b018:	24c61490 	addiu	a2,a2,5264
+   1b01c:	24e71450 	addiu	a3,a3,5200
+   1b020:	0320f809 	jalr	t9
+   1b024:	24050003 	li	a1,3
+   1b028:	2402ffff 	li	v0,-1
+   1b02c:	8fbf0044 	lw	ra,68(sp)
+   1b030:	8fb10040 	lw	s1,64(sp)
+   1b034:	8fb0003c 	lw	s0,60(sp)
+   1b038:	03e00008 	jr	ra
+   1b03c:	27bd0048 	addiu	sp,sp,72
+   1b040:	3c1c0002 	lui	gp,0x2
+   1b044:	279cee90 	addiu	gp,gp,-4464
+   1b048:	0399e021 	addu	gp,gp,t9
+   1b04c:	27bdffb8 	addiu	sp,sp,-72
+   1b050:	afbf0044 	sw	ra,68(sp)
+   1b054:	afb20040 	sw	s2,64(sp)
+   1b058:	afb1003c 	sw	s1,60(sp)
+   1b05c:	afb00038 	sw	s0,56(sp)
+   1b060:	afbc0020 	sw	gp,32(sp)
+   1b064:	8fb1005c 	lw	s1,92(sp)
+   1b068:	00808021 	move	s0,a0
+   1b06c:	1220004e 	beqz	s1,1b1a8 <uc_api_lib_ol_hosts_get_hdl_reg@@Base+0x26c>
+   1b070:	8fb20058 	lw	s2,88(sp)
+   1b074:	8f998314 	lw	t9,-31980(gp)
+   1b078:	afa50028 	sw	a1,40(sp)
+   1b07c:	afa6002c 	sw	a2,44(sp)
+===== COMMAND STRINGS =====
+  1e8c0 CMD_HAND_QOS_SET_GENABLE
+  1e8dc CMD_HAND_QOS_MAX_UPLIMIT
+  1e8f8 M_OL_HOSTS
+  1e904 CMD_OL_HOSTS_GET
+  1e918 M_RUB_NET
+  1e924 CMD_RUB_NET_ACCESS_USER_OPERATE
+  1e944 CMD_RUB_NET_STATUS_GET
+===== LIBPB ONLINE-HOST / RATE SCHEMA CLUES =====
+   53d4 host_lists__init
+   53e5 host_lists__get_packed_size
+   5401 host_lists__descriptor
+   5418 host_lists__pack
+   5429 host_lists__pack_to_buffer
+   5444 host_lists__unpack
+   5457 host_lists__free_unpacked
+  27e34 message->base.descriptor == &host_lists__descriptor
+  27f18 uprate
+  27f20 downrate
+  27fac hostLists
+  27fb8 HostLists
+  28118 host_lists__free_unpacked
+  28134 host_lists__pack_to_buffer
+  28150 host_lists__pack
+  28164 host_lists__get_packed_size
+  2a6b8 uprate
+  2a6c0 downrate

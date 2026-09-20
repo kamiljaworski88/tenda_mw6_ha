@@ -1,0 +1,714 @@
+===== RUN 183: WAN diagnostic command surface =====
+
+===== command/symbol inventory =====
+    40: 00444598  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_traffic_info
+    76: 00442660   116 FUNC    GLOBAL DEFAULT   12 router_wan_port_diag_errcode
+    88: 004439f0  1284 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_status
+   164: 00444ab4   152 FUNC    GLOBAL DEFAULT   12 confctl_wan_traffic_info_init
+   173: 004403fc  1528 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_detect
+   260: 004424d0   400 FUNC    GLOBAL DEFAULT   12 wan_pppoe_diag_errcode
+   281: 0044407c  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_diag
+   395: 00465b60     0 FUNC    GLOBAL DEFAULT  UND wan_port_status__init
+   432: 00465970     0 FUNC    GLOBAL DEFAULT  UND system_wan_get_link_status
+   441: 00465900     0 FUNC    GLOBAL DEFAULT  UND wan_status__get_packed_size
+   460: 004657e0     0 FUNC    GLOBAL DEFAULT  UND wan_status__pack
+   488: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_status__descriptor
+   496: 004655d0     0 FUNC    GLOBAL DEFAULT  UND wan_diag__init
+   509: 00000000     0 OBJECT  GLOBAL DEFAULT  UND n_wan_diag__descriptor
+   512: 004654f0     0 FUNC    GLOBAL DEFAULT  UND n_wan_diag__get_packed_size
+   549: 004652e0     0 FUNC    GLOBAL DEFAULT  UND n_wan_diag__pack
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+
+===== confsrv string provenance =====
+   45ce ucloud_set_node_location
+   45e7 confctl_report_log
+   45fa confctl_log_report_init
+   4612 get_login_method
+   4623 do_login_check
+   4632 get_sys_basic
+   4640 confctl_get_master_wlan
+   4658 confctl_set_master_wlan
+   4670 confctl_get_guest_wlan
+   4687 confctl_set_guest_wlan
+   469e confctl_get_wan_detect
+   46b5 confctl_get_wan_status
+   46cc confctl_get_wan_diag
+   46e1 confctl_set_wan_cfg
+   46f5 confctl_get_wan_cfg
+   4709 confctl_is_wan_line_up
+   4720 confctl_get_wan_traffic_info
+   473d confctl_wan_traffic_info_init
+   475b confctl_new_node_report_handle
+   477a new_node_init
+   4788 confctl_add_node_results_handle
+   47a8 add_results_timeout_check
+   47c2 ucloud_get_add_node_results
+   47de confctl_get_is_suilt
+   47f3 confctl_set_sys_timezone
+   480c confctl_set_sys_time
+   4821 confctl_set_app_language
+   483a confctl_set_fast_done
+   4850 ucloud_get_upnp
+   4860 ucloud_set_upnp
+   4870 conf_get_mf_cfg
+   4880 conf_set_mf_cfg
+   4890 conf_get_port_fwd_cfg
+   48a6 conf_set_port_fwd_cfg
+   48bc ucloud_get_sched_reboot_cfg
+   48d8 ucloud_set_sched_reboot_cfg
+   48f4 confctl_set_allconfig
+--
+   58ba usleep
+   58c1 is_the_node_not_in_table
+   58da save_mesh_node_group_conf
+   58f4 save_this_node_led_conf
+   590c update_group_node_info_to_map
+   592a hal_get_mac
+   5936 ether_ntoa_r
+   5943 inet_ntoa
+   594d ntohl
+   5953 uc_api_m_cloud_info_send_dev_device
+   5977 host_info__init
+   5987 netlink_get_statistic_info
+   59a2 g_ip_info
+   59ac __floatundisf
+   59ba __divsf3
+   59c3 __lesf2
+   59cb __extendsfdf2
+   59d9 inet_addr
+   59e3 __fixunssfdi
+   59f0 devic_marks__init
+   5a02 host_lists__descriptor
+   5a19 host_lists__get_packed_size
+   5a35 host_lists__pack
+   5a46 device_mark_list__descriptor
+   5a63 device_mark_list__get_packed_size
+   5a85 device_mark_list__pack
+   5a9c uc_api_m_cloud_info_send_dev_mark_list_u
+   5ac5 get_cloud_remark_hash_table
+   5ae1 update_all_client_remark_to_local
+   5b03 strtoul
+   5b0b mac_add
+   5b13 device_assistant__descriptor
+   5b30 device_assistant__unpack
+   5b49 device_assistant__free_unpacked
+   5b69 device_assistant__get_packed_size
+   5b8b device_assistant__pack
+   5ba2 del_colon_macaddr_srv
+--
+   5e40 getWanConnType
+   5e4f contype_sys_to_app
+   5e62 wan_conn_type__descriptor
+   5e7c hal_get_port_link_status
+   5e95 get_wan_internet_result
+   5ead wan_conn_type__get_packed_size
+   5ecc wan_conn_type__pack
+   5ee0 file_get_value_from_ini
+   5ef8 get_sys_mode
+   5f05 system_wan_get_link_status
+   5f20 file_wan_ip_info_get
+   5f35 wan_port_status__init
+   5f4b wan_pppoe_diag_errcode
+   5f62 router_wan_port_diag_errcode
+   5f7f wan_diag__init
+   5f8e wan_port_rate__init
+   5fa2 get_wan_statistics
+   5fb5 wan_status__descriptor
+   5fcc wan_status__get_packed_size
+   5fe8 wan_status__pack
+   5ff9 n_wan_diag__descriptor
+   6010 n_wan_diag__get_packed_size
+   602c n_wan_diag__pack
+   603d wan_rate__descriptor
+   6052 wan_rate__get_packed_size
+   606c wan_rate__pack
+   607b wan_port_power__descriptor
+   6096 wan_port_power__get_packed_size
+   60b6 wan_port_power__pack
+   60cb wan_cfg__descriptor
+   60df print_wan_cfg
+   60ed wan_cfg__get_packed_size
+   6106 wan_cfg__pack
+   6114 wan_cfg__unpack
+   6124 sched_reboot_mode_change_handle
+   6144 set_wan_connect_type
+   6159 set_wan_dhcp
+   6166 set_wan_static
+   6175 set_wan_pppoe
+   6183 set_wan_russia_pppoe
+   6198 set_wan_russia_pptp
+   61ac set_wan_russia_l2tp
+   61c0 set_wan_dns
+   61cc set_wan_ipnetcfg
+   61dd wan_cfg__free_unpacked
+   61f4 opendir
+   61fc readdir
+--
+  6737c ap_common_so
+  673e0 prod_common_so
+  674a4 ../confctl_extern.c
+  674b8      malloc failed      
+  674d4 [%s][%d][luminais] invalid param.
+  674f8 /var/mib.mem
+  67508 assist.dev.stime
+  6751c assist.dev.ltime
+  67530 assist.dev.mac
+  67540 echo "%s %d" > %s
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+  67654 client remark list recorded on cloud
+  6767c device list status
+  67690 all device list status uploaded by device_list
+  676c0 SetHostMarks
+  676d0 app set client remark
+  676e8 update grp map
+  676f8 update group config and node opt to MAP
+  67720 SetSysTimeZone
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  677b8 SetWanCfg
+  677c4 send_all_node_status_list
+  677e0 upload all node status to cloud
+  67800 GetWanDiag
+  6780c get wan diag status and error code
+  67830 print client list get online ip info(app)
+  6785c print client lists status(app)
+  6787c upload_status_start
+  67890 upload client and node status start cmd
+  678b8 /var/confctl_debug
+  678d5 module_id	%-32s		%-32s
+  678f0 module_name
+  678fc description
+  6790c 		%-32s
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67a8c GetNodeStatus
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+  67b90 GetTrafficInfo
+  67ba0 NewNodeReport
+  67bb0 NewNodeAddResults
+  67bc4 QuerryNodeRslt
+  67bd4 GetIsSuilt
+  67be0 SetSysTimeZone
+  67bf0 SetSysTime
+  67bfc SetLang
+  67c04 SetGuideDone
+  67c14 GetUPnPCfg
+  67c20 SetUPnPCfg
+  67c2c GetMacfilter
+  67c3c SetMacfilter
+  67c4c GetPortFwdCfg
+  67c5c SetPortFwdCfg
+  67c6c GetAutoMaintainCfg
+  67c80 SetAutoMaintainCfg
+  67c94 SetAllConfig
+  67ca4 GetUcloudImage
+  67cb4 GetCloudEn
+  67cc0 SetCloudEn
+--
+  725d5 [1;32m[%s][%d] : 
+  725eb [1;35mgoto offline
+  72604 malloc device_client_info failed : (%d)%m
+  72630 [%s][%d][luminais] alloc_roam_client_info failed.
+  72664 [%s][%d][luminais] not find any roam client info
+  72698 [%s][%d][luminais] malloc failed, (%d)%m
+  726c4 rsp_client_hostname
+  726d8 device_list@%s
+  726e8 [%s][%d][luminais] map_key = %s
+  7270c [%s][%d][luminais] strdup failed
+  72731 [1;32m[%s][%d] : 
+  72747 [1;35mnow - last_time < 500000
+  7276c [%s][%d][luminais] NULL == g_ip_info
+  72795 [1;32m[%s][%d] : 
+  727ab [1;35mnow : %llu, last_time : %llu, time_interval : %f
+  727e8 [%s][%d][luminais] ifaddrs_ethaddr_aton %s failed.
+  7281d [1;32m[%s][%d] : 
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+  728dc update_client_remark
+  728f4 confctl_cli_key
+  72905 [1;32m[%s][%d] : 
+  7291b [1;35msend client remark to map
+  72941 [1;32m[%s][%d] : 
+  72957 [1;35mprint cloud remark table
+  7297d [1;32m[%s][%d] : 
+  72993 [1;35mprint local remark table
+  729b9 [1;32m[%s][%d] : 
+  729cf [1;35mtimestamp : [cloud %llu], [local %llu]
+  72a05 [1;32m[%s][%d] : 
+  72a1b [1;35mis_update_to_cloud = %d
+  72a41 [1;32m[%s][%d] : 
+  72a57 [1;35mprint last remark table
+  72a7d [1;32m[%s][%d] : 
+  72a93 [1;35mprint upload remark table
+--
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+  735ec /var/mw_socket
+  73630 network_check
+  73650 /var/network_ck_socket
+  73694 cfmc
+--
+  74f01 [1;32m[%s][%d] : 
+  74f17 [1;35m<%d> up_rate = %d, down_rate = %d
+  74f45 [1;32m[%s][%d] : 
+  74f5b [1;35mwan_id = %d, link_status = %d
+  74f85 [1;32m[%s][%d] : 
+  74f9b [1;35mtotal_up = %d, total_up_last = %d
+  74fc9 [1;32m[%s][%d] : 
+  74fdf [1;35mtotal_down = %d, total_down_last = %d
+  75010 sys.model
+  75020 wans.flag
+  7502c sys.workmode
+  7503c router
+  75048 [%s][%d][luminais] n_diags = %d
+  7506c [%s][%d][luminais] <%d> : 
+  75088 	idx : %d
+  75094 	status : %d
+  750a4 	errcode : %d
+  750b4 sys.cfg.stamp
+  750c4 wan1.connecttype
+  750d8 op=%d,wan_id=%d
+  750e8 [%s][%d][luminais] wan_cfg__unpack failed.
+  75114 [%s][%d][luminais] not find the portcfg of wan %d
+  75148 [%s][%d][luminais] Set wan%d dhcp OK!
+  75170 [%s][%d][luminais] Set wan%d static OK!
+  7519c [%s][%d][luminais] Set wan%d PPPoE OK!
+  751c4 [%s][%d][luminais] Set wan%d PPTP OK!
+  751ec [%s][%d][luminais] Set wan%d L2TP OK!
+  75214 [%s][%d]wandnscfg is null!
+  75230 [%s][%d][luminais] wan %d config change
+  7525c /var/network_check_rst
+  75274 op=%d
+  7527c [%s][%d][luminais] dns is changed
+  752a0 %llu
+  752a8 confctl_set_wan_cfg
+  752bc confctl_get_wan_cfg
+  752d0 confctl_is_wan_line_up
+  752e8 confctl_get_wan_traffic_info
+  75308 confctl_get_wan_diag
+  75320 print_wan_diag
+  75330 confctl_get_wan_status
+  75348 fill_router_wan_rate
+  75360 get_router_wan_rate
+  75374 wan_traffic_info_renew
+  7538c fill_bridge_wan_rate
+  753a4 fill_router_wan_diag
+  753bc fill_bridge_wan_diag
+  753d4 fill_wan_port_diag_by_mode
+  753f0 fill_router_wan_port_diag
+  7540c fill_bridge_wan_port_diag
+  75428 fill_router_wan_status
+  75440 fill_bridge_wan_status
+  75458 fill_wan_port_status_by_mode
+  75478 fill_router_wan_port_status
+  75494 fill_wan_port_manual_dns
+  754b0 fill_bridge_wan_port_status
+  754cc fill_lan_port_status
+  754e4 file_lan_ip_info_get
+  754fc fill_wan_port_status
+  75514 fill_wan_port_status_default
+  75534 confctl_get_wan_detect
+  7554c get_wan_detect_type
+  75560 fill_bridge_wan_params
+  75578 fill_router_wan_params
+  75590 fill_wan_port_all_cfg
+  755a8 fill_wan_port_russia_l2tp_cfg
+  755c8 fill_wan_port_russia_pptp_cfg
+  755e8 fill_wan_port_russia_pppoe_cfg
+  75608 fill_wan_port_pppoe_cfg
+  75620 fill_wan_port_static_cfg
+  7563c fill_wan_port_dhcp_cfg
+  75654 fill_wan_port_static_dns_cfg
+  75674 fill_wan_port_ipnetcfg_cfg
+  75690 fill_wan_port_dns_cfg
+
+===== WAN command descriptor and handler neighborhood =====
+
+===== device_list references to online-ip/diagnostic paths =====
+    e60 memcpy
+    e67 inet_ntoa
+    e71 __errno_location
+    e82 memset
+    e89 memcmp
+    e90 recvmsg
+    e98 system_get_uptime
+    eaa strncmp
+    eb2 timer_start
+    ebe log_debug_print
+    ece timer_stop
+    ed9 signal
+    ee0 cm_poll_stop
+    eed free
+    ef2 ugw_socket_shut_down
+    f07 puts
+    f0c ugw_read_ie_type
+    f1d ugw_read_ie_len
+    f2d ugw_read_ie_value
+    f3f strncpy
+    f47 cmd_pub
+    f4f ugw_proc_recv_msg
+    f61 timer_check_ok_and_wait
+    f79 ugw_accept_client
+    f8b perror
+    f92 cm_poll_start
+    fa0 strcmp
+    fa7 cm_init
+    faf redis_option_new
+    fc0 cmd_init
+    fc9 sprintf
+    fd1 cmd_sub
+    fd9 init_unix_socket_server
+    ff1 netlink_usr_socket_init
+   1009 cm_run
+   1010 unlink
+   1017 netlink_sock_deinit
+   102b apmib_init
+   1036 monitor_program_register_associ_proc
+--
+   1159 del_from_client_hs_list
+   1171 free_client_hs_list
+   1185 free_lan_ifname_list
+   119a print_lan_ifnames_list
+   11b1 check_in_wifi_client_lists
+   11cc g_node_sn
+   11d6 init_conn_type_list_hdr
+   11ee do_client_timeout_check
+   1206 do_upload_client_list
+   121c lan_ifnames_change_handle
+   1236 del_client_belong_ifname
+   124f dhcp_nl_event_handle
+   1264 init_lan_ifnames
+   1275 init_client_hs_list
+   1289 init_device_node_sn
+   129d strlen
+   12a4 fopen
+   12aa strchr
+   12b1 strtok_r
+   12ba fclose
+   12c1 fgets
+   12c7 g_lan_ifnames_list
+   12da sscanf
+   12e1 inet_addr
+   12eb get_eth_name
+--
+   bbd2 B$! @
+   bca3 $!8@
+   bcfa B$! `
+   c00e B$! @
+   c0c3 $!8@
+   c11a B$! `
+   c7b8 monitor
+   c7d8 /var/pm_socket
+   c81c timer
+   c83c /var/tm_socket
+   c880 cfms
+   c8a0 /var/cfm_socket
+   c8e4 logserver
+   c904 /var/plog_socket
+   c948 netctrl
+   c968 /var/nt_socket
+   c9ac multiWAN
+   c9cc /var/mw_socket
+   ca10 network_check
+   ca30 /var/network_ck_socket
+   ca74 cfmc
+   ca94 /var/cfmc_socket
+   cad8 dhcpc
+   caf8 /var/dhcpc
+   cb3c httpd
+--
+   d2d8 [%s][%d][luminais] alloc_device_client_info failed.
+   d310 NOVA
+   d31c [%s][%d][luminais] convert_dhcp_info_to_client_list failed.
+   d35d [1;32m[%s][%d] : 
+   d373 [1;35mneed_upload = %d
+   d390  list %d : 
+   d3a0 g_client_hs_list_num = %d
+   d3bc device_list
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d4b4 func:%s, line:%d, fd queue is null.
+   d4dc msg is null.
+   d4ec [%s][%d][luminais] malloc failed, (%d)%m
+   d518 rqst_client_hostname
+   d530 confctl_srv_key
+   d540 function entry!
+   d550 timer process is exit.
+   d568 timer process is restart ok.
+   d589 [1;32m[%s][%d] : 
+   d59f [1;35mdo_client_timeout_check
+   d5c5 [1;32m[%s][%d] : 
+   d5db [1;35mdo_upload_client_list
+   d5fc network check recv error msg.
+   d61d [1;32m[%s][%d] : 
+   d633 [1;35m %d : %s
+   d648 [%s][%d][luminais] unknow ie_type.
+   d66c function exit!
+   d67c accept
+   d684 socket:malloc
+   d694 cm_new failed.
+   d6a4 [%s][%d][luminais] nl_recvmsg failed.
+   d6cc [%s][%d][luminais] print_dhcp_info : 
+   d6f4 [%s][%d][luminais] cmd : %s
+   d714 rsp_client_hostname
+   d728 device_list@%s
+   d738 /var/device_list_socket
+   d750 init_unix_socket_server failed.
+   d770 malloc failed : (%d)%m
+   d788 create portal netlink socket is error.
+   d7b0 Initialize AP MIB failed !
+   d7cc [%s][%d][luminais] init_lan_ifnames failed.
+   d7fc [%s][%d][luminais] timer not up.
+   d820 timer
+   d828 main
+   d830 device_list_main_loop
+   d848 device_list_cmd_sub
+   d85c dhcp_nl_event_handle
+   d874 unix_accept_event_handle
+   d890 unix_read_event_handle
+   d8a8 unix_read_event_handle
+   d8c0 request_client_hostname
+   d8d8 update_to_roam_list
+   d8ec del_from_roam_list
+   d900 add_to_roam_list
+   d914 find_in_roam_list
+   d928 unix_cm_poll_socket_exit
+   d944 stop_device_list_timer
+   d95c start_device_list_timer
+   d974 deal_new_dhcp_info
+   d988 upload_nova_client_node
+   d9a0 convert_dhcp_info_to_client_list
+   d9c4 get_each_conn_type_list_hdr
+   d9e0 find_in_conn_type_list
+   d9f8 print_dhcp_info
+   da08 nl_recvmsg
+   da14 update_new_mac_list
+   da28 find_in_client_mac_list
+   da40 std_print_control
+   da54 device_list_debug_switch
+   dad8 monitor
+   daf8 /var/pm_socket
+   db3c timer
+   db5c /var/tm_socket
+   dba0 cfms
+   dbc0 /var/cfm_socket
+   dc04 logserver
+   dc24 /var/plog_socket
+   dc68 netctrl
+   dc88 /var/nt_socket
+   dccc multiWAN
+   dcec /var/mw_socket
+   dd30 network_check
+   dd50 /var/network_ck_socket
+   dd94 cfmc
+   ddb4 /var/cfmc_socket
+   ddf8 dhcpc
+   de18 /var/dhcpc
+   de5c httpd
+--
+   e42c init_lan_ifnames
+   e440 free_lan_ifname_list
+   e458 lan_ifnames_change_handle
+   e474 find_ifname_in_lan_ifnames
+   e490 convert_conn_type_from_ifname
+   e4b0 convert_conn_type_from_str
+   e538 monitor
+   e558 /var/pm_socket
+   e59c timer
+   e5bc /var/tm_socket
+   e600 cfms
+   e620 /var/cfm_socket
+   e664 logserver
+   e684 /var/plog_socket
+   e6c8 netctrl
+   e6e8 /var/nt_socket
+   e72c multiWAN
+   e74c /var/mw_socket
+   e790 network_check
+   e7b0 /var/network_ck_socket
+   e7f4 cfmc
+   e814 /var/cfmc_socket
+   e858 dhcpc
+   e878 /var/dhcpc
+   e8bc httpd
+--
+   ed58 malloc device_client_info failed : (%d)%m
+   ed84 [%s][%d][luminais] invalid param
+   eda8 del_client_belong_ifname
+   edc4 free_client_hs_list
+   edd8 add_to_client_hs_list
+   edf0 find_in_client_hs_list
+   ee78 monitor
+   ee98 /var/pm_socket
+   eedc timer
+   eefc /var/tm_socket
+   ef40 cfms
+   ef60 /var/cfm_socket
+   efa4 logserver
+   efc4 /var/plog_socket
+   f008 netctrl
+   f028 /var/nt_socket
+   f06c multiWAN
+   f08c /var/mw_socket
+   f0d0 network_check
+   f0f0 /var/network_ck_socket
+   f134 cfmc
+   f154 /var/cfmc_socket
+   f198 dhcpc
+   f1b8 /var/dhcpc
+   f1fc httpd
+--
+   fa44 switch_port_to_ifname
+   fa5c update_wire_client_from_sw_list
+   fa7c del_wire_client_not_in_sw_l2_list
+   faa0 find_if_arp_in_arp_list_by_mac
+   fac0 find_in_sw_l2_list
+   fad4 get_proc_arp_list
+   fb58 monitor
+   fb78 /var/pm_socket
+   fbbc timer
+   fbdc /var/tm_socket
+   fc20 cfms
+   fc40 /var/cfm_socket
+   fc84 logserver
+   fca4 /var/plog_socket
+   fce8 netctrl
+   fd08 /var/nt_socket
+   fd4c multiWAN
+   fd6c /var/mw_socket
+   fdb0 network_check
+   fdd0 /var/network_ck_socket
+   fe14 cfmc
+   fe34 /var/cfmc_socket
+   fe78 dhcpc
+   fe98 /var/dhcpc
+   fedc httpd
+--
+  10324 TD_ATE_SN
+  10330 [%s][%d][luminais] invalid param.
+  10369 [1;32m[%s][%d] : 
+  1037f [1;35mno client
+  10394 [%s][%d][luminais] malloc failed, (%d)%m
+  103c0 device_list_upload
+  103d4 confctl_srv_key
+  103e4 do_upload_one_client
+  103fc do_upload_client_list
+  10414 deal_rssi_of_client
+  10428 get_device_client_rssi
+  1066c GCC: (GNU) 3.3.2
+  1067d GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  11479 .shstrtab
+  11483 .interp
+  1148b .reginfo
+  11494 .dynamic
+  1149d .hash
+  114a3 .dynsym
+  114ab .dynstr
+  114b3 .gnu.version
+  114c0 .gnu.version_r
+  114cf .rel.plt
+  114d8 .init
+  114de .text

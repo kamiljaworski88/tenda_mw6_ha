@@ -1,0 +1,483 @@
+===== RUN 168: timer ID 3/4 branch calls =====
+
+===== GOT OFFSETS OF INTEREST =====
+  004204d4 -32716(gp) 004207d0
+  004204e0 -32704(gp) 00420690
+  004204ec -32692(gp) 00420790
+  00420514 -32652(gp) 00402c4c
+  00420518 -32648(gp) 0040afcc
+  0042051c -32644(gp) 0040bb84
+  00420520 -32640(gp) 004067a4
+  00420524 -32636(gp) 00407ff4
+
+===== DYNAMIC SYMBOLS =====
+     7: 00407cd4   284 FUNC    GLOBAL DEFAULT   12 add_to_client_hs_list
+    10: 00407df0   160 FUNC    GLOBAL DEFAULT   12 del_from_client_hs_list
+    12: 004023f4   248 FUNC    GLOBAL DEFAULT   12 alloc_client_mac
+    13: 004046d8   324 FUNC    GLOBAL DEFAULT   12 del_roam_not_in_wifi_client_lists
+    18: 0040983c   464 FUNC    GLOBAL DEFAULT   12 check_in_wifi_client_lists
+    19: 0040bb84  1104 FUNC    GLOBAL DEFAULT   12 do_upload_client_list
+    21: 0040afcc   740 FUNC    GLOBAL DEFAULT   12 do_client_timeout_check
+    24: 004079a8   164 FUNC    GLOBAL DEFAULT   12 init_client_hs_list
+    25: 004024ec   308 FUNC    GLOBAL DEFAULT   12 find_in_client_mac_list
+    26: 00420790     4 OBJECT  GLOBAL DEFAULT   25 g_client_hs_list_num
+    29: 00407ff4   452 FUNC    GLOBAL DEFAULT   12 del_client_belong_ifname
+    30: 00407e90   356 FUNC    GLOBAL DEFAULT   12 free_client_hs_list
+    31: 0040a010   776 FUNC    GLOBAL DEFAULT   12 get_all_wireless_client
+    36: 00420690   256 OBJECT  GLOBAL DEFAULT   25 g_client_hs_list
+    38: 00409a0c   532 FUNC    GLOBAL DEFAULT   12 print_wifi_client_lists
+    40: 00407a4c   396 FUNC    GLOBAL DEFAULT   12 find_in_client_hs_list
+    47: 00409c20  1008 FUNC    GLOBAL DEFAULT   12 print_all_wifi_client_lists
+    48: 0040bfd4   748 FUNC    GLOBAL DEFAULT   12 do_upload_one_client
+    50: 00407bd8   252 FUNC    GLOBAL DEFAULT   12 alloc_device_client_info
+    64: 0040c630     0 FUNC    GLOBAL DEFAULT  UND wifi_get_vap_client_lists
+    66: 0040c610     0 FUNC    GLOBAL DEFAULT  UND ugw_accept_client
+
+===== LOCAL HELPERS 0x404780..0x404b80 =====
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00404780 <del_roam_not_in_wifi_client_lists@@Base+0xa8>:
+  404780:	8fc3002c 	lw	v1,44(s8)
+  404784:	24020005 	li	v0,5
+  404788:	1462000a 	bne	v1,v0,4047b4 <del_roam_not_in_wifi_client_lists@@Base+0xdc>
+  40478c:	00000000 	nop
+  404790:	8fc40024 	lw	a0,36(s8)
+  404794:	8f828030 	lw	v0,-32720(gp)
+  404798:	24450798 	addiu	a1,v0,1944
+  40479c:	8f828024 	lw	v0,-32732(gp)
+  4047a0:	24424488 	addiu	v0,v0,17544
+  4047a4:	0040c821 	move	t9,v0
+  4047a8:	0320f809 	jalr	t9
+  4047ac:	00000000 	nop
+  4047b0:	8fdc0018 	lw	gp,24(s8)
+  4047b4:	8fc20028 	lw	v0,40(s8)
+  4047b8:	8c420000 	lw	v0,0(v0)
+  4047bc:	afc20028 	sw	v0,40(s8)
+  4047c0:	8fc20028 	lw	v0,40(s8)
+  4047c4:	8c420000 	lw	v0,0(v0)
+  4047c8:	00402021 	move	a0,v0
+  4047cc:	8f828024 	lw	v0,-32732(gp)
+  4047d0:	244217d0 	addiu	v0,v0,6096
+  4047d4:	0040c821 	move	t9,v0
+  4047d8:	0320f809 	jalr	t9
+  4047dc:	00000000 	nop
+  4047e0:	8fdc0018 	lw	gp,24(s8)
+  4047e4:	8fc30028 	lw	v1,40(s8)
+  4047e8:	8f828030 	lw	v0,-32720(gp)
+  4047ec:	24420470 	addiu	v0,v0,1136
+  4047f0:	1462ffd0 	bne	v1,v0,404734 <del_roam_not_in_wifi_client_lists@@Base+0x5c>
+  4047f4:	00000000 	nop
+  4047f8:	10000002 	b	404804 <del_roam_not_in_wifi_client_lists@@Base+0x12c>
+  4047fc:	00000000 	nop
+  404800:	00000000 	nop
+  404804:	03c0e821 	move	sp,s8
+  404808:	8fbf0034 	lw	ra,52(sp)
+  40480c:	8fbe0030 	lw	s8,48(sp)
+  404810:	27bd0038 	addiu	sp,sp,56
+  404814:	03e00008 	jr	ra
+  404818:	00000000 	nop
+  40481c:	3c1c0002 	lui	gp,0x2
+  404820:	279c3c84 	addiu	gp,gp,15492
+  404824:	0399e021 	addu	gp,gp,t9
+  404828:	27bdffb0 	addiu	sp,sp,-80
+  40482c:	afbf004c 	sw	ra,76(sp)
+  404830:	afbe0048 	sw	s8,72(sp)
+  404834:	afb00044 	sw	s0,68(sp)
+  404838:	03a0f021 	move	s8,sp
+  40483c:	afbc0010 	sw	gp,16(sp)
+  404840:	8f828034 	lw	v0,-32716(gp)
+  404844:	8c420000 	lw	v0,0(v0)
+  404848:	18400095 	blez	v0,404aa0 <del_roam_not_in_wifi_client_lists@@Base+0x3c8>
+  40484c:	00000000 	nop
+  404850:	afc00038 	sw	zero,56(s8)
+  404854:	afc00034 	sw	zero,52(s8)
+  404858:	afc00030 	sw	zero,48(s8)
+  40485c:	afc00028 	sw	zero,40(s8)
+  404860:	afc0001c 	sw	zero,28(s8)
+  404864:	8f828034 	lw	v0,-32716(gp)
+  404868:	8c420000 	lw	v0,0(v0)
+  40486c:	24420002 	addiu	v0,v0,2
+  404870:	00021100 	sll	v0,v0,0x4
+  404874:	24420024 	addiu	v0,v0,36
+  404878:	afc20020 	sw	v0,32(s8)
+  40487c:	8fc20020 	lw	v0,32(s8)
+  404880:	00402021 	move	a0,v0
+  404884:	8f82817c 	lw	v0,-32388(gp)
+  404888:	0040c821 	move	t9,v0
+  40488c:	0320f809 	jalr	t9
+  404890:	00000000 	nop
+  404894:	8fdc0010 	lw	gp,16(s8)
+  404898:	afc20028 	sw	v0,40(s8)
+  40489c:	8fc20028 	lw	v0,40(s8)
+  4048a0:	14400015 	bnez	v0,4048f8 <del_roam_not_in_wifi_client_lists@@Base+0x220>
+  4048a4:	00000000 	nop
+  4048a8:	8f828028 	lw	v0,-32728(gp)
+  4048ac:	2450d4ec 	addiu	s0,v0,-11028
+  4048b0:	8f828110 	lw	v0,-32496(gp)
+  4048b4:	0040c821 	move	t9,v0
+  4048b8:	0320f809 	jalr	t9
+  4048bc:	00000000 	nop
+  4048c0:	8fdc0010 	lw	gp,16(s8)
+  4048c4:	8c420000 	lw	v0,0(v0)
+  4048c8:	02002021 	move	a0,s0
+  4048cc:	8f838028 	lw	v1,-32728(gp)
+  4048d0:	2465d8c0 	addiu	a1,v1,-10048
+  4048d4:	24060461 	li	a2,1121
+  4048d8:	00403821 	move	a3,v0
+  4048dc:	8f828150 	lw	v0,-32432(gp)
+  4048e0:	0040c821 	move	t9,v0
+  4048e4:	0320f809 	jalr	t9
+  4048e8:	00000000 	nop
+  4048ec:	8fdc0010 	lw	gp,16(s8)
+  4048f0:	1000006c 	b	404aa4 <del_roam_not_in_wifi_client_lists@@Base+0x3cc>
+  4048f4:	00000000 	nop
+  4048f8:	8fc20020 	lw	v0,32(s8)
+  4048fc:	8fc40028 	lw	a0,40(s8)
+  404900:	00002821 	move	a1,zero
+  404904:	00403021 	move	a2,v0
+  404908:	8f828188 	lw	v0,-32376(gp)
+  40490c:	0040c821 	move	t9,v0
+  404910:	0320f809 	jalr	t9
+  404914:	00000000 	nop
+  404918:	8fdc0010 	lw	gp,16(s8)
+  40491c:	8fc20028 	lw	v0,40(s8)
+  404920:	afc2002c 	sw	v0,44(s8)
+  404924:	8fc3002c 	lw	v1,44(s8)
+  404928:	8f828028 	lw	v0,-32728(gp)
+  40492c:	2442d518 	addiu	v0,v0,-10984
+  404930:	00602021 	move	a0,v1
+  404934:	00402821 	move	a1,v0
+  404938:	24060020 	li	a2,32
+  40493c:	8f828148 	lw	v0,-32440(gp)
+  404940:	0040c821 	move	t9,v0
+  404944:	0320f809 	jalr	t9
+  404948:	00000000 	nop
+  40494c:	8fdc0010 	lw	gp,16(s8)
+  404950:	8fc2002c 	lw	v0,44(s8)
+  404954:	24420024 	addiu	v0,v0,36
+  404958:	afc20024 	sw	v0,36(s8)
+  40495c:	8fc40024 	lw	a0,36(s8)
+  404960:	8f858070 	lw	a1,-32656(gp)
+  404964:	24060020 	li	a2,32
+  404968:	8f8280cc 	lw	v0,-32564(gp)
+  40496c:	0040c821 	move	t9,v0
+  404970:	0320f809 	jalr	t9
+  404974:	00000000 	nop
+  404978:	8fdc0010 	lw	gp,16(s8)
+  40497c:	8fc20024 	lw	v0,36(s8)
+  404980:	24420020 	addiu	v0,v0,32
+  404984:	afc20024 	sw	v0,36(s8)
+  404988:	8fc20024 	lw	v0,36(s8)
+  40498c:	afc20030 	sw	v0,48(s8)
+  404990:	8f828034 	lw	v0,-32716(gp)
+  404994:	8c420004 	lw	v0,4(v0)
+  404998:	afc20038 	sw	v0,56(s8)
+  40499c:	10000018 	b	404a00 <del_roam_not_in_wifi_client_lists@@Base+0x328>
+  4049a0:	00000000 	nop
+  4049a4:	8fc20038 	lw	v0,56(s8)
+  4049a8:	afc20018 	sw	v0,24(s8)
+  4049ac:	8fc20018 	lw	v0,24(s8)
+  4049b0:	2442fff8 	addiu	v0,v0,-8
+  4049b4:	afc20034 	sw	v0,52(s8)
+  4049b8:	8fc2001c 	lw	v0,28(s8)
+  4049bc:	00021100 	sll	v0,v0,0x4
+  4049c0:	8fc30030 	lw	v1,48(s8)
+  4049c4:	00621021 	addu	v0,v1,v0
+  4049c8:	00402021 	move	a0,v0
+  4049cc:	8fc50034 	lw	a1,52(s8)
+  4049d0:	24060010 	li	a2,16
+  4049d4:	8f8280cc 	lw	v0,-32564(gp)
+  4049d8:	0040c821 	move	t9,v0
+  4049dc:	0320f809 	jalr	t9
+  4049e0:	00000000 	nop
+  4049e4:	8fdc0010 	lw	gp,16(s8)
+  4049e8:	8fc2001c 	lw	v0,28(s8)
+  4049ec:	24420001 	addiu	v0,v0,1
+  4049f0:	afc2001c 	sw	v0,28(s8)
+  4049f4:	8fc20038 	lw	v0,56(s8)
+  4049f8:	8c420000 	lw	v0,0(v0)
+  4049fc:	afc20038 	sw	v0,56(s8)
+  404a00:	8fc20038 	lw	v0,56(s8)
+  404a04:	8c420000 	lw	v0,0(v0)
+  404a08:	00402021 	move	a0,v0
+  404a0c:	8f828024 	lw	v0,-32732(gp)
+  404a10:	244217d0 	addiu	v0,v0,6096
+  404a14:	0040c821 	move	t9,v0
+  404a18:	0320f809 	jalr	t9
+  404a1c:	00000000 	nop
+  404a20:	8fdc0010 	lw	gp,16(s8)
+  404a24:	8fc30038 	lw	v1,56(s8)
+  404a28:	8f828034 	lw	v0,-32716(gp)
+  404a2c:	24420004 	addiu	v0,v0,4
+  404a30:	1462ffdc 	bne	v1,v0,4049a4 <del_roam_not_in_wifi_client_lists@@Base+0x2cc>
+  404a34:	00000000 	nop
+  404a38:	8fc2001c 	lw	v0,28(s8)
+  404a3c:	24420002 	addiu	v0,v0,2
+  404a40:	00021900 	sll	v1,v0,0x4
+  404a44:	8fc2002c 	lw	v0,44(s8)
+  404a48:	a8430023 	swl	v1,35(v0)
+  404a4c:	b8430020 	swr	v1,32(v0)
+  404a50:	8fc20020 	lw	v0,32(s8)
+  404a54:	8f838028 	lw	v1,-32728(gp)
+  404a58:	2464d530 	addiu	a0,v1,-10960
+  404a5c:	8fc50028 	lw	a1,40(s8)
+  404a60:	00403021 	move	a2,v0
+  404a64:	8f8281a4 	lw	v0,-32348(gp)
+  404a68:	0040c821 	move	t9,v0
+  404a6c:	0320f809 	jalr	t9
+  404a70:	00000000 	nop
+  404a74:	8fdc0010 	lw	gp,16(s8)
+  404a78:	8fc40028 	lw	a0,40(s8)
+  404a7c:	8f8280f0 	lw	v0,-32528(gp)
+  404a80:	0040c821 	move	t9,v0
+  404a84:	0320f809 	jalr	t9
+  404a88:	00000000 	nop
+  404a8c:	8fdc0010 	lw	gp,16(s8)
+  404a90:	afc00028 	sw	zero,40(s8)
+  404a94:	00000000 	nop
+  404a98:	10000002 	b	404aa4 <del_roam_not_in_wifi_client_lists@@Base+0x3cc>
+  404a9c:	00000000 	nop
+  404aa0:	00000000 	nop
+  404aa4:	03c0e821 	move	sp,s8
+  404aa8:	8fbf004c 	lw	ra,76(sp)
+  404aac:	8fbe0048 	lw	s8,72(sp)
+  404ab0:	8fb00044 	lw	s0,68(sp)
+  404ab4:	27bd0050 	addiu	sp,sp,80
+  404ab8:	03e00008 	jr	ra
+  404abc:	00000000 	nop
+  404ac0:	3c1c0002 	lui	gp,0x2
+  404ac4:	279c39e0 	addiu	gp,gp,14816
+  404ac8:	0399e021 	addu	gp,gp,t9
+  404acc:	27bdffd0 	addiu	sp,sp,-48
+  404ad0:	afbf002c 	sw	ra,44(sp)
+  404ad4:	afbe0028 	sw	s8,40(sp)
+  404ad8:	03a0f021 	move	s8,sp
+  404adc:	afbc0010 	sw	gp,16(sp)
+  404ae0:	8f828034 	lw	v0,-32716(gp)
+  404ae4:	8c420000 	lw	v0,0(v0)
+  404ae8:	18400032 	blez	v0,404bb4 <del_roam_not_in_wifi_client_lists@@Base+0x4dc>
+  404aec:	00000000 	nop
+  404af0:	afc00020 	sw	zero,32(s8)
+  404af4:	afc0001c 	sw	zero,28(s8)
+  404af8:	8f828034 	lw	v0,-32716(gp)
+  404afc:	8c420004 	lw	v0,4(v0)
+  404b00:	afc20020 	sw	v0,32(s8)
+  404b04:	10000018 	b	404b68 <del_roam_not_in_wifi_client_lists@@Base+0x490>
+  404b08:	00000000 	nop
+  404b0c:	8fc20020 	lw	v0,32(s8)
+  404b10:	afc20018 	sw	v0,24(s8)
+  404b14:	8fc20018 	lw	v0,24(s8)
+  404b18:	2442fff8 	addiu	v0,v0,-8
+  404b1c:	afc2001c 	sw	v0,28(s8)
+  404b20:	8fc2001c 	lw	v0,28(s8)
+  404b24:	24420008 	addiu	v0,v0,8
+  404b28:	00402021 	move	a0,v0
+  404b2c:	8f828024 	lw	v0,-32732(gp)
+  404b30:	24421a00 	addiu	v0,v0,6656
+  404b34:	0040c821 	move	t9,v0
+  404b38:	0320f809 	jalr	t9
+  404b3c:	00000000 	nop
+  404b40:	8fdc0010 	lw	gp,16(s8)
+  404b44:	8fc4001c 	lw	a0,28(s8)
+  404b48:	8f8280f0 	lw	v0,-32528(gp)
+  404b4c:	0040c821 	move	t9,v0
+  404b50:	0320f809 	jalr	t9
+  404b54:	00000000 	nop
+  404b58:	8fdc0010 	lw	gp,16(s8)
+  404b5c:	8fc20020 	lw	v0,32(s8)
+  404b60:	8c420000 	lw	v0,0(v0)
+  404b64:	afc20020 	sw	v0,32(s8)
+  404b68:	8fc20020 	lw	v0,32(s8)
+  404b6c:	8c420000 	lw	v0,0(v0)
+  404b70:	00402021 	move	a0,v0
+  404b74:	8f828024 	lw	v0,-32732(gp)
+  404b78:	244217d0 	addiu	v0,v0,6096
+  404b7c:	0040c821 	move	t9,v0
+
+===== TIMER BRANCH 3 =====
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00404df4 <del_roam_not_in_wifi_client_lists@@Base+0x71c>:
+  404df4:	8f848034 	lw	a0,-32716(gp)
+  404df8:	8f828074 	lw	v0,-32652(gp)
+  404dfc:	0040c821 	move	t9,v0
+  404e00:	0320f809 	jalr	t9
+  404e04:	00000000 	nop
+  404e08:	8fdc0018 	lw	gp,24(s8)
+  404e0c:	8f82802c 	lw	v0,-32724(gp)
+  404e10:	8c420000 	lw	v0,0(v0)
+  404e14:	1040000c 	beqz	v0,404e48 <del_roam_not_in_wifi_client_lists@@Base+0x770>
+  404e18:	00000000 	nop
+  404e1c:	8f828028 	lw	v0,-32728(gp)
+  404e20:	2442d588 	addiu	v0,v0,-10872
+  404e24:	00402021 	move	a0,v0
+  404e28:	8f828028 	lw	v0,-32728(gp)
+  404e2c:	2445d8a8 	addiu	a1,v0,-10072
+  404e30:	240604c2 	li	a2,1218
+  404e34:	8f828150 	lw	v0,-32432(gp)
+  404e38:	0040c821 	move	t9,v0
+  404e3c:	0320f809 	jalr	t9
+  404e40:	00000000 	nop
+  404e44:	8fdc0018 	lw	gp,24(s8)
+  404e48:	8f828078 	lw	v0,-32648(gp)
+  404e4c:	0040c821 	move	t9,v0
+  404e50:	0320f809 	jalr	t9
+  404e54:	00000000 	nop
+  404e58:	8fdc0018 	lw	gp,24(s8)
+  404e5c:	8f828024 	lw	v0,-32732(gp)
+  404e60:	2442481c 	addiu	v0,v0,18460
+  404e64:	0040c821 	move	t9,v0
+  404e68:	0320f809 	jalr	t9
+  404e6c:	00000000 	nop
+  404e70:	8fdc0018 	lw	gp,24(s8)
+  404e74:	8f828024 	lw	v0,-32732(gp)
+  404e78:	24424ac0 	addiu	v0,v0,19136
+  404e7c:	0040c821 	move	t9,v0
+  404e80:	0320f809 	jalr	t9
+  404e84:	00000000 	nop
+  404e88:	8fdc0018 	lw	gp,24(s8)
+  404e8c:	8f828028 	lw	v0,-32728(gp)
+  404e90:	2444d3bc 	addiu	a0,v0,-11332
+  404e94:	24050003 	li	a1,3
+  404e98:	24062710 	li	a2,10000
+  404e9c:	24070001 	li	a3,1
+  404ea0:	8f8280fc 	lw	v0,-32516(gp)
+  404ea4:	0040c821 	move	t9,v0
+  404ea8:	0320f809 	jalr	t9
+  404eac:	00000000 	nop
+  404eb0:	8fdc0018 	lw	gp,24(s8)
+  404eb4:	afc20024 	sw	v0,36(s8)
+  404eb8:	8fc20024 	lw	v0,36(s8)
+  404ebc:	10400098 	beqz	v0,405120 <del_roam_not_in_wifi_client_lists@@Base+0xa48>
+  404ec0:	00000000 	nop
+  404ec4:	8f828028 	lw	v0,-32728(gp)
+  404ec8:	2442d3c8 	addiu	v0,v0,-11320
+  404ecc:	afa20010 	sw	v0,16(sp)
+  404ed0:	8f828028 	lw	v0,-32728(gp)
+  404ed4:	2444d890 	addiu	a0,v0,-10096
+  404ed8:	240504c9 	li	a1,1225
+  404edc:	24060003 	li	a2,3
+  404ee0:	24070046 	li	a3,70
+  404ee4:	8f828154 	lw	v0,-32428(gp)
+  404ee8:	0040c821 	move	t9,v0
+  404eec:	0320f809 	jalr	t9
+  404ef0:	00000000 	nop
+  404ef4:	8fdc0018 	lw	gp,24(s8)
+  404ef8:	10000090 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404efc:	00000000 	nop
+
+===== TIMER BRANCH 4 =====
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00404f00 <del_roam_not_in_wifi_client_lists@@Base+0x828>:
+  404f00:	8f82802c 	lw	v0,-32724(gp)
+  404f04:	8c420000 	lw	v0,0(v0)
+  404f08:	1040000c 	beqz	v0,404f3c <del_roam_not_in_wifi_client_lists@@Base+0x864>
+  404f0c:	00000000 	nop
+  404f10:	8f828028 	lw	v0,-32728(gp)
+  404f14:	2442d5c4 	addiu	v0,v0,-10812
+  404f18:	00402021 	move	a0,v0
+  404f1c:	8f828028 	lw	v0,-32728(gp)
+  404f20:	2445d8a8 	addiu	a1,v0,-10072
+  404f24:	240604cd 	li	a2,1229
+  404f28:	8f828150 	lw	v0,-32432(gp)
+  404f2c:	0040c821 	move	t9,v0
+  404f30:	0320f809 	jalr	t9
+  404f34:	00000000 	nop
+  404f38:	8fdc0018 	lw	gp,24(s8)
+  404f3c:	8f82804c 	lw	v0,-32692(gp)
+  404f40:	8c420000 	lw	v0,0(v0)
+  404f44:	8f848040 	lw	a0,-32704(gp)
+  404f48:	00402821 	move	a1,v0
+  404f4c:	8f82807c 	lw	v0,-32644(gp)
+  404f50:	0040c821 	move	t9,v0
+  404f54:	0320f809 	jalr	t9
+  404f58:	00000000 	nop
+  404f5c:	8fdc0018 	lw	gp,24(s8)
+  404f60:	8f828028 	lw	v0,-32728(gp)
+  404f64:	2444d3bc 	addiu	a0,v0,-11332
+  404f68:	24050004 	li	a1,4
+  404f6c:	24064e20 	li	a2,20000
+  404f70:	24070001 	li	a3,1
+  404f74:	8f8280fc 	lw	v0,-32516(gp)
+  404f78:	0040c821 	move	t9,v0
+  404f7c:	0320f809 	jalr	t9
+  404f80:	00000000 	nop
+  404f84:	8fdc0018 	lw	gp,24(s8)
+  404f88:	afc20024 	sw	v0,36(s8)
+  404f8c:	8fc20024 	lw	v0,36(s8)
+  404f90:	10400066 	beqz	v0,40512c <del_roam_not_in_wifi_client_lists@@Base+0xa54>
+  404f94:	00000000 	nop
+  404f98:	8f828028 	lw	v0,-32728(gp)
+  404f9c:	2442d404 	addiu	v0,v0,-11260
+  404fa0:	afa20010 	sw	v0,16(sp)
+  404fa4:	8f828028 	lw	v0,-32728(gp)
+  404fa8:	2444d890 	addiu	a0,v0,-10096
+  404fac:	240504d2 	li	a1,1234
+  404fb0:	24060003 	li	a2,3
+  404fb4:	24070046 	li	a3,70
+  404fb8:	8f828154 	lw	v0,-32428(gp)
+  404fbc:	0040c821 	move	t9,v0
+  404fc0:	0320f809 	jalr	t9
+  404fc4:	00000000 	nop
+  404fc8:	8fdc0018 	lw	gp,24(s8)
+  404fcc:	1000005b 	b	40513c <del_roam_not_in_wifi_client_lists@@Base+0xa64>
+  404fd0:	00000000 	nop
+
+===== STRINGS / FUNCTION NAMES AROUND RELEVANT RODATA =====
+   1126 do_upload_one_client
+   11b1 check_in_wifi_client_lists
+   11ee do_client_timeout_check
+   1206 do_upload_client_list
+   12fd wifi_get_vap_client_lists
+   1364 print_wifi_client_lists
+   1390 get_all_wireless_client
+   13a8 del_roam_not_in_wifi_client_lists
+   13ca print_all_wifi_client_lists
+   cc04 arp_receive
+   cc24 /var/arp_receive
+   d373 [1;35mneed_upload = %d
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d59f [1;35mdo_client_timeout_check
+   d5db [1;35mdo_upload_client_list
+   d988 upload_nova_client_node
+   df24 arp_receive
+   df44 /var/arp_receive
+   e984 arp_receive
+   e9a4 /var/arp_receive
+   f2c4 arp_receive
+   f2e4 /var/arp_receive
+   f644 /proc/net/arp
+   f780 [%s][%d][luminais] wifi_list_num = %d
+   f7a8  wifi_list[%d] %s mac = %s, ip = %s, signal = %s
+   f87c [%s][%d][luminais] %s find wifi %s not in client hs list
+   f974 do_client_timeout_check
+   f98c check_wifi_client_roam_or_static
+   f9b0 print_all_wifi_client_lists
+   f9cc print_wifi_client_lists
+   f9e4 check_in_wifi_client_lists
+   fa00 wifi_client_list_find
+   fa18 wired_client_timeout_check
+   fa5c update_wire_client_from_sw_list
+   faa0 find_if_arp_in_arp_list_by_mac
+   fad4 get_proc_arp_list
+   ffa4 arp_receive
+   ffc4 /var/arp_receive
+  103c0 device_list_upload
+  103e4 do_upload_one_client
+  103fc do_upload_client_list

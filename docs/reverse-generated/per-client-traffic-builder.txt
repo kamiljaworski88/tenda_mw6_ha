@@ -1,0 +1,628 @@
+===== RUN 66 GOAL =====
+Trace the firmware path that builds per-client {mac,up,down} traffic data and identify its source/callers.
+===== LIBCLOUD TARGET STRINGS =====
+   b6ef cmd_cloud_info_dev_traffic_upload
+   b9b2 dev_traffic_upload_json_packer
+  68d40 CMD_CLOUD_INFO_DEV_TRAFFIC_UPLOAD
+  6904c ethaddr_l
+  69058 ethaddr_r
+  69080 ethaddr
+  690b0 uprate
+  690b8 downrate
+  6911c [{"mac":"%s","up":%d,"down":%d}
+  6913c ,{"mac":"%s","up":%d,"down":%d}
+  694d0 cmd_cloud_info_dev_traffic_upload
+===== LIBCLOUD SYMBOLS =====
+    16: 0004ec08   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack
+    25: 0004f200   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__get_packed_size
+    84: 0004f264   100 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__get_packed_size
+    93: 0005d1d4   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__free_unpacked
+    94: 0005d4f4   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack_to_buffer
+   100: 0005d738   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack_to_buffer
+   141: 0005d434    48 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__unpack
+   186: 0005d160   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__free_unpacked
+   198: 0005d4c4    48 FUNC    GLOBAL DEFAULT   10 ol_host_dev__unpack
+   207: 00044e28   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__pack_to_buffer
+   224: 0005d908   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__pack
+   233: 0005d97c   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__pack
+   240: 0005da64   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__pack
+   246: 0004ec7c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack
+   248: 000451c8   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__pack
+   254: 0005d7ac   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack_to_buffer
+   315: 00044c20    48 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__unpack
+   322: 0004e5b0   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__pack_to_buffer
+   341: 0005dda4   100 FUNC    GLOBAL DEFAULT   10 ol_host_dev__get_packed_size
+   344: 0005d650   116 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__pack_to_buffer
+   350: 00044908   116 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__free_unpacked
+   362: 0005d2bc   116 FUNC    GLOBAL DEFAULT   10 ol_host_info__free_unpacked
+   369: 0005d330   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__free_unpacked
+   386: 00045548   100 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__get_packed_size
+   388: 0004dd2c   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__free_unpacked
+   412: 0005dd40   100 FUNC    GLOBAL DEFAULT   10 ol_host_info__get_packed_size
+   415: 0005d404    48 FUNC    GLOBAL DEFAULT   10 host_info_msg__unpack
+   421: 0005dc14   100 FUNC    GLOBAL DEFAULT   10 host_info_msg__get_packed_size
+   427: 0004e624   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__pack_to_buffer
+   434: 0005d5dc   116 FUNC    GLOBAL DEFAULT   10 host_info_msg__pack_to_buffer
+   454: 0005dc78   100 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__get_packed_size
+   467: 0005d078   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__free_unpacked
+   504: 0001db08   192 FUNC    GLOBAL DEFAULT   10 create_statistic_upload_timer
+   506: 0005d3a4    48 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__unpack
+   520: 00039dd4   156 FUNC    GLOBAL DEFAULT   10 protobuf_c_service_generated_init
+   549: 0005d494    48 FUNC    GLOBAL DEFAULT   10 ol_host_info__unpack
+   590: 0005dad8   116 FUNC    GLOBAL DEFAULT   10 ol_host_dev__pack
+   610: 0004e1a8    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__unpack
+   627: 0004b5d4   172 FUNC    GLOBAL DEFAULT   10 rate_get_proto_to_cmd
+   639: 0002e830  1112 FUNC    GLOBAL DEFAULT   10 node_status_upload_json_packer
+   650: 0008a2b4    60 OBJECT  GLOBAL DEFAULT   18 host_info_single_msg__descriptor
+   701: 00030990   336 FUNC    GLOBAL DEFAULT   10 dev_traffic_upload_json_packer
+   734: 000211a0   152 FUNC    GLOBAL DEFAULT   10 upload_statistics
+   738: 0005db4c   100 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__get_packed_size
+   754: 0005cef0    56 FUNC    GLOBAL DEFAULT   10 ol_host_dev__init
+   768: 0005c800  1772 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_json
+   770: 0002f8fc  1104 FUNC    GLOBAL DEFAULT   10 dev_device_upload_json_packer
+   779: 00050c30   228 FUNC    GLOBAL DEFAULT   10 access_user_operate_pbuf_to_cmd
+   801: 000300d0   280 FUNC    GLOBAL DEFAULT   10 dev_upload_status_start_parser
+   810: 0004dcb8   116 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__free_unpacked
+   840: 0002db80   232 FUNC    GLOBAL DEFAULT   10 upload_router_info_task
+   877: 0002e648   112 FUNC    GLOBAL DEFAULT   10 send_start_upload_status_to_inner
+   897: 00050af4   316 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_json
+   904: 0004d840    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_detail__init
+   926: 000301e8   200 FUNC    GLOBAL DEFAULT   10 cmd_cloud_dev_upload_status_start
+   932: 0008a200    60 OBJECT  GLOBAL DEFAULT   18 ol_host_dev__descriptor
+   941: 00024720   136 FUNC    GLOBAL DEFAULT   10 m_ucloud_info_upload_register
+   969: 0004e178    48 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__unpack
+   980: 00050d14   296 FUNC    GLOBAL DEFAULT   10 access_user_operate_json_to_cmd
+   987: 0002ec88   360 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_node_status_upload
+  1010: 0001dfa4   116 FUNC    GLOBAL DEFAULT   10 start_upload_device
+  1033: 0001e43c    76 FUNC    GLOBAL DEFAULT   10 start_upload_statistic
+  1076: 0005d820   116 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__pack
+  1080: 00030ae0   368 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_traffic_upload
+  1088: 0001def8   172 FUNC    GLOBAL DEFAULT   10 start_upload_sys_basic_info
+  1091: 0001d4f8    44 FUNC    GLOBAL DEFAULT   10 get_global_disp_host
+  1096: 0008a23c    60 OBJECT  GLOBAL DEFAULT   18 ol_host_info__descriptor
+  1135: 0008a2f0    60 OBJECT  GLOBAL DEFAULT   18 host_info_msg__descriptor
+  1152: 0002e060   288 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_upload_sys_basic_info
+  1196: 0005c1a0  1632 FUNC    GLOBAL DEFAULT   10 ol_hosts_get_cmd_to_pbuf
+  1244: 0004b350   644 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_proto
+  1254: 0008a368    60 OBJECT  GLOBAL DEFAULT   18 ol_host_common_ack__descriptor
+  1262: 0004f7a4    28 FUNC    GLOBAL DEFAULT   10 access_user_operate_cmd_to_pbuf
+  1277: 000874b4    60 OBJECT  GLOBAL DEFAULT   18 fw_mesh_device_info_t__descriptor
+  1320: 0001d524    36 FUNC    GLOBAL DEFAULT   10 set_global_disp_host
+  1341: 0008835c    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_info__descriptor
+  1342: 0002fd4c   364 FUNC    GLOBAL DEFAULT   10 cmd_cloud_info_dev_device_upload
+  1364: 00088320    60 OBJECT  GLOBAL DEFAULT   18 proto_wan_rate_detail__descriptor
+  1429: 0004b7b0   436 FUNC    GLOBAL DEFAULT   10 rate_get_json_to_cmd
+  1442: 0004af7c   980 FUNC    GLOBAL DEFAULT   10 rate_get_cmd_to_json
+  1486: 0005d040    56 FUNC    GLOBAL DEFAULT   10 ol_host_common_ack__init
+  1493: 0004d878    56 FUNC    GLOBAL DEFAULT   10 proto_wan_rate_info__init
+  1498: 0005cfd0    56 FUNC    GLOBAL DEFAULT   10 host_info_msg__init
+  1512: 0005cf28    56 FUNC    GLOBAL DEFAULT   10 ol_host_info__init
+  1521: 0005cf98    56 FUNC    GLOBAL DEFAULT   10 host_info_single_msg__init
+  1525: 00044778    56 FUNC    GLOBAL DEFAULT   10 fw_mesh_device_info_t__init
+===== LIBCLOUD DISASSEMBLY REFERENCES AROUND 0x6911c STRING OFFSET =====
+There are 29 section headers, starting at offset 0x877fc:
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .reginfo          MIPS_REGINFO    000000f4 0000f4 000018 18   A  0   0  4
+  [ 2] .dynamic          DYNAMIC         0000010c 00010c 000100 08   A  5   0  4
+  [ 3] .hash             HASH            0000020c 00020c 0028a4 04   A  4   0  4
+  [ 4] .dynsym           DYNSYM          00002ab0 002ab0 006200 10   A  5   2  4
+  [ 5] .dynstr           STRTAB          00008cb0 008cb0 009373 00   A  0   0  1
+  [ 6] .gnu.version      VERSYM          00012024 012024 000c40 02   A  4   0  2
+  [ 7] .gnu.version_r    VERNEED         00012c64 012c64 000020 00   A  5   1  4
+  [ 8] .rel.dyn          REL             00012c84 012c84 0036e8 08   A  4   0  4
+  [ 9] .init             PROGBITS        0001636c 01636c 000078 00  AX  0   0  4
+  [10] .text             PROGBITS        000163f0 0163f0 04e5f0 00  AX  0   0 16
+  [11] .MIPS.stubs       PROGBITS        000649e0 0649e0 0004c0 00  AX  0   0  4
+  [12] .fini             PROGBITS        00064ea0 064ea0 000050 00  AX  0   0  4
+  [13] .rodata           PROGBITS        00064ef0 064ef0 00ec38 00   A  0   0 16
+  [14] .eh_frame         PROGBITS        00073b28 073b28 000004 00   A  0   0  4
+  [15] .ctors            PROGBITS        00084000 074000 000008 00  WA  0   0  4
+  [16] .dtors            PROGBITS        00084008 074008 000008 00  WA  0   0  4
+  [17] .jcr              PROGBITS        00084010 074010 000004 00  WA  0   0  4
+  [18] .data.rel.ro      PROGBITS        00084018 074018 007328 00  WA  0   0  8
+  [19] .data             PROGBITS        0008b340 07b340 000040 00  WA  0   0 16
+  [20] .got              PROGBITS        0008b380 07b380 000f78 04 WAp  0   0 16
+  [21] .sdata            PROGBITS        0008c2f8 07c2f8 000004 00 WAp  0   0  4
+  [22] .sbss             NOBITS          0008c2fc 07c2fc 00000c 00 WAp  0   0  4
+  [23] .bss              NOBITS          0008c310 07c2fc 013500 00  WA  0   0 16
+  [24] .comment          PROGBITS        00000000 07c2fc 00003c 01  MS  0   0  1
+  [25] .pdr              PROGBITS        00000000 07c338 00b3c0 00      0   0  4
+  [26] .gnu.attributes   GNU_ATTRIBUTES  00000000 0876f8 000010 00      0   0  1
+  [27] .mdebug.abi32     PROGBITS        00000000 087708 000000 00      0   0  1
+  [28] .shstrtab         STRTAB          00000000 087708 0000f1 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  D (mbind), p (processor specific)
+   30954:	0320f809 	jalr	t9
+   30958:	27a7001c 	addiu	a3,sp,28
+   3095c:	14400005 	bnez	v0,30974 <cmd_cloud_mesh_node_a@@Base+0xac>
+   30960:	8fbc0010 	lw	gp,16(sp)
+   30964:	8f998474 	lw	t9,-31628(gp)
+   30968:	8fa40018 	lw	a0,24(sp)
+   3096c:	0320f809 	jalr	t9
+   30970:	8fa5001c 	lw	a1,28(sp)
+   30974:	00001821 	move	v1,zero
+   30978:	8fbf2034 	lw	ra,8244(sp)
+   3097c:	8fb12030 	lw	s1,8240(sp)
+   30980:	8fb0202c 	lw	s0,8236(sp)
+   30984:	00601021 	move	v0,v1
+   30988:	03e00008 	jr	ra
+   3098c:	27bd2038 	addiu	sp,sp,8248
+
+00030990 <dev_traffic_upload_json_packer@@Base>:
+   30990:	3c1c0006 	lui	gp,0x6
+   30994:	279c29e0 	addiu	gp,gp,10720
+   30998:	0399e021 	addu	gp,gp,t9
+   3099c:	27bdffb8 	addiu	sp,sp,-72
+   309a0:	afbf0044 	sw	ra,68(sp)
+   309a4:	afbe0040 	sw	s8,64(sp)
+   309a8:	afb7003c 	sw	s7,60(sp)
+   309ac:	afb60038 	sw	s6,56(sp)
+   309b0:	afb50034 	sw	s5,52(sp)
+   309b4:	afb40030 	sw	s4,48(sp)
+   309b8:	afb3002c 	sw	s3,44(sp)
+   309bc:	afb20028 	sw	s2,40(sp)
+   309c0:	afb10024 	sw	s1,36(sp)
+   309c4:	afb00020 	sw	s0,32(sp)
+   309c8:	afbc0018 	sw	gp,24(sp)
+   309cc:	00808021 	move	s0,a0
+   309d0:	00c0a021 	move	s4,a2
+   309d4:	10800035 	beqz	a0,30aac <dev_traffic_upload_json_packer@@Base+0x11c>
+   309d8:	00e0a821 	move	s5,a3
+   309dc:	10a00034 	beqz	a1,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309e0:	24020001 	li	v0,1
+   309e4:	8c960000 	lw	s6,0(a0)
+   309e8:	1ac00031 	blez	s6,30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   309ec:	8f858028 	lw	a1,-32728(gp)
+   309f0:	8e020014 	lw	v0,20(s0)
+   309f4:	8cc40000 	lw	a0,0(a2)
+   309f8:	8f9981c0 	lw	t9,-32320(gp)
+   309fc:	8e070010 	lw	a3,16(s0)
+   30a00:	24a5911c 	addiu	a1,a1,-28388
+   30a04:	afa20010 	sw	v0,16(sp)
+   30a08:	0320f809 	jalr	t9
+   30a0c:	26060004 	addiu	a2,s0,4
+   30a10:	8fbc0018 	lw	gp,24(sp)
+   30a14:	00408821 	move	s1,v0
+   30a18:	02009821 	move	s3,s0
+   30a1c:	8f9e8028 	lw	s8,-32728(gp)
+   30a20:	24120001 	li	s2,1
+   30a24:	24170014 	li	s7,20
+   30a28:	1000000d 	b	30a60 <dev_traffic_upload_json_packer@@Base+0xd0>
+   30a2c:	27de913c 	addiu	s8,s8,-28356
+   30a30:	72571002 	mul	v0,s2,s7
+   30a34:	8e840000 	lw	a0,0(s4)
+   30a38:	8e670010 	lw	a3,16(s3)
+   30a3c:	26520001 	addiu	s2,s2,1
+   30a40:	00912021 	addu	a0,a0,s1
+   30a44:	00503021 	addu	a2,v0,s0
+   30a48:	8e620014 	lw	v0,20(s3)
+   30a4c:	24c60004 	addiu	a2,a2,4
+   30a50:	0320f809 	jalr	t9
+   30a54:	afa20010 	sw	v0,16(sp)
+   30a58:	8fbc0018 	lw	gp,24(sp)
+   30a5c:	02228821 	addu	s1,s1,v0
+   30a60:	0256102a 	slt	v0,s2,s6
+   30a64:	8f9981c0 	lw	t9,-32320(gp)
+   30a68:	10400006 	beqz	v0,30a84 <dev_traffic_upload_json_packer@@Base+0xf4>
+   30a6c:	03c02821 	move	a1,s8
+   30a70:	8ea20000 	lw	v0,0(s5)
+   30a74:	2442ffff 	addiu	v0,v0,-1
+   30a78:	0222102a 	slt	v0,s1,v0
+   30a7c:	1440ffec 	bnez	v0,30a30 <dev_traffic_upload_json_packer@@Base+0xa0>
+   30a80:	26730014 	addiu	s3,s3,20
+   30a84:	8e840000 	lw	a0,0(s4)
+   30a88:	8f858028 	lw	a1,-32728(gp)
+   30a8c:	8f998ad0 	lw	t9,-30000(gp)
+   30a90:	00912021 	addu	a0,a0,s1
+   30a94:	24a5915c 	addiu	a1,a1,-28324
+   30a98:	0320f809 	jalr	t9
+   30a9c:	26310001 	addiu	s1,s1,1
+   30aa0:	aeb10000 	sw	s1,0(s5)
+   30aa4:	10000002 	b	30ab0 <dev_traffic_upload_json_packer@@Base+0x120>
+   30aa8:	00001021 	move	v0,zero
+   30aac:	24020001 	li	v0,1
+   30ab0:	8fbf0044 	lw	ra,68(sp)
+   30ab4:	8fbe0040 	lw	s8,64(sp)
+   30ab8:	8fb7003c 	lw	s7,60(sp)
+   30abc:	8fb60038 	lw	s6,56(sp)
+   30ac0:	8fb50034 	lw	s5,52(sp)
+   30ac4:	8fb40030 	lw	s4,48(sp)
+   30ac8:	8fb3002c 	lw	s3,44(sp)
+   30acc:	8fb20028 	lw	s2,40(sp)
+   30ad0:	8fb10024 	lw	s1,36(sp)
+   30ad4:	8fb00020 	lw	s0,32(sp)
+   30ad8:	03e00008 	jr	ra
+   30adc:	27bd0048 	addiu	sp,sp,72
+
+00030ae0 <cmd_cloud_info_dev_traffic_upload@@Base>:
+   30ae0:	3c1c0006 	lui	gp,0x6
+   30ae4:	279c2890 	addiu	gp,gp,10384
+   30ae8:	0399e021 	addu	gp,gp,t9
+   30aec:	27bdfb98 	addiu	sp,sp,-1128
+   30af0:	afbf0464 	sw	ra,1124(sp)
+   30af4:	afb50460 	sw	s5,1120(sp)
+   30af8:	afb4045c 	sw	s4,1116(sp)
+   30afc:	afb30458 	sw	s3,1112(sp)
+   30b00:	afb20454 	sw	s2,1108(sp)
+   30b04:	afb10450 	sw	s1,1104(sp)
+   30b08:	afb0044c 	sw	s0,1100(sp)
+   30b0c:	afbc0018 	sw	gp,24(sp)
+   30b10:	00809021 	move	s2,a0
+   30b14:	00c08821 	move	s1,a2
+   30b18:	00e0a821 	move	s5,a3
+   30b1c:	14a00043 	bnez	a1,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30b20:	00001021 	move	v0,zero
+   30b24:	8f9981ec 	lw	t9,-32276(gp)
+   30b28:	0320f809 	jalr	t9
+   30b2c:	00000000 	nop
+   30b30:	1040002f 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b34:	8fbc0018 	lw	gp,24(sp)
+   30b38:	8f9980c0 	lw	t9,-32576(gp)
+   30b3c:	0320f809 	jalr	t9
+   30b40:	24040003 	li	a0,3
+   30b44:	8fbc0018 	lw	gp,24(sp)
+   30b48:	10400029 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+   30b4c:	00409821 	move	s3,v0
+   30b50:	8f998bd4 	lw	t9,-29740(gp)
+   30b54:	27b40044 	addiu	s4,sp,68
+   30b58:	02802021 	move	a0,s4
+   30b5c:	00002821 	move	a1,zero
+   30b60:	0320f809 	jalr	t9
+   30b64:	24060400 	li	a2,1024
+   30b68:	8fbc0018 	lw	gp,24(sp)
+   30b6c:	24020400 	li	v0,1024
+   30b70:	27b00028 	addiu	s0,sp,40
+   30b74:	8f99819c 	lw	t9,-32356(gp)
+   30b78:	02402821 	move	a1,s2
+   30b7c:	02002021 	move	a0,s0
+   30b80:	2406001c 	li	a2,28
+   30b84:	afb40020 	sw	s4,32(sp)
+   30b88:	0320f809 	jalr	t9
+   30b8c:	afa20024 	sw	v0,36(sp)
+   30b90:	8fbc0018 	lw	gp,24(sp)
+   30b94:	24020006 	li	v0,6
+   30b98:	a3a20028 	sb	v0,40(sp)
+   30b9c:	8f9981fc 	lw	t9,-32260(gp)
+   30ba0:	24020003 	li	v0,3
+   30ba4:	a3a20029 	sb	v0,41(sp)
+   30ba8:	2402003e 	li	v0,62
+   30bac:	afb30034 	sw	s3,52(sp)
+   30bb0:	a3a2002a 	sb	v0,42(sp)
+   30bb4:	02202021 	move	a0,s1
+   30bb8:	02a02821 	move	a1,s5
+   30bbc:	27a60020 	addiu	a2,sp,32
+   30bc0:	0320f809 	jalr	t9
+   30bc4:	27a70024 	addiu	a3,sp,36
+   30bc8:	14400018 	bnez	v0,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+   30bcc:	8fbc0018 	lw	gp,24(sp)
+   30bd0:	8f998554 	lw	t9,-31404(gp)
+   30bd4:	8fa60024 	lw	a2,36(sp)
+   30bd8:	8fa70020 	lw	a3,32(sp)
+   30bdc:	02002021 	move	a0,s0
+   30be0:	0320f809 	jalr	t9
+   30be4:	24050001 	li	a1,1
+   30be8:	10000011 	b	30c30 <cmd_cloud_info_dev_traffic_upload@@Base+0x150>
+   30bec:	8fbf0464 	lw	ra,1124(sp)
+   30bf0:	8f828570 	lw	v0,-31376(gp)
+   30bf4:	8f868028 	lw	a2,-32728(gp)
+   30bf8:	8f878028 	lw	a3,-32728(gp)
+   30bfc:	8c440000 	lw	a0,0(v0)
+   30c00:	24020298 	li	v0,664
+   30c04:	afa20010 	sw	v0,16(sp)
+   30c08:	8f828028 	lw	v0,-32728(gp)
+   30c0c:	8f998274 	lw	t9,-32140(gp)
+   30c10:	24c694d0 	addiu	a2,a2,-27440
+   30c14:	24428fb8 	addiu	v0,v0,-28744
+   30c18:	afa20014 	sw	v0,20(sp)
+   30c1c:	24e78e78 	addiu	a3,a3,-29064
+   30c20:	0320f809 	jalr	t9
+   30c24:	24050002 	li	a1,2
+   30c28:	24020001 	li	v0,1
+   30c2c:	8fbf0464 	lw	ra,1124(sp)
+   30c30:	8fb50460 	lw	s5,1120(sp)
+   30c34:	8fb4045c 	lw	s4,1116(sp)
+   30c38:	8fb30458 	lw	s3,1112(sp)
+   30c3c:	8fb20454 	lw	s2,1108(sp)
+   30c40:	8fb10450 	lw	s1,1104(sp)
+   30c44:	8fb0044c 	lw	s0,1100(sp)
+   30c48:	03e00008 	jr	ra
+   30c4c:	27bd0468 	addiu	sp,sp,1128
+
+00030c50 <cmd_cloud_router_push_info_q@@Base>:
+   30c50:	3c1c0006 	lui	gp,0x6
+   30c54:	279c2720 	addiu	gp,gp,10016
+   30c58:	0399e021 	addu	gp,gp,t9
+===== CONFSRV RATE/CLOUD UPLOAD CLUES =====
+   4670 confctl_get_guest_wlan
+   4687 confctl_set_guest_wlan
+   469e confctl_get_wan_detect
+   46b5 confctl_get_wan_status
+   46cc confctl_get_wan_diag
+   46e1 confctl_set_wan_cfg
+   46f5 confctl_get_wan_cfg
+   4709 confctl_is_wan_line_up
+   4720 confctl_get_wan_traffic_info
+   473d confctl_wan_traffic_info_init
+   475b confctl_new_node_report_handle
+   477a new_node_init
+   4788 confctl_add_node_results_handle
+   47a8 add_results_timeout_check
+   47c2 ucloud_get_add_node_results
+   47de confctl_get_is_suilt
+   47f3 confctl_set_sys_timezone
+   480c confctl_set_sys_time
+   4821 confctl_set_app_language
+   483a confctl_set_fast_done
+   4850 ucloud_get_upnp
+   4860 ucloud_set_upnp
+   4870 conf_get_mf_cfg
+   4880 conf_set_mf_cfg
+   4890 conf_get_port_fwd_cfg
+   48a6 conf_set_port_fwd_cfg
+   48bc ucloud_get_sched_reboot_cfg
+   48d8 ucloud_set_sched_reboot_cfg
+   48f4 confctl_set_allconfig
+   490a confctl_upgrade_mpp_to_map
+--
+  676e8 update grp map
+  676f8 update group config and node opt to MAP
+  67720 SetSysTimeZone
+  67730 app set time zone
+  67744 SetSysTime
+  67750 app set system time
+  67764 NewNodeAddResults
+  67778 get add new node result
+  67790 GetTrafficInfo
+  677a0 get wan traffic info
+  677b8 SetWanCfg
+  677c4 send_all_node_status_list
+  677e0 upload all node status to cloud
+  67800 GetWanDiag
+  6780c get wan diag status and error code
+  67830 print client list get online ip info(app)
+  6785c print client lists status(app)
+  6787c upload_status_start
+  67890 upload client and node status start cmd
+  678b8 /var/confctl_debug
+  678d5 module_id	%-32s		%-32s
+  678f0 module_name
+  678fc description
+  6790c 		%-32s
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+--
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+  67b90 GetTrafficInfo
+  67ba0 NewNodeReport
+  67bb0 NewNodeAddResults
+  67bc4 QuerryNodeRslt
+  67bd4 GetIsSuilt
+  67be0 SetSysTimeZone
+  67bf0 SetSysTime
+  67bfc SetLang
+  67c04 SetGuideDone
+  67c14 GetUPnPCfg
+  67c20 SetUPnPCfg
+  67c2c GetMacfilter
+  67c3c SetMacfilter
+  67c4c GetPortFwdCfg
+  67c5c SetPortFwdCfg
+  67c6c GetAutoMaintainCfg
+  67c80 SetAutoMaintainCfg
+  67c94 SetAllConfig
+  67ca4 GetUcloudImage
+  67cb4 GetCloudEn
+  67cc0 SetCloudEn
+--
+  7207c  	device_node_sn : %s
+  72094  	rssi : %d
+  720a4  	online : %d
+  720b4  	last_upload_time : %d
+  720d0 [%s][%d][luminais] client hash num = %d
+  720fc [%s][%d][luminais] <%d> : 
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+--
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+--
+  75230 [%s][%d][luminais] wan %d config change
+  7525c /var/network_check_rst
+  75274 op=%d
+  7527c [%s][%d][luminais] dns is changed
+  752a0 %llu
+  752a8 confctl_set_wan_cfg
+  752bc confctl_get_wan_cfg
+  752d0 confctl_is_wan_line_up
+  752e8 confctl_get_wan_traffic_info
+  75308 confctl_get_wan_diag
+  75320 print_wan_diag
+  75330 confctl_get_wan_status
+  75348 fill_router_wan_rate
+  75360 get_router_wan_rate
+  75374 wan_traffic_info_renew
+  7538c fill_bridge_wan_rate
+  753a4 fill_router_wan_diag
+  753bc fill_bridge_wan_diag
+  753d4 fill_wan_port_diag_by_mode
+  753f0 fill_router_wan_port_diag
+  7540c fill_bridge_wan_port_diag
+  75428 fill_router_wan_status
+  75440 fill_bridge_wan_status
+  75458 fill_wan_port_status_by_mode
+  75478 fill_router_wan_port_status
+  75494 fill_wan_port_manual_dns
+  754b0 fill_bridge_wan_port_status
+  754cc fill_lan_port_status
+  754e4 file_lan_ip_info_get
+  754fc fill_wan_port_status
+  75514 fill_wan_port_status_default
+  75534 confctl_get_wan_detect
+  7554c get_wan_detect_type
+  75560 fill_bridge_wan_params
+  75578 fill_router_wan_params
+--
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+    18: 00436544  1668 FUNC    GLOBAL DEFAULT   12 cloud_dev_mark_list_handle
+    40: 00444598  1308 FUNC    GLOBAL DEFAULT   12 confctl_get_wan_traffic_info
+    60: 004263e4   756 FUNC    GLOBAL DEFAULT   12 ucloud_add_node
+   100: 0044bcb0   364 FUNC    GLOBAL DEFAULT   12 ucloud_set_upgrade_reboot_cfg_srv
+   112: 00426a04  1524 FUNC    GLOBAL DEFAULT   12 ucloud_del_node
+   117: 00460a88   132 FUNC    GLOBAL DEFAULT   12 confctl_clr_cloud_account_done
+   126: 004609c0   200 FUNC    GLOBAL DEFAULT   12 confctl_set_cloud_mng_status
+   137: 0045a448   300 FUNC    GLOBAL DEFAULT   12 enable_cloud_info
+   138: 00460b0c   236 FUNC    GLOBAL DEFAULT   12 confctl_confirm_cloud_account
+   141: 00410be0  1480 FUNC    GLOBAL DEFAULT   12 confctl_set_host_marks
+   143: 0042d260  3788 FUNC    GLOBAL DEFAULT   12 cloud_mesh_node_handle
+   164: 00444ab4   152 FUNC    GLOBAL DEFAULT   12 confctl_wan_traffic_info_init
+   176: 00415f30   316 FUNC    GLOBAL DEFAULT   12 get_cloud_node_hash_table
+   186: 0045a6dc   652 FUNC    GLOBAL DEFAULT   12 ucloud_set_upnp
+   191: 00434f9c  1160 FUNC    GLOBAL DEFAULT   12 confctl_get_host_list
+   192: 004597c0   116 FUNC    GLOBAL DEFAULT   12 ucloud_add_node_init
+   195: 0043375c   328 FUNC    GLOBAL DEFAULT   12 confctl_rqst_client_hostname
+   220: 0045c2a8   648 FUNC    GLOBAL DEFAULT   12 ucloud_get_sched_reboot_cfg
+   234: 004266d8   812 FUNC    GLOBAL DEFAULT   12 ucloud_add_node_new
+   237: 004608b0   272 FUNC    GLOBAL DEFAULT   12 confctl_get_cloud_mng_status
+   241: 0045a580   348 FUNC    GLOBAL DEFAULT   12 ucloud_get_upnp
+   243: 004590cc   412 FUNC    GLOBAL DEFAULT   12 ucloud_get_add_node_results
+   259: 00460d5c  1188 FUNC    GLOBAL DEFAULT   12 ucloud_set_fastroam
+   273: 00460c00   348 FUNC    GLOBAL DEFAULT   12 ucloud_get_fastroam
+   275: 0045bfb0   760 FUNC    GLOBAL DEFAULT   12 ucloud_set_sched_reboot_cfg
+   280: 004105a4   512 FUNC    GLOBAL DEFAULT   12 get_cloud_remark_hash_table
+   298: 00426ff8   772 FUNC    GLOBAL DEFAULT   12 ucloud_set_led
+   307: 004272fc   800 FUNC    GLOBAL DEFAULT   12 ucloud_set_node_location
+   315: 004258e4  2816 FUNC    GLOBAL DEFAULT   12 ucloud_get_node_msg
+   338: 00465ee0     0 FUNC    GLOBAL DEFAULT  UND wan_rate__get_packed_size
+   347: 00465e50     0 FUNC    GLOBAL DEFAULT  UND host_info__init
+   358: 00465db0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_dev_device
+   423: 004659e0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_dev_config_q
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   485: 00465660     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_dev_config_u
+   490: 00465630     0 FUNC    GLOBAL DEFAULT  UND uc_api_enable_m_cloud_info
+   515: 004654c0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_mesh_node_u
+   534: 004653b0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_dev_mark_list_u
+   560: 00465240     0 FUNC    GLOBAL DEFAULT  UND wan_rate__pack
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   566: 004651f0     0 FUNC    GLOBAL DEFAULT  UND wan_port_rate__init
+   591: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_rate__descriptor
+   601: 00465000     0 FUNC    GLOBAL DEFAULT  UND check_get_new_ipaddr_by_hostid
+   623: 00464ee0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_node_status

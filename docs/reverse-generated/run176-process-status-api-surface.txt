@@ -1,0 +1,1963 @@
+===== RUN 176: process-status API surface =====
+
+===== ELF importers of monitor/process inspection helpers =====
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+   139: 0001bb38   460 FUNC    GLOBAL DEFAULT   10 proc_check_app
+   240: 0001b990   424 FUNC    GLOBAL DEFAULT   10 proc_get_process_pid
+   440: 00034c28   100 FUNC    GLOBAL DEFAULT   10 monitor_check_exist
+----- firmware-src/RootFS-unpacked/bin/monitor -----
+     1: 00403e70   376 FUNC    GLOBAL DEFAULT   12 monitor_get_pragram_name_by_pid
+     9: 00403fe8   408 FUNC    GLOBAL DEFAULT   12 monitor_show_program_info
+    22: 004036d8   548 FUNC    GLOBAL DEFAULT   12 monitor_get_pid
+    35: 00403b84   372 FUNC    GLOBAL DEFAULT   12 monitor_get_cmdline_by_pid
+    36: 00403cf8   376 FUNC    GLOBAL DEFAULT   12 monitor_get_path_by_pid
+    54: 004073e0     0 FUNC    GLOBAL DEFAULT  UND proc_get_process_pid
+    57: 004073b0     0 FUNC    GLOBAL DEFAULT  UND proc_check_app
+----- firmware-src/RootFS-unpacked/bin/pann -----
+    73: 004118c0     0 FUNC    GLOBAL DEFAULT  UND proc_get_process_pid
+----- firmware-src/RootFS-unpacked/bin/multiWAN -----
+   138: 00425f90     0 FUNC    GLOBAL DEFAULT  UND monitor_check_exist
+   223: 00425a40     0 FUNC    GLOBAL DEFAULT  UND proc_check_app
+----- firmware-src/RootFS-unpacked/bin/network_check -----
+    45: 00407010     0 FUNC    GLOBAL DEFAULT  UND proc_check_app
+----- firmware-src/RootFS-unpacked/bin/gpio_ctrl -----
+    16: 004026e0     0 FUNC    GLOBAL DEFAULT  UND monitor_check_exist
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   317: 0045b460     0 FUNC    GLOBAL DEFAULT  UND monitor_check_exist
+   474: 0045aac0     0 FUNC    GLOBAL DEFAULT  UND proc_check_app
+----- firmware-src/RootFS-unpacked/bin/pservice_tool -----
+    33: 004014b0     0 FUNC    GLOBAL DEFAULT  UND monitor_check_exist
+----- firmware-src/RootFS-unpacked/bin/telnet_ate_monitor -----
+    27: 00401be0     0 FUNC    GLOBAL DEFAULT  UND proc_check_app
+
+===== ELF importers of generic monitor IPC helpers =====
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+   132: 000348a4   100 FUNC    GLOBAL DEFAULT   10 monitor_mstart
+   409: 00031b3c   640 FUNC    GLOBAL DEFAULT   10 ugw_proc_send_msg
+   443: 00031dbc  1124 FUNC    GLOBAL DEFAULT   10 ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/lib/libcommonprod.so -----
+   136: 0000f760     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+----- firmware-src/RootFS-unpacked/bin/monitor -----
+     2: 00402c30   572 FUNC    GLOBAL DEFAULT   12 monitor_unregister
+     4: 00402e6c  1296 FUNC    GLOBAL DEFAULT   12 monitor_register_associ_proc
+     8: 0040337c   580 FUNC    GLOBAL DEFAULT   12 monitor_unregister_associ_proc
+    10: 00402338  1188 FUNC    GLOBAL DEFAULT   12 monitor_notify_associ_proc
+    18: 004027dc  1108 FUNC    GLOBAL DEFAULT   12 monitor_register
+    81: 00407230     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+    92: 00407180     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+   633: 00464e60     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/cfm -----
+    55: 00402d80     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+----- firmware-src/RootFS-unpacked/bin/logserver -----
+    72: 00403020     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/multiWAN -----
+   164: 00425df0     0 FUNC    GLOBAL DEFAULT  UND monitor_mstart
+   214: 00425ad0     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+   239: 00425960     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/network_check -----
+    95: 00406cf0     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/timer -----
+    35: 00402560     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+    43: 004024e0     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+   108: 0040c370     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/cfmd -----
+   126: 0040afc0     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+   241: 00431730     0 FUNC    GLOBAL DEFAULT  UND monitor_mstart
+----- firmware-src/RootFS-unpacked/bin/dhcpcd -----
+   199: 00413c90     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   363: 0045b180     0 FUNC    GLOBAL DEFAULT  UND monitor_mstart
+   465: 0045ab50     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+   498: 0045a960     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+----- firmware-src/RootFS-unpacked/bin/pservice_tool -----
+    17: 004015b0     0 FUNC    GLOBAL DEFAULT  UND monitor_mstart
+
+===== process/status strings in network-facing binaries =====
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+   5717 mxp_manage_list__free_unpacked
+   5736 manual_node_info__unpack
+   574f manual_node_info__free_unpacked
+   576f get_node_opt_hash_table
+   5787 monitor_stop
+   5794 systool_handle_restore_zero
+   57b0 str_list_del_item
+   57c2 save_all_mesh_node_opt
+   57d9 node_led_status__unpack
+   57f1 node_led_status__free_unpacked
+   5810 node_location__unpack
+   5826 node_location__free_unpacked
+   5843 mesh_node_list__unpack
+   585a mesh_node_list__free_unpacked
+   5878 uc_api_m_cloud_info_send_node_status
+--
+   673d upgrade_image_to_flash
+   6754 conf_send_reboot_msg_to_map
+   6770 conf_send_write_flash_msg_to_map
+   6791 ucloud_set_upgrade_reboot_cfg_srv
+   67b3 monitor_start
+   67c1 upgrade_msg_to_map
+   67d4 init_mesh_upgrade
+   67e6 get_internet_status
+   67fa eanble_inter_chk_request
+   6813 enable_conn_innernet
+   6828 mesh_id_info__descriptor
+   6841 get_mesh_info
+   684f mesh_id_info__get_packed_size
+   686d mesh_id_info__pack
+   6880 enable_upgrade_hdl
+--
+  65f81 [;32m[ Debug ] [%9s:%5d] %s
+  65fa5 [;33m[ Info  ] [%9s:%5d] %s
+  65fc9 [;31m[ Error ] [%9s:%5d] %s
+  65fed [;31m[ Error ] [%9s:%5d] %s
+  66078 monitor
+  66098 /var/pm_socket
+  660dc timer
+  660fc /var/tm_socket
+  66140 cfms
+  66160 /var/cfm_socket
+  661a4 logserver
+  661c4 /var/plog_socket
+  66208 netctrl
+  66228 /var/nt_socket
+  6626c multiWAN
+  6628c /var/mw_socket
+--
+  66ba0 init_confsrv_unix_sock
+  66bb8 confsrv_unix_accept_event_handle
+  66bdc confsrv_unix_read_event_handle
+  66c30 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  66cd8 monitor
+  66cf8 /var/pm_socket
+  66d3c timer
+  66d5c /var/tm_socket
+  66da0 cfms
+  66dc0 /var/cfm_socket
+  66e04 logserver
+  66e24 /var/plog_socket
+  66e68 netctrl
+  66e88 /var/nt_socket
+  66ecc multiWAN
+  66eec /var/mw_socket
+--
+  67e10 ManualNodeAdd
+  67e20 GetHighDeviceCfg
+  67e34 SetHighDeviceCfg
+  67e48 UpdateHighDeviceList
+  67ec8 monitor
+  67ee8 /var/pm_socket
+  67f2c timer
+  67f4c /var/tm_socket
+  67f90 cfms
+  67fb0 /var/cfm_socket
+  67ff4 logserver
+  68014 /var/plog_socket
+  68058 netctrl
+  68078 /var/nt_socket
+  680bc multiWAN
+  680dc /var/mw_socket
+--
+  68e60 set_wan_dns
+  68e6c print_wan_ipnetcfg
+  68e80 print_wan_dns
+  68e90 set_wan_connect_type
+  68f18 monitor
+  68f38 /var/pm_socket
+  68f7c timer
+  68f9c /var/tm_socket
+  68fe0 cfms
+  69000 /var/cfm_socket
+  69044 logserver
+  69064 /var/plog_socket
+  690a8 netctrl
+  690c8 /var/nt_socket
+  6910c multiWAN
+  6912c /var/mw_socket
+--
+  699e4 get_all_client_remark
+  699fc update_remark_to_hash_table
+  69a18 add_new_remark_to_hash_table
+  69a38 free_the_hash_table
+  69ab8 monitor
+  69ad8 /var/pm_socket
+  69b1c timer
+  69b3c /var/tm_socket
+  69b80 cfms
+  69ba0 /var/cfm_socket
+  69be4 logserver
+  69c04 /var/plog_socket
+  69c48 netctrl
+  69c68 /var/nt_socket
+  69cac multiWAN
+  69ccc /var/mw_socket
+--
+  6a384 %llu
+  6a38c op=%d,wl_rate=24
+  6a3a0 op=%d,wl_rate=5
+  6a3b0 conf_set_mf_cfg
+  6a428 monitor
+  6a448 /var/pm_socket
+  6a48c timer
+  6a4ac /var/tm_socket
+  6a4f0 cfms
+  6a510 /var/cfm_socket
+  6a554 logserver
+  6a574 /var/plog_socket
+  6a5b8 netctrl
+  6a5d8 /var/nt_socket
+  6a61c multiWAN
+  6a63c /var/mw_socket
+--
+  6acfc %llu
+  6ad04 advance_type=%d
+  6ad14 module_id=%d,op=%d
+  6ad28 conf_set_port_fwd_cfg
+  6ada8 monitor
+  6adc8 /var/pm_socket
+  6ae0c timer
+  6ae2c /var/tm_socket
+  6ae70 cfms
+  6ae90 /var/cfm_socket
+  6aed4 logserver
+  6aef4 /var/plog_socket
+  6af38 netctrl
+  6af58 /var/nt_socket
+  6af9c multiWAN
+  6afbc /var/mw_socket
+--
+  6b9b0 confctl_set_sys_timezone
+  6b9cc is_time_updated
+  6b9dc print_tv_string
+  6b9ec confctl_get_is_suilt
+  6ba78 monitor
+  6ba98 /var/pm_socket
+  6badc timer
+  6bafc /var/tm_socket
+  6bb40 cfms
+  6bb60 /var/cfm_socket
+  6bba4 logserver
+  6bbc4 /var/plog_socket
+  6bc08 netctrl
+  6bc28 /var/nt_socket
+  6bc6c multiWAN
+  6bc8c /var/mw_socket
+--
+  6c660 save_mesh_node_conf
+  6c674 get_cloud_node_hash_table
+  6c690 update_node_to_hash_table
+  6c6ac add_node_to_hash_table
+  6c738 monitor
+  6c758 /var/pm_socket
+  6c79c timer
+  6c7bc /var/tm_socket
+  6c800 cfms
+  6c820 /var/cfm_socket
+  6c864 logserver
+  6c884 /var/plog_socket
+  6c8c8 netctrl
+  6c8e8 /var/nt_socket
+  6c92c multiWAN
+  6c94c /var/mw_socket
+--
+  6d0e4 fill_time_group_rule_list
+  6d100 destroy_time_group_list
+  6d118 fill_time_group_rule
+  6d130 addTimeGroup
+  6d1a8 monitor
+  6d1c8 /var/pm_socket
+  6d20c timer
+  6d22c /var/tm_socket
+  6d270 cfms
+  6d290 /var/cfm_socket
+  6d2d4 logserver
+  6d2f4 /var/plog_socket
+  6d338 netctrl
+  6d358 /var/nt_socket
+  6d39c multiWAN
+  6d3bc /var/mw_socket
+--
+  6ded8 set_dev_list
+  6dee8 set_dev_list
+  6def8 update_mac_filter_rule
+  6df10 clear_mac_filter_config
+  6df98 monitor
+  6dfb8 /var/pm_socket
+  6dffc timer
+  6e01c /var/tm_socket
+  6e060 cfms
+  6e080 /var/cfm_socket
+  6e0c4 logserver
+  6e0e4 /var/plog_socket
+  6e128 netctrl
+  6e148 /var/nt_socket
+  6e18c multiWAN
+  6e1ac /var/mw_socket
+--
+  6ea18 sort_itemIndexs
+  6ea28 get_item_in_rule
+  6ea3c generate_rule_id
+  6ea50 delete_rules_in_list
+  6ead8 monitor
+  6eaf8 /var/pm_socket
+  6eb3c timer
+  6eb5c /var/tm_socket
+  6eba0 cfms
+  6ebc0 /var/cfm_socket
+  6ec04 logserver
+  6ec24 /var/plog_socket
+  6ec68 netctrl
+  6ec88 /var/nt_socket
+  6eccc multiWAN
+  6ecec /var/mw_socket
+--
+  6f118 common_so
+  6f17c ap_common_so
+  6f1e0 prod_common_so
+  6f2a4 op=%d
+  6f318 monitor
+  6f338 /var/pm_socket
+  6f37c timer
+  6f39c /var/tm_socket
+  6f3e0 cfms
+  6f400 /var/cfm_socket
+  6f444 logserver
+  6f464 /var/plog_socket
+  6f4a8 netctrl
+  6f4c8 /var/nt_socket
+  6f50c multiWAN
+  6f52c /var/mw_socket
+--
+  7164c groupsn_add_node_msg
+  71664 update_client_node_list
+  7167c clear_location_info
+  71690 client_node_add
+  71728 monitor
+  71748 /var/pm_socket
+  7178c timer
+  717ac /var/tm_socket
+  717f0 cfms
+  71810 /var/cfm_socket
+  71854 logserver
+  71874 /var/plog_socket
+  718b8 netctrl
+  718d8 /var/nt_socket
+  7191c multiWAN
+  7193c /var/mw_socket
+--
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+  735ec /var/mw_socket
+--
+  73fbc wl.guest.dhcps_enable
+  73fd4 malloc failed. (%d)%m
+  73fec confctl_set_dhcps_cfg
+  74004 change_wifi_guest_ip
+  74088 monitor
+  740a8 /var/pm_socket
+  740ec timer
+  7410c /var/tm_socket
+  74150 cfms
+  74170 /var/cfm_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  74218 netctrl
+  74238 /var/nt_socket
+  7427c multiWAN
+  7429c /var/mw_socket
+--
+  75654 fill_wan_port_static_dns_cfg
+  75674 fill_wan_port_ipnetcfg_cfg
+  75690 fill_wan_port_dns_cfg
+  756a8 print_wan_rate
+  75728 monitor
+  75748 /var/pm_socket
+  7578c timer
+  757ac /var/tm_socket
+  757f0 cfms
+  75810 /var/cfm_socket
+  75854 logserver
+  75874 /var/plog_socket
+  758b8 netctrl
+  758d8 /var/nt_socket
+  7591c multiWAN
+  7593c /var/mw_socket
+--
+  75ef4 open error
+  75f00 readdir err!
+  75f10 log_upload &
+  75f20 /tmp/log/crash
+  75fa8 monitor
+  75fc8 /var/pm_socket
+  7600c timer
+  7602c /var/tm_socket
+  76070 cfms
+  76090 /var/cfm_socket
+  760d4 logserver
+  760f4 /var/plog_socket
+  76138 netctrl
+  76158 /var/nt_socket
+  7619c multiWAN
+  761bc /var/mw_socket
+--
+  776fc g_upgrade_softver is %s
+  77718 up.wrt.flash
+  77728 killall -9 mpp_upgrade
+  77740 mpp_upgrade
+  7774c start mpp_upgrade process is fail
+  77770 flash set is ok
+  77780 here start upgrade
+  77794 Force Reboot: %d
+  777a8 scheduling: %s - %s
+  777c0 upgrade soft_ver is %s
+  777d8 %s time less than 0 %d
+  777f0 auto____upgrade_____error______%s(%d)
+  77818 [arainc][plcy->auto_upgrade = %d][dont handle]%s(%d)
+  77850 upgrade_shced_timeout start    %s(%d)
+  77878 CHK Wan Status
+--
+  77e74 api/biz_md5.c
+  77e88 %02X
+  77e90 %02x
+  77e98 biz_md5_encode
+  77f18 monitor
+  77f38 /var/pm_socket
+  77f7c timer
+  77f9c /var/tm_socket
+  77fe0 cfms
+  78000 /var/cfm_socket
+  78044 logserver
+  78064 /var/plog_socket
+  780a8 netctrl
+  780c8 /var/nt_socket
+  7810c multiWAN
+  7812c /var/mw_socket
+--
+  790cc confctl_get_guest_wlan
+  790e4 confctl_get_master_wlan
+  790fc confctl_set_master_wlan
+  79114 wlan_get_master_cfg
+  79198 monitor
+  791b8 /var/pm_socket
+  791fc timer
+  7921c /var/tm_socket
+  79260 cfms
+  79280 /var/cfm_socket
+  792c4 logserver
+  792e4 /var/plog_socket
+  79328 netctrl
+  79348 /var/nt_socket
+  7938c multiWAN
+  793ac /var/mw_socket
+--
+  79a60          malloc failed          
+  79a84      in buf is null   
+  79a9c [cizxy]  node[%d]  sn:%s       
+  79ac0 del_mesh_node
+  79b48 monitor
+  79b68 /var/pm_socket
+  79bac timer
+  79bcc /var/tm_socket
+  79c10 cfms
+  79c30 /var/cfm_socket
+  79c74 logserver
+  79c94 /var/plog_socket
+  79cd8 netctrl
+  79cf8 /var/nt_socket
+  79d3c multiWAN
+  79d5c /var/mw_socket
+--
+  7a408 /proc/link_loop
+  7a418        malloc   failed !     
+  7a438 ReportAssocMsg
+  7a448 confctl_srv_key
+  7a4c8 monitor
+  7a4e8 /var/pm_socket
+  7a52c timer
+  7a54c /var/tm_socket
+  7a590 cfms
+  7a5b0 /var/cfm_socket
+  7a5f4 logserver
+  7a614 /var/plog_socket
+  7a658 netctrl
+  7a678 /var/nt_socket
+  7a6bc multiWAN
+  7a6dc /var/mw_socket
+--
+  7b624 upload_status_handle
+  7b63c dev_mark_list_a
+  7b64c print_mark_list_a
+  7b660 upload_device_start
+  7b6e8 monitor
+  7b708 /var/pm_socket
+  7b74c timer
+  7b76c /var/tm_socket
+  7b7b0 cfms
+  7b7d0 /var/cfm_socket
+  7b814 logserver
+  7b834 /var/plog_socket
+  7b878 netctrl
+  7b898 /var/nt_socket
+  7b8dc multiWAN
+  7b8fc /var/mw_socket
+--
+  7bee4    unpack  failed !  
+  7bf04 %llu
+  7bf0c sys.cfg.stamp
+  7bf1c advance_type=%d
+  7bf98 monitor
+  7bfb8 /var/pm_socket
+  7bffc timer
+  7c01c /var/tm_socket
+  7c060 cfms
+  7c080 /var/cfm_socket
+  7c0c4 logserver
+  7c0e4 /var/plog_socket
+  7c128 netctrl
+  7c148 /var/nt_socket
+  7c18c multiWAN
+  7c1ac /var/mw_socket
+--
+  7c9d8  unpackd failed ! 
+  7c9f4 %llu
+  7c9fc sys.cfg.stamp
+  7ca0c sched_boot_set_cfg
+  7ca98 monitor
+  7cab8 /var/pm_socket
+  7cafc timer
+  7cb1c /var/tm_socket
+  7cb60 cfms
+  7cb80 /var/cfm_socket
+  7cbc4 logserver
+  7cbe4 /var/plog_socket
+  7cc28 netctrl
+  7cc48 /var/nt_socket
+  7cc8c multiWAN
+  7ccac /var/mw_socket
+--
+  7dad4 confctl_set_allconfig
+  7daec allconfig_protobuf_data_build
+  7db10 ucloud.en
+  7db24 sys.manage.keys
+  7dba8 monitor
+  7dbc8 /var/pm_socket
+  7dc0c timer
+  7dc2c /var/tm_socket
+  7dc70 cfms
+  7dc90 /var/cfm_socket
+  7dcd4 logserver
+  7dcf4 /var/plog_socket
+  7dd38 netctrl
+  7dd58 /var/nt_socket
+  7dd9c multiWAN
+  7ddbc /var/mw_socket
+--
+  7e420 wl5g.public.dot11r
+  7e434 %llu
+  7e43c sys.cfg.stamp
+  7e44c op=%d,wl_rate=%d
+  7e4c8 monitor
+  7e4e8 /var/pm_socket
+  7e52c timer
+  7e54c /var/tm_socket
+  7e590 cfms
+  7e5b0 /var/cfm_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+  7e658 netctrl
+  7e678 /var/nt_socket
+  7e6bc multiWAN
+  7e6dc /var/mw_socket
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+   279d strncpy
+   27a5 check_mpp_highdevice_cfg
+   27be stderr
+   27c5 freopen
+   27cd monitor_stop
+   27da check_app
+   27e4 monitor_start
+   27f2 sleep
+   27f8 send_force_upgrade
+   280b cm_poll_start
+   2819 cm_poll_stop
+   2826 system_init_core_dump
+   283c apmib_init
+   2847 check_product_is_simgle_image
+   2865 env_init
+   286e puts
+   2873 print_confctl_debug_list
+--
+   4012 upgrade_sched_reboot_timeout_check_cli
+   4039 upgrade_sched_reboot_timeout_event_cli
+   4060 ucloud_set_upgrade_reboot_cfg_cli
+   4082 fw_multi_upgrade_info_t__unpack
+   40a2 monitor_mstart
+   40b1 upgrade_msg_to_ucloud
+   40c7 multi_upgrade_send_mem_enough_to_mpp
+   40ec fw_multi_upgrade_info_t__free_unpacked
+   4113 g_upgrade_sched_reboot_srv
+   412e sched_reboot_time_check_cli
+   414a get_interface_statistics
+   4163 print_for_debug_cli
+   4177 __udivdi3
+   4181 check_mem_before
+   4192 upgrade_map_mulst_reboot
+--
+  31a35 [;33m[ Info  ] [%9s:%5d] %s
+  31a59 [;31m[ Error ] [%9s:%5d] %s
+  31a7d [;31m[ Error ] [%9s:%5d] %s
+  31aa0 oom at <../../cmdmgr/include/cm.h:77>
+  31b30 monitor
+  31b50 /var/pm_socket
+  31b94 timer
+  31bb4 /var/tm_socket
+  31bf8 cfms
+  31c18 /var/cfm_socket
+  31c5c logserver
+  31c7c /var/plog_socket
+  31cc0 netctrl
+  31ce0 /var/nt_socket
+  31d24 multiWAN
+  31d44 /var/mw_socket
+--
+  325c8 confctl_cli_key
+  325d8 confctl_force_upgrade_cli
+  325f4 check_mpp_highdevice_cfg
+  32650 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  326f8 monitor
+  32718 /var/pm_socket
+  3275c timer
+  3277c /var/tm_socket
+  327c0 cfms
+  327e0 /var/cfm_socket
+  32824 logserver
+  32844 /var/plog_socket
+  32888 netctrl
+  328a8 /var/nt_socket
+  328ec multiWAN
+  3290c /var/mw_socket
+--
+  3361c SetNosCfg
+  33628 SetDevAssistantCfgMap
+  33640 restore_some_report
+  33654 ChangeChannelBandwidthMap
+  336d8 monitor
+  336f8 /var/pm_socket
+  3373c timer
+  3375c /var/tm_socket
+  337a0 cfms
+  337c0 /var/cfm_socket
+  33804 logserver
+  33824 /var/plog_socket
+  33868 netctrl
+  33888 /var/nt_socket
+  338cc multiWAN
+  338ec /var/mw_socket
+--
+  34670 set_wan_dns
+  3467c print_wan_ipnetcfg
+  34690 print_wan_dns
+  346a0 set_wan_connect_type
+  34728 monitor
+  34748 /var/pm_socket
+  3478c timer
+  347ac /var/tm_socket
+  347f0 cfms
+  34810 /var/cfm_socket
+  34854 logserver
+  34874 /var/plog_socket
+  348b8 netctrl
+  348d8 /var/nt_socket
+  3491c multiWAN
+  3493c /var/mw_socket
+--
+  351f4 get_all_client_remark
+  3520c update_remark_to_hash_table
+  35228 add_new_remark_to_hash_table
+  35248 free_the_hash_table
+  352c8 monitor
+  352e8 /var/pm_socket
+  3532c timer
+  3534c /var/tm_socket
+  35390 cfms
+  353b0 /var/cfm_socket
+  353f4 logserver
+  35414 /var/plog_socket
+  35458 netctrl
+  35478 /var/nt_socket
+  354bc multiWAN
+  354dc /var/mw_socket
+--
+  35b94 %llu
+  35b9c op=%d,wl_rate=24
+  35bb0 op=%d,wl_rate=5
+  35bc0 conf_set_mf_cfg
+  35c38 monitor
+  35c58 /var/pm_socket
+  35c9c timer
+  35cbc /var/tm_socket
+  35d00 cfms
+  35d20 /var/cfm_socket
+  35d64 logserver
+  35d84 /var/plog_socket
+  35dc8 netctrl
+  35de8 /var/nt_socket
+  35e2c multiWAN
+  35e4c /var/mw_socket
+--
+  3650c %llu
+  36514 advance_type=%d
+  36524 module_id=%d,op=%d
+  36538 conf_set_port_fwd_cfg
+  365b8 monitor
+  365d8 /var/pm_socket
+  3661c timer
+  3663c /var/tm_socket
+  36680 cfms
+  366a0 /var/cfm_socket
+  366e4 logserver
+  36704 /var/plog_socket
+  36748 netctrl
+  36768 /var/nt_socket
+  367ac multiWAN
+  367cc /var/mw_socket
+--
+  371c0 confctl_set_sys_timezone
+  371dc is_time_updated
+  371ec print_tv_string
+  371fc confctl_get_is_suilt
+  37288 monitor
+  372a8 /var/pm_socket
+  372ec timer
+  3730c /var/tm_socket
+  37350 cfms
+  37370 /var/cfm_socket
+  373b4 logserver
+  373d4 /var/plog_socket
+  37418 netctrl
+  37438 /var/nt_socket
+  3747c multiWAN
+  3749c /var/mw_socket
+--
+  37e70 save_mesh_node_conf
+  37e84 get_cloud_node_hash_table
+  37ea0 update_node_to_hash_table
+  37ebc add_node_to_hash_table
+  37f48 monitor
+  37f68 /var/pm_socket
+  37fac timer
+  37fcc /var/tm_socket
+  38010 cfms
+  38030 /var/cfm_socket
+  38074 logserver
+  38094 /var/plog_socket
+  380d8 netctrl
+  380f8 /var/nt_socket
+  3813c multiWAN
+  3815c /var/mw_socket
+--
+  388f4 fill_time_group_rule_list
+  38910 destroy_time_group_list
+  38928 fill_time_group_rule
+  38940 addTimeGroup
+  389b8 monitor
+  389d8 /var/pm_socket
+  38a1c timer
+  38a3c /var/tm_socket
+  38a80 cfms
+  38aa0 /var/cfm_socket
+  38ae4 logserver
+  38b04 /var/plog_socket
+  38b48 netctrl
+  38b68 /var/nt_socket
+  38bac multiWAN
+  38bcc /var/mw_socket
+--
+  396e8 set_dev_list
+  396f8 set_dev_list
+  39708 update_mac_filter_rule
+  39720 clear_mac_filter_config
+  397a8 monitor
+  397c8 /var/pm_socket
+  3980c timer
+  3982c /var/tm_socket
+  39870 cfms
+  39890 /var/cfm_socket
+  398d4 logserver
+  398f4 /var/plog_socket
+  39938 netctrl
+  39958 /var/nt_socket
+  3999c multiWAN
+  399bc /var/mw_socket
+--
+  3a228 sort_itemIndexs
+  3a238 get_item_in_rule
+  3a24c generate_rule_id
+  3a260 delete_rules_in_list
+  3a2e8 monitor
+  3a308 /var/pm_socket
+  3a34c timer
+  3a36c /var/tm_socket
+  3a3b0 cfms
+  3a3d0 /var/cfm_socket
+  3a414 logserver
+  3a434 /var/plog_socket
+  3a478 netctrl
+  3a498 /var/nt_socket
+  3a4dc multiWAN
+  3a4fc /var/mw_socket
+--
+  3a928 common_so
+  3a98c ap_common_so
+  3a9f0 prod_common_so
+  3aab4 op=%d
+  3ab28 monitor
+  3ab48 /var/pm_socket
+  3ab8c timer
+  3abac /var/tm_socket
+  3abf0 cfms
+  3ac10 /var/cfm_socket
+  3ac54 logserver
+  3ac74 /var/plog_socket
+  3acb8 netctrl
+  3acd8 /var/nt_socket
+  3ad1c multiWAN
+  3ad3c /var/mw_socket
+--
+  3b81c clear_remove_node_location
+  3b838 node_hash_table_find
+  3b850 ucloud_del_node_cli
+  3b864 del_node_location
+  3b8e8 monitor
+  3b908 /var/pm_socket
+  3b94c timer
+  3b96c /var/tm_socket
+  3b9b0 cfms
+  3b9d0 /var/cfm_socket
+  3ba14 logserver
+  3ba34 /var/plog_socket
+  3ba78 netctrl
+  3ba98 /var/nt_socket
+  3badc multiWAN
+  3bafc /var/mw_socket
+--
+  3c1a8 /proc/link_loop
+  3c1b8        malloc   failed !     
+  3c1d8 ReportAssocMsg
+  3c1e8 confctl_srv_key
+  3c268 monitor
+  3c288 /var/pm_socket
+  3c2cc timer
+  3c2ec /var/tm_socket
+  3c330 cfms
+  3c350 /var/cfm_socket
+  3c394 logserver
+  3c3b4 /var/plog_socket
+  3c3f8 netctrl
+  3c418 /var/nt_socket
+  3c45c multiWAN
+  3c47c /var/mw_socket
+--
+  3d2b4 confctl_get_guest_wlan_cli
+  3d2d0 confctl_get_master_wlan_cli
+  3d2ec confctl_set_master_wlan_cli
+  3d308 wlan_get_master_cfg
+  3d388 monitor
+  3d3a8 /var/pm_socket
+  3d3ec timer
+  3d40c /var/tm_socket
+  3d450 cfms
+  3d470 /var/cfm_socket
+  3d4b4 logserver
+  3d4d4 /var/plog_socket
+  3d518 netctrl
+  3d538 /var/nt_socket
+  3d57c multiWAN
+  3d59c /var/mw_socket
+--
+  3dd48 op=%d
+  3dd50 %llu
+  3dd58 sys.cfg.stamp
+  3dd68 confctl_set_wan_cfg_cli
+  3dde8 monitor
+  3de08 /var/pm_socket
+  3de4c timer
+  3de6c /var/tm_socket
+  3deb0 cfms
+  3ded0 /var/cfm_socket
+  3df14 logserver
+  3df34 /var/plog_socket
+  3df78 netctrl
+  3df98 /var/nt_socket
+  3dfdc multiWAN
+  3dffc /var/mw_socket
+--
+  3e868 confctl_set_conflict_guest_ip
+  3e888 confctl_set_conflict_lanip
+  3e8a4 confctl_set_dhcps_cfg_cli
+  3e8c0 change_wifi_guest_ip_cli
+  3e948 monitor
+  3e968 /var/pm_socket
+  3e9ac timer
+  3e9cc /var/tm_socket
+  3ea10 cfms
+  3ea30 /var/cfm_socket
+  3ea74 logserver
+  3ea94 /var/plog_socket
+  3ead8 netctrl
+  3eaf8 /var/nt_socket
+  3eb3c multiWAN
+  3eb5c /var/mw_socket
+--
+  3f280 assist.dev.ltime
+  3f298 conf_set_assistant_cfg_map
+  3f2b4 send_update_remark_request
+  3f2d0 confctl_update_remark_from_mpp
+  3f368 monitor
+  3f388 /var/pm_socket
+  3f3cc timer
+  3f3ec /var/tm_socket
+  3f430 cfms
+  3f450 /var/cfm_socket
+  3f494 logserver
+  3f4b4 /var/plog_socket
+  3f4f8 netctrl
+  3f518 /var/nt_socket
+  3f55c multiWAN
+  3f57c /var/mw_socket
+--
+  3fc24 sys.schedulereboot.type
+  3fc3c %llu
+  3fc44 sys.cfg.stamp
+  3fc54 confctl_pub_map_schedu_reboot
+  3fce8 monitor
+  3fd08 /var/pm_socket
+  3fd4c timer
+  3fd6c /var/tm_socket
+  3fdb0 cfms
+  3fdd0 /var/cfm_socket
+  3fe14 logserver
+  3fe34 /var/plog_socket
+  3fe78 netctrl
+  3fe98 /var/nt_socket
+  3fedc multiWAN
+  3fefc /var/mw_socket
+--
+  404b4 open error
+  404c0 readdir err!
+  404d0 log_upload &
+  404e0 /tmp/log/crash
+  40568 monitor
+  40588 /var/pm_socket
+  405cc timer
+  405ec /var/tm_socket
+  40630 cfms
+  40650 /var/cfm_socket
+  40694 logserver
+  406b4 /var/plog_socket
+  406f8 netctrl
+  40718 /var/nt_socket
+  4075c multiWAN
+  4077c /var/mw_socket
+--
+  40d64    unpack  failed !  
+  40d84 %llu
+  40d8c sys.cfg.stamp
+  40d9c advance_type=%d
+  40e18 monitor
+  40e38 /var/pm_socket
+  40e7c timer
+  40e9c /var/tm_socket
+  40ee0 cfms
+  40f00 /var/cfm_socket
+  40f44 logserver
+  40f64 /var/plog_socket
+  40fa8 netctrl
+  40fc8 /var/nt_socket
+  4100c multiWAN
+  4102c /var/mw_socket
+--
+  41840 fast.seting.red
+  41850 %llu
+  41858 sys.cfg.stamp
+  41868 confctl_set_allconfig_cli
+  418f8 monitor
+  41918 /var/pm_socket
+  4195c timer
+  4197c /var/tm_socket
+  419c0 cfms
+  419e0 /var/cfm_socket
+  41a24 logserver
+  41a44 /var/plog_socket
+  41a88 netctrl
+  41aa8 /var/nt_socket
+  41aec multiWAN
+  41b0c /var/mw_socket
+--
+  42b94 mesh_systool_write_image
+  42bb0 mesh_systool_write_image
+  42c08 ucloud.en
+  42c14 sys.manage.keys
+  42c98 monitor
+  42cb8 /var/pm_socket
+  42cfc timer
+  42d1c /var/tm_socket
+  42d60 cfms
+  42d80 /var/cfm_socket
+  42dc4 logserver
+  42de4 /var/plog_socket
+  42e28 netctrl
+  42e48 /var/nt_socket
+  42e8c multiWAN
+  42eac /var/mw_socket
+--
+  43510 wl5g.public.dot11r
+  43524 %llu
+  4352c sys.cfg.stamp
+  4353c op=%d,wl_rate=%d
+  435b8 monitor
+  435d8 /var/pm_socket
+  4361c timer
+  4363c /var/tm_socket
+  43680 cfms
+  436a0 /var/cfm_socket
+  436e4 logserver
+  43704 /var/plog_socket
+  43748 netctrl
+  43768 /var/nt_socket
+  437ac multiWAN
+  437cc /var/mw_socket
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   313f netctrl_term_sig_entry
+   3156 netctrl_bad_sig_entry
+   316c fgets
+   3172 netctrl_add_route_table
+   318a getpid
+   3191 ioctl
+   3197 hal_get_mac
+   31a3 memcmp
+   31aa hal_set_mac
+   31b6 hal_init_eth
+   31c3 hal_init_bridge
+   31d3 wan_interface_addr_init
+   31eb ifaddrs_get_if_netmac
+   3201 sethostname
+   320d perror
+--
+   3313 ugw_proc_msg_unregister
+   332b netlink_sock_deinit
+   333f timer_start
+   334b timer_stop
+   3356 monitor_mstart
+   3365 stat
+   336a mkdir
+   3370 hal_vlan_config
+   3380 apmib_init
+   338b g_restart_netctrl
+   339d monitor_start
+   33ab device_list_init
+   33bc check_product_is_simgle_image
+   33da SetValue
+   33e3 CommitCfm
+   33ed ApmibGetValue
+   33fb system_init_core_dump
+   3411 netctrl_module_init_entry
+   342b choose_wifi_work_mode
+   3441 fscanf
+   3448 bzero
+--
+   3566 netctrl_module_register_opses
+   3584 get_sys_mode
+   3591 getWanConnType
+   35a0 ifaddrs_get_wan_ifname
+   35b7 monitor_check_exist
+   35cb monitor_stop
+   35d8 strstr
+   35df strcat
+   35e6 strlen
+   35ed check_wan_connected
+   3601 parse_dns_config
+   3612 strncat
+   361a getAllWanDns
+   3627 dnrd_stop
+   3631 dnrd_start
+   363c dnrd_restart
+--
+   36d8 advance_set_port_map_rule
+   36f2 advance_unset_wan_access_cfg
+   370f file_wan_ip_info_get
+   3724 check_ip_is_same_network_segment
+   3745 proc_check_app
+   3754 proc_send_signal
+   3765 advance_upnp_stop
+   3777 advance_get_wan_base_cfg
+   3790 advance_get_lan_base_cfg
+   37a9 advance_get_dmz_cfg
+   37bd advance_get_port_map_cfg
+   37d6 advance_get_wan_access_cfg
+   37f1 advance_get_static_route_cfg
+   380e advance_get_upnp_cfg
+   3823 advance_set_dmz_cfg
+--
+   417c vpn_public_save_cur_user
+   4195 g_vpn_pptp_server_msg_ops
+   41af vpn_l2tp_kill_l2tp_client
+   41c9 vpn_l2tp_init_cfg_file
+   41e0 monitor_start_extern
+   41f5 vpn_l2tp_get_cfg
+   4206 g_vpn_l2tp_client_msg_ops
+   4220 g_vpn_l2tp_server_msg_ops
+   423a igmp_conf_init
+   4249 igmp_start
+   4254 igmp_stop
+   425e g_igmp_msg_ops
+   426d port_set_port_mirror
+   4282 port_set_eth_mode_speed
+   429a port_set_speed_mode
+--
+   430e advance_serv_stop
+   4320 wifi_vif_start
+   432f wifi_handle_except_mesh
+   4347 wifi_ssid_sync
+   4356 netctrl_module_ate_monitor_handle
+   4378 netctrl_moudle_sntp_handle
+   4393 netctrl_moudle_wifi_handle
+   43ae netctrl_moudle_telnet_handle
+   43cb netctrl_moudle_redis_handle
+   43e7 netctrl_moudle_cmdSrv_handle
+   4404 netctrl_moudle_dhcps_handle
+   4420 netctrl_moudle_advance_serv_handle
+   4443 netctrl_moudle_uclould_handle
+   4461 netctrl_moudle_cmfCli_handle
+   447e netctrl_map_application_service_ctrl
+--
+   4f31 if_indextoname
+   4f40 gethostname
+   4f4c prod_check_lanip_change_sync_apmode_dhcps
+   4f76 lan_dhcpc_apmode_dhcps_cfg_change
+   4f98 lan_dhcpc_status_change_process_handle
+   4fbf g_lan_dhcpc_msg_ops
+   4fd3 led_control_set
+   4fe3 g_led_control_msg_ops
+   4ff9 g_url_record_msg_ops
+   500e wan_icmp_drop_get_cfg
+   5024 wan_icmp_drop_set_cfg
+   503a wan_icmp_drop_set
+   504c g_wan_icmp_drop_ops
+   5060 time_group_check
+   5071 lan_dhcpc_timeout_phy_link_check
+--
+  5a43b $+ D
+  5a45a B4$(
+  5a46a @P! 
+  5a492 @P! 
+  5b528 monitor
+  5b548 /var/pm_socket
+  5b58c timer
+  5b5ac /var/tm_socket
+  5b5f0 cfms
+  5b610 /var/cfm_socket
+  5b654 logserver
+  5b674 /var/plog_socket
+  5b6b8 netctrl
+  5b6d8 /var/nt_socket
+  5b71c multiWAN
+  5b73c /var/mw_socket
+--
+  5cc8c timer can not stop WIFI_CONNECT_CHECK
+  5ccb4 timer can not stop SSID_AUTO_HIDE_CHECK
+  5ccdc timer can not stop VPN_DIAL_CHECK
+  5cd00 ucloud -l 4
+  5cd0c start ucloud process is fail
+  5cd2c ucloud_ctl
+  5cd38 start ucloud_ctl process is fail
+  5cd5c fail to stat. 
+  5cd6c wans.location
+  5cd7c 1 0 0 0 0
+  5cd88 Initialize AP MIB failed !
+  5cda4 %s(%d)
+  5cdac start multiwan process is fail.
+  5cdcc httpd
+  5cdd4 tendaupload
+  5cde0 start tendaupload process is fail.
+  5ce04 param error.
+  5ce14 /proc/mtd
+  5ce20 fopen is fail.
+  5ce30 %*[^"]"%[^"]"
+  5ce40 mtd%d:
+  5ce48 /dev/mtdblock%d
+  5ce58 get mtd dev is fail.
+  5ce70 sh /usr/bin/mesh_op.sh
+  5ce88 [%s][%d]start /usr/bin/mesh_op.sh fail!!! 
+  5ceb4 pann
+  5cebc gpio_ctrl
+  5cec8 mesh_status_check
+  5cedc network_check
+  5ceec /proc/cmdline
+  5cefc  root
+  5cf04 /dev/mtdblock6
+  5cf14 current_image_boot
+  5cf28 /dev/mtdblock4
+  5cf38 djc___curent_boot_addr____ERROR______%s(%d)
+  5cf68 wifi.priority_mode
+  5cf7c echo %d > /proc/hybrid_steering/band_steering_mode
+  5cfb0 wifi.priority_mode is err
+  5cfcc TD_FINISH_TSTFLAG
+  5cfe0 echo 0 > /proc/hybrid_steering/enable
+--
+  5d31c netctrl_init_sys_route_tables
+  5d33c netctrl_handle_sig_fromkernel
+  5d35c netctrl_init_network
+  5d374 netctrl_parse_msg
+  5d3f8 monitor
+  5d418 /var/pm_socket
+  5d45c timer
+  5d47c /var/tm_socket
+  5d4c0 cfms
+  5d4e0 /var/cfm_socket
+  5d524 logserver
+  5d544 /var/plog_socket
+  5d588 netctrl
+  5d5a8 /var/nt_socket
+  5d5ec multiWAN
+  5d60c /var/mw_socket
+--
+  5dd6c netctrl_module_register_opses
+  5dd8c netctrl_module_register_op
+  5dda8 netctrl_module_get_entry
+  5ddc4 netctrl_module_get_moduleID
+  5de48 monitor
+  5de68 /var/pm_socket
+  5deac timer
+  5decc /var/tm_socket
+  5df10 cfms
+  5df30 /var/cfm_socket
+  5df74 logserver
+  5df94 /var/plog_socket
+  5dfd8 netctrl
+  5dff8 /var/nt_socket
+  5e03c multiWAN
+  5e05c /var/mw_socket
+--
+  5e8f4 lan_start
+  5e900 lan_get_cfg_from_mib
+  5e918 lan_change
+  5e924 lan_change
+  5e998 monitor
+  5e9b8 /var/pm_socket
+  5e9fc timer
+  5ea1c /var/tm_socket
+  5ea60 cfms
+  5ea80 /var/cfm_socket
+  5eac4 logserver
+  5eae4 /var/plog_socket
+  5eb28 netctrl
+  5eb48 /var/nt_socket
+  5eb8c multiWAN
+  5ebac /var/mw_socket
+--
+  5f0a0 prod_common_so
+  5f164 wans.flag
+  5f170 function entry!
+  5f180 dnrd
+  5f188 Stop dnrd process is failure.
+  5f1a8 function exit!
+  5f1c4 %[^.].%[^.].%[^.].%[^,],
+  5f1e0 %u.%u.%u.%u
+  5f1ec %[^.].%[^.].%[^.].%s
+  5f204 %[^.].%[^.].%[^.].%[^-]-
+  5f220 -a %s
+  5f228  -s %s
+  5f230 [%s][%d][luminais] invalid param.
+  5f258 /etc/resolv.conf
+  5f26c nameserver %s
+--
+  5f36c dnrd -t 3 -M 600 --cache=%s -b -R /etc/dnrd -r 3  
+  5f3a0 dnrd_start
+  5f3ac modify_sys_resolv_conf
+  5f3c4 dnrd_stop
+  5f438 monitor
+  5f458 /var/pm_socket
+  5f49c timer
+  5f4bc /var/tm_socket
+  5f500 cfms
+  5f520 /var/cfm_socket
+  5f564 logserver
+  5f584 /var/plog_socket
+  5f5c8 netctrl
+  5f5e8 /var/nt_socket
+  5f62c multiWAN
+  5f64c /var/mw_socket
+--
+  60ec0 advance_get_gst_base_cfg
+  60edc advance_get_lan_base_cfg
+  60ef8 advance_get_wan_base_cfg
+  60f14 advance_find_dmz_chain_prerouting
+  60fa8 monitor
+  60fc8 /var/pm_socket
+  6100c timer
+  6102c /var/tm_socket
+  61070 cfms
+  61090 /var/cfm_socket
+  610d4 logserver
+  610f4 /var/plog_socket
+  61138 netctrl
+  61158 /var/nt_socket
+  6119c multiWAN
+  611bc /var/mw_socket
+--
+  618cc wan_msg_handle
+  618dc wan_msg_transfer
+  618f0 wan_handle_wifi_guest_change
+  61910 wan_handle_mac_change
+  61998 monitor
+  619b8 /var/pm_socket
+  619fc timer
+  61a1c /var/tm_socket
+  61a60 cfms
+  61a80 /var/cfm_socket
+  61ac4 logserver
+  61ae4 /var/plog_socket
+  61b28 netctrl
+  61b48 /var/nt_socket
+  61b8c multiWAN
+  61bac /var/mw_socket
+--
+  62564 route_lan_msg_handle
+  6257c route_msg_handle
+  62590 route_unset_user_policy_rule
+  625b0 route_set_user_policy_rule
+  62638 monitor
+  62658 /var/pm_socket
+  6269c timer
+  626bc /var/tm_socket
+  62700 cfms
+  62720 /var/cfm_socket
+  62764 logserver
+  62784 /var/plog_socket
+  627c8 netctrl
+  627e8 /var/nt_socket
+  6282c multiWAN
+  6284c /var/mw_socket
+--
+  62f6c send 5G restart failed
+  62f84 %s,%d
+  62f8c sched_reboot_msg_handle
+  62fa4 sched_reboot_check
+  63028 monitor
+  63048 /var/pm_socket
+  6308c timer
+  630ac /var/tm_socket
+  630f0 cfms
+  63110 /var/cfm_socket
+  63154 logserver
+  63174 /var/plog_socket
+  631b8 netctrl
+  631d8 /var/nt_socket
+  6321c multiWAN
+  6323c /var/mw_socket
+--
+  63da0 killall -%d dhcps
+  63db4 %s -C %s -l %s -x %s -k
+  63dcc dhcps
+  63dd4 /etc/dhcps.leases
+  63de8 /etc/dhcps.pid
+  63df8 monitor_stop %s failed
+  63e10 [%s][%d]dhcps_stop remove dhcpd file 
+  63e38 pNewCfg is null!
+  63e4c DHCP Server: new config enable.
+  63e6c DHCP Server: new config disable.
+  63e90 [%s][%d]pCurrentCfg is NULL, NewCfgEnable = %d
+  63ec0 DHCP Server stop.
+  63ed4 DHCP Server start.
+  63eec DHCP Server Start
+  63f00 DHCP Server: old config enable.
+  63f20 DHCP Server: old config disable.
+--
+  643b4 dhcps_load_cfg
+  643c4 get_ip_sg
+  643d0 dhcps_cfg_to_struct
+  643e4 dhcps_convert_list_to_struct
+  64478 monitor
+  64498 /var/pm_socket
+  644dc timer
+  644fc /var/tm_socket
+  64540 cfms
+  64560 /var/cfm_socket
+  645a4 logserver
+  645c4 /var/plog_socket
+  64608 netctrl
+  64628 /var/nt_socket
+  6466c multiWAN
+  6468c /var/mw_socket
+--
+  65ddc portal_cfg_init_auth_list
+  65df8 portal_cfg_get_user_info
+  65e14 portal_cfg_write_to_file
+  65e30 portal_handle_msg_from_kernel
+  65eb8 monitor
+  65ed8 /var/pm_socket
+  65f1c timer
+  65f3c /var/tm_socket
+  65f80 cfms
+  65fa0 /var/cfm_socket
+  65fe4 logserver
+  66004 /var/plog_socket
+  66048 netctrl
+  66068 /var/nt_socket
+  660ac multiWAN
+  660cc /var/mw_socket
+--
+  665c0 prod_common_so
+  66684 function entry!
+  66694 cfg is NULL.
+  666a4 sntp %d %d %d
+  666b4 monitor mstart %s failed
+  666d0 function exit!
+  666e0 sntp
+  666e8 monitor_stop sntp failed
+  66704 invalid type!
+  66714 sys.timesyn
+  66720 sys.timezone.offset.sec
+  66738 sys.timefixper
+  66748 sntp_init
+  66754 sntp_msg_handle
+  66764 sntp_set_cfg
+  66774 sntp_handle
+  66780 sntp_restart
+  66790 sntp_stop
+  6679c sntp_start
+  66818 monitor
+  66838 /var/pm_socket
+  6687c timer
+  6689c /var/tm_socket
+  668e0 cfms
+  66900 /var/cfm_socket
+  66944 logserver
+  66964 /var/plog_socket
+  669a8 netctrl
+  669c8 /var/nt_socket
+  66a0c multiWAN
+  66a2c /var/mw_socket
+--
+  67148 true
+  67150 dnrd -t 3 -M 600 --cache=%d -b -R /etc/dnrd -r 3 %s
+  67184 mkdir -p /etc/dnrd
+  67198 dnrd
+  671a0 stop dnrd process failed
+  671bc monitor mstart %s failed
+  671d8 dnrd -t 3 -M 600 --cache=off -b -R /etc/dnrd -r 3 %s
+  67210 wl.guest.dhcps_enable
+  67228 wl.guest.dhcps_ip
+  6723c wl.guest.dhcps_mask
+  67250 wl.guest.dhcps_ifname
+  67268 iptables -t nat -F guest_access_post%d
+  67290 iptables -t nat -A guest_access_post%d -o %s -s %s/%s -j MASQUERADE
+  672d4 wanId=%d, wanIfname=%s
+  672ec /etc/wan%d.ini
+  672fc dns1
+--
+  688c8 ip-down-script /etc/ppp/ip-down%d
+  688ec persist
+  688f8 %s -c %s -D 
+  68908 /var/mw_socket
+  68918 [%s][%d]monitor_start_extern return error!
+  68944 %s -c %s -D &
+  68954 cfm post xl2tpd-server disconnect_%d
+  6897c cfm post xl2tpd-server add_%d
+  6899c cfm post xl2tpd-server delete_%d
+  689c0 cfm post xl2tpd-server update_%d
+  689e4 mkdir -p /var/run/
+  689f8 mkdir -p /etc/xl2tp
+  68a0c mkdir -p /etc/ppp
+  68a20 mkdir -p /tmp/l2tp
+  68a34 mkdir -p /var/run/xl2tpd/
+--
+  6909c vpn_clear_client_mss
+  690b4 vpn_public_save_cur_user
+  690d0 vpn_public_init_user
+  690e8 vpn_public_dial_check
+  69168 monitor
+  69188 /var/pm_socket
+  691cc timer
+  691ec /var/tm_socket
+  69230 cfms
+  69250 /var/cfm_socket
+  69294 logserver
+  692b4 /var/plog_socket
+  692f8 netctrl
+  69318 /var/nt_socket
+  6935c multiWAN
+  6937c /var/mw_socket
+--
+  69cbc igmp_stop
+  69cc8 igmp_start
+  69cd4 igmp_start
+  69ce0 igmp_conf_init
+  69d58 monitor
+  69d78 /var/pm_socket
+  69dbc timer
+  69ddc /var/tm_socket
+  69e20 cfms
+  69e40 /var/cfm_socket
+  69e84 logserver
+  69ea4 /var/plog_socket
+  69ee8 netctrl
+  69f08 /var/nt_socket
+  69f4c multiWAN
+  69f6c /var/mw_socket
+--
+  6a750 port_set_eth_mode_speed
+  6a768 port_set_et_speed
+  6a77c port_set_mirror
+  6a78c port_set_port_mirror
+  6a818 monitor
+  6a838 /var/pm_socket
+  6a87c timer
+  6a89c /var/tm_socket
+  6a8e0 cfms
+  6a900 /var/cfm_socket
+  6a944 logserver
+  6a964 /var/plog_socket
+  6a9a8 netctrl
+  6a9c8 /var/nt_socket
+  6aa0c multiWAN
+  6aa2c /var/mw_socket
+--
+  6afe4 function entry!
+  6aff8 multiWAN
+  6b004 [arainc][ctrl_op = %d]%s(%d)
+  6b024 down
+  6b030 %s multiwan process is fail.
+  6b050 /etc/wan1.ini
+  6b060 killall -9 dhcpcd_wan1
+  6b078 killall -9 pppd_wan1
+  6b090 ifconfig %s 0.0.0.0
+  6b0a8 dnrd
+  6b0b0 dnrd-guest
+  6b0bc function exit!
+  6b0cc lan.mask
+  6b0d8 255.255.255.0
+  6b0e8 lan.ip
+--
+  6b268 sys.timesyn
+  6b274 sntp
+  6b27c wl2g.ssid1.enable
+  6b294 wl5g.ssid1.enable
+  6b2a8 killall -9 telnet_ate_monitor
+  6b2c8 telnet_ate_monitor &
+  6b2e0 pannstamp
+  6b2ec sys.cfg.stamp
+  6b2fc  command=%d
+  6b30c route del -net %s netmask %s dev %s
+  6b330 ifconfig %s %s
+  6b340 ifconfig br0:1 0.0.0.0
+  6b358 dhcpcd_lan
+  6b364 [%s][%d] monitor_stop %s  
+  6b380 [%s][%d] %s is already exit! 
+  6b3a0 service_msg_handle
+  6b3b4 netctrl_lan_services_ctrl
+  6b3d0 netctrl_lan_services_ctrl
+  6b3ec netctrl_application_service_ctrl
+  6b410 netctrl_moudle_sntp_handle
+  6b42c netctrl_moudle_advance_serv_handle
+  6b450 netctrl_moudle_uclould_handle
+  6b470 netctrl_moudle_dhcps_handle
+  6b48c netctrl_moudle_cmfCli_handle
+--
+  6b4e8 netctrl_moudle_netcheck_handle
+  6b508 netctrl_config_lan_ip
+  6b520 netctrl_moudle_multiwan_handle
+  6b540 netctrl_moudle_multiwan_handle
+  6b5c8 monitor
+  6b5e8 /var/pm_socket
+  6b62c timer
+  6b64c /var/tm_socket
+  6b690 cfms
+  6b6b0 /var/cfm_socket
+  6b6f4 logserver
+  6b714 /var/plog_socket
+  6b758 netctrl
+  6b778 /var/nt_socket
+  6b7bc multiWAN
+  6b7dc /var/mw_socket
+--
+  6bfac time_group_load_cfg
+  6bfc0 time_group_get_cfg
+  6bfd4 time_group_parse_time_segment
+  6bff4 time_group_parse_time_segment
+  6c088 monitor
+  6c0a8 /var/pm_socket
+  6c0ec timer
+  6c10c /var/tm_socket
+  6c150 cfms
+  6c170 /var/cfm_socket
+  6c1b4 logserver
+  6c1d4 /var/plog_socket
+  6c218 netctrl
+  6c238 /var/nt_socket
+  6c27c multiWAN
+  6c29c /var/mw_socket
+--
+  6caa0 ip_group_fill_u2k
+  6cab4 ip_group_fill_u2k
+  6cac8 ip_group_load_cfg
+  6cadc ip_group_get
+  6cb58 monitor
+  6cb78 /var/pm_socket
+  6cbbc timer
+  6cbdc /var/tm_socket
+  6cc20 cfms
+  6cc40 /var/cfm_socket
+  6cc84 logserver
+  6cca4 /var/plog_socket
+  6cce8 netctrl
+  6cd08 /var/nt_socket
+  6cd4c multiWAN
+  6cd6c /var/mw_socket
+--
+  6d3e8 base_info_handle_change
+  6d400 base_info_handle_change
+  6d418 base_info_load_cfg
+  6d42c base_info_common_info
+  6d4c8 monitor
+  6d4e8 /var/pm_socket
+  6d52c timer
+  6d54c /var/tm_socket
+  6d590 cfms
+  6d5b0 /var/cfm_socket
+  6d5f4 logserver
+  6d614 /var/plog_socket
+  6d658 netctrl
+  6d678 /var/nt_socket
+  6d6bc multiWAN
+  6d6dc /var/mw_socket
+--
+  6dfd4 ip_filter_set_u2k_rule
+  6dfec ip_filter_set_u2k_rule
+  6e004 ip_filter_load_cfg
+  6e018 ip_filter_rule_get
+  6e098 monitor
+  6e0b8 /var/pm_socket
+  6e0fc timer
+  6e11c /var/tm_socket
+  6e160 cfms
+  6e180 /var/cfm_socket
+  6e1c4 logserver
+  6e1e4 /var/plog_socket
+  6e228 netctrl
+  6e248 /var/nt_socket
+  6e28c multiWAN
+  6e2ac /var/mw_socket
+--
+  6ecbc port_filter_load_cfg
+  6ecd4 port_filter_differ
+  6ece8 port_filter_differ
+  6ecfc port_filter_rule_get
+  6ed88 monitor
+  6eda8 /var/pm_socket
+  6edec timer
+  6ee0c /var/tm_socket
+  6ee50 cfms
+  6ee70 /var/cfm_socket
+  6eeb4 logserver
+  6eed4 /var/plog_socket
+  6ef18 netctrl
+  6ef38 /var/nt_socket
+  6ef7c multiWAN
+  6ef9c /var/mw_socket
+--
+  6f87c mac_filter_differ
+  6f890 mac_filter_get_rule
+  6f8a4 mac_filter_set_option
+  6f8bc mac_filter_set_rule
+  6f938 monitor
+  6f958 /var/pm_socket
+  6f99c timer
+  6f9bc /var/tm_socket
+  6fa00 cfms
+  6fa20 /var/cfm_socket
+  6fa64 logserver
+  6fa84 /var/plog_socket
+  6fac8 netctrl
+  6fae8 /var/nt_socket
+  6fb2c multiWAN
+  6fb4c /var/mw_socket
+--
+  70424 tc_rule_handle
+  70434 tc_get_wan_global_config
+  70450 tc_handle
+  7045c tc_get_cjson_format_data
+  704f8 monitor
+  70518 /var/pm_socket
+  7055c timer
+  7057c /var/tm_socket
+  705c0 cfms
+  705e0 /var/cfm_socket
+  70624 logserver
+  70644 /var/plog_socket
+  70688 netctrl
+  706a8 /var/nt_socket
+  706ec multiWAN
+  7070c /var/mw_socket
+--
+  70fb4 ddos_ip_fence_load_cfg
+  70fcc ddos_ip_fence_opt_set
+  70fe4 ddos_ip_fence_opt_clear
+  70ffc ddos_ip_fence_opt_clear
+  71088 monitor
+  710a8 /var/pm_socket
+  710ec timer
+  7110c /var/tm_socket
+  71150 cfms
+  71170 /var/cfm_socket
+  711b4 logserver
+  711d4 /var/plog_socket
+  71218 netctrl
+  71238 /var/nt_socket
+  7127c multiWAN
+  7129c /var/mw_socket
+--
+  71a40 arp_fence_msg_handle
+  71a58 arp_fence_refresh_rules
+  71a70 arp_fence_set
+  71a80 arp_fence_get_laninfo
+  71b08 monitor
+  71b28 /var/pm_socket
+  71b6c timer
+  71b8c /var/tm_socket
+  71bd0 cfms
+  71bf0 /var/cfm_socket
+  71c34 logserver
+  71c54 /var/plog_socket
+  71c98 netctrl
+  71cb8 /var/nt_socket
+  71cfc multiWAN
+  71d1c /var/mw_socket
+--
+  749c0 wifi_set_channel
+  749d4 set_channel_reg_domain
+  749ec wifi_mesh_sync_setup
+  74a04 wifi_mesh_setup
+  74a88 monitor
+  74aa8 /var/pm_socket
+  74aec timer
+  74b0c /var/tm_socket
+  74b50 cfms
+  74b70 /var/cfm_socket
+  74bb4 logserver
+  74bd4 /var/plog_socket
+  74c18 netctrl
+  74c38 /var/nt_socket
+  74c7c multiWAN
+  74c9c /var/mw_socket
+--
+  750c8 common_so
+  7512c ap_common_so
+  75190 prod_common_so
+  75254 /proc/net/dev
+  752d8 monitor
+  752f8 /var/pm_socket
+  7533c timer
+  7535c /var/tm_socket
+  753a0 cfms
+  753c0 /var/cfm_socket
+  75404 logserver
+  75424 /var/plog_socket
+  75468 netctrl
+  75488 /var/nt_socket
+  754cc multiWAN
+  754ec /var/mw_socket
+--
+  76100 %s -c %s -m %s %s -h %s
+  76118 gethostname
+  76124 %s -c %s -m %s %s
+  76138 %s start failed
+  76148 [%s][%d] monitor_stop %s  
+  76164 [%s][%d] %s is already exit! 
+  76184 lan_dhcp_down
+  76194 lan_dhcp_up
+  761a0 dhcp_up
+  761a8 dhcp_down
+  761b8 dhcps.en
+  761c4 op=%d,index=1
+  761d4 msg start %s failed
+  761e8 wl2g.public.ssid_max
+  76200 wl5g.public.ssid_max
+--
+  7626c wl -i wl1.%d deauthenticate
+  76288 op = %d not exist!
+  762b4 lan_dhcpc_init
+  762c4 lan_dhcpc_recv_lan_message
+  762e0 lan_dhcpc_msg_process_handle
+  76300 lan_dhcpc_restart_handle
+  7631c lan_dhcpc_proc
+  7632c lan_dhcpc_proc
+  7633c lan_dhcpc_phy_link_check
+  76358 lan_dhcpc_phy_link_check
+  76374 lan_dhcpc_timeout_phy_link_check
+  76398 lan_dhcpc_status_change_process_handle
+  763c0 lan_dhcpc_set_configure
+  763d8 lan_dhcpc_apmode_dhcps_cfg_change
+  763fc lan_dhcpc_apmode_dhcps_cfg_change
+  76420 lan_dhcpc_stop
+  76430 lan_dhcpc_start
+  76440 lan_dhcpc_launch_app
+  76458 lan_dhcpc_launch_app
+  76470 lan_dhcpc_add_gateway
+  76488 lan_dhcpc_add_gateway
+  764a0 lan_dhcpc_config_lan_ip
+  764b8 lan_dhcpc_restart_service
+  76548 monitor
+  76568 /var/pm_socket
+  765ac timer
+  765cc /var/tm_socket
+  76610 cfms
+  76630 /var/cfm_socket
+  76674 logserver
+  76694 /var/plog_socket
+  766d8 netctrl
+  766f8 /var/nt_socket
+  7673c multiWAN
+  7675c /var/mw_socket
+--
+  76d44 change led status error.
+  76d60 led_control_init
+  76d74 led_control_msg_handle
+  76d8c led_control_set
+  76e08 monitor
+  76e28 /var/pm_socket
+  76e6c timer
+  76e8c /var/tm_socket
+  76ed0 cfms
+  76ef0 /var/cfm_socket
+  76f34 logserver
+  76f54 /var/plog_socket
+  76f98 netctrl
+  76fb8 /var/nt_socket
+  76ffc multiWAN
+  7701c /var/mw_socket
+--
+  775f4 url_record_on
+  77604 %s    %d    urlRcd start.
+  77620 %s    %d    url record function off.
+  77648 url_record_check_status
+  776c8 monitor
+  776e8 /var/pm_socket
+  7772c timer
+  7774c /var/tm_socket
+  77790 cfms
+  777b0 /var/cfm_socket
+  777f4 logserver
+  77814 /var/plog_socket
+  77858 netctrl
+  77878 /var/nt_socket
+  778bc multiWAN
+  778dc /var/mw_socket
+--
+  78014 wan_icmp_drop_set
+  78028 wan_icmp_drop_set_cfg
+  78040 wan_icmp_drop_get_cfg
+  78058 wan_icmp_drop_get_cfg
+  780d8 monitor
+  780f8 /var/pm_socket
+  7813c timer
+  7815c /var/tm_socket
+  781a0 cfms
+  781c0 /var/cfm_socket
+  78204 logserver
+  78224 /var/plog_socket
+  78268 netctrl
+  78288 /var/nt_socket
+  782cc multiWAN
+  782ec /var/mw_socket
+--
+  787e0 prod_common_so
+  788a4 netctrl
+  788ac netctrl start timer failed
+  788c8 timer_msg_handle
+  78948 monitor
+  78968 /var/pm_socket
+  789ac timer
+  789cc /var/tm_socket
+  78a10 cfms
+  78a30 /var/cfm_socket
+  78a74 logserver
+  78a94 /var/plog_socket
+  78ad8 netctrl
+  78af8 /var/nt_socket
+  78b3c multiWAN
+  78b5c /var/mw_socket
+--
+  7918c gst_2g=%s
+  79198 gst_5g=%s
+  791a4 can not start %s
+  791b8 the message is error
+  791d0 device_list_msg_process_handle
+  791f0 device_list_start
+  79204 device_list_stop
+  79288 monitor
+  792a8 /var/pm_socket
+  792ec timer
+  7930c /var/tm_socket
+  79350 cfms
+  79370 /var/cfm_socket
+  793b4 logserver
+  793d4 /var/plog_socket
+  79418 netctrl
+  79438 /var/nt_socket
+  7947c multiWAN
+  7949c /var/mw_socket
+--
+  79a5c lan.ip
+  79a64 /etc/lan.ini
+  79a78 telnetd -b %s
+  79a88 djc__telnet_cmd is %s____%s(%d)
+  79aac start telnetd process is fail
+  79ad0 telnetd
+  79ad8 stop telnetd process is fail
+  79af8 the message is error
+  79b10 function entry!
+  79b20 function exit!
+  79b30 telnet_init
+  79b3c rtk_ate_msg_process_handle
+  79b58 telnet_stop
+  79b64 telnet_start
+  79b74 telnet_start
+  79bf8 monitor
+  79c18 /var/pm_socket
+  79c5c timer
+  79c7c /var/tm_socket
+  79cc0 cfms
+  79ce0 /var/cfm_socket
+  79d24 logserver
+  79d44 /var/plog_socket
+  79d88 netctrl
+  79da8 /var/nt_socket
+  79dec multiWAN
+  79e0c /var/mw_socket
+
+===== web/config references to process/status diagnostics =====
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:76:monitor &
+firmware-src/RootFS-unpacked/etc_ro/redis.conf:121:# However if you have setup your proper monitoring of the Redis server
+firmware-src/RootFS-unpacked/usr/bin/ugw_watchdog.sh:46:				echo "pid $x(`cat /proc/$x/cmdline`) fd num($fd_num) abnormal!!!"; 
+
+===== exported monitor helpers in libcommon =====
+   139: 0001bb38   460 FUNC    GLOBAL DEFAULT   10 proc_check_app
+   240: 0001b990   424 FUNC    GLOBAL DEFAULT   10 proc_get_process_pid
+   440: 00034c28   100 FUNC    GLOBAL DEFAULT   10 monitor_check_exist

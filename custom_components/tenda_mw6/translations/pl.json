@@ -1,0 +1,44 @@
+{
+  "title": "Tenda MW6",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z Tenda MW6",
+        "description": "Połączenie odbywa się bezpośrednio z lokalną usługą Tenda MW6 TCP/9000. Chmura Tenda nie jest używana.",
+        "data": {
+          "host": "Adres hosta",
+          "port": "Port",
+          "login_account": "Konto logowania"
+        },
+        "data_description": {
+          "login_account": "32-znakowa wartość konta wyciągnięta z udanego logowania oficjalnej aplikacji. Użyj tools/mw6_auth_extract.py i nie publikuj tej wartości."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z routerem lub odczytać listy klientów.",
+      "invalid_auth": "Router odrzucił konto logowania.",
+      "invalid_account": "Konto logowania musi zawierać dokładnie 32 znaki szesnastkowe."
+    },
+    "abort": {
+      "already_configured": "Ten host Tenda MW6 jest już skonfigurowany."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Mapa urządzeń",
+        "description": "Integracja wpisała wszystkie urządzenia aktualnie znane routerowi. Każdy wiersz zawiera IP, MAC i nazwę. Zmień tekst po znaku =. Pozostaw go pusty, aby wyświetlać IP.",
+        "data": {
+          "device_aliases": "IP | MAC = nazwa"
+        },
+        "data_description": {
+          "device_aliases": "Nie usuwaj IP ani MAC. Pusta nazwa po znaku = wymusza wyświetlanie IP. Usunięcie całego wiersza przywraca nazwę zgłaszaną przez router."
+        }
+      }
+    },
+    "error": {
+      "invalid_aliases": "Każdy wiersz musi mieć format IP | MAC = nazwa. Nazwa może być pusta."
+    }
+  }
+}

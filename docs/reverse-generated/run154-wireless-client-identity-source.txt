@@ -1,0 +1,1063 @@
+===== RUN 154: get_all_wireless_client identity source =====
+
+===== SYMBOLS =====
+
+===== DYNAMIC SYMBOLS =====
+     7: 00407cd4   284 FUNC    GLOBAL DEFAULT   12 add_to_client_hs_list
+    10: 00407df0   160 FUNC    GLOBAL DEFAULT   12 del_from_client_hs_list
+    11: 004207d0    12 OBJECT  GLOBAL DEFAULT   25 g_mac_hdr
+    12: 004023f4   248 FUNC    GLOBAL DEFAULT   12 alloc_client_mac
+    13: 004046d8   324 FUNC    GLOBAL DEFAULT   12 del_roam_not_in_wifi_client_lists
+    18: 0040983c   464 FUNC    GLOBAL DEFAULT   12 check_in_wifi_client_lists
+    19: 0040bb84  1104 FUNC    GLOBAL DEFAULT   12 do_upload_client_list
+    21: 0040afcc   740 FUNC    GLOBAL DEFAULT   12 do_client_timeout_check
+    24: 004079a8   164 FUNC    GLOBAL DEFAULT   12 init_client_hs_list
+    25: 004024ec   308 FUNC    GLOBAL DEFAULT   12 find_in_client_mac_list
+    26: 00420790     4 OBJECT  GLOBAL DEFAULT   25 g_client_hs_list_num
+    29: 00407ff4   452 FUNC    GLOBAL DEFAULT   12 del_client_belong_ifname
+    30: 00407e90   356 FUNC    GLOBAL DEFAULT   12 free_client_hs_list
+    31: 0040a010   776 FUNC    GLOBAL DEFAULT   12 get_all_wireless_client
+    36: 00420690   256 OBJECT  GLOBAL DEFAULT   25 g_client_hs_list
+    38: 00409a0c   532 FUNC    GLOBAL DEFAULT   12 print_wifi_client_lists
+    40: 00407a4c   396 FUNC    GLOBAL DEFAULT   12 find_in_client_hs_list
+    41: 00402620   376 FUNC    GLOBAL DEFAULT   12 update_new_mac_list
+    47: 00409c20  1008 FUNC    GLOBAL DEFAULT   12 print_all_wifi_client_lists
+    48: 0040bfd4   748 FUNC    GLOBAL DEFAULT   12 do_upload_one_client
+    50: 00407bd8   252 FUNC    GLOBAL DEFAULT   12 alloc_device_client_info
+    53: 0040c6e0     0 FUNC    GLOBAL DEFAULT  UND memcpy
+    64: 0040c630     0 FUNC    GLOBAL DEFAULT  UND wifi_get_vap_client_lists
+    66: 0040c610     0 FUNC    GLOBAL DEFAULT  UND ugw_accept_client
+    76: 0040c570     0 FUNC    GLOBAL DEFAULT  UND monitor_program_register_associ_proc
+   101: 0040c3e0     0 FUNC    GLOBAL DEFAULT  UND strcmp
+   109: 0040c360     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+
+===== GOT =====
+Attribute Section: gnu
+File Attributes
+  Tag_GNU_MIPS_ABI_FP: Soft float
+
+Primary GOT:
+ Canonical gp value: 004284a0
+
+ Reserved entries:
+   Address     Access  Initial Purpose
+  004204b0 -32752(gp) 00000000 Lazy resolver
+  004204b4 -32748(gp) 80000000 Module pointer (GNU extension)
+
+ Local entries:
+   Address     Access  Initial
+  004204b8 -32744(gp) 00405e74
+  004204bc -32740(gp) 004015c4
+  004204c0 -32736(gp) 0040c710
+  004204c4 -32732(gp) 00400000
+  004204c8 -32728(gp) 00410000
+  004204cc -32724(gp) 00420794
+  004204d0 -32720(gp) 00420000
+  004204d4 -32716(gp) 004207d0
+  004204d8 -32712(gp) 004024ec
+  004204dc -32708(gp) 004023f4
+  004204e0 -32704(gp) 00420690
+  004204e4 -32700(gp) 00407a4c
+  004204e8 -32696(gp) 00407bd8
+  004204ec -32692(gp) 00420790
+  004204f0 -32688(gp) 00407cd4
+  004204f4 -32684(gp) 0040bfd4
+  004204f8 -32680(gp) 004064c4
+  004204fc -32676(gp) 00407df0
+  00420500 -32672(gp) 00407e90
+  00420504 -32668(gp) 00406a18
+  00420508 -32664(gp) 00406edc
+  0042050c -32660(gp) 0040983c
+  00420510 -32656(gp) 004207b0
+  00420514 -32652(gp) 00402c4c
+  00420518 -32648(gp) 0040afcc
+  0042051c -32644(gp) 0040bb84
+  00420520 -32640(gp) 004067a4
+  00420524 -32636(gp) 00407ff4
+  00420528 -32632(gp) 00405458
+  0042052c -32628(gp) 00406b58
+  00420530 -32624(gp) 004079a8
+  00420534 -32620(gp) 0040b2d4
+  00420538 -32616(gp) 00420480
+  0042053c -32612(gp) 00402cc0
+  00420540 -32608(gp) 00402620
+  00420544 -32604(gp) 00409a0c
+  00420548 -32600(gp) 00404580
+  0042054c -32596(gp) 0040a010
+  00420550 -32592(gp) 004046d8
+  00420554 -32588(gp) 00409c20
+  00420558 -32584(gp) 00402e00
+  0042055c -32580(gp) 00402b04
+  00420560 -32576(gp) 00000000
+  00420564 -32572(gp) 00000000
+
+ Global entries:
+   Address     Access  Initial Sym.Val. Type    Ndx Name
+  00420568 -32568(gp) 0040c6f0 0040c6f0 FUNC    UND strlen
+  0042056c -32564(gp) 0040c6e0 0040c6e0 FUNC    UND memcpy
+  00420570 -32560(gp) 0040c6d0 0040c6d0 FUNC    UND sprintf
+  00420574 -32556(gp) 0040c6c0 0040c6c0 FUNC    UND cm_init
+  00420578 -32552(gp) 0040c6b0 0040c6b0 FUNC    UND fopen
+  0042057c -32548(gp) 0040c6a0 0040c6a0 FUNC    UND puts
+  00420580 -32544(gp) 0040c690 0040c690 FUNC    UND inet_ntoa
+  00420584 -32540(gp) 0040c680 0040c680 FUNC    UND ether_ntoa_r
+  00420588 -32536(gp) 0040c670 0040c670 FUNC    UND atoi
+  0042058c -32532(gp) 0040c660 0040c660 FUNC    UND ugw_read_ie_type
+  00420590 -32528(gp) 0040c650 0040c650 FUNC    UND free
+  00420594 -32524(gp) 0040c640 0040c640 FUNC    UND GetValue
+  00420598 -32520(gp) 0040c630 0040c630 FUNC    UND wifi_get_vap_client_lists
+  0042059c -32516(gp) 0040c620 0040c620 FUNC    UND timer_start
+  004205a0 -32512(gp) 0040c610 0040c610 FUNC    UND ugw_accept_client
+  004205a4 -32508(gp) 0040c600 0040c600 FUNC    UND cmd_sub
+  004205a8 -32504(gp) 0040c5f0 0040c5f0 FUNC    UND redis_option_new
+  004205ac -32500(gp) 0040c5e0 0040c5e0 FUNC    UND netlink_sock_deinit
+  004205b0 -32496(gp) 0040c5d0 0040c5d0 FUNC    UND __errno_location
+  004205b4 -32492(gp) 0040c5c0 0040c5c0 FUNC    UND cmd_init
+  004205b8 -32488(gp) 0040c5b0 0040c5b0 FUNC    UND htonl
+  004205bc -32484(gp) 0040c5a0 0040c5a0 FUNC    UND netlink_usr_socket_init
+  004205c0 -32480(gp) 0040c590 0040c590 FUNC    UND get_eth_name
+  004205c4 -32476(gp) 0040c580 0040c580 FUNC    UND init_unix_socket_server
+  004205c8 -32472(gp) 0040c570 0040c570 FUNC    UND monitor_program_regist[...]
+  004205cc -32468(gp) 0040c560 0040c560 FUNC    UND timer_check_ok_and_wait
+  004205d0 -32464(gp) 0040c550 0040c550 FUNC    UND fgets
+  004205d4 -32460(gp) 0040c540 0040c540 FUNC    UND ugw_read_ie_value
+  004205d8 -32456(gp) 0040c530 0040c530 FUNC    UND system_get_uptime
+  004205dc -32452(gp) 0040c520 0040c520 FUNC    UND ether_aton_r
+  004205e0 -32448(gp) 0040c510 0040c510 FUNC    UND ApmibGetValue
+  004205e4 -32444(gp) 0040c500 0040c500 FUNC    UND putchar
+  004205e8 -32440(gp) 0040c4f0 0040c4f0 FUNC    UND strncpy
+  004205ec -32436(gp) 0040c4e0 0040c4e0 FUNC    UND ugw_read_ie_len
+  004205f0 -32432(gp) 0040c4d0 0040c4d0 FUNC    UND printf
+  004205f4 -32428(gp) 0040c4c0 0040c4c0 FUNC    UND log_debug_print
+  004205f8 -32424(gp) 0040c4b0 0040c4b0 FUNC    UND strchr
+  004205fc -32420(gp) 0040c4a0 0040c4a0 FUNC    UND perror
+  00420600 -32416(gp) 0040c490 0040c490 FUNC    UND cm_run
+  00420604 -32412(gp) 0040c480 0040c480 FUNC    UND strtok_r
+  00420608 -32408(gp) 0040c470 0040c470 FUNC    UND inet_addr
+  0042060c -32404(gp) 0040c460 0040c460 FUNC    UND timer_stop
+  00420610 -32400(gp) 0040c450 0040c450 FUNC    UND fclose
+  00420614 -32396(gp) 0040c440 0040c440 FUNC    UND strcpy
+  00420618 -32392(gp) 0040c430 0040c430 FUNC    UND strncmp
+  0042061c -32388(gp) 0040c420 0040c420 FUNC    UND malloc
+  00420620 -32384(gp) 0040c410 0040c410 FUNC    UND unlink
+  00420624 -32380(gp) 0040c400 0040c400 FUNC    UND cm_abort
+  00420628 -32376(gp) 0040c3f0 0040c3f0 FUNC    UND memset
+  0042062c -32372(gp) 0040c3e0 0040c3e0 FUNC    UND strcmp
+  00420630 -32368(gp) 0040c3d0 0040c3d0 FUNC    UND freopen
+  00420634 -32364(gp) 0040c3c0 0040c3c0 FUNC    UND recvmsg
+  00420638 -32360(gp) 0040c3b0 0040c3b0 FUNC    UND signal
+  0042063c -32356(gp) 0040c3a0 0040c3a0 FUNC    UND apmib_init
+  00420640 -32352(gp) 0040c390 0040c390 FUNC    UND sscanf
+  00420644 -32348(gp) 0040c380 0040c380 FUNC    UND cmd_pub
+  00420648 -32344(gp) 0040c370 0040c370 FUNC    UND ugw_proc_recv_msg
+  0042064c -32340(gp) 0040c360 0040c360 FUNC    UND ifaddrs_ethaddr_ntoa
+  00420650 -32336(gp) 0040c350 0040c350 FUNC    UND __uClibc_main
+  00420654 -32332(gp) 0040c340 0040c340 FUNC    UND ugw_socket_shut_down
+  00420658 -32328(gp) 0040c330 0040c330 FUNC    UND cm_poll_start
+  0042065c -32324(gp) 00000000 00000000 OBJECT  UND stderr
+  00420660 -32320(gp) 0040c320 0040c320 FUNC    UND memcmp
+  00420664 -32316(gp) 0040c310 0040c310 FUNC    UND cm_poll_stop
+
+
+PLT GOT:
+
+ Reserved entries:
+   Address  Initial Purpose
+  00420494 00000000 PLT lazy resolver
+  00420498 00000000 Module pointer
+
+ Entries:
+   Address  Initial Sym.Val. Type    Ndx Name
+  0042049c 00401620 00401640 FUNC    UND __register_frame_info
+  004204a0 00401620 00401650 FUNC    UND __deregister_frame_info
+
+
+===== get_all_wireless_client / helper region =====
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0040a010 <get_all_wireless_client@@Base>:
+  40a010:	3c1c0002 	lui	gp,0x2
+  40a014:	279ce490 	addiu	gp,gp,-7024
+  40a018:	0399e021 	addu	gp,gp,t9
+  40a01c:	27bdffb0 	addiu	sp,sp,-80
+  40a020:	afbf004c 	sw	ra,76(sp)
+  40a024:	afbe0048 	sw	s8,72(sp)
+  40a028:	03a0f021 	move	s8,sp
+  40a02c:	afbc0010 	sw	gp,16(sp)
+  40a030:	afc40050 	sw	a0,80(s8)
+  40a034:	afc50054 	sw	a1,84(s8)
+  40a038:	afc60058 	sw	a2,88(s8)
+  40a03c:	afc7005c 	sw	a3,92(s8)
+  40a040:	afc00018 	sw	zero,24(s8)
+  40a044:	afc0001c 	sw	zero,28(s8)
+  40a048:	afc00020 	sw	zero,32(s8)
+  40a04c:	afc00024 	sw	zero,36(s8)
+  40a050:	afc00028 	sw	zero,40(s8)
+  40a054:	afc0002c 	sw	zero,44(s8)
+  40a058:	afc00030 	sw	zero,48(s8)
+  40a05c:	afc00034 	sw	zero,52(s8)
+  40a060:	afc00038 	sw	zero,56(s8)
+  40a064:	afc0003c 	sw	zero,60(s8)
+  40a068:	afc00040 	sw	zero,64(s8)
+  40a06c:	afc00044 	sw	zero,68(s8)
+  40a070:	8fc20050 	lw	v0,80(s8)
+  40a074:	1040001d 	beqz	v0,40a0ec <get_all_wireless_client@@Base+0xdc>
+  40a078:	00000000 	nop
+  40a07c:	24040017 	li	a0,23
+  40a080:	8f828120 	lw	v0,-32480(gp)
+  40a084:	0040c821 	move	t9,v0
+  40a088:	0320f809 	jalr	t9
+  40a08c:	00000000 	nop
+  40a090:	8fdc0010 	lw	gp,16(s8)
+  40a094:	27c30018 	addiu	v1,s8,24
+  40a098:	00602021 	move	a0,v1
+  40a09c:	00402821 	move	a1,v0
+  40a0a0:	8f828174 	lw	v0,-32396(gp)
+  40a0a4:	0040c821 	move	t9,v0
+  40a0a8:	0320f809 	jalr	t9
+  40a0ac:	00000000 	nop
+  40a0b0:	8fdc0010 	lw	gp,16(s8)
+  40a0b4:	8fc20050 	lw	v0,80(s8)
+  40a0b8:	24420004 	addiu	v0,v0,4
+  40a0bc:	00402021 	move	a0,v0
+  40a0c0:	27c20018 	addiu	v0,s8,24
+  40a0c4:	00402821 	move	a1,v0
+  40a0c8:	24060080 	li	a2,128
+  40a0cc:	8f8280f8 	lw	v0,-32520(gp)
+  40a0d0:	0040c821 	move	t9,v0
+  40a0d4:	0320f809 	jalr	t9
+  40a0d8:	00000000 	nop
+  40a0dc:	8fdc0010 	lw	gp,16(s8)
+  40a0e0:	00401821 	move	v1,v0
+  40a0e4:	8fc20050 	lw	v0,80(s8)
+  40a0e8:	ac430000 	sw	v1,0(v0)
+  40a0ec:	8fc20054 	lw	v0,84(s8)
+  40a0f0:	1040001d 	beqz	v0,40a168 <get_all_wireless_client@@Base+0x158>
+  40a0f4:	00000000 	nop
+  40a0f8:	2404001b 	li	a0,27
+  40a0fc:	8f828120 	lw	v0,-32480(gp)
+  40a100:	0040c821 	move	t9,v0
+  40a104:	0320f809 	jalr	t9
+  40a108:	00000000 	nop
+  40a10c:	8fdc0010 	lw	gp,16(s8)
+  40a110:	27c30018 	addiu	v1,s8,24
+  40a114:	00602021 	move	a0,v1
+  40a118:	00402821 	move	a1,v0
+  40a11c:	8f828174 	lw	v0,-32396(gp)
+  40a120:	0040c821 	move	t9,v0
+  40a124:	0320f809 	jalr	t9
+  40a128:	00000000 	nop
+  40a12c:	8fdc0010 	lw	gp,16(s8)
+  40a130:	8fc20054 	lw	v0,84(s8)
+  40a134:	24420004 	addiu	v0,v0,4
+  40a138:	00402021 	move	a0,v0
+  40a13c:	27c20018 	addiu	v0,s8,24
+  40a140:	00402821 	move	a1,v0
+  40a144:	24060080 	li	a2,128
+  40a148:	8f8280f8 	lw	v0,-32520(gp)
+  40a14c:	0040c821 	move	t9,v0
+  40a150:	0320f809 	jalr	t9
+  40a154:	00000000 	nop
+  40a158:	8fdc0010 	lw	gp,16(s8)
+  40a15c:	00401821 	move	v1,v0
+  40a160:	8fc20054 	lw	v0,84(s8)
+  40a164:	ac430000 	sw	v1,0(v0)
+  40a168:	8fc20058 	lw	v0,88(s8)
+  40a16c:	10400031 	beqz	v0,40a234 <get_all_wireless_client@@Base+0x224>
+  40a170:	00000000 	nop
+  40a174:	27c20038 	addiu	v0,s8,56
+  40a178:	8f838028 	lw	v1,-32728(gp)
+  40a17c:	2464f848 	addiu	a0,v1,-1976
+  40a180:	00402821 	move	a1,v0
+  40a184:	8f8280f4 	lw	v0,-32524(gp)
+  40a188:	0040c821 	move	t9,v0
+  40a18c:	0320f809 	jalr	t9
+  40a190:	00000000 	nop
+  40a194:	8fdc0010 	lw	gp,16(s8)
+  40a198:	27c20038 	addiu	v0,s8,56
+  40a19c:	00402021 	move	a0,v0
+  40a1a0:	8f8280e8 	lw	v0,-32536(gp)
+  40a1a4:	0040c821 	move	t9,v0
+  40a1a8:	0320f809 	jalr	t9
+  40a1ac:	00000000 	nop
+  40a1b0:	8fdc0010 	lw	gp,16(s8)
+  40a1b4:	00401821 	move	v1,v0
+  40a1b8:	24020001 	li	v0,1
+  40a1bc:	1462001d 	bne	v1,v0,40a234 <get_all_wireless_client@@Base+0x224>
+  40a1c0:	00000000 	nop
+  40a1c4:	2404003b 	li	a0,59
+  40a1c8:	8f828120 	lw	v0,-32480(gp)
+  40a1cc:	0040c821 	move	t9,v0
+  40a1d0:	0320f809 	jalr	t9
+  40a1d4:	00000000 	nop
+  40a1d8:	8fdc0010 	lw	gp,16(s8)
+  40a1dc:	27c30018 	addiu	v1,s8,24
+  40a1e0:	00602021 	move	a0,v1
+  40a1e4:	00402821 	move	a1,v0
+  40a1e8:	8f828174 	lw	v0,-32396(gp)
+  40a1ec:	0040c821 	move	t9,v0
+  40a1f0:	0320f809 	jalr	t9
+  40a1f4:	00000000 	nop
+  40a1f8:	8fdc0010 	lw	gp,16(s8)
+  40a1fc:	8fc20058 	lw	v0,88(s8)
+  40a200:	24420004 	addiu	v0,v0,4
+  40a204:	00402021 	move	a0,v0
+  40a208:	27c20018 	addiu	v0,s8,24
+  40a20c:	00402821 	move	a1,v0
+  40a210:	24060080 	li	a2,128
+  40a214:	8f8280f8 	lw	v0,-32520(gp)
+  40a218:	0040c821 	move	t9,v0
+  40a21c:	0320f809 	jalr	t9
+  40a220:	00000000 	nop
+  40a224:	8fdc0010 	lw	gp,16(s8)
+  40a228:	00401821 	move	v1,v0
+  40a22c:	8fc20058 	lw	v0,88(s8)
+  40a230:	ac430000 	sw	v1,0(v0)
+  40a234:	8fc2005c 	lw	v0,92(s8)
+  40a238:	10400031 	beqz	v0,40a300 <get_all_wireless_client@@Base+0x2f0>
+  40a23c:	00000000 	nop
+  40a240:	27c20038 	addiu	v0,s8,56
+  40a244:	8f838028 	lw	v1,-32728(gp)
+  40a248:	2464f814 	addiu	a0,v1,-2028
+  40a24c:	00402821 	move	a1,v0
+  40a250:	8f8280f4 	lw	v0,-32524(gp)
+  40a254:	0040c821 	move	t9,v0
+  40a258:	0320f809 	jalr	t9
+  40a25c:	00000000 	nop
+  40a260:	8fdc0010 	lw	gp,16(s8)
+  40a264:	27c20038 	addiu	v0,s8,56
+  40a268:	00402021 	move	a0,v0
+  40a26c:	8f8280e8 	lw	v0,-32536(gp)
+  40a270:	0040c821 	move	t9,v0
+  40a274:	0320f809 	jalr	t9
+  40a278:	00000000 	nop
+  40a27c:	8fdc0010 	lw	gp,16(s8)
+  40a280:	00401821 	move	v1,v0
+  40a284:	24020001 	li	v0,1
+  40a288:	1462001d 	bne	v1,v0,40a300 <get_all_wireless_client@@Base+0x2f0>
+  40a28c:	00000000 	nop
+  40a290:	2404003f 	li	a0,63
+  40a294:	8f828120 	lw	v0,-32480(gp)
+  40a298:	0040c821 	move	t9,v0
+  40a29c:	0320f809 	jalr	t9
+  40a2a0:	00000000 	nop
+  40a2a4:	8fdc0010 	lw	gp,16(s8)
+  40a2a8:	27c30018 	addiu	v1,s8,24
+  40a2ac:	00602021 	move	a0,v1
+  40a2b0:	00402821 	move	a1,v0
+  40a2b4:	8f828174 	lw	v0,-32396(gp)
+  40a2b8:	0040c821 	move	t9,v0
+  40a2bc:	0320f809 	jalr	t9
+  40a2c0:	00000000 	nop
+  40a2c4:	8fdc0010 	lw	gp,16(s8)
+  40a2c8:	8fc2005c 	lw	v0,92(s8)
+  40a2cc:	24420004 	addiu	v0,v0,4
+  40a2d0:	00402021 	move	a0,v0
+  40a2d4:	27c20018 	addiu	v0,s8,24
+  40a2d8:	00402821 	move	a1,v0
+  40a2dc:	24060080 	li	a2,128
+  40a2e0:	8f8280f8 	lw	v0,-32520(gp)
+  40a2e4:	0040c821 	move	t9,v0
+  40a2e8:	0320f809 	jalr	t9
+  40a2ec:	00000000 	nop
+  40a2f0:	8fdc0010 	lw	gp,16(s8)
+  40a2f4:	00401821 	move	v1,v0
+  40a2f8:	8fc2005c 	lw	v0,92(s8)
+  40a2fc:	ac430000 	sw	v1,0(v0)
+  40a300:	03c0e821 	move	sp,s8
+  40a304:	8fbf004c 	lw	ra,76(sp)
+  40a308:	8fbe0048 	lw	s8,72(sp)
+  40a30c:	27bd0050 	addiu	sp,sp,80
+  40a310:	03e00008 	jr	ra
+  40a314:	00000000 	nop
+  40a318:	3c1c0002 	lui	gp,0x2
+  40a31c:	279ce188 	addiu	gp,gp,-7800
+  40a320:	0399e021 	addu	gp,gp,t9
+  40a324:	27bdffc8 	addiu	sp,sp,-56
+  40a328:	afbf0034 	sw	ra,52(sp)
+  40a32c:	afbe0030 	sw	s8,48(sp)
+  40a330:	03a0f021 	move	s8,sp
+  40a334:	afbc0018 	sw	gp,24(sp)
+  40a338:	afc40038 	sw	a0,56(s8)
+  40a33c:	afc5003c 	sw	a1,60(s8)
+  40a340:	afc60040 	sw	a2,64(s8)
+  40a344:	afc70044 	sw	a3,68(s8)
+  40a348:	afc0002c 	sw	zero,44(s8)
+  40a34c:	afc00028 	sw	zero,40(s8)
+  40a350:	8fc20038 	lw	v0,56(s8)
+  40a354:	8c420000 	lw	v0,0(v0)
+  40a358:	afc2002c 	sw	v0,44(s8)
+  40a35c:	10000030 	b	40a420 <get_all_wireless_client@@Base+0x410>
+  40a360:	00000000 	nop
+  40a364:	8fc2002c 	lw	v0,44(s8)
+  40a368:	afc20020 	sw	v0,32(s8)
+  40a36c:	8fc20020 	lw	v0,32(s8)
+  40a370:	2442ff8c 	addiu	v0,v0,-116
+  40a374:	afc20028 	sw	v0,40(s8)
+  40a378:	8fc20028 	lw	v0,40(s8)
+  40a37c:	24420054 	addiu	v0,v0,84
+  40a380:	8fc30048 	lw	v1,72(s8)
+  40a384:	afa30010 	sw	v1,16(sp)
+  40a388:	00402021 	move	a0,v0
+  40a38c:	8fc5003c 	lw	a1,60(s8)
+  40a390:	8fc60040 	lw	a2,64(s8)
+  40a394:	8fc70044 	lw	a3,68(s8)
+  40a398:	8f82806c 	lw	v0,-32660(gp)
+  40a39c:	0040c821 	move	t9,v0
+  40a3a0:	0320f809 	jalr	t9
+  40a3a4:	00000000 	nop
+  40a3a8:	8fdc0018 	lw	gp,24(s8)
+  40a3ac:	afc20024 	sw	v0,36(s8)
+  40a3b0:	8fc30024 	lw	v1,36(s8)
+  40a3b4:	24020005 	li	v0,5
+  40a3b8:	14620013 	bne	v1,v0,40a408 <get_all_wireless_client@@Base+0x3f8>
+  40a3bc:	00000000 	nop
+  40a3c0:	8fc20028 	lw	v0,40(s8)
+  40a3c4:	24420074 	addiu	v0,v0,116
+  40a3c8:	00402021 	move	a0,v0
+  40a3cc:	8f828028 	lw	v0,-32728(gp)
+  40a3d0:	24428224 	addiu	v0,v0,-32220
+  40a3d4:	0040c821 	move	t9,v0
+  40a3d8:	0320f809 	jalr	t9
+  40a3dc:	00000000 	nop
+  40a3e0:	8fdc0018 	lw	gp,24(s8)
+  40a3e4:	8fc40028 	lw	a0,40(s8)
+  40a3e8:	8f85804c 	lw	a1,-32692(gp)
+  40a3ec:	8f82805c 	lw	v0,-32676(gp)
+  40a3f0:	0040c821 	move	t9,v0
+  40a3f4:	0320f809 	jalr	t9
+  40a3f8:	00000000 	nop
+  40a3fc:	8fdc0018 	lw	gp,24(s8)
+  40a400:	10000004 	b	40a414 <get_all_wireless_client@@Base+0x404>
+  40a404:	00000000 	nop
+  40a408:	8fc30024 	lw	v1,36(s8)
+  40a40c:	8fc20028 	lw	v0,40(s8)
+  40a410:	ac43005c 	sw	v1,92(v0)
+  40a414:	8fc2002c 	lw	v0,44(s8)
+  40a418:	8c420000 	lw	v0,0(v0)
+  40a41c:	afc2002c 	sw	v0,44(s8)
+  40a420:	8fc2002c 	lw	v0,44(s8)
+  40a424:	8c420000 	lw	v0,0(v0)
+  40a428:	00402021 	move	a0,v0
+  40a42c:	8f828028 	lw	v0,-32728(gp)
+  40a430:	244281c0 	addiu	v0,v0,-32320
+  40a434:	0040c821 	move	t9,v0
+  40a438:	0320f809 	jalr	t9
+  40a43c:	00000000 	nop
+  40a440:	8fdc0018 	lw	gp,24(s8)
+  40a444:	8fc3002c 	lw	v1,44(s8)
+  40a448:	8fc20038 	lw	v0,56(s8)
+  40a44c:	1462ffc5 	bne	v1,v0,40a364 <get_all_wireless_client@@Base+0x354>
+  40a450:	00000000 	nop
+  40a454:	03c0e821 	move	sp,s8
+  40a458:	8fbf0034 	lw	ra,52(sp)
+  40a45c:	8fbe0030 	lw	s8,48(sp)
+  40a460:	27bd0038 	addiu	sp,sp,56
+  40a464:	03e00008 	jr	ra
+  40a468:	00000000 	nop
+  40a46c:	3c1c0002 	lui	gp,0x2
+  40a470:	279ce034 	addiu	gp,gp,-8140
+  40a474:	0399e021 	addu	gp,gp,t9
+  40a478:	27bdffa8 	addiu	sp,sp,-88
+  40a47c:	afbf0054 	sw	ra,84(sp)
+  40a480:	afbe0050 	sw	s8,80(sp)
+  40a484:	03a0f021 	move	s8,sp
+  40a488:	afbc0018 	sw	gp,24(sp)
+  40a48c:	afc40058 	sw	a0,88(s8)
+  40a490:	afc5005c 	sw	a1,92(s8)
+  40a494:	afc60060 	sw	a2,96(s8)
+  40a498:	afc70064 	sw	a3,100(s8)
+  40a49c:	8fc20058 	lw	v0,88(s8)
+  40a4a0:	10400007 	beqz	v0,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4a4:	00000000 	nop
+  40a4a8:	8fc20060 	lw	v0,96(s8)
+  40a4ac:	10400004 	beqz	v0,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4b0:	00000000 	nop
+  40a4b4:	8fc20068 	lw	v0,104(s8)
+  40a4b8:	1440000e 	bnez	v0,40a4f4 <get_all_wireless_client@@Base+0x4e4>
+  40a4bc:	00000000 	nop
+  40a4c0:	8f828028 	lw	v0,-32728(gp)
+  40a4c4:	2442f6b8 	addiu	v0,v0,-2376
+  40a4c8:	00402021 	move	a0,v0
+  40a4cc:	8f828028 	lw	v0,-32728(gp)
+  40a4d0:	2445f98c 	addiu	a1,v0,-1652
+  40a4d4:	24060279 	li	a2,633
+  40a4d8:	8f828150 	lw	v0,-32432(gp)
+  40a4dc:	0040c821 	move	t9,v0
+  40a4e0:	0320f809 	jalr	t9
+  40a4e4:	00000000 	nop
+  40a4e8:	8fdc0018 	lw	gp,24(s8)
+  40a4ec:	100000d5 	b	40a844 <get_all_wireless_client@@Base+0x834>
+  40a4f0:	00000000 	nop
+  40a4f4:	afc00030 	sw	zero,48(s8)
+  40a4f8:	a7c00034 	sh	zero,52(s8)
+  40a4fc:	afc00038 	sw	zero,56(s8)
+  40a500:	afc0003c 	sw	zero,60(s8)
+  40a504:	afc00040 	sw	zero,64(s8)
+  40a508:	afc00044 	sw	zero,68(s8)
+  40a50c:	a7c00048 	sh	zero,72(s8)
+  40a510:	00002021 	move	a0,zero
+  40a514:	8f828120 	lw	v0,-32480(gp)
+  40a518:	0040c821 	move	t9,v0
+  40a51c:	0320f809 	jalr	t9
+  40a520:	00000000 	nop
+  40a524:	8fdc0018 	lw	gp,24(s8)
+  40a528:	afc20024 	sw	v0,36(s8)
+  40a52c:	afc0002c 	sw	zero,44(s8)
+  40a530:	100000be 	b	40a82c <get_all_wireless_client@@Base+0x81c>
+  40a534:	00000000 	nop
+  40a538:	8fc2002c 	lw	v0,44(s8)
+  40a53c:	00401821 	move	v1,v0
+  40a540:	00031080 	sll	v0,v1,0x2
+  40a544:	00401821 	move	v1,v0
+  40a548:	00031080 	sll	v0,v1,0x2
+  40a54c:	00431023 	subu	v0,v0,v1
+  40a550:	00021900 	sll	v1,v0,0x4
+  40a554:	00431021 	addu	v0,v0,v1
+  40a558:	8fc30060 	lw	v1,96(s8)
+  40a55c:	00621021 	addu	v0,v1,v0
+  40a560:	24430020 	addiu	v1,v0,32
+  40a564:	27c20030 	addiu	v0,s8,48
+  40a568:	00602021 	move	a0,v1
+  40a56c:	00402821 	move	a1,v0
+  40a570:	8f82813c 	lw	v0,-32452(gp)
+  40a574:	0040c821 	move	t9,v0
+  40a578:	0320f809 	jalr	t9
+  40a57c:	00000000 	nop
+  40a580:	8fdc0018 	lw	gp,24(s8)
+  40a584:	104000a5 	beqz	v0,40a81c <get_all_wireless_client@@Base+0x80c>
+  40a588:	00000000 	nop
+  40a58c:	27c20030 	addiu	v0,s8,48
+  40a590:	8f848040 	lw	a0,-32704(gp)
+  40a594:	24050020 	li	a1,32
+  40a598:	00403021 	move	a2,v0
+  40a59c:	8f828044 	lw	v0,-32700(gp)
+  40a5a0:	0040c821 	move	t9,v0
+  40a5a4:	0320f809 	jalr	t9
+  40a5a8:	00000000 	nop
+  40a5ac:	8fdc0018 	lw	gp,24(s8)
+  40a5b0:	afc20020 	sw	v0,32(s8)
+  40a5b4:	8fc20020 	lw	v0,32(s8)
+  40a5b8:	14400099 	bnez	v0,40a820 <get_all_wireless_client@@Base+0x810>
+  40a5bc:	00000000 	nop
+  40a5c0:	27c20038 	addiu	v0,s8,56
+  40a5c4:	00402021 	move	a0,v0
+  40a5c8:	00002821 	move	a1,zero
+  40a5cc:	24060012 	li	a2,18
+  40a5d0:	8f828188 	lw	v0,-32376(gp)
+  40a5d4:	0040c821 	move	t9,v0
+  40a5d8:	0320f809 	jalr	t9
+  40a5dc:	00000000 	nop
+  40a5e0:	8fdc0018 	lw	gp,24(s8)
+  40a5e4:	27c30030 	addiu	v1,s8,48
+  40a5e8:	27c20038 	addiu	v0,s8,56
+  40a5ec:	00602021 	move	a0,v1
+  40a5f0:	00402821 	move	a1,v0
+  40a5f4:	8f8281ac 	lw	v0,-32340(gp)
+  40a5f8:	0040c821 	move	t9,v0
+  40a5fc:	0320f809 	jalr	t9
+  40a600:	00000000 	nop
+  40a604:	8fdc0018 	lw	gp,24(s8)
+  40a608:	8f828028 	lw	v0,-32728(gp)
+  40a60c:	2442f87c 	addiu	v0,v0,-1924
+  40a610:	27c30038 	addiu	v1,s8,56
+  40a614:	afa30010 	sw	v1,16(sp)
+  40a618:	00402021 	move	a0,v0
+  40a61c:	8f828028 	lw	v0,-32728(gp)
+  40a620:	2445f98c 	addiu	a1,v0,-1652
+  40a624:	2406028e 	li	a2,654
+  40a628:	8fc70058 	lw	a3,88(s8)
+  40a62c:	8f828150 	lw	v0,-32432(gp)
+  40a630:	0040c821 	move	t9,v0
+  40a634:	0320f809 	jalr	t9
+  40a638:	00000000 	nop
+  40a63c:	8fdc0018 	lw	gp,24(s8)
+  40a640:	27c20030 	addiu	v0,s8,48
+  40a644:	00402021 	move	a0,v0
+  40a648:	8fc50068 	lw	a1,104(s8)
+  40a64c:	8fc6006c 	lw	a2,108(s8)
+  40a650:	8fc70024 	lw	a3,36(s8)
+  40a654:	8f828028 	lw	v0,-32728(gp)
+  40a658:	244287b8 	addiu	v0,v0,-30792
+  40a65c:	0040c821 	move	t9,v0
+  40a660:	0320f809 	jalr	t9
+  40a664:	00000000 	nop
+  40a668:	8fdc0018 	lw	gp,24(s8)
+  40a66c:	afc20028 	sw	v0,40(s8)
+  40a670:	8fc20028 	lw	v0,40(s8)
+  40a674:	10400057 	beqz	v0,40a7d4 <get_all_wireless_client@@Base+0x7c4>
+  40a678:	00000000 	nop
+  40a67c:	8f828048 	lw	v0,-32696(gp)
+  40a680:	0040c821 	move	t9,v0
+  40a684:	0320f809 	jalr	t9
+  40a688:	00000000 	nop
+  40a68c:	8fdc0018 	lw	gp,24(s8)
+  40a690:	afc20020 	sw	v0,32(s8)
+  40a694:	8fc20020 	lw	v0,32(s8)
+  40a698:	1440000e 	bnez	v0,40a6d4 <get_all_wireless_client@@Base+0x6c4>
+  40a69c:	00000000 	nop
+  40a6a0:	8f828028 	lw	v0,-32728(gp)
+  40a6a4:	2442f6dc 	addiu	v0,v0,-2340
+  40a6a8:	00402021 	move	a0,v0
+  40a6ac:	8f828028 	lw	v0,-32728(gp)
+  40a6b0:	2445f98c 	addiu	a1,v0,-1652
+  40a6b4:	24060296 	li	a2,662
+  40a6b8:	8f828150 	lw	v0,-32432(gp)
+  40a6bc:	0040c821 	move	t9,v0
+  40a6c0:	0320f809 	jalr	t9
+  40a6c4:	00000000 	nop
+  40a6c8:	8fdc0018 	lw	gp,24(s8)
+  40a6cc:	10000054 	b	40a820 <get_all_wireless_client@@Base+0x810>
+  40a6d0:	00000000 	nop
+  40a6d4:	8f828138 	lw	v0,-32456(gp)
+  40a6d8:	0040c821 	move	t9,v0
+  40a6dc:	0320f809 	jalr	t9
+  40a6e0:	00000000 	nop
+  40a6e4:	8fdc0018 	lw	gp,24(s8)
+  40a6e8:	00401821 	move	v1,v0
+  40a6ec:	8fc20020 	lw	v0,32(s8)
+  40a6f0:	ac430064 	sw	v1,100(v0)
+  40a6f4:	8fc20020 	lw	v0,32(s8)
+  40a6f8:	24430050 	addiu	v1,v0,80
+  40a6fc:	8fc20028 	lw	v0,40(s8)
+  40a700:	00602021 	move	a0,v1
+  40a704:	00402821 	move	a1,v0
+  40a708:	24060004 	li	a2,4
+  40a70c:	8f8280cc 	lw	v0,-32564(gp)
+  40a710:	0040c821 	move	t9,v0
+  40a714:	0320f809 	jalr	t9
+  40a718:	00000000 	nop
+  40a71c:	8fdc0018 	lw	gp,24(s8)
+  40a720:	8fc20020 	lw	v0,32(s8)
+  40a724:	24430054 	addiu	v1,v0,84
+  40a728:	8fc20028 	lw	v0,40(s8)
+  40a72c:	24420004 	addiu	v0,v0,4
+  40a730:	00602021 	move	a0,v1
+  40a734:	00402821 	move	a1,v0
+  40a738:	24060006 	li	a2,6
+  40a73c:	8f8280cc 	lw	v0,-32564(gp)
+  40a740:	0040c821 	move	t9,v0
+  40a744:	0320f809 	jalr	t9
+  40a748:	00000000 	nop
+  40a74c:	8fdc0018 	lw	gp,24(s8)
+  40a750:	8fc20020 	lw	v0,32(s8)
+  40a754:	00402021 	move	a0,v0
+  40a758:	8fc50058 	lw	a1,88(s8)
+  40a75c:	24060010 	li	a2,16
+  40a760:	8f8280cc 	lw	v0,-32564(gp)
+  40a764:	0040c821 	move	t9,v0
+  40a768:	0320f809 	jalr	t9
+  40a76c:	00000000 	nop
+  40a770:	8fdc0018 	lw	gp,24(s8)
+  40a774:	8fc20020 	lw	v0,32(s8)
+  40a778:	8fc3005c 	lw	v1,92(s8)
+  40a77c:	ac43005c 	sw	v1,92(v0)
+  40a780:	8fc20020 	lw	v0,32(s8)
+  40a784:	ac400060 	sw	zero,96(v0)
+  40a788:	8f848040 	lw	a0,-32704(gp)
+  40a78c:	24050020 	li	a1,32
+  40a790:	8fc60020 	lw	a2,32(s8)
+  40a794:	8f87804c 	lw	a3,-32692(gp)
+  40a798:	8f828050 	lw	v0,-32688(gp)
+  40a79c:	0040c821 	move	t9,v0
+  40a7a0:	0320f809 	jalr	t9
+  40a7a4:	00000000 	nop
+  40a7a8:	8fdc0018 	lw	gp,24(s8)
+  40a7ac:	8fc20028 	lw	v0,40(s8)
+  40a7b0:	24420004 	addiu	v0,v0,4
+  40a7b4:	00402021 	move	a0,v0
+  40a7b8:	8f8280a0 	lw	v0,-32608(gp)
+  40a7bc:	0040c821 	move	t9,v0
+  40a7c0:	0320f809 	jalr	t9
+  40a7c4:	00000000 	nop
+  40a7c8:	8fdc0018 	lw	gp,24(s8)
+  40a7cc:	10000014 	b	40a820 <get_all_wireless_client@@Base+0x810>
+  40a7d0:	00000000 	nop
+  40a7d4:	27c20030 	addiu	v0,s8,48
+  40a7d8:	8fc40058 	lw	a0,88(s8)
+  40a7dc:	8fc5005c 	lw	a1,92(s8)
+  40a7e0:	00403021 	move	a2,v0
+  40a7e4:	8f8280a8 	lw	v0,-32600(gp)
+  40a7e8:	0040c821 	move	t9,v0
+  40a7ec:	0320f809 	jalr	t9
+  40a7f0:	00000000 	nop
+  40a7f4:	8fdc0018 	lw	gp,24(s8)
+  40a7f8:	27c20030 	addiu	v0,s8,48
+  40a7fc:	00402021 	move	a0,v0
+  40a800:	8f8280a0 	lw	v0,-32608(gp)
+  40a804:	0040c821 	move	t9,v0
+  40a808:	0320f809 	jalr	t9
+  40a80c:	00000000 	nop
+  40a810:	8fdc0018 	lw	gp,24(s8)
+  40a814:	10000002 	b	40a820 <get_all_wireless_client@@Base+0x810>
+  40a818:	00000000 	nop
+  40a81c:	00000000 	nop
+
+===== CALLERS / REFERENCES TO 0x40a46c =====
+  40a3f4:	0320f809 	jalr	t9
+  40a3f8:	00000000 	nop
+  40a3fc:	8fdc0018 	lw	gp,24(s8)
+  40a400:	10000004 	b	40a414 <get_all_wireless_client@@Base+0x404>
+  40a404:	00000000 	nop
+  40a408:	8fc30024 	lw	v1,36(s8)
+  40a40c:	8fc20028 	lw	v0,40(s8)
+  40a410:	ac43005c 	sw	v1,92(v0)
+  40a414:	8fc2002c 	lw	v0,44(s8)
+  40a418:	8c420000 	lw	v0,0(v0)
+  40a41c:	afc2002c 	sw	v0,44(s8)
+  40a420:	8fc2002c 	lw	v0,44(s8)
+  40a424:	8c420000 	lw	v0,0(v0)
+  40a428:	00402021 	move	a0,v0
+  40a42c:	8f828028 	lw	v0,-32728(gp)
+  40a430:	244281c0 	addiu	v0,v0,-32320
+  40a434:	0040c821 	move	t9,v0
+  40a438:	0320f809 	jalr	t9
+  40a43c:	00000000 	nop
+  40a440:	8fdc0018 	lw	gp,24(s8)
+  40a444:	8fc3002c 	lw	v1,44(s8)
+  40a448:	8fc20038 	lw	v0,56(s8)
+  40a44c:	1462ffc5 	bne	v1,v0,40a364 <get_all_wireless_client@@Base+0x354>
+  40a450:	00000000 	nop
+  40a454:	03c0e821 	move	sp,s8
+  40a458:	8fbf0034 	lw	ra,52(sp)
+  40a45c:	8fbe0030 	lw	s8,48(sp)
+  40a460:	27bd0038 	addiu	sp,sp,56
+  40a464:	03e00008 	jr	ra
+  40a468:	00000000 	nop
+  40a46c:	3c1c0002 	lui	gp,0x2
+  40a470:	279ce034 	addiu	gp,gp,-8140
+  40a474:	0399e021 	addu	gp,gp,t9
+  40a478:	27bdffa8 	addiu	sp,sp,-88
+  40a47c:	afbf0054 	sw	ra,84(sp)
+  40a480:	afbe0050 	sw	s8,80(sp)
+  40a484:	03a0f021 	move	s8,sp
+  40a488:	afbc0018 	sw	gp,24(sp)
+  40a48c:	afc40058 	sw	a0,88(s8)
+  40a490:	afc5005c 	sw	a1,92(s8)
+  40a494:	afc60060 	sw	a2,96(s8)
+  40a498:	afc70064 	sw	a3,100(s8)
+  40a49c:	8fc20058 	lw	v0,88(s8)
+  40a4a0:	10400007 	beqz	v0,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4a4:	00000000 	nop
+  40a4a8:	8fc20060 	lw	v0,96(s8)
+  40a4ac:	10400004 	beqz	v0,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4b0:	00000000 	nop
+  40a4b4:	8fc20068 	lw	v0,104(s8)
+  40a4b8:	1440000e 	bnez	v0,40a4f4 <get_all_wireless_client@@Base+0x4e4>
+  40a4bc:	00000000 	nop
+  40a4c0:	8f828028 	lw	v0,-32728(gp)
+  40a4c4:	2442f6b8 	addiu	v0,v0,-2376
+  40a4c8:	00402021 	move	a0,v0
+  40a4cc:	8f828028 	lw	v0,-32728(gp)
+  40a4d0:	2445f98c 	addiu	a1,v0,-1652
+  40a4d4:	24060279 	li	a2,633
+  40a4d8:	8f828150 	lw	v0,-32432(gp)
+  40a4dc:	0040c821 	move	t9,v0
+  40a4e0:	0320f809 	jalr	t9
+  40a4e4:	00000000 	nop
+  40a4e8:	8fdc0018 	lw	gp,24(s8)
+  40a4ec:	100000d5 	b	40a844 <get_all_wireless_client@@Base+0x834>
+  40a4f0:	00000000 	nop
+  40a4f4:	afc00030 	sw	zero,48(s8)
+  40a4f8:	a7c00034 	sh	zero,52(s8)
+  40a4fc:	afc00038 	sw	zero,56(s8)
+  40a500:	afc0003c 	sw	zero,60(s8)
+  40a504:	afc00040 	sw	zero,64(s8)
+  40a508:	afc00044 	sw	zero,68(s8)
+  40a50c:	a7c00048 	sh	zero,72(s8)
+--
+  40a92c:	8f828174 	lw	v0,-32396(gp)
+  40a930:	0040c821 	move	t9,v0
+  40a934:	0320f809 	jalr	t9
+  40a938:	00000000 	nop
+  40a93c:	8fdc0018 	lw	gp,24(s8)
+  40a940:	27c20024 	addiu	v0,s8,36
+  40a944:	00402021 	move	a0,v0
+  40a948:	8f828058 	lw	v0,-32680(gp)
+  40a94c:	0040c821 	move	t9,v0
+  40a950:	0320f809 	jalr	t9
+  40a954:	00000000 	nop
+  40a958:	8fdc0018 	lw	gp,24(s8)
+  40a95c:	afc20020 	sw	v0,32(s8)
+  40a960:	8fc30020 	lw	v1,32(s8)
+  40a964:	24020005 	li	v0,5
+  40a968:	10620013 	beq	v1,v0,40a9b8 <get_all_wireless_client@@Base+0x9a8>
+  40a96c:	00000000 	nop
+  40a970:	8fc21a54 	lw	v0,6740(s8)
+  40a974:	24430004 	addiu	v1,v0,4
+  40a978:	8fc21a54 	lw	v0,6740(s8)
+  40a97c:	8c420000 	lw	v0,0(v0)
+  40a980:	8fc51a44 	lw	a1,6724(s8)
+  40a984:	27c40024 	addiu	a0,s8,36
+  40a988:	27c60044 	addiu	a2,s8,68
+  40a98c:	afa60010 	sw	a2,16(sp)
+  40a990:	afa50014 	sw	a1,20(sp)
+  40a994:	8fc50020 	lw	a1,32(s8)
+  40a998:	00603021 	move	a2,v1
+  40a99c:	00403821 	move	a3,v0
+  40a9a0:	8f828028 	lw	v0,-32728(gp)
+  40a9a4:	2442a46c 	addiu	v0,v0,-23444
+  40a9a8:	0040c821 	move	t9,v0
+  40a9ac:	0320f809 	jalr	t9
+  40a9b0:	00000000 	nop
+  40a9b4:	8fdc0018 	lw	gp,24(s8)
+  40a9b8:	24040017 	li	a0,23
+  40a9bc:	8f828120 	lw	v0,-32480(gp)
+  40a9c0:	0040c821 	move	t9,v0
+  40a9c4:	0320f809 	jalr	t9
+  40a9c8:	00000000 	nop
+  40a9cc:	8fdc0018 	lw	gp,24(s8)
+  40a9d0:	27c30024 	addiu	v1,s8,36
+  40a9d4:	00602021 	move	a0,v1
+  40a9d8:	00402821 	move	a1,v0
+  40a9dc:	8f828174 	lw	v0,-32396(gp)
+  40a9e0:	0040c821 	move	t9,v0
+  40a9e4:	0320f809 	jalr	t9
+  40a9e8:	00000000 	nop
+  40a9ec:	8fdc0018 	lw	gp,24(s8)
+  40a9f0:	27c20024 	addiu	v0,s8,36
+  40a9f4:	00402021 	move	a0,v0
+  40a9f8:	8f828058 	lw	v0,-32680(gp)
+  40a9fc:	0040c821 	move	t9,v0
+  40aa00:	0320f809 	jalr	t9
+  40aa04:	00000000 	nop
+  40aa08:	8fdc0018 	lw	gp,24(s8)
+  40aa0c:	afc20020 	sw	v0,32(s8)
+  40aa10:	8fc30020 	lw	v1,32(s8)
+  40aa14:	24020005 	li	v0,5
+  40aa18:	10620013 	beq	v1,v0,40aa68 <get_all_wireless_client@@Base+0xa58>
+  40aa1c:	00000000 	nop
+  40aa20:	8fc21a50 	lw	v0,6736(s8)
+  40aa24:	24430004 	addiu	v1,v0,4
+  40aa28:	8fc21a50 	lw	v0,6736(s8)
+  40aa2c:	8c420000 	lw	v0,0(v0)
+  40aa30:	8fc51a44 	lw	a1,6724(s8)
+  40aa34:	27c40024 	addiu	a0,s8,36
+  40aa38:	27c60044 	addiu	a2,s8,68
+  40aa3c:	afa60010 	sw	a2,16(sp)
+  40aa40:	afa50014 	sw	a1,20(sp)
+  40aa44:	8fc50020 	lw	a1,32(s8)
+  40aa48:	00603021 	move	a2,v1
+  40aa4c:	00403821 	move	a3,v0
+  40aa50:	8f828028 	lw	v0,-32728(gp)
+  40aa54:	2442a46c 	addiu	v0,v0,-23444
+  40aa58:	0040c821 	move	t9,v0
+  40aa5c:	0320f809 	jalr	t9
+  40aa60:	00000000 	nop
+  40aa64:	8fdc0018 	lw	gp,24(s8)
+  40aa68:	2404003f 	li	a0,63
+  40aa6c:	8f828120 	lw	v0,-32480(gp)
+  40aa70:	0040c821 	move	t9,v0
+  40aa74:	0320f809 	jalr	t9
+  40aa78:	00000000 	nop
+  40aa7c:	8fdc0018 	lw	gp,24(s8)
+  40aa80:	27c30024 	addiu	v1,s8,36
+  40aa84:	00602021 	move	a0,v1
+  40aa88:	00402821 	move	a1,v0
+  40aa8c:	8f828174 	lw	v0,-32396(gp)
+  40aa90:	0040c821 	move	t9,v0
+  40aa94:	0320f809 	jalr	t9
+  40aa98:	00000000 	nop
+  40aa9c:	8fdc0018 	lw	gp,24(s8)
+  40aaa0:	27c20024 	addiu	v0,s8,36
+  40aaa4:	00402021 	move	a0,v0
+  40aaa8:	8f828058 	lw	v0,-32680(gp)
+  40aaac:	0040c821 	move	t9,v0
+  40aab0:	0320f809 	jalr	t9
+  40aab4:	00000000 	nop
+  40aab8:	8fdc0018 	lw	gp,24(s8)
+  40aabc:	afc20020 	sw	v0,32(s8)
+  40aac0:	8fc30020 	lw	v1,32(s8)
+  40aac4:	24020005 	li	v0,5
+  40aac8:	10620013 	beq	v1,v0,40ab18 <get_all_wireless_client@@Base+0xb08>
+  40aacc:	00000000 	nop
+  40aad0:	8fc21a5c 	lw	v0,6748(s8)
+  40aad4:	24430004 	addiu	v1,v0,4
+  40aad8:	8fc21a5c 	lw	v0,6748(s8)
+  40aadc:	8c420000 	lw	v0,0(v0)
+  40aae0:	8fc51a44 	lw	a1,6724(s8)
+  40aae4:	27c40024 	addiu	a0,s8,36
+  40aae8:	27c60044 	addiu	a2,s8,68
+  40aaec:	afa60010 	sw	a2,16(sp)
+  40aaf0:	afa50014 	sw	a1,20(sp)
+  40aaf4:	8fc50020 	lw	a1,32(s8)
+  40aaf8:	00603021 	move	a2,v1
+  40aafc:	00403821 	move	a3,v0
+  40ab00:	8f828028 	lw	v0,-32728(gp)
+  40ab04:	2442a46c 	addiu	v0,v0,-23444
+  40ab08:	0040c821 	move	t9,v0
+  40ab0c:	0320f809 	jalr	t9
+  40ab10:	00000000 	nop
+  40ab14:	8fdc0018 	lw	gp,24(s8)
+  40ab18:	2404003b 	li	a0,59
+  40ab1c:	8f828120 	lw	v0,-32480(gp)
+  40ab20:	0040c821 	move	t9,v0
+  40ab24:	0320f809 	jalr	t9
+  40ab28:	00000000 	nop
+  40ab2c:	8fdc0018 	lw	gp,24(s8)
+  40ab30:	27c30024 	addiu	v1,s8,36
+  40ab34:	00602021 	move	a0,v1
+  40ab38:	00402821 	move	a1,v0
+  40ab3c:	8f828174 	lw	v0,-32396(gp)
+  40ab40:	0040c821 	move	t9,v0
+  40ab44:	0320f809 	jalr	t9
+  40ab48:	00000000 	nop
+  40ab4c:	8fdc0018 	lw	gp,24(s8)
+  40ab50:	27c20024 	addiu	v0,s8,36
+  40ab54:	00402021 	move	a0,v0
+  40ab58:	8f828058 	lw	v0,-32680(gp)
+  40ab5c:	0040c821 	move	t9,v0
+  40ab60:	0320f809 	jalr	t9
+  40ab64:	00000000 	nop
+  40ab68:	8fdc0018 	lw	gp,24(s8)
+  40ab6c:	afc20020 	sw	v0,32(s8)
+  40ab70:	8fc30020 	lw	v1,32(s8)
+  40ab74:	24020005 	li	v0,5
+  40ab78:	10620018 	beq	v1,v0,40abdc <get_all_wireless_client@@Base+0xbcc>
+  40ab7c:	00000000 	nop
+  40ab80:	8fc21a58 	lw	v0,6744(s8)
+  40ab84:	24430004 	addiu	v1,v0,4
+  40ab88:	8fc21a58 	lw	v0,6744(s8)
+  40ab8c:	8c420000 	lw	v0,0(v0)
+  40ab90:	8fc51a44 	lw	a1,6724(s8)
+  40ab94:	27c40024 	addiu	a0,s8,36
+  40ab98:	27c60044 	addiu	a2,s8,68
+  40ab9c:	afa60010 	sw	a2,16(sp)
+  40aba0:	afa50014 	sw	a1,20(sp)
+  40aba4:	8fc50020 	lw	a1,32(s8)
+  40aba8:	00603021 	move	a2,v1
+  40abac:	00403821 	move	a3,v0
+  40abb0:	8f828028 	lw	v0,-32728(gp)
+  40abb4:	2442a46c 	addiu	v0,v0,-23444
+  40abb8:	0040c821 	move	t9,v0
+  40abbc:	0320f809 	jalr	t9
+  40abc0:	00000000 	nop
+  40abc4:	8fdc0018 	lw	gp,24(s8)
+  40abc8:	10000005 	b	40abe0 <get_all_wireless_client@@Base+0xbd0>
+  40abcc:	00000000 	nop
+  40abd0:	00000000 	nop
+  40abd4:	10000002 	b	40abe0 <get_all_wireless_client@@Base+0xbd0>
+  40abd8:	00000000 	nop
+  40abdc:	00000000 	nop
+  40abe0:	03c0e821 	move	sp,s8
+  40abe4:	8fbf1a4c 	lw	ra,6732(sp)
+  40abe8:	8fbe1a48 	lw	s8,6728(sp)
+  40abec:	27bd1a50 	addiu	sp,sp,6736
+  40abf0:	03e00008 	jr	ra
+  40abf4:	00000000 	nop
+  40abf8:	3c1c0002 	lui	gp,0x2
+  40abfc:	279cd8a8 	addiu	gp,gp,-10072
+  40ac00:	0399e021 	addu	gp,gp,t9
+  40ac04:	27bd8010 	addiu	sp,sp,-32752
+  40ac08:	afbf7fec 	sw	ra,32748(sp)
+  40ac0c:	afbe7fe8 	sw	s8,32744(sp)
+  40ac10:	3c030001 	lui	v1,0x1
+  40ac14:	34631848 	ori	v1,v1,0x1848
+  40ac18:	03a3e823 	subu	sp,sp,v1
+  40ac1c:	03a0f021 	move	s8,sp
+  40ac20:	afbc0018 	sw	gp,24(sp)
+  40ac24:	3c020001 	lui	v0,0x1
+  40ac28:	34429838 	ori	v0,v0,0x9838
+  40ac2c:	005e1021 	addu	v0,v0,s8
+  40ac30:	ac440000 	sw	a0,0(v0)
+  40ac34:	3c030001 	lui	v1,0x1
+  40ac38:	3463983c 	ori	v1,v1,0x983c
+  40ac3c:	007e1821 	addu	v1,v1,s8
+  40ac40:	ac650000 	sw	a1,0(v1)
+  40ac44:	3c190001 	lui	t9,0x1
+  40ac48:	37399840 	ori	t9,t9,0x9840
+  40ac4c:	033ec821 	addu	t9,t9,s8
+  40ac50:	af260000 	sw	a2,0(t9)
+  40ac54:	3c020001 	lui	v0,0x1
+
+===== STRINGS AROUND WIRELESS/ARP/CLIENT =====
+    f79 ugw_accept_client
+   1036 monitor_program_register_associ_proc
+   1087 g_mac_hdr
+   1091 find_in_client_mac_list
+   10a9 alloc_client_mac
+   10ba g_client_hs_list
+   10cb find_in_client_hs_list
+   10e2 alloc_device_client_info
+   10fb g_client_hs_list_num
+   1110 add_to_client_hs_list
+   1126 do_upload_one_client
+   1159 del_from_client_hs_list
+   1171 free_client_hs_list
+   11b1 check_in_wifi_client_lists
+   11ee do_client_timeout_check
+   1206 do_upload_client_list
+   1236 del_client_belong_ifname
+   1275 init_client_hs_list
+   12fd wifi_get_vap_client_lists
+   1317 ifaddrs_ethaddr_ntoa
+   1350 update_new_mac_list
+   1364 print_wifi_client_lists
+   1390 get_all_wireless_client
+   13a8 del_roam_not_in_wifi_client_lists
+   13ca print_all_wifi_client_lists
+   cc04 arp_receive
+   cc24 /var/arp_receive
+   d0f0  	mac : %s
+   d124 malloc device_client_info failed : (%d)%m
+   d174 [%s][%d][luminais] alloc_client_mac failed
+   d258 [%s][%d][luminais] mac : 
+   d288 client_num = %d
+   d2d8 [%s][%d][luminais] alloc_device_client_info failed.
+   d31c [%s][%d][luminais] convert_dhcp_info_to_client_list failed.
+   d3a0 g_client_hs_list_num = %d
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d518 rqst_client_hostname
+   d59f [1;35mdo_client_timeout_check
+   d5db [1;35mdo_upload_client_list
+   d714 rsp_client_hostname
+   d8c0 request_client_hostname
+   d988 upload_nova_client_node
+   d9a0 convert_dhcp_info_to_client_list
+   da14 update_new_mac_list
+   da28 find_in_client_mac_list
+   df24 arp_receive
+   df44 /var/arp_receive
+   e984 arp_receive
+   e9a4 /var/arp_receive
+   ed58 malloc device_client_info failed : (%d)%m
+   eda8 del_client_belong_ifname
+   edc4 free_client_hs_list
+   edd8 add_to_client_hs_list
+   edf0 find_in_client_hs_list
+   f2c4 arp_receive
+   f2e4 /var/arp_receive
+   f644 /proc/net/arp
+   f6dc [%s][%d][luminais] alloc_device_client_info failed.
+   f7a8  wifi_list[%d] %s mac = %s, ip = %s, signal = %s
+   f87c [%s][%d][luminais] %s find wifi %s not in client hs list
+   f8b8 [%s][%d][luminais] wired client : 
+   f8dc [%s][%d][luminais] 2.4G client : 
+   f900 [%s][%d][luminais] 5G client : 
+   f924 [%s][%d][luminais] 2.4G gst client : 
+   f94c [%s][%d][luminais] 5G gst client : 
+   f974 do_client_timeout_check
+   f98c check_wifi_client_roam_or_static
+   f9b0 print_all_wifi_client_lists
+   f9cc print_wifi_client_lists
+   f9e4 check_in_wifi_client_lists
+   fa00 wifi_client_list_find
+   fa18 wired_client_timeout_check
+   fa5c update_wire_client_from_sw_list
+   fa7c del_wire_client_not_in_sw_l2_list
+   faa0 find_if_arp_in_arp_list_by_mac
+   fad4 get_proc_arp_list
+   ffa4 arp_receive
+   ffc4 /var/arp_receive
+  1037f [1;35mno client
+  103e4 do_upload_one_client
+  103fc do_upload_client_list
+  10414 deal_rssi_of_client
+  10428 get_device_client_rssi

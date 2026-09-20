@@ -1,0 +1,84 @@
+# Tenda MW6 — agregowany widget Lovelace
+#
+# Wymaga kart Mushroom (custom:mushroom-*).
+# Encje agregują wszystkie urządzenia raportowane jako online przez MW6.
+# Nowe urządzenia są uwzględniane automatycznie.
+
+type: vertical-stack
+cards:
+  - type: custom:mushroom-title-card
+    title: Tenda MW6
+    subtitle: Cały mesh — bieżący ruch i transfer
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_download_rate
+        name: Pobieranie teraz
+        icon: mdi:download-network
+        icon_color: blue
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_upload_rate
+        name: Wysyłanie teraz
+        icon: mdi:upload-network
+        icon_color: green
+        primary_info: name
+        secondary_info: state
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_download_transfer
+        name: Pobrano łącznie
+        icon: mdi:database-arrow-down
+        icon_color: blue
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_upload_transfer
+        name: Wysłano łącznie
+        icon: mdi:database-arrow-up
+        icon_color: green
+        primary_info: name
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_download_transfer_today
+        name: Pobrano dzisiaj
+        icon: mdi:calendar-arrow-down
+        icon_color: blue
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_upload_transfer_today
+        name: Wysłano dzisiaj
+        icon: mdi:calendar-arrow-up
+        icon_color: green
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_download_transfer_this_month
+        name: Pobrano w tym miesiącu
+        icon: mdi:calendar-month
+        icon_color: blue
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.tenda_mw6_total_upload_transfer_this_month
+        name: Wysłano w tym miesiącu
+        icon: mdi:calendar-month-outline
+        icon_color: green
+        primary_info: name
+        secondary_info: state
+
+  - type: custom:mushroom-entity-card
+    entity: sensor.tenda_mw6_transfer_counting_health
+    name: Stan zliczania transferu
+    icon: mdi:chart-timeline-variant
+    icon_color: amber
+    primary_info: name
+    secondary_info: state

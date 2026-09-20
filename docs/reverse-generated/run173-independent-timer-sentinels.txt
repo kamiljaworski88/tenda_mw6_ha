@@ -1,0 +1,1127 @@
+===== RUN 173: independent timer health sentinels =====
+
+===== ELF files importing timer_start =====
+firmware-src/RootFS-unpacked/lib/libcommon.so
+firmware-src/RootFS-unpacked/bin/device_list
+firmware-src/RootFS-unpacked/bin/netctrl
+
+===== ELF files importing both timer_start and cmd_pub =====
+firmware-src/RootFS-unpacked/bin/device_list
+
+===== candidate timer users: symbols and observable strings =====
+
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+    24: 00039edc   256 FUNC    GLOBAL DEFAULT   10 timer_check_ok_and_wait
+    86: 00039c04   360 FUNC    GLOBAL DEFAULT   10 timer_start
+   151: 00039d6c   368 FUNC    GLOBAL DEFAULT   10 timer_stop
+   409: 00031b3c   640 FUNC    GLOBAL DEFAULT   10 ugw_proc_send_msg
+   38cb systool_get_sys_cpu_info
+   38e4 systool_get_memInfo
+   38f8 systool_get_curtime
+   390c UploadValue
+   3918 systool_file_handle
+   392c systool_upfile_handle_new
+   3946 monitor_stop
+   3953 pthread_create
+   3962 systool_sys_handle
+   3975 RestoreValue
+   3982 RestoreAndRebootHandle
+   3999 ugw_write_ie_type
+--
+  56354 system_convert_code_format
+  56370 system_gb2312_to_utf8
+  56388 system_search_tbl_for_unicode
+  563a8 system_search_unicode_key
+  563c4 system_sort_by_gb2312
+  563dc system_qksort_by_gb2312
+  563f4 system_qk_sort
+  56404 system_init_gb2312_sort_enty
+  56424 system_utf8_to_gb2312
+  5643c system_search_gb2312_key
+  56458 system_get_utf8_bytes_num
+  56474 system_get_code_format
+  5648c system_calc_utf_wegt
+  564a4 system_match_real_utf_num
+  564c0 system_calc_gb_wegt
+  564d4 system_match_real_gb_num
+  564f0 system_code_is_gb2312
+  56508 system_get_pure_cn_encode
+--
+  56fac Not a valid firmware.ck_result:%d.
+  56fd0 /webroot/default.cfg
+  56fec /webroot/default_url.cfg
+  57008 upload value is fail.
+  57020 fopen is fail.
+  57030 type:%d.
+  5703c invalid type!
+  5704c multiWAN
+  57058 xl2tppppd
+  57064 reboot...
+  57070 systool type:%d.
+  57084 restore value is fail.
+--
+  57188 systool_reboot_thread
+  571a0 systool_upfile_handle_new
+  571bc systool_file_handle
+  571d0 systool_cfg_upload
+  571e4 systool_simple_upload
+  571fc systool_sys_cfg_download
+  57218 systool_get_curtime
+  5722c systool_get_memInfo
+  57240 systool_get_sys_cpu_info
+  57264 %.0f
+  572dc u%04x
+  572e4 null
+  572ec false
+--
+  5bfac func:%s, line:%d, name is null.
+  5bfd0 timer
+  5bfd8 check timer start success
+  5bff4 timer start is failed.
+  5c00c timer_stop
+  5c018 timer_start
+  5c098 monitor
+  5c0b8 /var/pm_socket
+  5c0fc timer
+  5c11c /var/tm_socket
+  5c160 cfms
+  5c180 /var/cfm_socket
+
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+    65: 0040c620     0 FUNC    GLOBAL DEFAULT  UND timer_start
+    77: 0040c560     0 FUNC    GLOBAL DEFAULT  UND timer_check_ok_and_wait
+    93: 0040c460     0 FUNC    GLOBAL DEFAULT  UND timer_stop
+   107: 0040c380     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   10e2 alloc_device_client_info
+   10fb g_client_hs_list_num
+   1110 add_to_client_hs_list
+   1126 do_upload_one_client
+   113b convert_conn_type_from_ifname
+   1159 del_from_client_hs_list
+   1171 free_client_hs_list
+   1185 free_lan_ifname_list
+   119a print_lan_ifnames_list
+   11b1 check_in_wifi_client_lists
+   11cc g_node_sn
+   11d6 init_conn_type_list_hdr
+   11ee do_client_timeout_check
+   1206 do_upload_client_list
+   121c lan_ifnames_change_handle
+   1236 del_client_belong_ifname
+   124f dhcp_nl_event_handle
+   1264 init_lan_ifnames
+   1275 init_client_hs_list
+   1289 init_device_node_sn
+   129d strlen
+   12a4 fopen
+--
+   d310 NOVA
+   d31c [%s][%d][luminais] convert_dhcp_info_to_client_list failed.
+   d35d [1;32m[%s][%d] : 
+   d373 [1;35mneed_upload = %d
+   d390  list %d : 
+   d3a0 g_client_hs_list_num = %d
+   d3bc device_list
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d4b4 func:%s, line:%d, fd queue is null.
+   d4dc msg is null.
+   d4ec [%s][%d][luminais] malloc failed, (%d)%m
+   d518 rqst_client_hostname
+   d530 confctl_srv_key
+   d540 function entry!
+   d550 timer process is exit.
+   d568 timer process is restart ok.
+   d589 [1;32m[%s][%d] : 
+   d59f [1;35mdo_client_timeout_check
+   d5c5 [1;32m[%s][%d] : 
+   d5db [1;35mdo_upload_client_list
+   d5fc network check recv error msg.
+   d61d [1;32m[%s][%d] : 
+   d633 [1;35m %d : %s
+   d648 [%s][%d][luminais] unknow ie_type.
+   d66c function exit!
+   d67c accept
+   d684 socket:malloc
+   d694 cm_new failed.
+--
+   d944 stop_device_list_timer
+   d95c start_device_list_timer
+   d974 deal_new_dhcp_info
+   d988 upload_nova_client_node
+   d9a0 convert_dhcp_info_to_client_list
+   d9c4 get_each_conn_type_list_hdr
+   d9e0 find_in_conn_type_list
+   d9f8 print_dhcp_info
+   da08 nl_recvmsg
+   da14 update_new_mac_list
+   da28 find_in_client_mac_list
+   da40 std_print_control
+--
+  10369 [1;32m[%s][%d] : 
+  1037f [1;35mno client
+  10394 [%s][%d][luminais] malloc failed, (%d)%m
+  103c0 device_list_upload
+  103d4 confctl_srv_key
+  103e4 do_upload_one_client
+  103fc do_upload_client_list
+  10414 deal_rssi_of_client
+  10428 get_device_client_rssi
+  1066c GCC: (GNU) 3.3.2
+  1067d GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  11479 .shstrtab
+  11483 .interp
+  1148b .reginfo
+  11494 .dynamic
+
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   366: 0045b150     0 FUNC    GLOBAL DEFAULT  UND timer_start
+   400: 0045af50     0 FUNC    GLOBAL DEFAULT  UND timer_check_ok_and_wait
+   454: 0045ac00     0 FUNC    GLOBAL DEFAULT  UND timer_stop
+   465: 0045ab50     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_send_msg
+  5c08c /proc/sys/net/ipv4/tcp_tw_recycle
+  5c0b0 /proc/sys/net/ipv4/tcp_timestamps
+  5c0d8 /proc/sys/net/ipv4/tcp_max_tw_buckets
+  5c104 /proc/sys/net/ipv4/tcp_keepalive_time
+  5c12c 1800
+  5c134 /proc/sys/net/ipv4/tcp_fin_timeout
+  5c15c /proc/sys/net/core/netdev_max_backlog
+  5c184 8096
+  5c18c /proc/sys/net/ipv4/udp_mem
+  5c1a8 60480    80640    120960
+  5c1c4 /proc/sys/net/ipv4/udp_rmem_min
+  5c1e4 40960
+--
+  5cb58 epoll_ctl fd_server:
+  5cb70 epoll_ctl phy_sock:
+  5cb84 netctrl
+  5cb8c BM_TIMER_CHECK check add timer failed
+  5cbb4 LAN_DHCPC_CHECK add timer failed
+  5cbd8 WIFI_CONNECT_CHECK add timer failed
+  5cbfc SSID_AUTO_HIDE_CHECK add timer failed
+  5cc24 VPN_DIAL_CHECK add timer failed
+  5cc44 timer can not stop BM_TIMER_CHECK
+  5cc68 timer can not stop LAN_DHCPC_CHECK 
+  5cc8c timer can not stop WIFI_CONNECT_CHECK
+  5ccb4 timer can not stop SSID_AUTO_HIDE_CHECK
+  5ccdc timer can not stop VPN_DIAL_CHECK
+  5cd00 ucloud -l 4
+  5cd0c start ucloud process is fail
+  5cd2c ucloud_ctl
+--
+  5cda4 %s(%d)
+  5cdac start multiwan process is fail.
+  5cdcc httpd
+  5cdd4 tendaupload
+  5cde0 start tendaupload process is fail.
+  5ce04 param error.
+  5ce14 /proc/mtd
+  5ce20 fopen is fail.
+  5ce30 %*[^"]"%[^"]"
+  5ce40 mtd%d:
+  5ce48 /dev/mtdblock%d
+  5ce58 get mtd dev is fail.
+  5ce70 sh /usr/bin/mesh_op.sh
+--
+  5d084 netctrl_start_services
+  5d09c netctrl_start_services
+  5d0b4 get_block_path_by_mtd_name
+  5d0d0 netctrl_start_tendaupload
+  5d0ec netctrl_start_httpd
+  5d100 netctrl_start_multiwan
+  5d118 netctrl_start_multiwan
+  5d130 netctrl_start_system_services
+  5d150 netctrl_init_vlan_nvram
+  5d168 netctrl_nandflash_mkdir
+  5d180 netctrl_start_upgrade_online
+  5d1a0 netctrl_cancel_timer
+--
+  7019c IpExcluded
+  701a8 AppIncluded
+  701b4 AppExcluded
+  701c0 UploadLimit
+  701cc Shared
+  701d4 PerIp
+  701dc DownloadLimit
+  701ec WANID
+  701f4 UserIncluded
+  70204 %s %d: cJSON_CreateObject failed
+  70228 MaxBacklogPackets
+  7023c %s %d: cJSON_CreateArray failed
+--
+  72f48 wl2g.extra.ssid_encode
+  72f60 wl2g.extra.security
+  72f74 wl2g.extra.wep_type
+  72f88 wl2g.extra.wep_key
+  72f9c wl2g.extra.wep_key1
+  72fb0 wl2g.extra.wep_key2
+  72fc4 wl2g.extra.wep_key3
+  72fd8 wl2g.extra.wep_key4
+  72fec wl2g.extra.wep_key1_select
+  73008 wl2g.extra.wep_key2_select
+  73024 wl2g.extra.wep_key3_select
+  73040 wl2g.extra.wep_key4_select
+--
+  731b8 wl2g.ssidxx.ssid_encode
+  731d0 wl2g.ssidxx.security
+  731e8 wl2g.ssidxx.wep_type
+  73200 wl2g.ssidxx.wep_key
+  73214 wl2g.ssidxx.wep_key1
+  7322c wl2g.ssidxx.wep_key2
+  73244 wl2g.ssidxx.wep_key3
+  7325c wl2g.ssidxx.wep_key4
+  73274 wl2g.ssidxx.wep_key1_select
+  73290 wl2g.ssidxx.wep_key2_select
+  732ac wl2g.ssidxx.wep_key3_select
+  732c8 wl2g.ssidxx.wep_key4_select
+  732e4 wl2g.ssidxx.auth.radius_ip
+  73300 wl2g.ssidxx.auth.radius_port
+  73320 wl2g.ssidxx.auth.radius_key
+  7333c wl2g.ssidxx.wpapsk_type
+  73354 wl2g.ssidxx.wpapsk_crypto
+  73370 wl2g.ssidxx.wpapsk_psk
+  73388 wl2g.ssidxx.wpa_type
+  733a0 wl2g.ssidxx.wpa_crypto
+  733b8 wl2g.ssidxx.key_uptime
+  733d0 wl2g.ssidxx.radius_ip
+  733e8 wl2g.ssidxx.radius_port
+  73400 wl2g.ssidxx.radius_key
+  73418 wl2g.ssidxx.radius_time
+  73430 wl2g.ssidxx.maclist_num
+  73448 wl2g.ssidxx.macmode
+  7345c wl2g.ssidxx.maclistyy
+  73478 wl2g.rate.set
+  73488 wl2g.basicrate.set
+  7349c wl2g.public.dot11k
+  734b0 wl2g.public.dot11v
+--
+  73870 wl5g.extra.ssid_encode
+  73888 wl5g.extra.security
+  7389c wl5g.extra.wep_type
+  738b0 wl5g.extra.wep_key
+  738c4 wl5g.extra.wep_key1
+  738d8 wl5g.extra.wep_key2
+  738ec wl5g.extra.wep_key3
+  73900 wl5g.extra.wep_key4
+  73914 wl5g.extra.wpapsk_type
+  7392c wl5g.extra.wpapsk_crypto
+  73948 wl5g.extra.wpapsk_psk
+  73960 wl5g.extra.key.uptime
+--
+  73ab4 wl5g.ssidxx.wep_type
+  73acc wl5g.ssidxx.auth.radius_ip
+  73ae8 wl5g.ssidxx.auth.radius_port
+  73b08 w5g.ssidxx.auth.radius_key
+  73b24 wl5g.ssidxx.wep_key
+  73b38 wl5g.ssidxx.wep_key1
+  73b50 wl5g.ssidxx.wep_key2
+  73b68 wl5g.ssidxx.wep_key3
+  73b80 wl5g.ssidxx.wep_key4
+  73b98 wl5g.ssidxx.wpapsk_type
+  73bb0 wl5g.ssidxx.wpapsk_crypto
+  73bcc wl5g.ssidxx.wpapsk_psk
+  73be4 wl5g.ssidxx.wpa_type
+--
+  73c14 wl5g.ssidxx.key_uptime
+  73c2c wl5g.ssidxx.radius_ip
+  73c44 wl5g.ssidxx.radius_port
+  73c5c wl5g.ssidxx.radius_key
+  73c74 wl5g.ssidxx.radius_time
+  73c8c wl5g.ssidxx.maclist_num
+  73ca4 wl5g.ssidxx.macmode
+  73cb8 wl5g.ssidxx.maclistyy
+  73cd0 wl5g.rate.set
+  73ce0 wl5g.basicrate.set
+  73cf4 wl5g.public.dot11k
+  73d08 wl5g.public.dot11v
+--
+  7877c ap_common_so
+  787e0 prod_common_so
+  788a4 netctrl
+  788ac netctrl start timer failed
+  788c8 timer_msg_handle
+  78948 monitor
+  78968 /var/pm_socket
+  789ac timer
+  789cc /var/tm_socket
+  78a10 cfms
+  78a30 /var/cfm_socket
+  78a74 logserver
+
+===== all firmware pub/sub channel-like strings =====
+----- firmware-src/RootFS-unpacked/bin/mesh_status_check -----
+confctl_srv_key
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+confctl_cli_key
+confctl_srv_key
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+confctl_srv_key
+----- firmware-src/RootFS-unpacked/bin/gpio_ctrl -----
+confctl_cli_key
+confctl_srv_key
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+confctl_cli_key
+confctl_srv_key
+
+===== timer users with timer-related strings only =====
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+   43d4 shmat
+   43da shmdt
+   43e0 timer_start
+   43ec timer_stop
+   43f7 timer_check_ok_and_wait
+   440f rate_11n_table_20M_LONG
+   4427 rate_11n_table_20M_SHORT
+   4440 rate_11n_table_40M_LONG
+   4458 rate_11n_table_40M_SHORT
+   4471 VHT_MCS_DATA_RATE
+--
+  48078 monitor
+  48098 /var/pm_socket
+  480dc timer
+  480fc /var/tm_socket
+  48140 cfms
+  48160 /var/cfm_socket
+  481a4 logserver
+  481c4 /var/plog_socket
+--
+  48c18 monitor
+  48c38 /var/pm_socket
+  48c7c timer
+  48c9c /var/tm_socket
+  48ce0 cfms
+  48d00 /var/cfm_socket
+  48d44 logserver
+  48d64 /var/plog_socket
+--
+  4a308 monitor
+  4a328 /var/pm_socket
+  4a36c timer
+  4a38c /var/tm_socket
+  4a3d0 cfms
+  4a3f0 /var/cfm_socket
+  4a434 logserver
+  4a454 /var/plog_socket
+--
+  4b178 monitor
+  4b198 /var/pm_socket
+  4b1dc timer
+  4b1fc /var/tm_socket
+  4b240 cfms
+  4b260 /var/cfm_socket
+  4b2a4 logserver
+  4b2c4 /var/plog_socket
+--
+  4ba18 ip_count = %d,lasttime:%llu,now:%llu.
+  4ba40 can not get statistic info.
+  4ba5c time_interval:%.2f.
+  4ba70 %[^;];%[^;];%[^;];%[^;];%*d;%*d;%[^;
+  4ba98 online ip list[%d] username:--%s--,ip:--%s--.
+  4bac8 found ip:%x,down:%.2f,up:%.2f.
+  4bae8 i = %d,remain_time=%d.
+  4bb00 invalid online user num.
+--
+  4c3c8 monitor
+  4c3e8 /var/pm_socket
+  4c42c timer
+  4c44c /var/tm_socket
+  4c490 cfms
+  4c4b0 /var/cfm_socket
+  4c4f4 logserver
+  4c514 /var/plog_socket
+--
+  4cd48 monitor
+  4cd68 /var/pm_socket
+  4cdac timer
+  4cdcc /var/tm_socket
+  4ce10 cfms
+  4ce30 /var/cfm_socket
+  4ce74 logserver
+  4ce94 /var/plog_socket
+--
+  4d5d8 monitor
+  4d5f8 /var/pm_socket
+  4d63c timer
+  4d65c /var/tm_socket
+  4d6a0 cfms
+  4d6c0 /var/cfm_socket
+  4d704 logserver
+  4d724 /var/plog_socket
+--
+  4e4b8 monitor
+  4e4d8 /var/pm_socket
+  4e51c timer
+  4e53c /var/tm_socket
+  4e580 cfms
+  4e5a0 /var/cfm_socket
+  4e5e4 logserver
+  4e604 /var/plog_socket
+--
+  56628 monitor
+  56648 /var/pm_socket
+  5668c timer
+  566ac /var/tm_socket
+  566f0 cfms
+  56710 /var/cfm_socket
+  56754 logserver
+  56774 /var/plog_socket
+--
+  573d8 monitor
+  573f8 /var/pm_socket
+  5743c timer
+  5745c /var/tm_socket
+  574a0 cfms
+  574c0 /var/cfm_socket
+  57504 logserver
+  57524 /var/plog_socket
+--
+  58588 monitor
+  585a8 /var/pm_socket
+  585ec timer
+  5860c /var/tm_socket
+  58650 cfms
+  58670 /var/cfm_socket
+  586b4 logserver
+  586d4 /var/plog_socket
+--
+  59678 monitor
+  59698 /var/pm_socket
+  596dc timer
+  596fc /var/tm_socket
+  59740 cfms
+  59760 /var/cfm_socket
+  597a4 logserver
+  597c4 /var/plog_socket
+--
+  5a058 monitor
+  5a078 /var/pm_socket
+  5a0bc timer
+  5a0dc /var/tm_socket
+  5a120 cfms
+  5a140 /var/cfm_socket
+  5a184 logserver
+  5a1a4 /var/plog_socket
+--
+  5ad58 monitor
+  5ad78 /var/pm_socket
+  5adbc timer
+  5addc /var/tm_socket
+  5ae20 cfms
+  5ae40 /var/cfm_socket
+  5ae84 logserver
+  5aea4 /var/plog_socket
+--
+  5b788 monitor
+  5b7a8 /var/pm_socket
+  5b7ec timer
+  5b80c /var/tm_socket
+  5b850 cfms
+  5b870 /var/cfm_socket
+  5b8b4 logserver
+  5b8d4 /var/plog_socket
+--
+  5be2c ap_common_so
+  5be90 prod_common_so
+  5bf54 func:%s, line:%d, timer module name is NULL.
+  5bf84 func:%s, line:%d, send msg is error.
+  5bfac func:%s, line:%d, name is null.
+  5bfd0 timer
+  5bfd8 check timer start success
+  5bff4 timer start is failed.
+  5c00c timer_stop
+  5c018 timer_start
+  5c098 monitor
+  5c0b8 /var/pm_socket
+  5c0fc timer
+  5c11c /var/tm_socket
+  5c160 cfms
+  5c180 /var/cfm_socket
+  5c1c4 logserver
+  5c1e4 /var/plog_socket
+--
+  5d5b8 monitor
+  5d5d8 /var/pm_socket
+  5d61c timer
+  5d63c /var/tm_socket
+  5d680 cfms
+  5d6a0 /var/cfm_socket
+  5d6e4 logserver
+  5d704 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+    e98 system_get_uptime
+    eaa strncmp
+    eb2 timer_start
+    ebe log_debug_print
+    ece timer_stop
+    ed9 signal
+    ee0 cm_poll_stop
+    eed free
+    ef2 ugw_socket_shut_down
+    f07 puts
+--
+    f47 cmd_pub
+    f4f ugw_proc_recv_msg
+    f61 timer_check_ok_and_wait
+    f79 ugw_accept_client
+    f8b perror
+    f92 cm_poll_start
+    fa0 strcmp
+    fa7 cm_init
+--
+   c7b8 monitor
+   c7d8 /var/pm_socket
+   c81c timer
+   c83c /var/tm_socket
+   c880 cfms
+   c8a0 /var/cfm_socket
+   c8e4 logserver
+   c904 /var/plog_socket
+--
+   d3a0 g_client_hs_list_num = %d
+   d3bc device_list
+   d3c8  start DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d404  start DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d440  stop DEVICE_LIST_TIMER_CLIENT_TIMEOUT_CHECK timer failed
+   d47c  stop DEVICE_LIST_TIMER_CLIENT_LIST_UPLOAD timer failed
+   d4b4 func:%s, line:%d, fd queue is null.
+   d4dc msg is null.
+   d4ec [%s][%d][luminais] malloc failed, (%d)%m
+   d518 rqst_client_hostname
+   d530 confctl_srv_key
+   d540 function entry!
+   d550 timer process is exit.
+   d568 timer process is restart ok.
+   d589 [1;32m[%s][%d] : 
+   d59f [1;35mdo_client_timeout_check
+   d5c5 [1;32m[%s][%d] : 
+   d5db [1;35mdo_upload_client_list
+   d5fc network check recv error msg.
+--
+   d7b0 Initialize AP MIB failed !
+   d7cc [%s][%d][luminais] init_lan_ifnames failed.
+   d7fc [%s][%d][luminais] timer not up.
+   d820 timer
+   d828 main
+   d830 device_list_main_loop
+   d848 device_list_cmd_sub
+   d85c dhcp_nl_event_handle
+   d874 unix_accept_event_handle
+--
+   d914 find_in_roam_list
+   d928 unix_cm_poll_socket_exit
+   d944 stop_device_list_timer
+   d95c start_device_list_timer
+   d974 deal_new_dhcp_info
+   d988 upload_nova_client_node
+   d9a0 convert_dhcp_info_to_client_list
+   d9c4 get_each_conn_type_list_hdr
+   d9e0 find_in_conn_type_list
+--
+   dad8 monitor
+   daf8 /var/pm_socket
+   db3c timer
+   db5c /var/tm_socket
+   dba0 cfms
+   dbc0 /var/cfm_socket
+   dc04 logserver
+   dc24 /var/plog_socket
+--
+   e538 monitor
+   e558 /var/pm_socket
+   e59c timer
+   e5bc /var/tm_socket
+   e600 cfms
+   e620 /var/cfm_socket
+   e664 logserver
+   e684 /var/plog_socket
+--
+   ee78 monitor
+   ee98 /var/pm_socket
+   eedc timer
+   eefc /var/tm_socket
+   ef40 cfms
+   ef60 /var/cfm_socket
+   efa4 logserver
+   efc4 /var/plog_socket
+--
+   fb58 monitor
+   fb78 /var/pm_socket
+   fbbc timer
+   fbdc /var/tm_socket
+   fc20 cfms
+   fc40 /var/cfm_socket
+   fc84 logserver
+   fca4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   3313 ugw_proc_msg_unregister
+   332b netlink_sock_deinit
+   333f timer_start
+   334b timer_stop
+   3356 monitor_mstart
+   3365 stat
+   336a mkdir
+   3370 hal_vlan_config
+   3380 apmib_init
+--
+   344e prod_change_root_passwd
+   3466 is_restart_netctrl
+   3479 timer_check_ok_and_wait
+   3491 netctrl_main_loop
+   34a3 strncmp
+   34ab netctrl_module_get_entry
+   34c4 netctrl_module_register_op
+   34df ifaddrs_get_ifip
+--
+   3c2b __errno_location
+   3c3c portal_auth_destroy_list
+   3c55 g_portal_stop_timer
+   3c69 g_portal_user_invalid
+   3c7f portal_auth_show_user
+   3c95 netlink_log_system_send_info
+   3cb2 portal_cfg_init
+   3cc2 portal_send_switch_to_kernel
+--
+   3f27 g_sntp_ops
+   3f32 g_vpn_public_last_time
+   3f49 g_vpn_public_pptp_timer
+   3f61 g_vpn_public_l2tp_timer
+   3f79 vpn_public_set_last_time
+   3f92 vpn_public_get_timer
+   3fa7 vpn_public_get_now_time
+   3fbf vpn_public_get_last_time
+   3fd8 vpn_pptp_timeout
+   3fe9 vpn_l2tp_timeout
+   3ffa system_td_gethostbyname
+--
+   4050 vpn_public_dns2ip
+   4062 socket
+   4069 vpn_public_clear_timer
+   4080 vpn_check_ppp_established
+   409a advance_get_gst_base_cfg
+   40b3 vpn_pptp_init_cfg_file
+   40ca vpn_public_set_nat
+   40dd vpn_public_client_up
+   40f2 vpn_public_client_down
+   4109 g_wan_ip_info
+   4117 vpn_public_set_timer
+   412c index
+   4132 vpn_pptp_client_get_cfg
+   414a g_vpn_pptp_client_msg_ops
+   4164 vpn_pptp_server_get_cfg
+   417c vpn_public_save_cur_user
+--
+   5092 wifi_connect_check
+   50a5 vpn_public_dial_check
+   50bb g_timer_msg_ops
+   50cb g_device_list_msg_ops
+   50e1 g_rtk_ate_msg_ops
+   50f3 stderr
+   50fa net_detect
+   5105 strerror
+--
+  5b528 monitor
+  5b548 /var/pm_socket
+  5b58c timer
+  5b5ac /var/tm_socket
+  5b5f0 cfms
+  5b610 /var/cfm_socket
+  5b654 logserver
+  5b674 /var/plog_socket
+--
+  5bd60 index
+  5bd68 url_opt
+  5bd70 timer_type
+  5bd7c timer_interval
+  5bd8c invalid param.
+  5bd9c current support len:%d 
+  5bdb8 netctrl_module_get_moduleID failed![Name:%s]!
+  5bdec %[^=]=%s
+  5bdf8 /var/mib.mem
+--
+  5cb70 epoll_ctl phy_sock:
+  5cb84 netctrl
+  5cb8c BM_TIMER_CHECK check add timer failed
+  5cbb4 LAN_DHCPC_CHECK add timer failed
+  5cbd8 WIFI_CONNECT_CHECK add timer failed
+  5cbfc SSID_AUTO_HIDE_CHECK add timer failed
+  5cc24 VPN_DIAL_CHECK add timer failed
+  5cc44 timer can not stop BM_TIMER_CHECK
+  5cc68 timer can not stop LAN_DHCPC_CHECK 
+  5cc8c timer can not stop WIFI_CONNECT_CHECK
+  5ccb4 timer can not stop SSID_AUTO_HIDE_CHECK
+  5ccdc timer can not stop VPN_DIAL_CHECK
+  5cd00 ucloud -l 4
+  5cd0c start ucloud process is fail
+  5cd2c ucloud_ctl
+  5cd38 start ucloud_ctl process is fail
+  5cd5c fail to stat. 
+--
+  5d168 netctrl_nandflash_mkdir
+  5d180 netctrl_start_upgrade_online
+  5d1a0 netctrl_cancel_timer
+  5d1b8 netctrl_add_timer
+  5d1cc netctrl_main_loop
+  5d1e0 netctrl_phy_link_msg_handle
+  5d1fc netctrl_phy_link_status_change
+  5d21c netctrl_phy_link_status_change
+  5d23c netctrl_get_id_from_port
+--
+  5d3f8 monitor
+  5d418 /var/pm_socket
+  5d45c timer
+  5d47c /var/tm_socket
+  5d4c0 cfms
+  5d4e0 /var/cfm_socket
+  5d524 logserver
+  5d544 /var/plog_socket
+--
+  5de48 monitor
+  5de68 /var/pm_socket
+  5deac timer
+  5decc /var/tm_socket
+  5df10 cfms
+  5df30 /var/cfm_socket
+  5df74 logserver
+  5df94 /var/plog_socket
+--
+  5e998 monitor
+  5e9b8 /var/pm_socket
+  5e9fc timer
+  5ea1c /var/tm_socket
+  5ea60 cfms
+  5ea80 /var/cfm_socket
+  5eac4 logserver
+  5eae4 /var/plog_socket
+--
+  5f438 monitor
+  5f458 /var/pm_socket
+  5f49c timer
+  5f4bc /var/tm_socket
+  5f500 cfms
+  5f520 /var/cfm_socket
+  5f564 logserver
+  5f584 /var/plog_socket
+--
+  60940 secure_mode=yes
+  60954 system_uptime=yes
+  60968 notify_interval=30
+  6097c clean_ruleset_interval=600
+  60998 uuid=ec9982fc-9600-11df-b8e5-000c29d32f89
+  609c4 TD_ATE_SN
+  609d0 serial=%s
+  609dc serial=12345678
+  609f0 sys.model
+--
+  60fa8 monitor
+  60fc8 /var/pm_socket
+  6100c timer
+  6102c /var/tm_socket
+  61070 cfms
+  61090 /var/cfm_socket
+  610d4 logserver
+  610f4 /var/plog_socket
+--
+  61998 monitor
+  619b8 /var/pm_socket
+  619fc timer
+  61a1c /var/tm_socket
+  61a60 cfms
+  61a80 /var/cfm_socket
+  61ac4 logserver
+  61ae4 /var/plog_socket
+--
+  62638 monitor
+  62658 /var/pm_socket
+  6269c timer
+  626bc /var/tm_socket
+  62700 cfms
+  62720 /var/cfm_socket
+  62764 logserver
+  62784 /var/plog_socket
+--
+  62e04 sys.schedulereboot.enable
+  62e20 sys.schedulereboot.type
+  62e38 sys.schedulereboot.interval
+  62e54 sys.schedulereboot.start_time
+  62e74 %[^:]:%s
+  62e80 sys.schedulereboot.wday
+  62e9c ......come here..sched reboot.
+  62ebc date;reboot
+--
+  63028 monitor
+  63048 /var/pm_socket
+  6308c timer
+  630ac /var/tm_socket
+  630f0 cfms
+  63110 /var/cfm_socket
+  63154 logserver
+  63174 /var/plog_socket
+--
+  64478 monitor
+  64498 /var/pm_socket
+  644dc timer
+  644fc /var/tm_socket
+  64540 cfms
+  64560 /var/cfm_socket
+  645a4 logserver
+  645c4 /var/plog_socket
+--
+  65b54 portal_set_temp_pass_mac
+  65b70 portal_check_auth_user
+  65b88 portal_check_auth_failtimes_timer
+  65bac portal_service_enable
+  65bc4 portal_service_stop
+  65bd8 portal_service_start
+  65bf0 portal_send_switch_to_kernel
+  65c10 portal_cfg_init
+--
+  65eb8 monitor
+  65ed8 /var/pm_socket
+  65f1c timer
+  65f3c /var/tm_socket
+  65f80 cfms
+  65fa0 /var/cfm_socket
+  65fe4 logserver
+  66004 /var/plog_socket
+--
+  66818 monitor
+  66838 /var/pm_socket
+  6687c timer
+  6689c /var/tm_socket
+  668e0 cfms
+  66900 /var/cfm_socket
+  66944 logserver
+  66964 /var/plog_socket
+--
+  6876c ipcp-accept-local
+  68780 ipcp-accept-remote
+  68794 lcp-echo-interval 20
+  687ac lcp-echo-failure 3
+  687c0 lock
+  687c8 noauth
+  687d0 refuse-eap
+  687dc debug
+--
+  69168 monitor
+  69188 /var/pm_socket
+  691cc timer
+  691ec /var/tm_socket
+  69230 cfms
+  69250 /var/cfm_socket
+  69294 logserver
+  692b4 /var/plog_socket
+--
+  69d58 monitor
+  69d78 /var/pm_socket
+  69dbc timer
+  69ddc /var/tm_socket
+  69e20 cfms
+  69e40 /var/cfm_socket
+  69e84 logserver
+  69ea4 /var/plog_socket
+--
+  6a818 monitor
+  6a838 /var/pm_socket
+  6a87c timer
+  6a89c /var/tm_socket
+  6a8e0 cfms
+  6a900 /var/cfm_socket
+  6a944 logserver
+  6a964 /var/plog_socket
+--
+  6b5c8 monitor
+  6b5e8 /var/pm_socket
+  6b62c timer
+  6b64c /var/tm_socket
+  6b690 cfms
+  6b6b0 /var/cfm_socket
+  6b6f4 logserver
+  6b714 /var/plog_socket
+--
+  6bd94 time_segments
+  6bda4 api/src/behavior_manager/time_group_api.c
+  6bdd4 too many period time in one time group!
+  6be04 failed to parse period time!
+  6be28 wrong week day!!
+  6be3c %d-%d
+  6be44 invalid time range: %s
+  6be5c ptime is null
+  6be6c bhv.timegroup.list%d
+--
+  6c088 monitor
+  6c0a8 /var/pm_socket
+  6c0ec timer
+  6c10c /var/tm_socket
+  6c150 cfms
+  6c170 /var/cfm_socket
+  6c1b4 logserver
+  6c1d4 /var/plog_socket
+--
+  6cb58 monitor
+  6cb78 /var/pm_socket
+  6cbbc timer
+  6cbdc /var/tm_socket
+  6cc20 cfms
+  6cc40 /var/cfm_socket
+  6cc84 logserver
+  6cca4 /var/plog_socket
+--
+  6d4c8 monitor
+  6d4e8 /var/pm_socket
+  6d52c timer
+  6d54c /var/tm_socket
+  6d590 cfms
+  6d5b0 /var/cfm_socket
+  6d5f4 logserver
+  6d614 /var/plog_socket
+--
+  6e098 monitor
+  6e0b8 /var/pm_socket
+  6e0fc timer
+  6e11c /var/tm_socket
+  6e160 cfms
+  6e180 /var/cfm_socket
+  6e1c4 logserver
+  6e1e4 /var/plog_socket
+--
+  6ed88 monitor
+  6eda8 /var/pm_socket
+  6edec timer
+  6ee0c /var/tm_socket
+  6ee50 cfms
+  6ee70 /var/cfm_socket
+  6eeb4 logserver
+  6eed4 /var/plog_socket
+--
+  6f938 monitor
+  6f958 /var/pm_socket
+  6f99c timer
+  6f9bc /var/tm_socket
+  6fa00 cfms
+  6fa20 /var/cfm_socket
+  6fa64 logserver
+  6fa84 /var/plog_socket
+--
+  704f8 monitor
+  70518 /var/pm_socket
+  7055c timer
+  7057c /var/tm_socket
+  705c0 cfms
+  705e0 /var/cfm_socket
+  70624 logserver
+  70644 /var/plog_socket
+--
+  71088 monitor
+  710a8 /var/pm_socket
+  710ec timer
+  7110c /var/tm_socket
+  71150 cfms
+  71170 /var/cfm_socket
+  711b4 logserver
+  711d4 /var/plog_socket
+--
+  71b08 monitor
+  71b28 /var/pm_socket
+  71b6c timer
+  71b8c /var/tm_socket
+  71bd0 cfms
+  71bf0 /var/cfm_socket
+  71c34 logserver
+  71c54 /var/plog_socket
+--
+  74a88 monitor
+  74aa8 /var/pm_socket
+  74aec timer
+  74b0c /var/tm_socket
+  74b50 cfms
+  74b70 /var/cfm_socket
+  74bb4 logserver
+  74bd4 /var/plog_socket
+--
+  752d8 monitor
+  752f8 /var/pm_socket
+  7533c timer
+  7535c /var/tm_socket
+  753a0 cfms
+  753c0 /var/cfm_socket
+  75404 logserver
+  75424 /var/plog_socket
+--
+  76548 monitor
+  76568 /var/pm_socket
+  765ac timer
+  765cc /var/tm_socket
+  76610 cfms
+  76630 /var/cfm_socket
+  76674 logserver
+  76694 /var/plog_socket
+--
+  76e08 monitor
+  76e28 /var/pm_socket
+  76e6c timer
+  76e8c /var/tm_socket
+  76ed0 cfms
+  76ef0 /var/cfm_socket
+  76f34 logserver
+  76f54 /var/plog_socket
+--
+  776c8 monitor
+  776e8 /var/pm_socket
+  7772c timer
+  7774c /var/tm_socket
+  77790 cfms
+  777b0 /var/cfm_socket
+  777f4 logserver
+  77814 /var/plog_socket
+--
+  780d8 monitor
+  780f8 /var/pm_socket
+  7813c timer
+  7815c /var/tm_socket
+  781a0 cfms
+  781c0 /var/cfm_socket
+  78204 logserver
+  78224 /var/plog_socket
+--
+  787e0 prod_common_so
+  788a4 netctrl
+  788ac netctrl start timer failed
+  788c8 timer_msg_handle
+  78948 monitor
+  78968 /var/pm_socket
+  789ac timer
+  789cc /var/tm_socket
+  78a10 cfms
+  78a30 /var/cfm_socket
+  78a74 logserver
+  78a94 /var/plog_socket
+--
+  79288 monitor
+  792a8 /var/pm_socket
+  792ec timer
+  7930c /var/tm_socket
+  79350 cfms
+  79370 /var/cfm_socket
+  793b4 logserver
+  793d4 /var/plog_socket
+--
+  79bf8 monitor
+  79c18 /var/pm_socket
+  79c5c timer
+  79c7c /var/tm_socket
+  79cc0 cfms
+  79ce0 /var/cfm_socket
+  79d24 logserver
+  79d44 /var/plog_socket
+--
+  7ade8 lan_dhcpc
+  7ae1c led_control
+  7ae50 timer
+  7ae84 dnrd
+  7aeb8 service
+  7aeec telnet
+  7af20 hw_nat
+  7b4a0 192.168.0.1
+

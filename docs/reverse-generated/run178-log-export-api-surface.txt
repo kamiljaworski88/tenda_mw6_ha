@@ -1,0 +1,2219 @@
+===== RUN 178: log-export API surface =====
+
+===== binaries referencing logs, crash bundles, or uploads =====
+----- firmware-src/RootFS-unpacked/etc_ro/init.d/rcS -----
+    725 mkdir -p /tmp/log
+    737 mkdir -p /tmp/log/crash
+    74f mkdir -p /tmp/log_print
+    7a5 echo 'kern.* /tmp/log/kernel.log' >>  /etc/syslog.conf
+    7dc echo '*.* /tmp/log_print/message.txt' >>  /etc/syslog.conf
+    856 sh /usr/bin/ugw_watchdog.sh 2>/tmp/log_print/ugw_watchdog.log&
+----- firmware-src/RootFS-unpacked/etc_ro/redis.conf -----
+    970 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
+----- firmware-src/RootFS-unpacked/lib/libucapi.so -----
+  1fb14 DiagLogUpload
+  1fb24 CMD_MESH_BASIC_UPLOAD_LOG
+----- firmware-src/RootFS-unpacked/lib/libutil.so -----
+    f40 /var/log/wtmp
+----- firmware-src/RootFS-unpacked/lib/libutil.so.0 -----
+    f40 /var/log/wtmp
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+  481a4 logserver
+  481c4 /var/plog_socket
+  48d44 logserver
+  48d64 /var/plog_socket
+  4a434 logserver
+  4a454 /var/plog_socket
+  4b2a4 logserver
+  4b2c4 /var/plog_socket
+  4b9d4 /var/logs.txt
+  4c4f4 logserver
+  4c514 /var/plog_socket
+  4ce74 logserver
+  4ce94 /var/plog_socket
+  4d704 logserver
+  4d724 /var/plog_socket
+  4e2a8 check_lanip_change_sync_logserver
+  4e5e4 logserver
+  4e604 /var/plog_socket
+  56754 logserver
+  56774 /var/plog_socket
+  57504 logserver
+  57524 /var/plog_socket
+  586b4 logserver
+  586d4 /var/plog_socket
+  58e24 /var/plog_socket
+  597a4 logserver
+  597c4 /var/plog_socket
+  5a184 logserver
+  5a1a4 /var/plog_socket
+  5ae84 logserver
+  5aea4 /var/plog_socket
+  5b66c /bin/logserver
+  5b67c ftok logserver failed
+  5b8b4 logserver
+  5b8d4 /var/plog_socket
+  5c1c4 logserver
+  5c1e4 /var/plog_socket
+  5d6e4 logserver
+  5d704 /var/plog_socket
+----- firmware-src/RootFS-unpacked/lib/libcommonprod.so -----
+   fdf4 logserver
+   fe14 /var/plog_socket
+  10794 logserver
+  107b4 /var/plog_socket
+  11448 prod_check_lanip_change_sync_logserver
+  117c4 logserver
+  117e4 /var/plog_socket
+  12654 logserver
+  12674 /var/plog_socket
+  12e94 logserver
+  12eb4 /var/plog_socket
+  13778 rm -rf /tmp/log/crash/*
+  13a9c /tmp/log/crash/restore.log
+  14374 logserver
+  14394 /var/plog_socket
+  14c74 logserver
+  14c94 /var/plog_socket
+  15564 logserver
+  15584 /var/plog_socket
+  15df4 logserver
+  15e14 /var/plog_socket
+----- firmware-src/RootFS-unpacked/lib/libredis.so -----
+   d666 logserver
+   d686 /var/plog_socket
+----- firmware-src/RootFS-unpacked/lib/rp-pppoe.so -----
+   959c logserver
+   95bc /var/plog_socket
+----- firmware-src/RootFS-unpacked/lib/busybox -----
+  66a22 /var/log/wtmp
+----- firmware-src/RootFS-unpacked/lib/pptp.so -----
+   d574 logserver
+   d594 /var/plog_socket
+   e114 logserver
+   e134 /var/plog_socket
+   fef4 logserver
+   ff14 /var/plog_socket
+----- firmware-src/RootFS-unpacked/usr/local/ssl/openssl.cnf -----
+    fe2 # WARNING: ancient versions of Netscape crash on BMPStrings or UTF8Strings.
+----- firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh -----
+     1e rm -rf /tmp/log/wlan0.log
+     38 rm -rf /tmp/log/wlan1.log
+     52 echo "cat /proc/link_loop:" >> /tmp/log/wlan0.log
+     84 cat /proc/link_loop >> /tmp/log/wlan0.log
+     ae echo "" >> /tmp/log/wlan0.log
+     cd echo "cat /proc/link_loop:" >> /tmp/log/wlan1.log
+     ff cat /proc/link_loop >> /tmp/log/wlan1.log
+    129 echo "" >> /tmp/log/wlan1.log
+    165 	echo "cat $file:" >> /tmp/log/wlan0.log
+    18e 	cat $file >> /tmp/log/wlan0.log
+    1af 	echo "" >> /tmp/log/wlan0.log
+    1f2 	echo "cat $file:" >> /tmp/log/wlan1.log
+    21b 	cat $file >> /tmp/log/wlan1.log
+    23c 	echo "" >> /tmp/log/wlan1.log
+----- firmware-src/RootFS-unpacked/usr/bin/ugw_watchdog.sh -----
+     37 	if [ -d "/tmp/log/" ]
+     54 		cd /tmp/log_print/
+    1ce 		echo "/tmp/log_print no exist"
+----- firmware-src/RootFS-unpacked/usr/bin/debug.sh -----
+    ab0 echo "================cat /tmp/log/kernel.log================"
+    af0 cat /tmp/log/kernel.log;
+    b0a echo "================cat /tmp/log/pann.log================"
+    b48 cat /tmp/log/pann.log;
+----- firmware-src/RootFS-unpacked/sbin/redis-cli -----
+  13bd0 Make the server crash
+----- firmware-src/RootFS-unpacked/bin/monitor -----
+   76e4 logserver
+   7704 /var/plog_socket
+   8044 logserver
+   8064 /var/plog_socket
+   8bd4 logserver
+   8bf4 /var/plog_socket
+   97f0 logserver
+----- firmware-src/RootFS-unpacked/bin/mesh_status_check -----
+   2884 logserver
+   28a4 /var/plog_socket
+   31e4 /tmp/log/crash
+----- firmware-src/RootFS-unpacked/bin/pann -----
+  11b94 logserver
+  11bb4 /var/plog_socket
+  13694 logserver
+  136b4 /var/plog_socket
+  13d7c /tmp/log/pann.log
+  14564 logserver
+  14584 /var/plog_socket
+  14de4 logserver
+  14e04 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+  661a4 logserver
+  661c4 /var/plog_socket
+  66ab8 /tmp/log/crash
+  66e04 logserver
+  66e24 /var/plog_socket
+  67588 DiagLogUpload
+  67adc DiagLogUpload
+  67ff4 logserver
+  68014 /var/plog_socket
+  69044 logserver
+  69064 /var/plog_socket
+  69be4 logserver
+  69c04 /var/plog_socket
+  6a554 logserver
+  6a574 /var/plog_socket
+  6aed4 logserver
+  6aef4 /var/plog_socket
+  6bba4 logserver
+  6bbc4 /var/plog_socket
+  6c864 logserver
+  6c884 /var/plog_socket
+  6d2d4 logserver
+  6d2f4 /var/plog_socket
+  6e0c4 logserver
+  6e0e4 /var/plog_socket
+  6ec04 logserver
+  6ec24 /var/plog_socket
+  6f444 logserver
+  6f464 /var/plog_socket
+  71854 logserver
+  71874 /var/plog_socket
+  73504 logserver
+  73524 /var/plog_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  75854 logserver
+  75874 /var/plog_socket
+  75f10 log_upload &
+  75f20 /tmp/log/crash
+  760d4 logserver
+  760f4 /var/plog_socket
+  77210 logserver
+  78044 logserver
+  78064 /var/plog_socket
+  792c4 logserver
+  792e4 /var/plog_socket
+  79c74 logserver
+  79c94 /var/plog_socket
+  7a5f4 logserver
+  7a614 /var/plog_socket
+  7b814 logserver
+  7b834 /var/plog_socket
+  7c0c4 logserver
+  7c0e4 /var/plog_socket
+  7cbc4 logserver
+  7cbe4 /var/plog_socket
+  7dcd4 logserver
+  7dcf4 /var/plog_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/mpp_upgrade -----
+   19d4 logserver
+   19f4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/bcrelay -----
+   2df4  [-n] [--nolog]            No logging/tracing to /var/log/messages.
+----- firmware-src/RootFS-unpacked/bin/pppd -----
+  42c70 /var/log/wtmp
+  4462c /var/log/lastlog
+----- firmware-src/RootFS-unpacked/bin/cfm -----
+   3144 logserver
+   3164 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/tendaupload -----
+   2304 logserver
+   2324 /var/plog_socket
+   2a4c tendaupload.c
+----- firmware-src/RootFS-unpacked/bin/logserver -----
+   34a4 logserver
+   34c4 /var/plog_socket
+   3b6c /bin/logserver
+   3cc8 /var/logs.txt
+   3cdc [%s %d]:logserver:writetofile faild
+   3d54 [%s %d]:logserver:malloc faild
+----- firmware-src/RootFS-unpacked/bin/log_upload -----
+   1f44 logserver
+   1f64 /var/plog_socket
+   275c /tmp/log/sys_info.log
+   27d8 cp /var/logs.txt /var/pppoe.log /tmp/log/
+   2830 rm -rf  /tmp/log/logs.txt /tmp/log/pppoe.log /tmp/log/sys_info.log
+   2874 rm -rf  /tmp/log/wlan*
+   288c rm -rf  /tmp/log/crash/*
+   28ec /route/upload_logfile/v1?sn=%s&mesh=%s
+   2958 /var/run/log_upload.pid
+----- firmware-src/RootFS-unpacked/bin/gpio_test -----
+   11a4 logserver
+   11c4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/tcpdump -----
+  a9604 Application Crash
+  aebc4 STATUS_CRASH_DUMP
+----- firmware-src/RootFS-unpacked/bin/pppdForPptp -----
+  2f4b4 logserver
+  2f4d4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/multiWAN -----
+  26184 logserver
+  261a4 /var/plog_socket
+  26e94 logserver
+  26eb4 /var/plog_socket
+  280d4 logserver
+  280f4 /var/plog_socket
+  28bd4 logserver
+  28bf4 /var/plog_socket
+  29db4 logserver
+  29dd4 /var/plog_socket
+  2a884 logserver
+  2a8a4 /var/plog_socket
+  2c274 /tmp/log/crash
+  2d7c4 logserver
+  2d7e4 /var/plog_socket
+  2ebf4 logserver
+  2ec14 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/network_check -----
+   7324 logserver
+   7344 /var/plog_socket
+   8144 logserver
+   8164 /var/plog_socket
+   8b44 logserver
+   8b64 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/timer -----
+   2864 logserver
+   2884 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+   c8e4 logserver
+   c904 /var/plog_socket
+   dc04 logserver
+   dc24 /var/plog_socket
+   e664 logserver
+   e684 /var/plog_socket
+   efa4 logserver
+   efc4 /var/plog_socket
+   fc84 logserver
+   fca4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/wan_detect -----
+   3c84 logserver
+   3ca4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/sntp -----
+   1c34 logserver
+   1c54 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/cfmd -----
+   b654 logserver
+   b674 /var/plog_socket
+   c06c /tmp/log/crash
+   c2d4 logserver
+   c2f4 /var/plog_socket
+   d1bc /tmp/log/crash
+   d874 logserver
+   d894 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/rtk_ate -----
+   dda4 logserver
+   ddc4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/xl2tpd-client -----
+  1a0b8 %s : Unable to allocate ppp option memory.  Expect a crash
+----- firmware-src/RootFS-unpacked/bin/gpio_ctrl -----
+   28d4 logserver
+   28f4 /var/plog_socket
+   3244 echo 'map is offline' > /tmp/log/crash/mapoffline
+----- firmware-src/RootFS-unpacked/bin/ucloud -----
+   365c CMD_MESH_BASIC_UPLOAD_LOG
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+  31c5c logserver
+  31c7c /var/plog_socket
+  3255c /tmp/log/crash
+  32824 logserver
+  32844 /var/plog_socket
+  32fa8 DiagLogUpload
+  3351c DiagLogUpload
+  33804 logserver
+  33824 /var/plog_socket
+  34854 logserver
+  34874 /var/plog_socket
+  353f4 logserver
+  35414 /var/plog_socket
+  35d64 logserver
+  35d84 /var/plog_socket
+  366e4 logserver
+  36704 /var/plog_socket
+  373b4 logserver
+  373d4 /var/plog_socket
+  38074 logserver
+  38094 /var/plog_socket
+  38ae4 logserver
+  38b04 /var/plog_socket
+  398d4 logserver
+  398f4 /var/plog_socket
+  3a414 logserver
+  3a434 /var/plog_socket
+  3ac54 logserver
+  3ac74 /var/plog_socket
+  3ba14 logserver
+  3ba34 /var/plog_socket
+  3c394 logserver
+  3c3b4 /var/plog_socket
+  3d4b4 logserver
+  3d4d4 /var/plog_socket
+  3df14 logserver
+  3df34 /var/plog_socket
+  3ea74 logserver
+  3ea94 /var/plog_socket
+  3f494 logserver
+  3f4b4 /var/plog_socket
+  3fe14 logserver
+  3fe34 /var/plog_socket
+  404d0 log_upload &
+  404e0 /tmp/log/crash
+  40694 logserver
+  406b4 /var/plog_socket
+  40f44 logserver
+  40f64 /var/plog_socket
+  41a24 logserver
+  41a44 /var/plog_socket
+  426f8 logserver
+  42dc4 logserver
+  42de4 /var/plog_socket
+  436e4 logserver
+  43704 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/pptp_callmgr -----
+   c0d4 logserver
+   c0f4 /var/plog_socket
+   ccc4 logserver
+   cce4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/xl2tpdpppd -----
+  2d654 logserver
+  2d674 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/dhcpcd -----
+  14214 logserver
+  14234 /var/plog_socket
+  14bd4 logserver
+  14bf4 /var/plog_socket
+  15414 logserver
+  15434 /var/plog_socket
+  160d4 logserver
+  160f4 /var/plog_socket
+  16934 logserver
+  16954 /var/plog_socket
+  17214 logserver
+  17234 /var/plog_socket
+  18044 logserver
+  18064 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/xl2tpd-server -----
+  1b308 %s : Unable to allocate ppp option memory.  Expect a crash
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+  5b654 logserver
+  5b674 /var/plog_socket
+  5cdd4 tendaupload
+  5cde0 start tendaupload process is fail.
+  5d008 /tmp/log/crash
+  5d0d0 netctrl_start_tendaupload
+  5d524 logserver
+  5d544 /var/plog_socket
+  5df74 logserver
+  5df94 /var/plog_socket
+  5eac4 logserver
+  5eae4 /var/plog_socket
+  5f564 logserver
+  5f584 /var/plog_socket
+  610d4 logserver
+  610f4 /var/plog_socket
+  61ac4 logserver
+  61ae4 /var/plog_socket
+  62764 logserver
+  62784 /var/plog_socket
+  63154 logserver
+  63174 /var/plog_socket
+  645a4 logserver
+  645c4 /var/plog_socket
+  65fe4 logserver
+  66004 /var/plog_socket
+  66944 logserver
+  66964 /var/plog_socket
+  69294 logserver
+  692b4 /var/plog_socket
+  69e84 logserver
+  69ea4 /var/plog_socket
+  6a944 logserver
+  6a964 /var/plog_socket
+  6b6f4 logserver
+  6b714 /var/plog_socket
+  6c1b4 logserver
+  6c1d4 /var/plog_socket
+  6cc84 logserver
+  6cca4 /var/plog_socket
+  6d5f4 logserver
+  6d614 /var/plog_socket
+  6e1c4 logserver
+  6e1e4 /var/plog_socket
+  6eeb4 logserver
+  6eed4 /var/plog_socket
+  6fa64 logserver
+  6fa84 /var/plog_socket
+  70624 logserver
+  70644 /var/plog_socket
+  711b4 logserver
+  711d4 /var/plog_socket
+  71c34 logserver
+  71c54 /var/plog_socket
+  74bb4 logserver
+  74bd4 /var/plog_socket
+  75404 logserver
+  75424 /var/plog_socket
+  76674 logserver
+  76694 /var/plog_socket
+  76f34 logserver
+  76f54 /var/plog_socket
+  777f4 logserver
+  77814 /var/plog_socket
+  78204 logserver
+  78224 /var/plog_socket
+  78a74 logserver
+  78a94 /var/plog_socket
+  793b4 logserver
+  793d4 /var/plog_socket
+  79d24 logserver
+  79d44 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/busybox -----
+  7ad68 /var/log/messages
+  80fc2 /var/log/wtmp
+----- firmware-src/RootFS-unpacked/bin/pservice_tool -----
+   17b4 logserver
+   17d4 /var/plog_socket
+----- firmware-src/RootFS-unpacked/bin/telnet_ate_monitor -----
+   1e44 logserver
+   1e64 /var/plog_socket
+
+===== web/config/script references =====
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:63:mkdir -p /tmp/log
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:64:mkdir -p /tmp/log/crash
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:65:mkdir -p /tmp/log_print
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:70:echo 'kern.* /tmp/log/kernel.log' >>  /etc/syslog.conf
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:71:echo '*.* /tmp/log_print/message.txt' >>  /etc/syslog.conf
+firmware-src/RootFS-unpacked/etc_ro/init.d/rcS:77:sh /usr/bin/ugw_watchdog.sh 2>/tmp/log_print/ugw_watchdog.log&
+firmware-src/RootFS-unpacked/etc_ro/redis.conf:71:# To enable logging to the system logger, just set 'syslog-enabled' to yes,
+firmware-src/RootFS-unpacked/usr/local/ssl/openssl.cnf:122:# WARNING: ancient versions of Netscape crash on BMPStrings or UTF8Strings.
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:4:rm -rf /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:5:rm -rf /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:6:echo "cat /proc/link_loop:" >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:7:cat /proc/link_loop >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:8:echo "" >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:10:echo "cat /proc/link_loop:" >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:11:cat /proc/link_loop >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:12:echo "" >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:16:	echo "cat $file:" >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:17:	cat $file >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:18:	echo "" >> /tmp/log/wlan0.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:23:	echo "cat $file:" >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:24:	cat $file >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/get_wlan_msg.sh:25:	echo "" >> /tmp/log/wlan1.log
+firmware-src/RootFS-unpacked/usr/bin/ugw_watchdog.sh:4:	if [ -d "/tmp/log/" ]
+firmware-src/RootFS-unpacked/usr/bin/ugw_watchdog.sh:6:		cd /tmp/log_print/
+firmware-src/RootFS-unpacked/usr/bin/ugw_watchdog.sh:20:		echo "/tmp/log_print no exist"
+firmware-src/RootFS-unpacked/usr/bin/debug.sh:70:echo "================cat /tmp/log/kernel.log================"
+firmware-src/RootFS-unpacked/usr/bin/debug.sh:71:cat /tmp/log/kernel.log;
+firmware-src/RootFS-unpacked/usr/bin/debug.sh:72:echo "================cat /tmp/log/pann.log================"
+firmware-src/RootFS-unpacked/usr/bin/debug.sh:73:cat /tmp/log/pann.log;
+
+===== network-facing command context =====
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+  660dc timer
+  660fc /var/tm_socket
+  66140 cfms
+  66160 /var/cfm_socket
+  661a4 logserver
+  661c4 /var/plog_socket
+  66208 netctrl
+  66228 /var/nt_socket
+  6626c multiWAN
+  6628c /var/mw_socket
+  662d0 network_check
+  662f0 /var/network_ck_socket
+  66334 cfmc
+  66354 /var/cfmc_socket
+  66398 dhcpc
+  663b8 /var/dhcpc
+--
+  66a68 op=%d,wl_rate=%d
+  66a7c TD_FINISH_TSTFLAG
+  66a90 highdevice_en
+  66aa0 [%s::%d] malloc fail.
+  66ab8 /tmp/log/crash
+  66ac8 confctl_srv.c
+  66ad8 Initialize AP MIB failed !
+  66af4 Initialize env failed !
+  66b0c [%s][%d][luminais] init_confctl_unix_sock failed
+  66b40 uc_api_init failed
+  66b54 confctl_srv_key
+  66b64 main
+  66b6c make_highdevice_list_cfg
+  66b88 confctl_force_upgrade
+  66ba0 init_confsrv_unix_sock
+--
+  66d3c timer
+  66d5c /var/tm_socket
+  66da0 cfms
+  66dc0 /var/cfm_socket
+  66e04 logserver
+  66e24 /var/plog_socket
+  66e68 netctrl
+  66e88 /var/nt_socket
+  66ecc multiWAN
+  66eec /var/mw_socket
+  66f30 network_check
+  66f50 /var/network_ck_socket
+  66f94 cfmc
+  66fb4 /var/cfmc_socket
+  66ff8 dhcpc
+  67018 /var/dhcpc
+--
+  67530 assist.dev.mac
+  67540 echo "%s %d" > %s
+  67554 /proc/hybrid_steering/fixed_2g
+  67578 ERR command!
+  67588 DiagLogUpload
+  67598        malloc failed!      
+  675b8 %s[%d]      cmd:%s      
+  675d4 confctl_cli_key
+  675e4 [%s][%d][luminais] %s [%d]
+  67600 mesh_node_a
+  6760c upload_device_start
+  67620 upload all client status to cloud
+  67644 dev_mark_list_a
+  67654 client remark list recorded on cloud
+  6767c device list status
+--
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+--
+  67f2c timer
+  67f4c /var/tm_socket
+  67f90 cfms
+  67fb0 /var/cfm_socket
+  67ff4 logserver
+  68014 /var/plog_socket
+  68058 netctrl
+  68078 /var/nt_socket
+  680bc multiWAN
+  680dc /var/mw_socket
+  68120 network_check
+  68140 /var/network_ck_socket
+  68184 cfmc
+  681a4 /var/cfmc_socket
+  681e8 dhcpc
+  68208 /var/dhcpc
+--
+  68f7c timer
+  68f9c /var/tm_socket
+  68fe0 cfms
+  69000 /var/cfm_socket
+  69044 logserver
+  69064 /var/plog_socket
+  690a8 netctrl
+  690c8 /var/nt_socket
+  6910c multiWAN
+  6912c /var/mw_socket
+  69170 network_check
+  69190 /var/network_ck_socket
+  691d4 cfmc
+  691f4 /var/cfmc_socket
+  69238 dhcpc
+  69258 /var/dhcpc
+--
+  69b1c timer
+  69b3c /var/tm_socket
+  69b80 cfms
+  69ba0 /var/cfm_socket
+  69be4 logserver
+  69c04 /var/plog_socket
+  69c48 netctrl
+  69c68 /var/nt_socket
+  69cac multiWAN
+  69ccc /var/mw_socket
+  69d10 network_check
+  69d30 /var/network_ck_socket
+  69d74 cfmc
+  69d94 /var/cfmc_socket
+  69dd8 dhcpc
+  69df8 /var/dhcpc
+--
+  6a48c timer
+  6a4ac /var/tm_socket
+  6a4f0 cfms
+  6a510 /var/cfm_socket
+  6a554 logserver
+  6a574 /var/plog_socket
+  6a5b8 netctrl
+  6a5d8 /var/nt_socket
+  6a61c multiWAN
+  6a63c /var/mw_socket
+  6a680 network_check
+  6a6a0 /var/network_ck_socket
+  6a6e4 cfmc
+  6a704 /var/cfmc_socket
+  6a748 dhcpc
+  6a768 /var/dhcpc
+--
+  6ae0c timer
+  6ae2c /var/tm_socket
+  6ae70 cfms
+  6ae90 /var/cfm_socket
+  6aed4 logserver
+  6aef4 /var/plog_socket
+  6af38 netctrl
+  6af58 /var/nt_socket
+  6af9c multiWAN
+  6afbc /var/mw_socket
+  6b000 network_check
+  6b020 /var/network_ck_socket
+  6b064 cfmc
+  6b084 /var/cfmc_socket
+  6b0c8 dhcpc
+  6b0e8 /var/dhcpc
+--
+  6badc timer
+  6bafc /var/tm_socket
+  6bb40 cfms
+  6bb60 /var/cfm_socket
+  6bba4 logserver
+  6bbc4 /var/plog_socket
+  6bc08 netctrl
+  6bc28 /var/nt_socket
+  6bc6c multiWAN
+  6bc8c /var/mw_socket
+  6bcd0 network_check
+  6bcf0 /var/network_ck_socket
+  6bd34 cfmc
+  6bd54 /var/cfmc_socket
+  6bd98 dhcpc
+  6bdb8 /var/dhcpc
+--
+  6c79c timer
+  6c7bc /var/tm_socket
+  6c800 cfms
+  6c820 /var/cfm_socket
+  6c864 logserver
+  6c884 /var/plog_socket
+  6c8c8 netctrl
+  6c8e8 /var/nt_socket
+  6c92c multiWAN
+  6c94c /var/mw_socket
+  6c990 network_check
+  6c9b0 /var/network_ck_socket
+  6c9f4 cfmc
+  6ca14 /var/cfmc_socket
+  6ca58 dhcpc
+  6ca78 /var/dhcpc
+--
+  6d20c timer
+  6d22c /var/tm_socket
+  6d270 cfms
+  6d290 /var/cfm_socket
+  6d2d4 logserver
+  6d2f4 /var/plog_socket
+  6d338 netctrl
+  6d358 /var/nt_socket
+  6d39c multiWAN
+  6d3bc /var/mw_socket
+  6d400 network_check
+  6d420 /var/network_ck_socket
+  6d464 cfmc
+  6d484 /var/cfmc_socket
+  6d4c8 dhcpc
+  6d4e8 /var/dhcpc
+--
+  6dffc timer
+  6e01c /var/tm_socket
+  6e060 cfms
+  6e080 /var/cfm_socket
+  6e0c4 logserver
+  6e0e4 /var/plog_socket
+  6e128 netctrl
+  6e148 /var/nt_socket
+  6e18c multiWAN
+  6e1ac /var/mw_socket
+  6e1f0 network_check
+  6e210 /var/network_ck_socket
+  6e254 cfmc
+  6e274 /var/cfmc_socket
+  6e2b8 dhcpc
+  6e2d8 /var/dhcpc
+--
+  6eb3c timer
+  6eb5c /var/tm_socket
+  6eba0 cfms
+  6ebc0 /var/cfm_socket
+  6ec04 logserver
+  6ec24 /var/plog_socket
+  6ec68 netctrl
+  6ec88 /var/nt_socket
+  6eccc multiWAN
+  6ecec /var/mw_socket
+  6ed30 network_check
+  6ed50 /var/network_ck_socket
+  6ed94 cfmc
+  6edb4 /var/cfmc_socket
+  6edf8 dhcpc
+  6ee18 /var/dhcpc
+--
+  6f37c timer
+  6f39c /var/tm_socket
+  6f3e0 cfms
+  6f400 /var/cfm_socket
+  6f444 logserver
+  6f464 /var/plog_socket
+  6f4a8 netctrl
+  6f4c8 /var/nt_socket
+  6f50c multiWAN
+  6f52c /var/mw_socket
+  6f570 network_check
+  6f590 /var/network_ck_socket
+  6f5d4 cfmc
+  6f5f4 /var/cfmc_socket
+  6f638 dhcpc
+  6f658 /var/dhcpc
+--
+  7178c timer
+  717ac /var/tm_socket
+  717f0 cfms
+  71810 /var/cfm_socket
+  71854 logserver
+  71874 /var/plog_socket
+  718b8 netctrl
+  718d8 /var/nt_socket
+  7191c multiWAN
+  7193c /var/mw_socket
+  71980 network_check
+  719a0 /var/network_ck_socket
+  719e4 cfmc
+  71a04 /var/cfmc_socket
+  71a48 dhcpc
+  71a68 /var/dhcpc
+--
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+  735ec /var/mw_socket
+  73630 network_check
+  73650 /var/network_ck_socket
+  73694 cfmc
+  736b4 /var/cfmc_socket
+  736f8 dhcpc
+  73718 /var/dhcpc
+--
+  740ec timer
+  7410c /var/tm_socket
+  74150 cfms
+  74170 /var/cfm_socket
+  741b4 logserver
+  741d4 /var/plog_socket
+  74218 netctrl
+  74238 /var/nt_socket
+  7427c multiWAN
+  7429c /var/mw_socket
+  742e0 network_check
+  74300 /var/network_ck_socket
+  74344 cfmc
+  74364 /var/cfmc_socket
+  743a8 dhcpc
+  743c8 /var/dhcpc
+--
+  7578c timer
+  757ac /var/tm_socket
+  757f0 cfms
+  75810 /var/cfm_socket
+  75854 logserver
+  75874 /var/plog_socket
+  758b8 netctrl
+  758d8 /var/nt_socket
+  7591c multiWAN
+  7593c /var/mw_socket
+  75980 network_check
+  759a0 /var/network_ck_socket
+  759e4 cfmc
+  75a04 /var/cfmc_socket
+  75a48 dhcpc
+  75a68 /var/dhcpc
+--
+  75dcc ap_common_so
+  75e30 prod_common_so
+  75ef4 open error
+  75f00 readdir err!
+  75f10 log_upload &
+  75f20 /tmp/log/crash
+  75fa8 monitor
+  75fc8 /var/pm_socket
+  7600c timer
+  7602c /var/tm_socket
+  76070 cfms
+  76090 /var/cfm_socket
+  760d4 logserver
+  760f4 /var/plog_socket
+  76138 netctrl
+  76158 /var/nt_socket
+  7619c multiWAN
+  761bc /var/mw_socket
+  76200 network_check
+  76220 /var/network_ck_socket
+  76264 cfmc
+  76284 /var/cfmc_socket
+  762c8 dhcpc
+  762e8 /var/dhcpc
+--
+  771dc write flash now!
+  771f0 MapWriteFlash
+  77200 telnetd
+  77208 sntp
+  77210 logserver
+  7721c device_list
+  77228 miniupnpd
+  77234 [arainc][ret = %d]%s(%d)
+  77250 Problem getting information
+  7726c File %s not found.
+  77280 Invalid parameter to _stat.
+  7729c Unexpected error in _stat.
+  772b8 [arainc]____buf.st_size is %d___%s(%d)
+  772e0 [sec_now = %d]%s(%d)
+  772f8 [mpp_download_start_time = %d]%s(%d)
+--
+  77f7c timer
+  77f9c /var/tm_socket
+  77fe0 cfms
+  78000 /var/cfm_socket
+  78044 logserver
+  78064 /var/plog_socket
+  780a8 netctrl
+  780c8 /var/nt_socket
+  7810c multiWAN
+  7812c /var/mw_socket
+  78170 network_check
+  78190 /var/network_ck_socket
+  781d4 cfmc
+  781f4 /var/cfmc_socket
+  78238 dhcpc
+  78258 /var/dhcpc
+--
+  791fc timer
+  7921c /var/tm_socket
+  79260 cfms
+  79280 /var/cfm_socket
+  792c4 logserver
+  792e4 /var/plog_socket
+  79328 netctrl
+  79348 /var/nt_socket
+  7938c multiWAN
+  793ac /var/mw_socket
+  793f0 network_check
+  79410 /var/network_ck_socket
+  79454 cfmc
+  79474 /var/cfmc_socket
+  794b8 dhcpc
+  794d8 /var/dhcpc
+--
+  79bac timer
+  79bcc /var/tm_socket
+  79c10 cfms
+  79c30 /var/cfm_socket
+  79c74 logserver
+  79c94 /var/plog_socket
+  79cd8 netctrl
+  79cf8 /var/nt_socket
+  79d3c multiWAN
+  79d5c /var/mw_socket
+  79da0 network_check
+  79dc0 /var/network_ck_socket
+  79e04 cfmc
+  79e24 /var/cfmc_socket
+  79e68 dhcpc
+  79e88 /var/dhcpc
+--
+  7a52c timer
+  7a54c /var/tm_socket
+  7a590 cfms
+  7a5b0 /var/cfm_socket
+  7a5f4 logserver
+  7a614 /var/plog_socket
+  7a658 netctrl
+  7a678 /var/nt_socket
+  7a6bc multiWAN
+  7a6dc /var/mw_socket
+  7a720 network_check
+  7a740 /var/network_ck_socket
+  7a784 cfmc
+  7a7a4 /var/cfmc_socket
+  7a7e8 dhcpc
+  7a808 /var/dhcpc
+--
+  7b74c timer
+  7b76c /var/tm_socket
+  7b7b0 cfms
+  7b7d0 /var/cfm_socket
+  7b814 logserver
+  7b834 /var/plog_socket
+  7b878 netctrl
+  7b898 /var/nt_socket
+  7b8dc multiWAN
+  7b8fc /var/mw_socket
+  7b940 network_check
+  7b960 /var/network_ck_socket
+  7b9a4 cfmc
+  7b9c4 /var/cfmc_socket
+  7ba08 dhcpc
+  7ba28 /var/dhcpc
+--
+  7bffc timer
+  7c01c /var/tm_socket
+  7c060 cfms
+  7c080 /var/cfm_socket
+  7c0c4 logserver
+  7c0e4 /var/plog_socket
+  7c128 netctrl
+  7c148 /var/nt_socket
+  7c18c multiWAN
+  7c1ac /var/mw_socket
+  7c1f0 network_check
+  7c210 /var/network_ck_socket
+  7c254 cfmc
+  7c274 /var/cfmc_socket
+  7c2b8 dhcpc
+  7c2d8 /var/dhcpc
+--
+  7cafc timer
+  7cb1c /var/tm_socket
+  7cb60 cfms
+  7cb80 /var/cfm_socket
+  7cbc4 logserver
+  7cbe4 /var/plog_socket
+  7cc28 netctrl
+  7cc48 /var/nt_socket
+  7cc8c multiWAN
+  7ccac /var/mw_socket
+  7ccf0 network_check
+  7cd10 /var/network_ck_socket
+  7cd54 cfmc
+  7cd74 /var/cfmc_socket
+  7cdb8 dhcpc
+  7cdd8 /var/dhcpc
+--
+  7dc0c timer
+  7dc2c /var/tm_socket
+  7dc70 cfms
+  7dc90 /var/cfm_socket
+  7dcd4 logserver
+  7dcf4 /var/plog_socket
+  7dd38 netctrl
+  7dd58 /var/nt_socket
+  7dd9c multiWAN
+  7ddbc /var/mw_socket
+  7de00 network_check
+  7de20 /var/network_ck_socket
+  7de64 cfmc
+  7de84 /var/cfmc_socket
+  7dec8 dhcpc
+  7dee8 /var/dhcpc
+--
+  7e52c timer
+  7e54c /var/tm_socket
+  7e590 cfms
+  7e5b0 /var/cfm_socket
+  7e5f4 logserver
+  7e614 /var/plog_socket
+  7e658 netctrl
+  7e678 /var/nt_socket
+  7e6bc multiWAN
+  7e6dc /var/mw_socket
+  7e720 network_check
+  7e740 /var/network_ck_socket
+  7e784 cfmc
+  7e7a4 /var/cfmc_socket
+  7e7e8 dhcpc
+  7e808 /var/dhcpc
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+  31b94 timer
+  31bb4 /var/tm_socket
+  31bf8 cfms
+  31c18 /var/cfm_socket
+  31c5c logserver
+  31c7c /var/plog_socket
+  31cc0 netctrl
+  31ce0 /var/nt_socket
+  31d24 multiWAN
+  31d44 /var/mw_socket
+  31d88 network_check
+  31da8 /var/network_ck_socket
+  31dec cfmc
+  31e0c /var/cfmc_socket
+  31e50 dhcpc
+  31e70 /var/dhcpc
+--
+  32528 ucloud
+  32530 %s(%d)
+  32538 ucloud -l 0
+  32544 Unsupport Event: %d
+  3255c /tmp/log/crash
+  3256c Initialize AP MIB failed.
+  32588 Initialize env failed !
+  325a0 %s@%s
+  325a8 confctl_cli
+  325b4 uc_api_init failed
+  325c8 confctl_cli_key
+  325d8 confctl_force_upgrade_cli
+  325f4 check_mpp_highdevice_cfg
+  32650 $Id: hash.c,v 1.1.1.1 2007-08-16 00:41:39 steven Exp $
+  326f8 monitor
+--
+  3275c timer
+  3277c /var/tm_socket
+  327c0 cfms
+  327e0 /var/cfm_socket
+  32824 logserver
+  32844 /var/plog_socket
+  32888 netctrl
+  328a8 /var/nt_socket
+  328ec multiWAN
+  3290c /var/mw_socket
+  32950 network_check
+  32970 /var/network_ck_socket
+  329b4 cfmc
+  329d4 /var/cfmc_socket
+  32a18 dhcpc
+  32a38 /var/dhcpc
+--
+  32f50 assist.dev.mac
+  32f60 echo "%s %d" > %s
+  32f74 /proc/hybrid_steering/fixed_2g
+  32f98 ERR command!
+  32fa8 DiagLogUpload
+  32fb8        malloc failed!      
+  32fd8 %s[%d]      cmd:%s      
+  32ff4 confctl_cli_key
+  33004 [%s][%d][luminais] %s [%d]
+  33020 mesh_node_a
+  3302c upload_device_start
+  33040 upload all client status to cloud
+  33064 dev_mark_list_a
+  33074 client remark list recorded on cloud
+  3309c device list status
+--
+  334dc GrantNodeAdd
+  334ec GrantNodeDel
+  334fc SetLedStatus
+  3350c SetNodeLocation
+  3351c DiagLogUpload
+  3352c SetUPnPCfg
+  33538 SetAutoMaintainCfg
+  3354c SetAllConfig
+  3355c SetCloudEn
+  33568 UnbindConfirm
+  33578 AccoutACK
+  33584 SetGuideDone
+  33594 SetTimeGrp
+  335a0 SetUsrGrp
+  335ac SetFmlyGrp
+--
+  3373c timer
+  3375c /var/tm_socket
+  337a0 cfms
+  337c0 /var/cfm_socket
+  33804 logserver
+  33824 /var/plog_socket
+  33868 netctrl
+  33888 /var/nt_socket
+  338cc multiWAN
+  338ec /var/mw_socket
+  33930 network_check
+  33950 /var/network_ck_socket
+  33994 cfmc
+  339b4 /var/cfmc_socket
+  339f8 dhcpc
+  33a18 /var/dhcpc
+--
+  3478c timer
+  347ac /var/tm_socket
+  347f0 cfms
+  34810 /var/cfm_socket
+  34854 logserver
+  34874 /var/plog_socket
+  348b8 netctrl
+  348d8 /var/nt_socket
+  3491c multiWAN
+  3493c /var/mw_socket
+  34980 network_check
+  349a0 /var/network_ck_socket
+  349e4 cfmc
+  34a04 /var/cfmc_socket
+  34a48 dhcpc
+  34a68 /var/dhcpc
+--
+  3532c timer
+  3534c /var/tm_socket
+  35390 cfms
+  353b0 /var/cfm_socket
+  353f4 logserver
+  35414 /var/plog_socket
+  35458 netctrl
+  35478 /var/nt_socket
+  354bc multiWAN
+  354dc /var/mw_socket
+  35520 network_check
+  35540 /var/network_ck_socket
+  35584 cfmc
+  355a4 /var/cfmc_socket
+  355e8 dhcpc
+  35608 /var/dhcpc
+--
+  35c9c timer
+  35cbc /var/tm_socket
+  35d00 cfms
+  35d20 /var/cfm_socket
+  35d64 logserver
+  35d84 /var/plog_socket
+  35dc8 netctrl
+  35de8 /var/nt_socket
+  35e2c multiWAN
+  35e4c /var/mw_socket
+  35e90 network_check
+  35eb0 /var/network_ck_socket
+  35ef4 cfmc
+  35f14 /var/cfmc_socket
+  35f58 dhcpc
+  35f78 /var/dhcpc
+--
+  3661c timer
+  3663c /var/tm_socket
+  36680 cfms
+  366a0 /var/cfm_socket
+  366e4 logserver
+  36704 /var/plog_socket
+  36748 netctrl
+  36768 /var/nt_socket
+  367ac multiWAN
+  367cc /var/mw_socket
+  36810 network_check
+  36830 /var/network_ck_socket
+  36874 cfmc
+  36894 /var/cfmc_socket
+  368d8 dhcpc
+  368f8 /var/dhcpc
+--
+  372ec timer
+  3730c /var/tm_socket
+  37350 cfms
+  37370 /var/cfm_socket
+  373b4 logserver
+  373d4 /var/plog_socket
+  37418 netctrl
+  37438 /var/nt_socket
+  3747c multiWAN
+  3749c /var/mw_socket
+  374e0 network_check
+  37500 /var/network_ck_socket
+  37544 cfmc
+  37564 /var/cfmc_socket
+  375a8 dhcpc
+  375c8 /var/dhcpc
+--
+  37fac timer
+  37fcc /var/tm_socket
+  38010 cfms
+  38030 /var/cfm_socket
+  38074 logserver
+  38094 /var/plog_socket
+  380d8 netctrl
+  380f8 /var/nt_socket
+  3813c multiWAN
+  3815c /var/mw_socket
+  381a0 network_check
+  381c0 /var/network_ck_socket
+  38204 cfmc
+  38224 /var/cfmc_socket
+  38268 dhcpc
+  38288 /var/dhcpc
+--
+  38a1c timer
+  38a3c /var/tm_socket
+  38a80 cfms
+  38aa0 /var/cfm_socket
+  38ae4 logserver
+  38b04 /var/plog_socket
+  38b48 netctrl
+  38b68 /var/nt_socket
+  38bac multiWAN
+  38bcc /var/mw_socket
+  38c10 network_check
+  38c30 /var/network_ck_socket
+  38c74 cfmc
+  38c94 /var/cfmc_socket
+  38cd8 dhcpc
+  38cf8 /var/dhcpc
+--
+  3980c timer
+  3982c /var/tm_socket
+  39870 cfms
+  39890 /var/cfm_socket
+  398d4 logserver
+  398f4 /var/plog_socket
+  39938 netctrl
+  39958 /var/nt_socket
+  3999c multiWAN
+  399bc /var/mw_socket
+  39a00 network_check
+  39a20 /var/network_ck_socket
+  39a64 cfmc
+  39a84 /var/cfmc_socket
+  39ac8 dhcpc
+  39ae8 /var/dhcpc
+--
+  3a34c timer
+  3a36c /var/tm_socket
+  3a3b0 cfms
+  3a3d0 /var/cfm_socket
+  3a414 logserver
+  3a434 /var/plog_socket
+  3a478 netctrl
+  3a498 /var/nt_socket
+  3a4dc multiWAN
+  3a4fc /var/mw_socket
+  3a540 network_check
+  3a560 /var/network_ck_socket
+  3a5a4 cfmc
+  3a5c4 /var/cfmc_socket
+  3a608 dhcpc
+  3a628 /var/dhcpc
+--
+  3ab8c timer
+  3abac /var/tm_socket
+  3abf0 cfms
+  3ac10 /var/cfm_socket
+  3ac54 logserver
+  3ac74 /var/plog_socket
+  3acb8 netctrl
+  3acd8 /var/nt_socket
+  3ad1c multiWAN
+  3ad3c /var/mw_socket
+  3ad80 network_check
+  3ada0 /var/network_ck_socket
+  3ade4 cfmc
+  3ae04 /var/cfmc_socket
+  3ae48 dhcpc
+  3ae68 /var/dhcpc
+--
+  3b94c timer
+  3b96c /var/tm_socket
+  3b9b0 cfms
+  3b9d0 /var/cfm_socket
+  3ba14 logserver
+  3ba34 /var/plog_socket
+  3ba78 netctrl
+  3ba98 /var/nt_socket
+  3badc multiWAN
+  3bafc /var/mw_socket
+  3bb40 network_check
+  3bb60 /var/network_ck_socket
+  3bba4 cfmc
+  3bbc4 /var/cfmc_socket
+  3bc08 dhcpc
+  3bc28 /var/dhcpc
+--
+  3c2cc timer
+  3c2ec /var/tm_socket
+  3c330 cfms
+  3c350 /var/cfm_socket
+  3c394 logserver
+  3c3b4 /var/plog_socket
+  3c3f8 netctrl
+  3c418 /var/nt_socket
+  3c45c multiWAN
+  3c47c /var/mw_socket
+  3c4c0 network_check
+  3c4e0 /var/network_ck_socket
+  3c524 cfmc
+  3c544 /var/cfmc_socket
+  3c588 dhcpc
+  3c5a8 /var/dhcpc
+--
+  3d3ec timer
+  3d40c /var/tm_socket
+  3d450 cfms
+  3d470 /var/cfm_socket
+  3d4b4 logserver
+  3d4d4 /var/plog_socket
+  3d518 netctrl
+  3d538 /var/nt_socket
+  3d57c multiWAN
+  3d59c /var/mw_socket
+  3d5e0 network_check
+  3d600 /var/network_ck_socket
+  3d644 cfmc
+  3d664 /var/cfmc_socket
+  3d6a8 dhcpc
+  3d6c8 /var/dhcpc
+--
+  3de4c timer
+  3de6c /var/tm_socket
+  3deb0 cfms
+  3ded0 /var/cfm_socket
+  3df14 logserver
+  3df34 /var/plog_socket
+  3df78 netctrl
+  3df98 /var/nt_socket
+  3dfdc multiWAN
+  3dffc /var/mw_socket
+  3e040 network_check
+  3e060 /var/network_ck_socket
+  3e0a4 cfmc
+  3e0c4 /var/cfmc_socket
+  3e108 dhcpc
+  3e128 /var/dhcpc
+--
+  3e9ac timer
+  3e9cc /var/tm_socket
+  3ea10 cfms
+  3ea30 /var/cfm_socket
+  3ea74 logserver
+  3ea94 /var/plog_socket
+  3ead8 netctrl
+  3eaf8 /var/nt_socket
+  3eb3c multiWAN
+  3eb5c /var/mw_socket
+  3eba0 network_check
+  3ebc0 /var/network_ck_socket
+  3ec04 cfmc
+  3ec24 /var/cfmc_socket
+  3ec68 dhcpc
+  3ec88 /var/dhcpc
+--
+  3f3cc timer
+  3f3ec /var/tm_socket
+  3f430 cfms
+  3f450 /var/cfm_socket
+  3f494 logserver
+  3f4b4 /var/plog_socket
+  3f4f8 netctrl
+  3f518 /var/nt_socket
+  3f55c multiWAN
+  3f57c /var/mw_socket
+  3f5c0 network_check
+  3f5e0 /var/network_ck_socket
+  3f624 cfmc
+  3f644 /var/cfmc_socket
+  3f688 dhcpc
+  3f6a8 /var/dhcpc
+--
+  3fd4c timer
+  3fd6c /var/tm_socket
+  3fdb0 cfms
+  3fdd0 /var/cfm_socket
+  3fe14 logserver
+  3fe34 /var/plog_socket
+  3fe78 netctrl
+  3fe98 /var/nt_socket
+  3fedc multiWAN
+  3fefc /var/mw_socket
+  3ff40 network_check
+  3ff60 /var/network_ck_socket
+  3ffa4 cfmc
+  3ffc4 /var/cfmc_socket
+  40008 dhcpc
+  40028 /var/dhcpc
+--
+  4038c ap_common_so
+  403f0 prod_common_so
+  404b4 open error
+  404c0 readdir err!
+  404d0 log_upload &
+  404e0 /tmp/log/crash
+  40568 monitor
+  40588 /var/pm_socket
+  405cc timer
+  405ec /var/tm_socket
+  40630 cfms
+  40650 /var/cfm_socket
+  40694 logserver
+  406b4 /var/plog_socket
+  406f8 netctrl
+  40718 /var/nt_socket
+  4075c multiWAN
+  4077c /var/mw_socket
+  407c0 network_check
+  407e0 /var/network_ck_socket
+  40824 cfmc
+  40844 /var/cfmc_socket
+  40888 dhcpc
+  408a8 /var/dhcpc
+--
+  40e7c timer
+  40e9c /var/tm_socket
+  40ee0 cfms
+  40f00 /var/cfm_socket
+  40f44 logserver
+  40f64 /var/plog_socket
+  40fa8 netctrl
+  40fc8 /var/nt_socket
+  4100c multiWAN
+  4102c /var/mw_socket
+  41070 network_check
+  41090 /var/network_ck_socket
+  410d4 cfmc
+  410f4 /var/cfmc_socket
+  41138 dhcpc
+  41158 /var/dhcpc
+--
+  4195c timer
+  4197c /var/tm_socket
+  419c0 cfms
+  419e0 /var/cfm_socket
+  41a24 logserver
+  41a44 /var/plog_socket
+  41a88 netctrl
+  41aa8 /var/nt_socket
+  41aec multiWAN
+  41b0c /var/mw_socket
+  41b50 network_check
+  41b70 /var/network_ck_socket
+  41bb4 cfmc
+  41bd4 /var/cfmc_socket
+  41c18 dhcpc
+  41c38 /var/dhcpc
+--
+  426a4 upgrade_____error______%s(%d)
+  426c4 upgrade_____success______%s(%d)
+  426e8 telnetd
+  426f0 sntp
+  426f8 logserver
+  42704 device_list
+  42710 miniupnpd
+  4271c djc__mem_enough__[map][arainc]%s(%d)
+  42744 djc__mem_not_enough__[map][arainc]%s(%d)
+  42770 [arainc][upgrade mem not enough reboot now]%s(%d)
+  427a4 MultiImageOk
+  427b4 auto____upgrade_____error______%s(%d)
+  427dc here start upgrade
+  427f0 Force Reboot: %d
+  42804 scheduling: %s - %s
+--
+  42cfc timer
+  42d1c /var/tm_socket
+  42d60 cfms
+  42d80 /var/cfm_socket
+  42dc4 logserver
+  42de4 /var/plog_socket
+  42e28 netctrl
+  42e48 /var/nt_socket
+  42e8c multiWAN
+  42eac /var/mw_socket
+  42ef0 network_check
+  42f10 /var/network_ck_socket
+  42f54 cfmc
+  42f74 /var/cfmc_socket
+  42fb8 dhcpc
+  42fd8 /var/dhcpc
+--
+  4361c timer
+  4363c /var/tm_socket
+  43680 cfms
+  436a0 /var/cfm_socket
+  436e4 logserver
+  43704 /var/plog_socket
+  43748 netctrl
+  43768 /var/nt_socket
+  437ac multiWAN
+  437cc /var/mw_socket
+  43810 network_check
+  43830 /var/network_ck_socket
+  43874 cfmc
+  43894 /var/cfmc_socket
+  438d8 dhcpc
+  438f8 /var/dhcpc
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+  5b58c timer
+  5b5ac /var/tm_socket
+  5b5f0 cfms
+  5b610 /var/cfm_socket
+  5b654 logserver
+  5b674 /var/plog_socket
+  5b6b8 netctrl
+  5b6d8 /var/nt_socket
+  5b71c multiWAN
+  5b73c /var/mw_socket
+  5b780 network_check
+  5b7a0 /var/network_ck_socket
+  5b7e4 cfmc
+  5b804 /var/cfmc_socket
+  5b848 dhcpc
+  5b868 /var/dhcpc
+--
+  5cd88 Initialize AP MIB failed !
+  5cda4 %s(%d)
+  5cdac start multiwan process is fail.
+  5cdcc httpd
+  5cdd4 tendaupload
+  5cde0 start tendaupload process is fail.
+  5ce04 param error.
+  5ce14 /proc/mtd
+  5ce20 fopen is fail.
+  5ce30 %*[^"]"%[^"]"
+  5ce40 mtd%d:
+  5ce48 /dev/mtdblock%d
+  5ce58 get mtd dev is fail.
+  5ce70 sh /usr/bin/mesh_op.sh
+  5ce88 [%s][%d]start /usr/bin/mesh_op.sh fail!!! 
+  5ceb4 pann
+--
+  5cf7c echo %d > /proc/hybrid_steering/band_steering_mode
+  5cfb0 wifi.priority_mode is err
+  5cfcc TD_FINISH_TSTFLAG
+  5cfe0 echo 0 > /proc/hybrid_steering/enable
+  5d008 /tmp/log/crash
+  5d018 /tmp/netctrl_status
+  5d02c echo 1 > %s
+  5d038 netctrl init is error.
+  5d050 main
+  5d058 netctrl_init
+  5d068 netctrl_sys_boot_addr_init
+  5d084 netctrl_start_services
+  5d09c netctrl_start_services
+  5d0b4 get_block_path_by_mtd_name
+  5d0d0 netctrl_start_tendaupload
+  5d0ec netctrl_start_httpd
+  5d100 netctrl_start_multiwan
+  5d118 netctrl_start_multiwan
+  5d130 netctrl_start_system_services
+  5d150 netctrl_init_vlan_nvram
+  5d168 netctrl_nandflash_mkdir
+  5d180 netctrl_start_upgrade_online
+  5d1a0 netctrl_cancel_timer
+  5d1b8 netctrl_add_timer
+  5d1cc netctrl_main_loop
+--
+  5d45c timer
+  5d47c /var/tm_socket
+  5d4c0 cfms
+  5d4e0 /var/cfm_socket
+  5d524 logserver
+  5d544 /var/plog_socket
+  5d588 netctrl
+  5d5a8 /var/nt_socket
+  5d5ec multiWAN
+  5d60c /var/mw_socket
+  5d650 network_check
+  5d670 /var/network_ck_socket
+  5d6b4 cfmc
+  5d6d4 /var/cfmc_socket
+  5d718 dhcpc
+  5d738 /var/dhcpc
+--
+  5deac timer
+  5decc /var/tm_socket
+  5df10 cfms
+  5df30 /var/cfm_socket
+  5df74 logserver
+  5df94 /var/plog_socket
+  5dfd8 netctrl
+  5dff8 /var/nt_socket
+  5e03c multiWAN
+  5e05c /var/mw_socket
+  5e0a0 network_check
+  5e0c0 /var/network_ck_socket
+  5e104 cfmc
+  5e124 /var/cfmc_socket
+  5e168 dhcpc
+  5e188 /var/dhcpc
+--
+  5e9fc timer
+  5ea1c /var/tm_socket
+  5ea60 cfms
+  5ea80 /var/cfm_socket
+  5eac4 logserver
+  5eae4 /var/plog_socket
+  5eb28 netctrl
+  5eb48 /var/nt_socket
+  5eb8c multiWAN
+  5ebac /var/mw_socket
+  5ebf0 network_check
+  5ec10 /var/network_ck_socket
+  5ec54 cfmc
+  5ec74 /var/cfmc_socket
+  5ecb8 dhcpc
+  5ecd8 /var/dhcpc
+--
+  5f49c timer
+  5f4bc /var/tm_socket
+  5f500 cfms
+  5f520 /var/cfm_socket
+  5f564 logserver
+  5f584 /var/plog_socket
+  5f5c8 netctrl
+  5f5e8 /var/nt_socket
+  5f62c multiWAN
+  5f64c /var/mw_socket
+  5f690 network_check
+  5f6b0 /var/network_ck_socket
+  5f6f4 cfmc
+  5f714 /var/cfmc_socket
+  5f758 dhcpc
+  5f778 /var/dhcpc
+--
+  6100c timer
+  6102c /var/tm_socket
+  61070 cfms
+  61090 /var/cfm_socket
+  610d4 logserver
+  610f4 /var/plog_socket
+  61138 netctrl
+  61158 /var/nt_socket
+  6119c multiWAN
+  611bc /var/mw_socket
+  61200 network_check
+  61220 /var/network_ck_socket
+  61264 cfmc
+  61284 /var/cfmc_socket
+  612c8 dhcpc
+  612e8 /var/dhcpc
+--
+  619fc timer
+  61a1c /var/tm_socket
+  61a60 cfms
+  61a80 /var/cfm_socket
+  61ac4 logserver
+  61ae4 /var/plog_socket
+  61b28 netctrl
+  61b48 /var/nt_socket
+  61b8c multiWAN
+  61bac /var/mw_socket
+  61bf0 network_check
+  61c10 /var/network_ck_socket
+  61c54 cfmc
+  61c74 /var/cfmc_socket
+  61cb8 dhcpc
+  61cd8 /var/dhcpc
+--
+  6269c timer
+  626bc /var/tm_socket
+  62700 cfms
+  62720 /var/cfm_socket
+  62764 logserver
+  62784 /var/plog_socket
+  627c8 netctrl
+  627e8 /var/nt_socket
+  6282c multiWAN
+  6284c /var/mw_socket
+  62890 network_check
+  628b0 /var/network_ck_socket
+  628f4 cfmc
+  62914 /var/cfmc_socket
+  62958 dhcpc
+  62978 /var/dhcpc
+--
+  6308c timer
+  630ac /var/tm_socket
+  630f0 cfms
+  63110 /var/cfm_socket
+  63154 logserver
+  63174 /var/plog_socket
+  631b8 netctrl
+  631d8 /var/nt_socket
+  6321c multiWAN
+  6323c /var/mw_socket
+  63280 network_check
+  632a0 /var/network_ck_socket
+  632e4 cfmc
+  63304 /var/cfmc_socket
+  63348 dhcpc
+  63368 /var/dhcpc
+--
+  644dc timer
+  644fc /var/tm_socket
+  64540 cfms
+  64560 /var/cfm_socket
+  645a4 logserver
+  645c4 /var/plog_socket
+  64608 netctrl
+  64628 /var/nt_socket
+  6466c multiWAN
+  6468c /var/mw_socket
+  646d0 network_check
+  646f0 /var/network_ck_socket
+  64734 cfmc
+  64754 /var/cfmc_socket
+  64798 dhcpc
+  647b8 /var/dhcpc
+--
+  65f1c timer
+  65f3c /var/tm_socket
+  65f80 cfms
+  65fa0 /var/cfm_socket
+  65fe4 logserver
+  66004 /var/plog_socket
+  66048 netctrl
+  66068 /var/nt_socket
+  660ac multiWAN
+  660cc /var/mw_socket
+  66110 network_check
+  66130 /var/network_ck_socket
+  66174 cfmc
+  66194 /var/cfmc_socket
+  661d8 dhcpc
+  661f8 /var/dhcpc
+--
+  6687c timer
+  6689c /var/tm_socket
+  668e0 cfms
+  66900 /var/cfm_socket
+  66944 logserver
+  66964 /var/plog_socket
+  669a8 netctrl
+  669c8 /var/nt_socket
+  66a0c multiWAN
+  66a2c /var/mw_socket
+  66a70 network_check
+  66a90 /var/network_ck_socket
+  66ad4 cfmc
+  66af4 /var/cfmc_socket
+  66b38 dhcpc
+  66b58 /var/dhcpc
+--
+  691cc timer
+  691ec /var/tm_socket
+  69230 cfms
+  69250 /var/cfm_socket
+  69294 logserver
+  692b4 /var/plog_socket
+  692f8 netctrl
+  69318 /var/nt_socket
+  6935c multiWAN
+  6937c /var/mw_socket
+  693c0 network_check
+  693e0 /var/network_ck_socket
+  69424 cfmc
+  69444 /var/cfmc_socket
+  69488 dhcpc
+  694a8 /var/dhcpc
+--
+  69dbc timer
+  69ddc /var/tm_socket
+  69e20 cfms
+  69e40 /var/cfm_socket
+  69e84 logserver
+  69ea4 /var/plog_socket
+  69ee8 netctrl
+  69f08 /var/nt_socket
+  69f4c multiWAN
+  69f6c /var/mw_socket
+  69fb0 network_check
+  69fd0 /var/network_ck_socket
+  6a014 cfmc
+  6a034 /var/cfmc_socket
+  6a078 dhcpc
+  6a098 /var/dhcpc
+--
+  6a87c timer
+  6a89c /var/tm_socket
+  6a8e0 cfms
+  6a900 /var/cfm_socket
+  6a944 logserver
+  6a964 /var/plog_socket
+  6a9a8 netctrl
+  6a9c8 /var/nt_socket
+  6aa0c multiWAN
+  6aa2c /var/mw_socket
+  6aa70 network_check
+  6aa90 /var/network_ck_socket
+  6aad4 cfmc
+  6aaf4 /var/cfmc_socket
+  6ab38 dhcpc
+  6ab58 /var/dhcpc
+--
+  6b62c timer
+  6b64c /var/tm_socket
+  6b690 cfms
+  6b6b0 /var/cfm_socket
+  6b6f4 logserver
+  6b714 /var/plog_socket
+  6b758 netctrl
+  6b778 /var/nt_socket
+  6b7bc multiWAN
+  6b7dc /var/mw_socket
+  6b820 network_check
+  6b840 /var/network_ck_socket
+  6b884 cfmc
+  6b8a4 /var/cfmc_socket
+  6b8e8 dhcpc
+  6b908 /var/dhcpc
+--
+  6c0ec timer
+  6c10c /var/tm_socket
+  6c150 cfms
+  6c170 /var/cfm_socket
+  6c1b4 logserver
+  6c1d4 /var/plog_socket
+  6c218 netctrl
+  6c238 /var/nt_socket
+  6c27c multiWAN
+  6c29c /var/mw_socket
+  6c2e0 network_check
+  6c300 /var/network_ck_socket
+  6c344 cfmc
+  6c364 /var/cfmc_socket
+  6c3a8 dhcpc
+  6c3c8 /var/dhcpc
+--
+  6cbbc timer
+  6cbdc /var/tm_socket
+  6cc20 cfms
+  6cc40 /var/cfm_socket
+  6cc84 logserver
+  6cca4 /var/plog_socket
+  6cce8 netctrl
+  6cd08 /var/nt_socket
+  6cd4c multiWAN
+  6cd6c /var/mw_socket
+  6cdb0 network_check
+  6cdd0 /var/network_ck_socket
+  6ce14 cfmc
+  6ce34 /var/cfmc_socket
+  6ce78 dhcpc
+  6ce98 /var/dhcpc
+--
+  6d52c timer
+  6d54c /var/tm_socket
+  6d590 cfms
+  6d5b0 /var/cfm_socket
+  6d5f4 logserver
+  6d614 /var/plog_socket
+  6d658 netctrl
+  6d678 /var/nt_socket
+  6d6bc multiWAN
+  6d6dc /var/mw_socket
+  6d720 network_check
+  6d740 /var/network_ck_socket
+  6d784 cfmc
+  6d7a4 /var/cfmc_socket
+  6d7e8 dhcpc
+  6d808 /var/dhcpc
+--
+  6e0fc timer
+  6e11c /var/tm_socket
+  6e160 cfms
+  6e180 /var/cfm_socket
+  6e1c4 logserver
+  6e1e4 /var/plog_socket
+  6e228 netctrl
+  6e248 /var/nt_socket
+  6e28c multiWAN
+  6e2ac /var/mw_socket
+  6e2f0 network_check
+  6e310 /var/network_ck_socket
+  6e354 cfmc
+  6e374 /var/cfmc_socket
+  6e3b8 dhcpc
+  6e3d8 /var/dhcpc
+--
+  6edec timer
+  6ee0c /var/tm_socket
+  6ee50 cfms
+  6ee70 /var/cfm_socket
+  6eeb4 logserver
+  6eed4 /var/plog_socket
+  6ef18 netctrl
+  6ef38 /var/nt_socket
+  6ef7c multiWAN
+  6ef9c /var/mw_socket
+  6efe0 network_check
+  6f000 /var/network_ck_socket
+  6f044 cfmc
+  6f064 /var/cfmc_socket
+  6f0a8 dhcpc
+  6f0c8 /var/dhcpc
+--
+  6f99c timer
+  6f9bc /var/tm_socket
+  6fa00 cfms
+  6fa20 /var/cfm_socket
+  6fa64 logserver
+  6fa84 /var/plog_socket
+  6fac8 netctrl
+  6fae8 /var/nt_socket
+  6fb2c multiWAN
+  6fb4c /var/mw_socket
+  6fb90 network_check
+  6fbb0 /var/network_ck_socket
+  6fbf4 cfmc
+  6fc14 /var/cfmc_socket
+  6fc58 dhcpc
+  6fc78 /var/dhcpc
+--
+  7055c timer
+  7057c /var/tm_socket
+  705c0 cfms
+  705e0 /var/cfm_socket
+  70624 logserver
+  70644 /var/plog_socket
+  70688 netctrl
+  706a8 /var/nt_socket
+  706ec multiWAN
+  7070c /var/mw_socket
+  70750 network_check
+  70770 /var/network_ck_socket
+  707b4 cfmc
+  707d4 /var/cfmc_socket
+  70818 dhcpc
+  70838 /var/dhcpc
+--
+  710ec timer
+  7110c /var/tm_socket
+  71150 cfms
+  71170 /var/cfm_socket
+  711b4 logserver
+  711d4 /var/plog_socket
+  71218 netctrl
+  71238 /var/nt_socket
+  7127c multiWAN
+  7129c /var/mw_socket
+  712e0 network_check
+  71300 /var/network_ck_socket
+  71344 cfmc
+  71364 /var/cfmc_socket
+  713a8 dhcpc
+  713c8 /var/dhcpc
+--
+  71b6c timer
+  71b8c /var/tm_socket
+  71bd0 cfms
+  71bf0 /var/cfm_socket
+  71c34 logserver
+  71c54 /var/plog_socket
+  71c98 netctrl
+  71cb8 /var/nt_socket
+  71cfc multiWAN
+  71d1c /var/mw_socket
+  71d60 network_check
+  71d80 /var/network_ck_socket
+  71dc4 cfmc
+  71de4 /var/cfmc_socket
+  71e28 dhcpc
+  71e48 /var/dhcpc
+--
+  74aec timer
+  74b0c /var/tm_socket
+  74b50 cfms
+  74b70 /var/cfm_socket
+  74bb4 logserver
+  74bd4 /var/plog_socket
+  74c18 netctrl
+  74c38 /var/nt_socket
+  74c7c multiWAN
+  74c9c /var/mw_socket
+  74ce0 network_check
+  74d00 /var/network_ck_socket
+  74d44 cfmc
+  74d64 /var/cfmc_socket
+  74da8 dhcpc
+  74dc8 /var/dhcpc
+--
+  7533c timer
+  7535c /var/tm_socket
+  753a0 cfms
+  753c0 /var/cfm_socket
+  75404 logserver
+  75424 /var/plog_socket
+  75468 netctrl
+  75488 /var/nt_socket
+  754cc multiWAN
+  754ec /var/mw_socket
+  75530 network_check
+  75550 /var/network_ck_socket
+  75594 cfmc
+  755b4 /var/cfmc_socket
+  755f8 dhcpc
+  75618 /var/dhcpc
+--
+  765ac timer
+  765cc /var/tm_socket
+  76610 cfms
+  76630 /var/cfm_socket
+  76674 logserver
+  76694 /var/plog_socket
+  766d8 netctrl
+  766f8 /var/nt_socket
+  7673c multiWAN
+  7675c /var/mw_socket
+  767a0 network_check
+  767c0 /var/network_ck_socket
+  76804 cfmc
+  76824 /var/cfmc_socket
+  76868 dhcpc
+  76888 /var/dhcpc
+--
+  76e6c timer
+  76e8c /var/tm_socket
+  76ed0 cfms
+  76ef0 /var/cfm_socket
+  76f34 logserver
+  76f54 /var/plog_socket
+  76f98 netctrl
+  76fb8 /var/nt_socket
+  76ffc multiWAN
+  7701c /var/mw_socket
+  77060 network_check
+  77080 /var/network_ck_socket
+  770c4 cfmc
+  770e4 /var/cfmc_socket
+  77128 dhcpc
+  77148 /var/dhcpc
+--
+  7772c timer
+  7774c /var/tm_socket
+  77790 cfms
+  777b0 /var/cfm_socket
+  777f4 logserver
+  77814 /var/plog_socket
+  77858 netctrl
+  77878 /var/nt_socket
+  778bc multiWAN
+  778dc /var/mw_socket
+  77920 network_check
+  77940 /var/network_ck_socket
+  77984 cfmc
+  779a4 /var/cfmc_socket
+  779e8 dhcpc
+  77a08 /var/dhcpc
+--
+  7813c timer
+  7815c /var/tm_socket
+  781a0 cfms
+  781c0 /var/cfm_socket
+  78204 logserver
+  78224 /var/plog_socket
+  78268 netctrl
+  78288 /var/nt_socket
+  782cc multiWAN
+  782ec /var/mw_socket
+  78330 network_check
+  78350 /var/network_ck_socket
+  78394 cfmc
+  783b4 /var/cfmc_socket
+  783f8 dhcpc
+  78418 /var/dhcpc
+--
+  789ac timer
+  789cc /var/tm_socket
+  78a10 cfms
+  78a30 /var/cfm_socket
+  78a74 logserver
+  78a94 /var/plog_socket
+  78ad8 netctrl
+  78af8 /var/nt_socket
+  78b3c multiWAN
+  78b5c /var/mw_socket
+  78ba0 network_check
+  78bc0 /var/network_ck_socket
+  78c04 cfmc
+  78c24 /var/cfmc_socket
+  78c68 dhcpc
+  78c88 /var/dhcpc
+--
+  792ec timer
+  7930c /var/tm_socket
+  79350 cfms
+  79370 /var/cfm_socket
+  793b4 logserver
+  793d4 /var/plog_socket
+  79418 netctrl
+  79438 /var/nt_socket
+  7947c multiWAN
+  7949c /var/mw_socket
+  794e0 network_check
+  79500 /var/network_ck_socket
+  79544 cfmc
+  79564 /var/cfmc_socket
+  795a8 dhcpc
+  795c8 /var/dhcpc
+--
+  79c5c timer
+  79c7c /var/tm_socket
+  79cc0 cfms
+  79ce0 /var/cfm_socket
+  79d24 logserver
+  79d44 /var/plog_socket
+  79d88 netctrl
+  79da8 /var/nt_socket
+  79dec multiWAN
+  79e0c /var/mw_socket
+  79e50 network_check
+  79e70 /var/network_ck_socket
+  79eb4 cfmc
+  79ed4 /var/cfmc_socket
+  79f18 dhcpc
+  79f38 /var/dhcpc
+----- firmware-src/RootFS-unpacked/bin/logserver -----
+   33dc timer
+   33fc /var/tm_socket
+   3440 cfms
+   3460 /var/cfm_socket
+   34a4 logserver
+   34c4 /var/plog_socket
+   3508 netctrl
+   3528 /var/nt_socket
+   356c multiWAN
+   358c /var/mw_socket
+   35d0 network_check
+   35f0 /var/network_ck_socket
+   3634 cfmc
+   3654 /var/cfmc_socket
+   3698 dhcpc
+   36b8 /var/dhcpc
+--
+   3a80 prod_common_so
+   3b44 %s/%s
+   3b4c /debug
+   3b58 enable=%d,level=%d
+   3b6c /bin/logserver
+   3b7c  ftok UGW_DEBUG_SHM_FILENAME failed
+   3ba0 shmget is fail:
+   3bb0 shmat is fail:
+   3bc0 [ucloud_ctl:ucloud_del_shm]shmdt
+   3be4 [ucloud_ctl:ucloud_del_shm] shmctl
+   3c08 need to update some module,but msg is NULL
+   3c34 syslogs.max.num
+   3c44 system
+   3c4c webfilter
+   3c58 wan1
+--
+   3c68 wan3
+   3c70 wan4
+   3c78 %s system %s:%s
+   3c88 [%s:%d]send log to server failed
+   3cc8 /var/logs.txt
+   3cdc [%s %d]:logserver:writetofile faild
+   3d04 %s;%d;%s
+   3d10 adv.logs.en
+   3d1c adv.logs.listnum
+   3d30 adv.logs.list%d
+   3d40 %15[^;];%d;%d%*s
+   3d54 [%s %d]:logserver:malloc faild
+   3d74 %04d-%02d-%02d %02d:%02d:%02d
+   3d94 read
+   3d9c Directory %s deleted.
+   3db4 New directory %s modify.
+   3dd0 malloc
+   3dd8 %s %d : register is error.
+   3df4 inotify_init
+   3e04 inotify_add_watch
+   3e18 epoll_create error:
+   3e2c epoll_ctl inotify_fd:
+
+===== HTTP/CGI route-like strings =====
+getlogin
+getlogin_r

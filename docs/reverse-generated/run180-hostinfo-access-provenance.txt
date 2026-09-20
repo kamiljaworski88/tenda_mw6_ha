@@ -1,0 +1,2080 @@
+===== RUN 180: HostInfo.access provenance =====
+
+===== named symbols related to client type/access =====
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+    67: 0045782c  1232 FUNC    GLOBAL DEFAULT   12 file_get_wired_assoc_msg
+   213: 004377e0   768 FUNC    GLOBAL DEFAULT   12 send_all_client_status_list
+   347: 00465e50     0 FUNC    GLOBAL DEFAULT  UND host_info__init
+   615: 00464f40     0 FUNC    GLOBAL DEFAULT  UND access
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+    31: 0040a010   776 FUNC    GLOBAL DEFAULT   12 get_all_wireless_client
+    50: 00407bd8   252 FUNC    GLOBAL DEFAULT   12 alloc_device_client_info
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+    84: 004130ec  1644 FUNC    GLOBAL DEFAULT   12 advance_set_wan_access_cfg
+    99: 00412c34  1044 FUNC    GLOBAL DEFAULT   12 advance_get_wan_access_cfg
+   138: 00413048   164 FUNC    GLOBAL DEFAULT   12 advance_unset_wan_access_cfg
+----- firmware-src/RootFS-unpacked/lib/libcommon.so -----
+
+===== strings around client-type/access logic =====
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+   4366 get_mem_config
+   4375 string_lower_mac
+   4386 set_mem_config
+   4395 memcpy
+   439c check_hw_enable_status
+   43b3 access
+   43ba fopen
+   43c0 fgets
+   43c6 strsep
+   43cd fclose
+   43d4 g_confctl_debug_list
+   43e9 putchar
+   43f1 confctl_report_map
+   4404 confctl_node_msg_init
+   441a conf_msg_define
+   442a confctl_hanle_assoc_report
+   4445 confctl_request_grp_info_handle
+   4465 confctl_restore_zero_report_handle
+--
+   592a hal_get_mac
+   5936 ether_ntoa_r
+   5943 inet_ntoa
+   594d ntohl
+   5953 uc_api_m_cloud_info_send_dev_device
+   5977 host_info__init
+   5987 netlink_get_statistic_info
+   59a2 g_ip_info
+   59ac __floatundisf
+   59ba __divsf3
+   59c3 __lesf2
+   59cb __extendsfdf2
+   59d9 inet_addr
+   59e3 __fixunssfdi
+   59f0 devic_marks__init
+   5a02 host_lists__descriptor
+   5a19 host_lists__get_packed_size
+   5a35 host_lists__pack
+--
+   6b8d g_add_node_head
+   6b9d update_client_node_list
+   6bb5 same_node_opt_in_hash_table
+   6bd1 mxp_info__unpack
+   6be2 mxp_info__free_unpacked
+   6bfa send_all_client_status_list
+   6c16 cloud_dev_mark_list_handle
+   6c31 send_all_node_status_list
+   6c4b cloud_mesh_node_handle
+   6c62 dev_config_time_a
+   6c74 dev_config_a
+   6c81 uc_api_enable_m_cloud_info
+   6c9c upn_pcfg__descriptor
+   6cb1 upn_pcfg__get_packed_size
+   6ccb upn_pcfg__pack
+   6cda upn_pcfg__unpack
+   6ceb upn_pcfg__free_unpacked
+   6d03 g_sched_reboot_cfg
+--
+  68998 wan%d.ppoe.userid
+  689ac wan%d.ppoe.pwd
+  689bc wan%d.ppoe.mtu
+  689cc wan%d.ppoe.ac
+  689dc wan%d.ppoe.sev
+  689ec wan%d.ppoe.double.access
+  68a08 wan%d.pppoe.encrypt.type
+  68a24 [%s][%d] invalid param.
+  68a40 [%s][%d] !wanport->rsadsl
+  68a5c wan%d.ppoe.mode
+  68a6c [%s][%d] !wanport->rsapptp
+  68a88 wan%d.pptp.user
+  68a98 wan%d.pptp.pwd
+  68aa8 wan%d.pptp.serverip
+  68abc wan%d.pptp.mtu
+  68acc wan%d.pptp.mode
+  68adc [%s][%d] !wanport->rsal2tp
+  68af8 wan%d.l2tp.user
+--
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+--
+  72a7d [1;32m[%s][%d] : 
+  72a93 [1;35mprint upload remark table
+  72ab8 %s@%s
+  72ac0 confctl_cli
+  72acd [1;32m[%s][%d] : 
+  72ae3 [1;35mprint_upload_cloud_client_status
+  72b10 %02X:%02X:%02X:%02X:%02X:%02X
+  72b30       device_assistant__unpack error!      
+  72b5c %s(%d)
+  72b64 recv value is null!%s(%d)
+  72b80 [wl2g_mac_tmp = %s]%s(%d)
+  72b9c [wl5g_mac_tmp = %s]%s(%d)
+  72bb8 [wl2g_mac_gst_tmp = %s]%s(%d)
+  72bd8 [wl5g_mac_gst_tmp = %s]%s(%d)
+  72bf8 [arainc][device_assistant_info_in-mac = %s]%s(%d)
+  72c2c [wl2g_mac]%s(%d)
+  72c40 [wl5g_mac]%s(%d)
+  72c54 [error]%s(%d)
+--
+  72d9c [left_time_mpp = %d][left_time_map = %d][arainc]
+  72dd0 conf_get_assistant_info_from_map
+  72df4 conf_set_assistant_cfg
+  72e0c ether_atoe
+  72e18 conf_get_assistant_cfg
+  72e30 send_all_client_status_list
+  72e4c fill_cloud_info_device_lists_rate
+  72e70 fill_cloud_info_device_upload_all
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+--
+  73a18 common_so
+  73a7c ap_common_so
+  73ae0 prod_common_so
+  73ba4 wl.guest.dhcps_ip
+  73bbc wl.guest.dhcps_mask
+  73bd0 iptables -t nat -N guest_access_post%d
+  73bf8 iptables -t nat -A POSTROUTING -j guest_access_post%d
+  73c30 iptables -t nat -A guest_access_post%d -s %s/%s -o %s -j MASQUERADE
+  73c74 iptables -t nat -F guest_access_post%d
+  73c9c iptables -t nat -D POSTROUTING -j guest_access_post%d
+  73cd4 iptables -t nat -X guest_access_post%d
+  73cfc wl.guest.dhcps_ifname
+  73d14 wans.flag
+  73d20 %s    %d    param error.
+  73d3c wl.guest.dhcps_dns1
+  73d50 wl.guest.dhcps_dns2
+  73d64 %s    %d get start ip addr failed
+  73d88 wl.guest.dhcps_ipstart
+  73da0 %s    %d get end ip addr failed
+  73dc4 wl.guest.dhcps_ipend
+  73ddc bhv.ipgroup.list1
+  73df0 %s-%s
+  73dfc op=%d
+--
+  74bb4 /var/wan_detect_rst
+  74bcc open %s failed
+  74bdc killall -9 wan_detect
+  74bf4 /var/mib.mem
+  74c04 set_realtek_opmode
+  74c18 [%s][%d][luminais] DHCP can access to INTERNET
+  74c48 [%s][%d][luminais] wan_detect done
+  74c6c [%s][%d][luminais] get wan_detect result failed
+  74ca0 wan_detect &
+  74cb0 [%s][%d][luminais] get wan_detect result success : %d
+  74ce8 %s %d:lilin|wanconntype.conntype:%d 
+  74d10 0.0.0.0
+  74d18 %s %d:lilin| fill default router mode wan port status 
+  74d50 /etc/lan.ini
+  74d64 mask
+  74d6c gateway
+  74d74 dns1
+  74d7c dns2
+--
+  7b1fc confctl_add_node_results_handle
+  7b21c check_addnode_online
+  7b234 print_add_result_report
+  7b24c results_node_add
+  7b281 [1;32m[%s][%d] : 
+  7b297 [1;35mcall send_all_client_status_list
+  7b2c4 [%s][%d][luminais] invalid param.
+  7b2e8 [%s][%d][luminais] count = %d
+  7b308 [%s][%d][luminais] timestamp = %llu
+  7b330 [%s][%d][luminais] <%d> : %s <--> %s
+  7b358 %s(%d)
+  7b360 [%s][%d]
+  7b36c sys.cfg.stamp
+  7b37c 888888888
+  7b38c [arainc][mib_cfg_stamp = %s]%s(%d)
+  7b3b1 [1;32m[%s][%d] : 
+  7b3c7 [1;35mprint cloud client remark list
+  7b3f4 %s time less than 0 %d
+----- firmware-src/RootFS-unpacked/bin/device_list -----
+   132c ether_aton_r
+   1339 find_in_conn_type_list
+   1350 update_new_mac_list
+   1364 print_wifi_client_lists
+   137c update_to_roam_list
+   1390 get_all_wireless_client
+   13a8 del_roam_not_in_wifi_client_lists
+   13ca print_all_wifi_client_lists
+   13e6 get_each_conn_type_list_hdr
+   1402 print_one_conn_type_list
+   141b ApmibGetValue
+   1429 htonl
+   142f libgcc_s.so.1
+   143d __register_frame_info
+   1453 __deregister_frame_info
+   146b libc.so.0
+   1475 _ftext
+   147c _fdata
+--
+   f814 wl5g.ssid1.enable
+   f828 [%s][%d][luminais] 5G GST : 
+   f848 wl2g.ssid1.enable
+   f85c [%s][%d][luminais] 2.4G GST : 
+   f87c [%s][%d][luminais] %s find wifi %s not in client hs list
+   f8b8 [%s][%d][luminais] wired client : 
+   f8dc [%s][%d][luminais] 2.4G client : 
+   f900 [%s][%d][luminais] 5G client : 
+   f924 [%s][%d][luminais] 2.4G gst client : 
+   f94c [%s][%d][luminais] 5G gst client : 
+   f974 do_client_timeout_check
+   f98c check_wifi_client_roam_or_static
+   f9b0 print_all_wifi_client_lists
+   f9cc print_wifi_client_lists
+   f9e4 check_in_wifi_client_lists
+   fa00 wifi_client_list_find
+   fa18 wired_client_timeout_check
+   fa34 get_sw_l2_list
+   fa44 switch_port_to_ifname
+   fa5c update_wire_client_from_sw_list
+   fa7c del_wire_client_not_in_sw_l2_list
+   faa0 find_if_arp_in_arp_list_by_mac
+   fac0 find_in_sw_l2_list
+   fad4 get_proc_arp_list
+   fb58 monitor
+   fb78 /var/pm_socket
+   fbbc timer
+   fbdc /var/tm_socket
+   fc20 cfms
+   fc40 /var/cfm_socket
+   fc84 logserver
+   fca4 /var/plog_socket
+   fce8 netctrl
+----- firmware-src/RootFS-unpacked/bin/netctrl -----
+   3676 ifaddrs_get_lan_ifname
+   368d ifaddrs_ipmask_to_numeric
+   36a7 advance_unset_dmz_cfg
+   36bd advance_unset_port_map_cfg
+   36d8 advance_set_port_map_rule
+   36f2 advance_unset_wan_access_cfg
+   370f file_wan_ip_info_get
+   3724 check_ip_is_same_network_segment
+   3745 proc_check_app
+   3754 proc_send_signal
+   3765 advance_upnp_stop
+   3777 advance_get_wan_base_cfg
+   3790 advance_get_lan_base_cfg
+   37a9 advance_get_dmz_cfg
+   37bd advance_get_port_map_cfg
+   37d6 advance_get_wan_access_cfg
+   37f1 advance_get_static_route_cfg
+   380e advance_get_upnp_cfg
+   3823 advance_set_dmz_cfg
+   3837 advance_set_port_map_cfg
+   3850 advance_set_wan_access_cfg
+   386b advance_set_upnp_cfg
+   3880 advance_set_static_route_cfg
+   389d advance_get_union_cfg
+   38b3 advance_set_union_cfg
+   38c9 advance_set_cfg
+   38d9 g_advance_msg_ops
+   38eb wan_handle_mac_change
+   3901 wan_handle_wifi_guest_change
+   391e g_wan_msg_ops
+   392c route_unset_user_policy_rule
+   3949 route_set_user_policy_rule
+   3964 g_route_msg_ops
+--
+  603b8 iptables -t nat -A %s -o %s -p udp -s %s/%d -d %s --dport %d:%d -j SNAT --to %s
+  60408 pPortMapCfg is invalid!
+  60420 iptables -t nat -I PREROUTING  -j %s
+  60448 iptables -t nat -I PREROUTING %d -j %s
+  60470 iptables -t nat -I POSTROUTING 1 -j %s
+  60498 pWanAccessCfg is invalid!
+  604b4 wans.wanweben
+  604c4 wan%d.accessen
+  604d4 wans.wanwebip
+  604e4 0.0.0.0
+  604ec wans.wanwebport
+  604fc lan.webport
+  60508 lan.webipen
+  60514 web_wanadmin
+  60524 pLanCfg is invalid!
+  60538 pWanCfg is invalid!
+  6054c iptables -t filter -F %s
+  60568 iptables -t filter -D INPUT -j %s
+  6058c iptables -t filter -X %s
+  605a8 iptables -t nat -I PREROUTING 1 -j %s
+--
+  6069c iptables -t filter -A %s -i %s -p tcp -d %s --dport %d -j ACCEPT
+  606e0 adv.staticroute.listnum
+  606f8 adv.staticroute.list%d
+  60710 %15[0-9.];%15[0-9.];%15[0-9.];%d;%s
+  60734 WAN0
+  6073c wan%d.ppoe.double.access
+  60758 pStaticRoute is invalid!
+  60774 ip rule del table %s
+  6078c staticroute
+  60798 ip rule add table %s
+  607b0 get wan ip info from file is fail.
+  607dc ip route %s %s/%s dev %s proto static table %s
+  6080c ip route %s %s/%s via %s dev %s proto static table %s
+  60844 pUpnpCfg is invalid!
+  6085c adv.upnp.en
+  60868 can't get adv.upnp.en!
+  60880 [%s][%d][niuwu] wann=1, sys.mode=%d, wanConnType=%d
+  608b8 /etc/miniupnpd.config
+--
+  60d44 advance_get_upnp_cfg
+  60d5c advance_get_upnp_cfg
+  60d74 advance_set_static_route_cfg
+  60d94 advance_set_static_route_rule
+  60db4 advance_get_static_route_cfg
+  60dd4 advance_set_wan_access_cfg
+  60df0 advance_get_wan_access_cfg
+  60e0c advance_set_port_map_cfg
+  60e28 advance_set_port_map_rule
+  60e44 advance_unset_port_map_rule
+  60e60 advance_get_port_map_cfg
+  60e7c advance_get_port_map_cfg
+  60e98 advance_set_dmz_cfg
+  60eac advance_get_dmz_cfg
+  60ec0 advance_get_gst_base_cfg
+  60edc advance_get_lan_base_cfg
+  60ef8 advance_get_wan_base_cfg
+  60f14 advance_find_dmz_chain_prerouting
+  60fa8 monitor
+--
+  671d8 dnrd -t 3 -M 600 --cache=off -b -R /etc/dnrd -r 3 %s
+  67210 wl.guest.dhcps_enable
+  67228 wl.guest.dhcps_ip
+  6723c wl.guest.dhcps_mask
+  67250 wl.guest.dhcps_ifname
+  67268 iptables -t nat -F guest_access_post%d
+  67290 iptables -t nat -A guest_access_post%d -o %s -s %s/%s -j MASQUERADE
+  672d4 wanId=%d, wanIfname=%s
+  672ec /etc/wan%d.ini
+  672fc dns1
+  67304 dns2
+  6730c wanno=%d, dns1=%s, dns2=%s
+  67328 8.8.8.8
+  67338 pVpnClient is null!
+  6734c pHostName is null!
+  67360 pIp is null!
+  67370 Unknown host(%s)!
+  67384 ppp%d
+  6738c ifaddrs_get_interface_mtu err
+--
+  676f4 ip rule del to %s table wan%d prio %d
+  6771c ip rule add to %s table wan%d prio %d
+  67744 ip rule del table pptp prio %d
+  67764 ip rule del from %s/%d iif %s table pptp prio %d
+  67798 ip rule add from %s/%d iif %s table pptp prio %d
+  677cc iptables -t nat -D guest_access_post%d -o ppp%d -s %s/%d -j MASQUERADE
+  67814 iptables -t nat -A guest_access_post%d -o ppp%d -s %s/%d -j MASQUERADE
+  6785c get seg value failed
+  67874 ppp1
+  6787c ip route add table pptp %s/%s dev %s proto static
+  678b0 ip route add table pptp default via %s dev ppp%d proto static
+  678f0 %d;%d;%d;%d;%d
+  67900 vpnserver is null
+  67914 netseg = %s: length error!
+  67930 wanid(%d) is invalid!
+  67948 iptables -t nat -D POSTROUTING -s %s/24 -o %s -j MASQUERADE
+  67984 ip rule del from %s/24 table pptp prio %d
+  679b0 ip rule del from %s/24 to %s/24 table main
+  679dc iptables -t nat %s POSTROUTING -s %s/24 -o %s -j MASQUERADE
+--
+  68288 xl2tpd-server
+  68298 pL2tpSer is null!
+  682ac pWwanIp is null!
+  682c0 /etc/ppp/l2tps_cfg.ini
+  682d8 [global]
+  682e4 access control = no
+  682fc port = 1777
+  6830c port = %d
+  68318 listen-addr = %s
+  6832c [tenda_add]
+  6833c require_mppe = yes
+  68350 require_pap = yes
+  68364 require_chap = yes
+  68378 require_mschap = yes
+  68390 require_v2mschap = yes
+  683a8 ms-dns1 = %s
+  683b8 ms-dns2 = %s
+  683c8 [lns default]
+--
+  725cc wlan1
+  725d4 apclient
+  725e0 client
+  725ec wisp
+  725f4 station
+  725fc Unsupport wireless workmode %s.
+  72620 20,40,80,auto
+  72630 none,upper,lower
+  72644 none
+  7264c high,middle,low
+  7265c 1,5,10,15
+  7266c on,off
+  7267c long,short
+  72688 long
+  72690 20,999
+  7269c 256,2346
+  726a8 2346
+  726b0 0,1,-1
+--
+  77eb8 wans.flag
+  77ec4 [%s][%d][niuwu] wann=%d, sys.mode=%d, wanConnType=%d
+  77efc wan%d.icmpdropen
+  77f14 function exit!
+  77f24 iptables -F %s
+  77f34 icmp_access
+  77f40 iptables -D INPUT -j %s
+  77f58 iptables -N %s
+  77f68 iptables -I INPUT 2 -j %s
+  77f84 iptables -A %s -i %s -p icmp -j ACCEPT
+  77fac op = %d not exist!
+  77fc0 wan_icmp_drop_init
+  77fd4 wan_icmp_drop_wan_change_msg_handle
+  77ff8 wan_icmp_drop_msg_handle
+  78014 wan_icmp_drop_set
+  78028 wan_icmp_drop_set_cfg
+  78040 wan_icmp_drop_get_cfg
+  78058 wan_icmp_drop_get_cfg
+
+===== confsrv candidate function disassembly =====
+symbol not exported: fill_host_info_from_client_status
+symbol not exported: fill_host_lists_rate
+----- confctl_get_host_list @ 0x00434f9c -----
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00434f9c <confctl_get_host_list@@Base>:
+  434f9c:	3c1c0006 	lui	gp,0x6
+  434fa0:	279c21c4 	addiu	gp,gp,8644
+  434fa4:	0399e021 	addu	gp,gp,t9
+  434fa8:	27bdffb8 	addiu	sp,sp,-72
+  434fac:	afbf0044 	sw	ra,68(sp)
+  434fb0:	afbe0040 	sw	s8,64(sp)
+  434fb4:	afb0003c 	sw	s0,60(sp)
+  434fb8:	03a0f021 	addu	s8,sp,zero
+  434fbc:	afbc0010 	sw	gp,16(sp)
+  434fc0:	afc40048 	sw	a0,72(s8)
+  434fc4:	afc5004c 	sw	a1,76(s8)
+  434fc8:	afc60050 	sw	a2,80(s8)
+  434fcc:	afc70054 	sw	a3,84(s8)
+  434fd0:	8fc20054 	lw	v0,84(s8)
+  434fd4:	10400004 	beq	v0,zero,434fe8 <confctl_get_host_list@@Base+0x4c>
+  434fd8:	00000000 	sll	zero,zero,0x0
+  434fdc:	8fc20058 	lw	v0,88(s8)
+  434fe0:	1440000f 	bne	v0,zero,435020 <confctl_get_host_list@@Base+0x84>
+  434fe4:	00000000 	sll	zero,zero,0x0
+  434fe8:	8f82822c 	lw	v0,-32212(gp)
+  434fec:	2442237c 	addiu	v0,v0,9084
+  434ff0:	00402021 	addu	a0,v0,zero
+  434ff4:	8f82822c 	lw	v0,-32212(gp)
+  434ff8:	24452f98 	addiu	a1,v0,12184
+  434ffc:	24060793 	addiu	a2,zero,1939
+  435000:	8f8287c8 	lw	v0,-30776(gp)
+  435004:	0040c821 	addu	t9,v0,zero
+  435008:	0320f809 	jalr	t9
+  43500c:	00000000 	sll	zero,zero,0x0
+  435010:	8fdc0010 	lw	gp,16(s8)
+  435014:	2402ffff 	addiu	v0,zero,-1
+  435018:	100000fb 	beq	zero,zero,435408 <confctl_get_host_list@@Base+0x46c>
+  43501c:	00000000 	sll	zero,zero,0x0
+  435020:	8f8288d0 	lw	v0,-30512(gp)
+  435024:	afc20024 	sw	v0,36(s8)
+  435028:	afc00028 	sw	zero,40(s8)
+  43502c:	afc0002c 	sw	zero,44(s8)
+  435030:	afc00030 	sw	zero,48(s8)
+  435034:	afc00034 	sw	zero,52(s8)
+  435038:	afc0001c 	sw	zero,28(s8)
+  43503c:	8f82802c 	lw	v0,-32724(gp)
+  435040:	2442fdf0 	addiu	v0,v0,-528
+  435044:	8c42020c 	lw	v0,524(v0)
+  435048:	afc20030 	sw	v0,48(s8)
+  43504c:	8fc20030 	lw	v0,48(s8)
+  435050:	afc20020 	sw	v0,32(s8)
+  435054:	8fc20020 	lw	v0,32(s8)
+  435058:	00021080 	sll	v0,v0,0x2
+  43505c:	00402021 	addu	a0,v0,zero
+  435060:	8f828904 	lw	v0,-30460(gp)
+  435064:	0040c821 	addu	t9,v0,zero
+  435068:	0320f809 	jalr	t9
+  43506c:	00000000 	sll	zero,zero,0x0
+  435070:	8fdc0010 	lw	gp,16(s8)
+  435074:	afc20034 	sw	v0,52(s8)
+  435078:	8fc20034 	lw	v0,52(s8)
+  43507c:	14400016 	bne	v0,zero,4350d8 <confctl_get_host_list@@Base+0x13c>
+  435080:	00000000 	sll	zero,zero,0x0
+  435084:	8f82822c 	lw	v0,-32212(gp)
+  435088:	24502404 	addiu	s0,v0,9220
+  43508c:	8f828684 	lw	v0,-31100(gp)
+  435090:	0040c821 	addu	t9,v0,zero
+  435094:	0320f809 	jalr	t9
+  435098:	00000000 	sll	zero,zero,0x0
+  43509c:	8fdc0010 	lw	gp,16(s8)
+  4350a0:	8c420000 	lw	v0,0(v0)
+  4350a4:	02002021 	addu	a0,s0,zero
+  4350a8:	8f83822c 	lw	v1,-32212(gp)
+  4350ac:	24652f98 	addiu	a1,v1,12184
+  4350b0:	240607a3 	addiu	a2,zero,1955
+  4350b4:	00403821 	addu	a3,v0,zero
+  4350b8:	8f8287c8 	lw	v0,-30776(gp)
+  4350bc:	0040c821 	addu	t9,v0,zero
+  4350c0:	0320f809 	jalr	t9
+  4350c4:	00000000 	sll	zero,zero,0x0
+  4350c8:	8fdc0010 	lw	gp,16(s8)
+  4350cc:	2402ffff 	addiu	v0,zero,-1
+  4350d0:	100000cd 	beq	zero,zero,435408 <confctl_get_host_list@@Base+0x46c>
+  4350d4:	00000000 	sll	zero,zero,0x0
+  4350d8:	8fc30034 	lw	v1,52(s8)
+  4350dc:	8fc20020 	lw	v0,32(s8)
+  4350e0:	00021080 	sll	v0,v0,0x2
+  4350e4:	00602021 	addu	a0,v1,zero
+  4350e8:	00002821 	addu	a1,zero,zero
+  4350ec:	00403021 	addu	a2,v0,zero
+  4350f0:	8f828930 	lw	v0,-30416(gp)
+  4350f4:	0040c821 	addu	t9,v0,zero
+  4350f8:	0320f809 	jalr	t9
+  4350fc:	00000000 	sll	zero,zero,0x0
+  435100:	8fdc0010 	lw	gp,16(s8)
+  435104:	8fc20020 	lw	v0,32(s8)
+  435108:	000210c0 	sll	v0,v0,0x3
+  43510c:	000218c0 	sll	v1,v0,0x3
+  435110:	00621023 	subu	v0,v1,v0
+  435114:	00402021 	addu	a0,v0,zero
+  435118:	8f828904 	lw	v0,-30460(gp)
+  43511c:	0040c821 	addu	t9,v0,zero
+  435120:	0320f809 	jalr	t9
+  435124:	00000000 	sll	zero,zero,0x0
+  435128:	8fdc0010 	lw	gp,16(s8)
+  43512c:	afc20018 	sw	v0,24(s8)
+  435130:	8fc20018 	lw	v0,24(s8)
+  435134:	1440001d 	bne	v0,zero,4351ac <confctl_get_host_list@@Base+0x210>
+  435138:	00000000 	sll	zero,zero,0x0
+  43513c:	8f82822c 	lw	v0,-32212(gp)
+  435140:	24502404 	addiu	s0,v0,9220
+  435144:	8f828684 	lw	v0,-31100(gp)
+  435148:	0040c821 	addu	t9,v0,zero
+  43514c:	0320f809 	jalr	t9
+  435150:	00000000 	sll	zero,zero,0x0
+  435154:	8fdc0010 	lw	gp,16(s8)
+  435158:	8c420000 	lw	v0,0(v0)
+  43515c:	02002021 	addu	a0,s0,zero
+  435160:	8f83822c 	lw	v1,-32212(gp)
+  435164:	24652f98 	addiu	a1,v1,12184
+  435168:	240607ab 	addiu	a2,zero,1963
+  43516c:	00403821 	addu	a3,v0,zero
+  435170:	8f8287c8 	lw	v0,-30776(gp)
+  435174:	0040c821 	addu	t9,v0,zero
+  435178:	0320f809 	jalr	t9
+  43517c:	00000000 	sll	zero,zero,0x0
+  435180:	8fdc0010 	lw	gp,16(s8)
+  435184:	8fc20034 	lw	v0,52(s8)
+  435188:	00402021 	addu	a0,v0,zero
+  43518c:	8f828614 	lw	v0,-31212(gp)
+  435190:	0040c821 	addu	t9,v0,zero
+  435194:	0320f809 	jalr	t9
+  435198:	00000000 	sll	zero,zero,0x0
+  43519c:	8fdc0010 	lw	gp,16(s8)
+  4351a0:	2402ffff 	addiu	v0,zero,-1
+  4351a4:	10000098 	beq	zero,zero,435408 <confctl_get_host_list@@Base+0x46c>
+  4351a8:	00000000 	sll	zero,zero,0x0
+  4351ac:	8fc20020 	lw	v0,32(s8)
+  4351b0:	000210c0 	sll	v0,v0,0x3
+  4351b4:	000218c0 	sll	v1,v0,0x3
+  4351b8:	00621023 	subu	v0,v1,v0
+  4351bc:	8fc40018 	lw	a0,24(s8)
+  4351c0:	00002821 	addu	a1,zero,zero
+  4351c4:	00403021 	addu	a2,v0,zero
+  4351c8:	8f828930 	lw	v0,-30416(gp)
+  4351cc:	0040c821 	addu	t9,v0,zero
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	sll	zero,zero,0x0
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	addu	a0,v0,zero
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	addu	t9,v0,zero
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	sll	zero,zero,0x0
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bne	v0,zero,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	sll	zero,zero,0x0
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	addu	a0,v0,zero
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	addu	t9,v0,zero
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	sll	zero,zero,0x0
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	addiu	a0,zero,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	addu	t9,v0,zero
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	sll	zero,zero,0x0
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beq	v0,zero,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	sll	zero,zero,0x0
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	addu	a0,v0,zero
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	addiu	a2,zero,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	addu	t9,v0,zero
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	sll	zero,zero,0x0
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	addiu	a0,zero,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	addu	t9,v0,zero
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	sll	zero,zero,0x0
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beq	v0,zero,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	sll	zero,zero,0x0
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	addu	a0,v0,zero
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	addu	t9,v0,zero
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	sll	zero,zero,0x0
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+  4352c0:	27c20024 	addiu	v0,s8,36
+  4352c4:	00402021 	addu	a0,v0,zero
+  4352c8:	8f828700 	lw	v0,-30976(gp)
+  4352cc:	0040c821 	addu	t9,v0,zero
+  4352d0:	0320f809 	jalr	t9
+  4352d4:	00000000 	sll	zero,zero,0x0
+  4352d8:	8fdc0010 	lw	gp,16(s8)
+  4352dc:	00401821 	addu	v1,v0,zero
+  4352e0:	8fc20058 	lw	v0,88(s8)
+  4352e4:	ac430000 	sw	v1,0(v0)
+  4352e8:	8fc20058 	lw	v0,88(s8)
+  4352ec:	8c420000 	lw	v0,0(v0)
+  4352f0:	00402021 	addu	a0,v0,zero
+  4352f4:	8f828904 	lw	v0,-30460(gp)
+  4352f8:	0040c821 	addu	t9,v0,zero
+  4352fc:	0320f809 	jalr	t9
+  435300:	00000000 	sll	zero,zero,0x0
+  435304:	8fdc0010 	lw	gp,16(s8)
+  435308:	00401821 	addu	v1,v0,zero
+  43530c:	8fc20054 	lw	v0,84(s8)
+  435310:	ac430000 	sw	v1,0(v0)
+  435314:	8fc20054 	lw	v0,84(s8)
+  435318:	8c420000 	lw	v0,0(v0)
+  43531c:	14400017 	bne	v0,zero,43537c <confctl_get_host_list@@Base+0x3e0>
+  435320:	00000000 	sll	zero,zero,0x0
+  435324:	8f82822c 	lw	v0,-32212(gp)
+  435328:	24502404 	addiu	s0,v0,9220
+  43532c:	8f828684 	lw	v0,-31100(gp)
+  435330:	0040c821 	addu	t9,v0,zero
+  435334:	0320f809 	jalr	t9
+  435338:	00000000 	sll	zero,zero,0x0
+  43533c:	8fdc0010 	lw	gp,16(s8)
+  435340:	8c420000 	lw	v0,0(v0)
+  435344:	02002021 	addu	a0,s0,zero
+  435348:	8f83822c 	lw	v1,-32212(gp)
+  43534c:	24652f98 	addiu	a1,v1,12184
+  435350:	240607c2 	addiu	a2,zero,1986
+  435354:	00403821 	addu	a3,v0,zero
+  435358:	8f8287c8 	lw	v0,-30776(gp)
+  43535c:	0040c821 	addu	t9,v0,zero
+  435360:	0320f809 	jalr	t9
+  435364:	00000000 	sll	zero,zero,0x0
+  435368:	8fdc0010 	lw	gp,16(s8)
+  43536c:	2402ffff 	addiu	v0,zero,-1
+  435370:	afc2001c 	sw	v0,28(s8)
+  435374:	1000000e 	beq	zero,zero,4353b0 <confctl_get_host_list@@Base+0x414>
+  435378:	00000000 	sll	zero,zero,0x0
+  43537c:	8fc20054 	lw	v0,84(s8)
+  435380:	8c420000 	lw	v0,0(v0)
+  435384:	27c30024 	addiu	v1,s8,36
+  435388:	00602021 	addu	a0,v1,zero
+  43538c:	00402821 	addu	a1,v0,zero
+  435390:	8f828740 	lw	v0,-30912(gp)
+  435394:	0040c821 	addu	t9,v0,zero
+  435398:	0320f809 	jalr	t9
+  43539c:	00000000 	sll	zero,zero,0x0
+  4353a0:	8fdc0010 	lw	gp,16(s8)
+  4353a4:	10000002 	beq	zero,zero,4353b0 <confctl_get_host_list@@Base+0x414>
+  4353a8:	00000000 	sll	zero,zero,0x0
+  4353ac:	00000000 	sll	zero,zero,0x0
+  4353b0:	27c20024 	addiu	v0,s8,36
+  4353b4:	00402021 	addu	a0,v0,zero
+  4353b8:	8f82832c 	lw	v0,-31956(gp)
+  4353bc:	244239e4 	addiu	v0,v0,14820
+  4353c0:	0040c821 	addu	t9,v0,zero
+  4353c4:	0320f809 	jalr	t9
+  4353c8:	00000000 	sll	zero,zero,0x0
+  4353cc:	8fdc0010 	lw	gp,16(s8)
+  4353d0:	8fc20034 	lw	v0,52(s8)
+  4353d4:	00402021 	addu	a0,v0,zero
+  4353d8:	8f828614 	lw	v0,-31212(gp)
+  4353dc:	0040c821 	addu	t9,v0,zero
+  4353e0:	0320f809 	jalr	t9
+  4353e4:	00000000 	sll	zero,zero,0x0
+  4353e8:	8fdc0010 	lw	gp,16(s8)
+  4353ec:	8fc40018 	lw	a0,24(s8)
+  4353f0:	8f828614 	lw	v0,-31212(gp)
+  4353f4:	0040c821 	addu	t9,v0,zero
+  4353f8:	0320f809 	jalr	t9
+  4353fc:	00000000 	sll	zero,zero,0x0
+  435400:	8fdc0010 	lw	gp,16(s8)
+  435404:	8fc2001c 	lw	v0,28(s8)
+  435408:	03c0e821 	addu	sp,s8,zero
+  43540c:	8fbf0044 	lw	ra,68(sp)
+  435410:	8fbe0040 	lw	s8,64(sp)
+  435414:	8fb0003c 	lw	s0,60(sp)
+  435418:	27bd0048 	addiu	sp,sp,72
+  43541c:	03e00008 	jr	ra
+  435420:	00000000 	sll	zero,zero,0x0
+
+00435424 <confctl_get_remark_list@@Base>:
+  435424:	3c1c0006 	lui	gp,0x6
+  435428:	279c1d3c 	addiu	gp,gp,7484
+  43542c:	0399e021 	addu	gp,gp,t9
+  435430:	27bdfc98 	addiu	sp,sp,-872
+  435434:	afbf0364 	sw	ra,868(sp)
+  435438:	afbe0360 	sw	s8,864(sp)
+  43543c:	afb0035c 	sw	s0,860(sp)
+  435440:	03a0f021 	addu	s8,sp,zero
+  435444:	afbc0010 	sw	gp,16(sp)
+  435448:	afc40368 	sw	a0,872(s8)
+  43544c:	afc5036c 	sw	a1,876(s8)
+  435450:	afc60370 	sw	a2,880(s8)
+  435454:	afc70374 	sw	a3,884(s8)
+  435458:	8fc20374 	lw	v0,884(s8)
+  43545c:	10400004 	beq	v0,zero,435470 <confctl_get_remark_list@@Base+0x4c>
+  435460:	00000000 	sll	zero,zero,0x0
+  435464:	8fc20378 	lw	v0,888(s8)
+  435468:	1440000f 	bne	v0,zero,4354a8 <confctl_get_remark_list@@Base+0x84>
+  43546c:	00000000 	sll	zero,zero,0x0
+  435470:	8f82822c 	lw	v0,-32212(gp)
+  435474:	2442237c 	addiu	v0,v0,9084
+  435478:	00402021 	addu	a0,v0,zero
+  43547c:	8f82822c 	lw	v0,-32212(gp)
+  435480:	24452f80 	addiu	a1,v0,12160
+  435484:	240607e6 	addiu	a2,zero,2022
+  435488:	8f8287c8 	lw	v0,-30776(gp)
+  43548c:	0040c821 	addu	t9,v0,zero
+  435490:	0320f809 	jalr	t9
+  435494:	00000000 	sll	zero,zero,0x0
+  435498:	8fdc0010 	lw	gp,16(s8)
+  43549c:	2402ffff 	addiu	v0,zero,-1
+  4354a0:	10000163 	beq	zero,zero,435a30 <confctl_get_remark_list@@Base+0x60c>
+  4354a4:	00000000 	sll	zero,zero,0x0
+  4354a8:	8f828914 	lw	v0,-30444(gp)
+  4354ac:	afc20028 	sw	v0,40(s8)
+  4354b0:	afc0002c 	sw	zero,44(s8)
+  4354b4:	afc00030 	sw	zero,48(s8)
+  4354b8:	afc00034 	sw	zero,52(s8)
+  4354bc:	afc00038 	sw	zero,56(s8)
+  4354c0:	afc0003c 	sw	zero,60(s8)
+  4354c4:	00001021 	addu	v0,zero,zero
+  4354c8:	00001821 	addu	v1,zero,zero
+  4354cc:	afc20040 	sw	v0,64(s8)
+  4354d0:	afc30044 	sw	v1,68(s8)
+  4354d4:	afc0001c 	sw	zero,28(s8)
+  4354d8:	27c30048 	addiu	v1,s8,72
+  4354dc:	24020210 	addiu	v0,zero,528
+  4354e0:	00602021 	addu	a0,v1,zero
+  4354e4:	00002821 	addu	a1,zero,zero
+  4354e8:	00403021 	addu	a2,v0,zero
+  4354ec:	8f828930 	lw	v0,-30416(gp)
+  4354f0:	0040c821 	addu	t9,v0,zero
+  4354f4:	0320f809 	jalr	t9
+  4354f8:	00000000 	sll	zero,zero,0x0
+  4354fc:	8fdc0010 	lw	gp,16(s8)
+  435500:	27c30258 	addiu	v1,s8,600
+  435504:	24020100 	addiu	v0,zero,256
+  435508:	00602021 	addu	a0,v1,zero
+  43550c:	00002821 	addu	a1,zero,zero
+  435510:	00403021 	addu	a2,v0,zero
+  435514:	8f828930 	lw	v0,-30416(gp)
+  435518:	0040c821 	addu	t9,v0,zero
+  43551c:	0320f809 	jalr	t9
+  435520:	00000000 	sll	zero,zero,0x0
+  435524:	8fdc0010 	lw	gp,16(s8)
+  435528:	27c20048 	addiu	v0,s8,72
+  43552c:	00402021 	addu	a0,v0,zero
+  435530:	8f828238 	lw	v0,-32200(gp)
+  435534:	0040c821 	addu	t9,v0,zero
+  435538:	0320f809 	jalr	t9
+  43553c:	00000000 	sll	zero,zero,0x0
+  435540:	8fdc0010 	lw	gp,16(s8)
+  435544:	27c20048 	addiu	v0,s8,72
+  435548:	00402021 	addu	a0,v0,zero
+  43554c:	8f82823c 	lw	v0,-32196(gp)
+  435550:	0040c821 	addu	t9,v0,zero
+  435554:	0320f809 	jalr	t9
+  435558:	00000000 	sll	zero,zero,0x0
+  43555c:	8fdc0010 	lw	gp,16(s8)
+  435560:	8fc20254 	lw	v0,596(s8)
+  435564:	afc20034 	sw	v0,52(s8)
+  435568:	8fc20034 	lw	v0,52(s8)
+  43556c:	1440003d 	bne	v0,zero,435664 <confctl_get_remark_list@@Base+0x240>
+  435570:	00000000 	sll	zero,zero,0x0
+  435574:	afc00038 	sw	zero,56(s8)
+  435578:	27c20028 	addiu	v0,s8,40
+  43557c:	00402021 	addu	a0,v0,zero
+  435580:	8f8288e8 	lw	v0,-30488(gp)
+  435584:	0040c821 	addu	t9,v0,zero
+  435588:	0320f809 	jalr	t9
+  43558c:	00000000 	sll	zero,zero,0x0
+  435590:	8fdc0010 	lw	gp,16(s8)
+  435594:	00401821 	addu	v1,v0,zero
+  435598:	8fc20378 	lw	v0,888(s8)
+symbol not exported: get_all_wireless_client
+symbol not exported: update_wire_client_from_sw_list
+
+===== device_list candidate function disassembly =====
+----- get_all_wireless_client @ 0x0040a010 -----
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0040a010 <get_all_wireless_client@@Base>:
+  40a010:	3c1c0002 	lui	gp,0x2
+  40a014:	279ce490 	addiu	gp,gp,-7024
+  40a018:	0399e021 	addu	gp,gp,t9
+  40a01c:	27bdffb0 	addiu	sp,sp,-80
+  40a020:	afbf004c 	sw	ra,76(sp)
+  40a024:	afbe0048 	sw	s8,72(sp)
+  40a028:	03a0f021 	addu	s8,sp,zero
+  40a02c:	afbc0010 	sw	gp,16(sp)
+  40a030:	afc40050 	sw	a0,80(s8)
+  40a034:	afc50054 	sw	a1,84(s8)
+  40a038:	afc60058 	sw	a2,88(s8)
+  40a03c:	afc7005c 	sw	a3,92(s8)
+  40a040:	afc00018 	sw	zero,24(s8)
+  40a044:	afc0001c 	sw	zero,28(s8)
+  40a048:	afc00020 	sw	zero,32(s8)
+  40a04c:	afc00024 	sw	zero,36(s8)
+  40a050:	afc00028 	sw	zero,40(s8)
+  40a054:	afc0002c 	sw	zero,44(s8)
+  40a058:	afc00030 	sw	zero,48(s8)
+  40a05c:	afc00034 	sw	zero,52(s8)
+  40a060:	afc00038 	sw	zero,56(s8)
+  40a064:	afc0003c 	sw	zero,60(s8)
+  40a068:	afc00040 	sw	zero,64(s8)
+  40a06c:	afc00044 	sw	zero,68(s8)
+  40a070:	8fc20050 	lw	v0,80(s8)
+  40a074:	1040001d 	beq	v0,zero,40a0ec <get_all_wireless_client@@Base+0xdc>
+  40a078:	00000000 	sll	zero,zero,0x0
+  40a07c:	24040017 	addiu	a0,zero,23
+  40a080:	8f828120 	lw	v0,-32480(gp)
+  40a084:	0040c821 	addu	t9,v0,zero
+  40a088:	0320f809 	jalr	t9
+  40a08c:	00000000 	sll	zero,zero,0x0
+  40a090:	8fdc0010 	lw	gp,16(s8)
+  40a094:	27c30018 	addiu	v1,s8,24
+  40a098:	00602021 	addu	a0,v1,zero
+  40a09c:	00402821 	addu	a1,v0,zero
+  40a0a0:	8f828174 	lw	v0,-32396(gp)
+  40a0a4:	0040c821 	addu	t9,v0,zero
+  40a0a8:	0320f809 	jalr	t9
+  40a0ac:	00000000 	sll	zero,zero,0x0
+  40a0b0:	8fdc0010 	lw	gp,16(s8)
+  40a0b4:	8fc20050 	lw	v0,80(s8)
+  40a0b8:	24420004 	addiu	v0,v0,4
+  40a0bc:	00402021 	addu	a0,v0,zero
+  40a0c0:	27c20018 	addiu	v0,s8,24
+  40a0c4:	00402821 	addu	a1,v0,zero
+  40a0c8:	24060080 	addiu	a2,zero,128
+  40a0cc:	8f8280f8 	lw	v0,-32520(gp)
+  40a0d0:	0040c821 	addu	t9,v0,zero
+  40a0d4:	0320f809 	jalr	t9
+  40a0d8:	00000000 	sll	zero,zero,0x0
+  40a0dc:	8fdc0010 	lw	gp,16(s8)
+  40a0e0:	00401821 	addu	v1,v0,zero
+  40a0e4:	8fc20050 	lw	v0,80(s8)
+  40a0e8:	ac430000 	sw	v1,0(v0)
+  40a0ec:	8fc20054 	lw	v0,84(s8)
+  40a0f0:	1040001d 	beq	v0,zero,40a168 <get_all_wireless_client@@Base+0x158>
+  40a0f4:	00000000 	sll	zero,zero,0x0
+  40a0f8:	2404001b 	addiu	a0,zero,27
+  40a0fc:	8f828120 	lw	v0,-32480(gp)
+  40a100:	0040c821 	addu	t9,v0,zero
+  40a104:	0320f809 	jalr	t9
+  40a108:	00000000 	sll	zero,zero,0x0
+  40a10c:	8fdc0010 	lw	gp,16(s8)
+  40a110:	27c30018 	addiu	v1,s8,24
+  40a114:	00602021 	addu	a0,v1,zero
+  40a118:	00402821 	addu	a1,v0,zero
+  40a11c:	8f828174 	lw	v0,-32396(gp)
+  40a120:	0040c821 	addu	t9,v0,zero
+  40a124:	0320f809 	jalr	t9
+  40a128:	00000000 	sll	zero,zero,0x0
+  40a12c:	8fdc0010 	lw	gp,16(s8)
+  40a130:	8fc20054 	lw	v0,84(s8)
+  40a134:	24420004 	addiu	v0,v0,4
+  40a138:	00402021 	addu	a0,v0,zero
+  40a13c:	27c20018 	addiu	v0,s8,24
+  40a140:	00402821 	addu	a1,v0,zero
+  40a144:	24060080 	addiu	a2,zero,128
+  40a148:	8f8280f8 	lw	v0,-32520(gp)
+  40a14c:	0040c821 	addu	t9,v0,zero
+  40a150:	0320f809 	jalr	t9
+  40a154:	00000000 	sll	zero,zero,0x0
+  40a158:	8fdc0010 	lw	gp,16(s8)
+  40a15c:	00401821 	addu	v1,v0,zero
+  40a160:	8fc20054 	lw	v0,84(s8)
+  40a164:	ac430000 	sw	v1,0(v0)
+  40a168:	8fc20058 	lw	v0,88(s8)
+  40a16c:	10400031 	beq	v0,zero,40a234 <get_all_wireless_client@@Base+0x224>
+  40a170:	00000000 	sll	zero,zero,0x0
+  40a174:	27c20038 	addiu	v0,s8,56
+  40a178:	8f838028 	lw	v1,-32728(gp)
+  40a17c:	2464f848 	addiu	a0,v1,-1976
+  40a180:	00402821 	addu	a1,v0,zero
+  40a184:	8f8280f4 	lw	v0,-32524(gp)
+  40a188:	0040c821 	addu	t9,v0,zero
+  40a18c:	0320f809 	jalr	t9
+  40a190:	00000000 	sll	zero,zero,0x0
+  40a194:	8fdc0010 	lw	gp,16(s8)
+  40a198:	27c20038 	addiu	v0,s8,56
+  40a19c:	00402021 	addu	a0,v0,zero
+  40a1a0:	8f8280e8 	lw	v0,-32536(gp)
+  40a1a4:	0040c821 	addu	t9,v0,zero
+  40a1a8:	0320f809 	jalr	t9
+  40a1ac:	00000000 	sll	zero,zero,0x0
+  40a1b0:	8fdc0010 	lw	gp,16(s8)
+  40a1b4:	00401821 	addu	v1,v0,zero
+  40a1b8:	24020001 	addiu	v0,zero,1
+  40a1bc:	1462001d 	bne	v1,v0,40a234 <get_all_wireless_client@@Base+0x224>
+  40a1c0:	00000000 	sll	zero,zero,0x0
+  40a1c4:	2404003b 	addiu	a0,zero,59
+  40a1c8:	8f828120 	lw	v0,-32480(gp)
+  40a1cc:	0040c821 	addu	t9,v0,zero
+  40a1d0:	0320f809 	jalr	t9
+  40a1d4:	00000000 	sll	zero,zero,0x0
+  40a1d8:	8fdc0010 	lw	gp,16(s8)
+  40a1dc:	27c30018 	addiu	v1,s8,24
+  40a1e0:	00602021 	addu	a0,v1,zero
+  40a1e4:	00402821 	addu	a1,v0,zero
+  40a1e8:	8f828174 	lw	v0,-32396(gp)
+  40a1ec:	0040c821 	addu	t9,v0,zero
+  40a1f0:	0320f809 	jalr	t9
+  40a1f4:	00000000 	sll	zero,zero,0x0
+  40a1f8:	8fdc0010 	lw	gp,16(s8)
+  40a1fc:	8fc20058 	lw	v0,88(s8)
+  40a200:	24420004 	addiu	v0,v0,4
+  40a204:	00402021 	addu	a0,v0,zero
+  40a208:	27c20018 	addiu	v0,s8,24
+  40a20c:	00402821 	addu	a1,v0,zero
+  40a210:	24060080 	addiu	a2,zero,128
+  40a214:	8f8280f8 	lw	v0,-32520(gp)
+  40a218:	0040c821 	addu	t9,v0,zero
+  40a21c:	0320f809 	jalr	t9
+  40a220:	00000000 	sll	zero,zero,0x0
+  40a224:	8fdc0010 	lw	gp,16(s8)
+  40a228:	00401821 	addu	v1,v0,zero
+  40a22c:	8fc20058 	lw	v0,88(s8)
+  40a230:	ac430000 	sw	v1,0(v0)
+  40a234:	8fc2005c 	lw	v0,92(s8)
+  40a238:	10400031 	beq	v0,zero,40a300 <get_all_wireless_client@@Base+0x2f0>
+  40a23c:	00000000 	sll	zero,zero,0x0
+  40a240:	27c20038 	addiu	v0,s8,56
+  40a244:	8f838028 	lw	v1,-32728(gp)
+  40a248:	2464f814 	addiu	a0,v1,-2028
+  40a24c:	00402821 	addu	a1,v0,zero
+  40a250:	8f8280f4 	lw	v0,-32524(gp)
+  40a254:	0040c821 	addu	t9,v0,zero
+  40a258:	0320f809 	jalr	t9
+  40a25c:	00000000 	sll	zero,zero,0x0
+  40a260:	8fdc0010 	lw	gp,16(s8)
+  40a264:	27c20038 	addiu	v0,s8,56
+  40a268:	00402021 	addu	a0,v0,zero
+  40a26c:	8f8280e8 	lw	v0,-32536(gp)
+  40a270:	0040c821 	addu	t9,v0,zero
+  40a274:	0320f809 	jalr	t9
+  40a278:	00000000 	sll	zero,zero,0x0
+  40a27c:	8fdc0010 	lw	gp,16(s8)
+  40a280:	00401821 	addu	v1,v0,zero
+  40a284:	24020001 	addiu	v0,zero,1
+  40a288:	1462001d 	bne	v1,v0,40a300 <get_all_wireless_client@@Base+0x2f0>
+  40a28c:	00000000 	sll	zero,zero,0x0
+  40a290:	2404003f 	addiu	a0,zero,63
+  40a294:	8f828120 	lw	v0,-32480(gp)
+  40a298:	0040c821 	addu	t9,v0,zero
+  40a29c:	0320f809 	jalr	t9
+  40a2a0:	00000000 	sll	zero,zero,0x0
+  40a2a4:	8fdc0010 	lw	gp,16(s8)
+  40a2a8:	27c30018 	addiu	v1,s8,24
+  40a2ac:	00602021 	addu	a0,v1,zero
+  40a2b0:	00402821 	addu	a1,v0,zero
+  40a2b4:	8f828174 	lw	v0,-32396(gp)
+  40a2b8:	0040c821 	addu	t9,v0,zero
+  40a2bc:	0320f809 	jalr	t9
+  40a2c0:	00000000 	sll	zero,zero,0x0
+  40a2c4:	8fdc0010 	lw	gp,16(s8)
+  40a2c8:	8fc2005c 	lw	v0,92(s8)
+  40a2cc:	24420004 	addiu	v0,v0,4
+  40a2d0:	00402021 	addu	a0,v0,zero
+  40a2d4:	27c20018 	addiu	v0,s8,24
+  40a2d8:	00402821 	addu	a1,v0,zero
+  40a2dc:	24060080 	addiu	a2,zero,128
+  40a2e0:	8f8280f8 	lw	v0,-32520(gp)
+  40a2e4:	0040c821 	addu	t9,v0,zero
+  40a2e8:	0320f809 	jalr	t9
+  40a2ec:	00000000 	sll	zero,zero,0x0
+  40a2f0:	8fdc0010 	lw	gp,16(s8)
+  40a2f4:	00401821 	addu	v1,v0,zero
+  40a2f8:	8fc2005c 	lw	v0,92(s8)
+  40a2fc:	ac430000 	sw	v1,0(v0)
+  40a300:	03c0e821 	addu	sp,s8,zero
+  40a304:	8fbf004c 	lw	ra,76(sp)
+  40a308:	8fbe0048 	lw	s8,72(sp)
+  40a30c:	27bd0050 	addiu	sp,sp,80
+  40a310:	03e00008 	jr	ra
+  40a314:	00000000 	sll	zero,zero,0x0
+  40a318:	3c1c0002 	lui	gp,0x2
+  40a31c:	279ce188 	addiu	gp,gp,-7800
+  40a320:	0399e021 	addu	gp,gp,t9
+  40a324:	27bdffc8 	addiu	sp,sp,-56
+  40a328:	afbf0034 	sw	ra,52(sp)
+  40a32c:	afbe0030 	sw	s8,48(sp)
+  40a330:	03a0f021 	addu	s8,sp,zero
+  40a334:	afbc0018 	sw	gp,24(sp)
+  40a338:	afc40038 	sw	a0,56(s8)
+  40a33c:	afc5003c 	sw	a1,60(s8)
+  40a340:	afc60040 	sw	a2,64(s8)
+  40a344:	afc70044 	sw	a3,68(s8)
+  40a348:	afc0002c 	sw	zero,44(s8)
+  40a34c:	afc00028 	sw	zero,40(s8)
+  40a350:	8fc20038 	lw	v0,56(s8)
+  40a354:	8c420000 	lw	v0,0(v0)
+  40a358:	afc2002c 	sw	v0,44(s8)
+  40a35c:	10000030 	beq	zero,zero,40a420 <get_all_wireless_client@@Base+0x410>
+  40a360:	00000000 	sll	zero,zero,0x0
+  40a364:	8fc2002c 	lw	v0,44(s8)
+  40a368:	afc20020 	sw	v0,32(s8)
+  40a36c:	8fc20020 	lw	v0,32(s8)
+  40a370:	2442ff8c 	addiu	v0,v0,-116
+  40a374:	afc20028 	sw	v0,40(s8)
+  40a378:	8fc20028 	lw	v0,40(s8)
+  40a37c:	24420054 	addiu	v0,v0,84
+  40a380:	8fc30048 	lw	v1,72(s8)
+  40a384:	afa30010 	sw	v1,16(sp)
+  40a388:	00402021 	addu	a0,v0,zero
+  40a38c:	8fc5003c 	lw	a1,60(s8)
+  40a390:	8fc60040 	lw	a2,64(s8)
+  40a394:	8fc70044 	lw	a3,68(s8)
+  40a398:	8f82806c 	lw	v0,-32660(gp)
+  40a39c:	0040c821 	addu	t9,v0,zero
+  40a3a0:	0320f809 	jalr	t9
+  40a3a4:	00000000 	sll	zero,zero,0x0
+  40a3a8:	8fdc0018 	lw	gp,24(s8)
+  40a3ac:	afc20024 	sw	v0,36(s8)
+  40a3b0:	8fc30024 	lw	v1,36(s8)
+  40a3b4:	24020005 	addiu	v0,zero,5
+  40a3b8:	14620013 	bne	v1,v0,40a408 <get_all_wireless_client@@Base+0x3f8>
+  40a3bc:	00000000 	sll	zero,zero,0x0
+  40a3c0:	8fc20028 	lw	v0,40(s8)
+  40a3c4:	24420074 	addiu	v0,v0,116
+  40a3c8:	00402021 	addu	a0,v0,zero
+  40a3cc:	8f828028 	lw	v0,-32728(gp)
+  40a3d0:	24428224 	addiu	v0,v0,-32220
+  40a3d4:	0040c821 	addu	t9,v0,zero
+  40a3d8:	0320f809 	jalr	t9
+  40a3dc:	00000000 	sll	zero,zero,0x0
+  40a3e0:	8fdc0018 	lw	gp,24(s8)
+  40a3e4:	8fc40028 	lw	a0,40(s8)
+  40a3e8:	8f85804c 	lw	a1,-32692(gp)
+  40a3ec:	8f82805c 	lw	v0,-32676(gp)
+  40a3f0:	0040c821 	addu	t9,v0,zero
+  40a3f4:	0320f809 	jalr	t9
+  40a3f8:	00000000 	sll	zero,zero,0x0
+  40a3fc:	8fdc0018 	lw	gp,24(s8)
+  40a400:	10000004 	beq	zero,zero,40a414 <get_all_wireless_client@@Base+0x404>
+  40a404:	00000000 	sll	zero,zero,0x0
+  40a408:	8fc30024 	lw	v1,36(s8)
+  40a40c:	8fc20028 	lw	v0,40(s8)
+  40a410:	ac43005c 	sw	v1,92(v0)
+  40a414:	8fc2002c 	lw	v0,44(s8)
+  40a418:	8c420000 	lw	v0,0(v0)
+  40a41c:	afc2002c 	sw	v0,44(s8)
+  40a420:	8fc2002c 	lw	v0,44(s8)
+  40a424:	8c420000 	lw	v0,0(v0)
+  40a428:	00402021 	addu	a0,v0,zero
+  40a42c:	8f828028 	lw	v0,-32728(gp)
+  40a430:	244281c0 	addiu	v0,v0,-32320
+  40a434:	0040c821 	addu	t9,v0,zero
+  40a438:	0320f809 	jalr	t9
+  40a43c:	00000000 	sll	zero,zero,0x0
+  40a440:	8fdc0018 	lw	gp,24(s8)
+  40a444:	8fc3002c 	lw	v1,44(s8)
+  40a448:	8fc20038 	lw	v0,56(s8)
+  40a44c:	1462ffc5 	bne	v1,v0,40a364 <get_all_wireless_client@@Base+0x354>
+  40a450:	00000000 	sll	zero,zero,0x0
+  40a454:	03c0e821 	addu	sp,s8,zero
+  40a458:	8fbf0034 	lw	ra,52(sp)
+  40a45c:	8fbe0030 	lw	s8,48(sp)
+  40a460:	27bd0038 	addiu	sp,sp,56
+  40a464:	03e00008 	jr	ra
+  40a468:	00000000 	sll	zero,zero,0x0
+  40a46c:	3c1c0002 	lui	gp,0x2
+  40a470:	279ce034 	addiu	gp,gp,-8140
+  40a474:	0399e021 	addu	gp,gp,t9
+  40a478:	27bdffa8 	addiu	sp,sp,-88
+  40a47c:	afbf0054 	sw	ra,84(sp)
+  40a480:	afbe0050 	sw	s8,80(sp)
+  40a484:	03a0f021 	addu	s8,sp,zero
+  40a488:	afbc0018 	sw	gp,24(sp)
+  40a48c:	afc40058 	sw	a0,88(s8)
+  40a490:	afc5005c 	sw	a1,92(s8)
+  40a494:	afc60060 	sw	a2,96(s8)
+  40a498:	afc70064 	sw	a3,100(s8)
+  40a49c:	8fc20058 	lw	v0,88(s8)
+  40a4a0:	10400007 	beq	v0,zero,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4a4:	00000000 	sll	zero,zero,0x0
+  40a4a8:	8fc20060 	lw	v0,96(s8)
+  40a4ac:	10400004 	beq	v0,zero,40a4c0 <get_all_wireless_client@@Base+0x4b0>
+  40a4b0:	00000000 	sll	zero,zero,0x0
+  40a4b4:	8fc20068 	lw	v0,104(s8)
+  40a4b8:	1440000e 	bne	v0,zero,40a4f4 <get_all_wireless_client@@Base+0x4e4>
+  40a4bc:	00000000 	sll	zero,zero,0x0
+  40a4c0:	8f828028 	lw	v0,-32728(gp)
+  40a4c4:	2442f6b8 	addiu	v0,v0,-2376
+  40a4c8:	00402021 	addu	a0,v0,zero
+  40a4cc:	8f828028 	lw	v0,-32728(gp)
+  40a4d0:	2445f98c 	addiu	a1,v0,-1652
+  40a4d4:	24060279 	addiu	a2,zero,633
+  40a4d8:	8f828150 	lw	v0,-32432(gp)
+  40a4dc:	0040c821 	addu	t9,v0,zero
+  40a4e0:	0320f809 	jalr	t9
+  40a4e4:	00000000 	sll	zero,zero,0x0
+  40a4e8:	8fdc0018 	lw	gp,24(s8)
+  40a4ec:	100000d5 	beq	zero,zero,40a844 <get_all_wireless_client@@Base+0x834>
+  40a4f0:	00000000 	sll	zero,zero,0x0
+  40a4f4:	afc00030 	sw	zero,48(s8)
+  40a4f8:	a7c00034 	sh	zero,52(s8)
+  40a4fc:	afc00038 	sw	zero,56(s8)
+  40a500:	afc0003c 	sw	zero,60(s8)
+  40a504:	afc00040 	sw	zero,64(s8)
+  40a508:	afc00044 	sw	zero,68(s8)
+  40a50c:	a7c00048 	sh	zero,72(s8)
+  40a510:	00002021 	addu	a0,zero,zero
+  40a514:	8f828120 	lw	v0,-32480(gp)
+  40a518:	0040c821 	addu	t9,v0,zero
+  40a51c:	0320f809 	jalr	t9
+  40a520:	00000000 	sll	zero,zero,0x0
+  40a524:	8fdc0018 	lw	gp,24(s8)
+  40a528:	afc20024 	sw	v0,36(s8)
+  40a52c:	afc0002c 	sw	zero,44(s8)
+  40a530:	100000be 	beq	zero,zero,40a82c <get_all_wireless_client@@Base+0x81c>
+  40a534:	00000000 	sll	zero,zero,0x0
+  40a538:	8fc2002c 	lw	v0,44(s8)
+  40a53c:	00401821 	addu	v1,v0,zero
+  40a540:	00031080 	sll	v0,v1,0x2
+  40a544:	00401821 	addu	v1,v0,zero
+  40a548:	00031080 	sll	v0,v1,0x2
+  40a54c:	00431023 	subu	v0,v0,v1
+  40a550:	00021900 	sll	v1,v0,0x4
+  40a554:	00431021 	addu	v0,v0,v1
+  40a558:	8fc30060 	lw	v1,96(s8)
+  40a55c:	00621021 	addu	v0,v1,v0
+  40a560:	24430020 	addiu	v1,v0,32
+  40a564:	27c20030 	addiu	v0,s8,48
+  40a568:	00602021 	addu	a0,v1,zero
+  40a56c:	00402821 	addu	a1,v0,zero
+  40a570:	8f82813c 	lw	v0,-32452(gp)
+  40a574:	0040c821 	addu	t9,v0,zero
+  40a578:	0320f809 	jalr	t9
+  40a57c:	00000000 	sll	zero,zero,0x0
+  40a580:	8fdc0018 	lw	gp,24(s8)
+  40a584:	104000a5 	beq	v0,zero,40a81c <get_all_wireless_client@@Base+0x80c>
+  40a588:	00000000 	sll	zero,zero,0x0
+  40a58c:	27c20030 	addiu	v0,s8,48
+  40a590:	8f848040 	lw	a0,-32704(gp)
+  40a594:	24050020 	addiu	a1,zero,32
+  40a598:	00403021 	addu	a2,v0,zero
+  40a59c:	8f828044 	lw	v0,-32700(gp)
+  40a5a0:	0040c821 	addu	t9,v0,zero
+  40a5a4:	0320f809 	jalr	t9
+  40a5a8:	00000000 	sll	zero,zero,0x0
+  40a5ac:	8fdc0018 	lw	gp,24(s8)
+  40a5b0:	afc20020 	sw	v0,32(s8)
+  40a5b4:	8fc20020 	lw	v0,32(s8)
+  40a5b8:	14400099 	bne	v0,zero,40a820 <get_all_wireless_client@@Base+0x810>
+  40a5bc:	00000000 	sll	zero,zero,0x0
+  40a5c0:	27c20038 	addiu	v0,s8,56
+  40a5c4:	00402021 	addu	a0,v0,zero
+  40a5c8:	00002821 	addu	a1,zero,zero
+  40a5cc:	24060012 	addiu	a2,zero,18
+  40a5d0:	8f828188 	lw	v0,-32376(gp)
+  40a5d4:	0040c821 	addu	t9,v0,zero
+  40a5d8:	0320f809 	jalr	t9
+  40a5dc:	00000000 	sll	zero,zero,0x0
+  40a5e0:	8fdc0018 	lw	gp,24(s8)
+  40a5e4:	27c30030 	addiu	v1,s8,48
+  40a5e8:	27c20038 	addiu	v0,s8,56
+  40a5ec:	00602021 	addu	a0,v1,zero
+  40a5f0:	00402821 	addu	a1,v0,zero
+  40a5f4:	8f8281ac 	lw	v0,-32340(gp)
+  40a5f8:	0040c821 	addu	t9,v0,zero
+  40a5fc:	0320f809 	jalr	t9
+  40a600:	00000000 	sll	zero,zero,0x0
+  40a604:	8fdc0018 	lw	gp,24(s8)
+  40a608:	8f828028 	lw	v0,-32728(gp)
+  40a60c:	2442f87c 	addiu	v0,v0,-1924
+symbol not exported: update_wire_client_from_sw_list
+----- do_upload_client_list @ 0x0040bb84 -----
+
+firmware-src/RootFS-unpacked/bin/device_list:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+0040bb84 <do_upload_client_list@@Base>:
+  40bb84:	3c1c0002 	lui	gp,0x2
+  40bb88:	279cc91c 	addiu	gp,gp,-14052
+  40bb8c:	0399e021 	addu	gp,gp,t9
+  40bb90:	27bdffa8 	addiu	sp,sp,-88
+  40bb94:	afbf0054 	sw	ra,84(sp)
+  40bb98:	afbe0050 	sw	s8,80(sp)
+  40bb9c:	afb0004c 	sw	s0,76(sp)
+  40bba0:	03a0f021 	addu	s8,sp,zero
+  40bba4:	afbc0010 	sw	gp,16(sp)
+  40bba8:	afc40058 	sw	a0,88(s8)
+  40bbac:	afc5005c 	sw	a1,92(s8)
+  40bbb0:	8fc2005c 	lw	v0,92(s8)
+  40bbb4:	1c400012 	bgtz	v0,40bc00 <do_upload_client_list@@Base+0x7c>
+  40bbb8:	00000000 	sll	zero,zero,0x0
+  40bbbc:	8f82802c 	lw	v0,-32724(gp)
+  40bbc0:	8c420000 	lw	v0,0(v0)
+  40bbc4:	104000fb 	beq	v0,zero,40bfb4 <do_upload_client_list@@Base+0x430>
+  40bbc8:	00000000 	sll	zero,zero,0x0
+  40bbcc:	8f828028 	lw	v0,-32728(gp)
+  40bbd0:	24420368 	addiu	v0,v0,872
+  40bbd4:	00402021 	addu	a0,v0,zero
+  40bbd8:	8f828028 	lw	v0,-32728(gp)
+  40bbdc:	244503fc 	addiu	a1,v0,1020
+  40bbe0:	240600fe 	addiu	a2,zero,254
+  40bbe4:	8f828150 	lw	v0,-32432(gp)
+  40bbe8:	0040c821 	addu	t9,v0,zero
+  40bbec:	0320f809 	jalr	t9
+  40bbf0:	00000000 	sll	zero,zero,0x0
+  40bbf4:	8fdc0010 	lw	gp,16(s8)
+  40bbf8:	100000ef 	beq	zero,zero,40bfb8 <do_upload_client_list@@Base+0x434>
+  40bbfc:	00000000 	sll	zero,zero,0x0
+  40bc00:	afc00040 	sw	zero,64(s8)
+  40bc04:	afc0003c 	sw	zero,60(s8)
+  40bc08:	afc00038 	sw	zero,56(s8)
+  40bc0c:	afc00030 	sw	zero,48(s8)
+  40bc10:	afc00024 	sw	zero,36(s8)
+  40bc14:	afc00020 	sw	zero,32(s8)
+  40bc18:	8f828138 	lw	v0,-32456(gp)
+  40bc1c:	0040c821 	addu	t9,v0,zero
+  40bc20:	0320f809 	jalr	t9
+  40bc24:	00000000 	sll	zero,zero,0x0
+  40bc28:	8fdc0010 	lw	gp,16(s8)
+  40bc2c:	afc2001c 	sw	v0,28(s8)
+  40bc30:	8fc2005c 	lw	v0,92(s8)
+  40bc34:	00021080 	sll	v0,v0,0x2
+  40bc38:	00021940 	sll	v1,v0,0x5
+  40bc3c:	00621023 	subu	v0,v1,v0
+  40bc40:	24420044 	addiu	v0,v0,68
+  40bc44:	afc20028 	sw	v0,40(s8)
+  40bc48:	8fc20028 	lw	v0,40(s8)
+  40bc4c:	00402021 	addu	a0,v0,zero
+  40bc50:	8f82817c 	lw	v0,-32388(gp)
+  40bc54:	0040c821 	addu	t9,v0,zero
+  40bc58:	0320f809 	jalr	t9
+  40bc5c:	00000000 	sll	zero,zero,0x0
+  40bc60:	8fdc0010 	lw	gp,16(s8)
+  40bc64:	afc20030 	sw	v0,48(s8)
+  40bc68:	8fc20030 	lw	v0,48(s8)
+  40bc6c:	14400015 	bne	v0,zero,40bcc4 <do_upload_client_list@@Base+0x140>
+  40bc70:	00000000 	sll	zero,zero,0x0
+  40bc74:	8f828028 	lw	v0,-32728(gp)
+  40bc78:	24500394 	addiu	s0,v0,916
+  40bc7c:	8f828110 	lw	v0,-32496(gp)
+  40bc80:	0040c821 	addu	t9,v0,zero
+  40bc84:	0320f809 	jalr	t9
+  40bc88:	00000000 	sll	zero,zero,0x0
+  40bc8c:	8fdc0010 	lw	gp,16(s8)
+  40bc90:	8c420000 	lw	v0,0(v0)
+  40bc94:	02002021 	addu	a0,s0,zero
+  40bc98:	8f838028 	lw	v1,-32728(gp)
+  40bc9c:	246503fc 	addiu	a1,v1,1020
+  40bca0:	2406010e 	addiu	a2,zero,270
+  40bca4:	00403821 	addu	a3,v0,zero
+  40bca8:	8f828150 	lw	v0,-32432(gp)
+  40bcac:	0040c821 	addu	t9,v0,zero
+  40bcb0:	0320f809 	jalr	t9
+  40bcb4:	00000000 	sll	zero,zero,0x0
+  40bcb8:	8fdc0010 	lw	gp,16(s8)
+  40bcbc:	100000be 	beq	zero,zero,40bfb8 <do_upload_client_list@@Base+0x434>
+  40bcc0:	00000000 	sll	zero,zero,0x0
+  40bcc4:	8fc20028 	lw	v0,40(s8)
+  40bcc8:	8fc40030 	lw	a0,48(s8)
+  40bccc:	00002821 	addu	a1,zero,zero
+  40bcd0:	00403021 	addu	a2,v0,zero
+  40bcd4:	8f828188 	lw	v0,-32376(gp)
+  40bcd8:	0040c821 	addu	t9,v0,zero
+  40bcdc:	0320f809 	jalr	t9
+  40bce0:	00000000 	sll	zero,zero,0x0
+  40bce4:	8fdc0010 	lw	gp,16(s8)
+  40bce8:	8fc20030 	lw	v0,48(s8)
+  40bcec:	afc20034 	sw	v0,52(s8)
+  40bcf0:	8fc30034 	lw	v1,52(s8)
+  40bcf4:	8f828028 	lw	v0,-32728(gp)
+  40bcf8:	244203c0 	addiu	v0,v0,960
+  40bcfc:	00602021 	addu	a0,v1,zero
+  40bd00:	00402821 	addu	a1,v0,zero
+  40bd04:	24060020 	addiu	a2,zero,32
+  40bd08:	8f828148 	lw	v0,-32440(gp)
+  40bd0c:	0040c821 	addu	t9,v0,zero
+  40bd10:	0320f809 	jalr	t9
+  40bd14:	00000000 	sll	zero,zero,0x0
+  40bd18:	8fdc0010 	lw	gp,16(s8)
+  40bd1c:	8fc20034 	lw	v0,52(s8)
+  40bd20:	24420024 	addiu	v0,v0,36
+  40bd24:	afc2002c 	sw	v0,44(s8)
+  40bd28:	8fc4002c 	lw	a0,44(s8)
+  40bd2c:	8f858070 	lw	a1,-32656(gp)
+  40bd30:	24060020 	addiu	a2,zero,32
+  40bd34:	8f8280cc 	lw	v0,-32564(gp)
+  40bd38:	0040c821 	addu	t9,v0,zero
+  40bd3c:	0320f809 	jalr	t9
+  40bd40:	00000000 	sll	zero,zero,0x0
+  40bd44:	8fdc0010 	lw	gp,16(s8)
+  40bd48:	8fc2002c 	lw	v0,44(s8)
+  40bd4c:	24420020 	addiu	v0,v0,32
+  40bd50:	afc2002c 	sw	v0,44(s8)
+  40bd54:	8f828028 	lw	v0,-32728(gp)
+  40bd58:	2442b5d8 	addiu	v0,v0,-18984
+  40bd5c:	0040c821 	addu	t9,v0,zero
+  40bd60:	0320f809 	jalr	t9
+  40bd64:	00000000 	sll	zero,zero,0x0
+  40bd68:	8fdc0010 	lw	gp,16(s8)
+  40bd6c:	8fc2002c 	lw	v0,44(s8)
+  40bd70:	afc20038 	sw	v0,56(s8)
+  40bd74:	afc00024 	sw	zero,36(s8)
+  40bd78:	1000006e 	beq	zero,zero,40bf34 <do_upload_client_list@@Base+0x3b0>
+  40bd7c:	00000000 	sll	zero,zero,0x0
+  40bd80:	8fc20024 	lw	v0,36(s8)
+  40bd84:	000210c0 	sll	v0,v0,0x3
+  40bd88:	8fc30058 	lw	v1,88(s8)
+  40bd8c:	00621021 	addu	v0,v1,v0
+  40bd90:	8c420000 	lw	v0,0(v0)
+  40bd94:	afc20040 	sw	v0,64(s8)
+  40bd98:	10000050 	beq	zero,zero,40bedc <do_upload_client_list@@Base+0x358>
+  40bd9c:	00000000 	sll	zero,zero,0x0
+  40bda0:	8fc30020 	lw	v1,32(s8)
+  40bda4:	8fc2005c 	lw	v0,92(s8)
+  40bda8:	1062005e 	beq	v1,v0,40bf24 <do_upload_client_list@@Base+0x3a0>
+  40bdac:	00000000 	sll	zero,zero,0x0
+  40bdb0:	8fc20040 	lw	v0,64(s8)
+  40bdb4:	afc20018 	sw	v0,24(s8)
+  40bdb8:	8fc20018 	lw	v0,24(s8)
+  40bdbc:	2442ff94 	addiu	v0,v0,-108
+  40bdc0:	afc2003c 	sw	v0,60(s8)
+  40bdc4:	8fc20020 	lw	v0,32(s8)
+  40bdc8:	00021080 	sll	v0,v0,0x2
+  40bdcc:	00021940 	sll	v1,v0,0x5
+  40bdd0:	00621023 	subu	v0,v1,v0
+  40bdd4:	8fc30038 	lw	v1,56(s8)
+  40bdd8:	00621021 	addu	v0,v1,v0
+  40bddc:	00402021 	addu	a0,v0,zero
+  40bde0:	8fc5003c 	lw	a1,60(s8)
+  40bde4:	2406007c 	addiu	a2,zero,124
+  40bde8:	8f8280cc 	lw	v0,-32564(gp)
+  40bdec:	0040c821 	addu	t9,v0,zero
+  40bdf0:	0320f809 	jalr	t9
+  40bdf4:	00000000 	sll	zero,zero,0x0
+  40bdf8:	8fdc0010 	lw	gp,16(s8)
+  40bdfc:	8fc20020 	lw	v0,32(s8)
+  40be00:	00021080 	sll	v0,v0,0x2
+  40be04:	00021940 	sll	v1,v0,0x5
+  40be08:	00621023 	subu	v0,v1,v0
+  40be0c:	8fc30038 	lw	v1,56(s8)
+  40be10:	00628021 	addu	s0,v1,v0
+  40be14:	8fc2003c 	lw	v0,60(s8)
+  40be18:	8c42005c 	lw	v0,92(v0)
+  40be1c:	00402021 	addu	a0,v0,zero
+  40be20:	8f828118 	lw	v0,-32488(gp)
+  40be24:	0040c821 	addu	t9,v0,zero
+  40be28:	0320f809 	jalr	t9
+  40be2c:	00000000 	sll	zero,zero,0x0
+  40be30:	8fdc0010 	lw	gp,16(s8)
+  40be34:	ae02005c 	sw	v0,92(s0)
+  40be38:	8fc20020 	lw	v0,32(s8)
+  40be3c:	00021080 	sll	v0,v0,0x2
+  40be40:	00021940 	sll	v1,v0,0x5
+  40be44:	00621023 	subu	v0,v1,v0
+  40be48:	8fc30038 	lw	v1,56(s8)
+  40be4c:	00628021 	addu	s0,v1,v0
+  40be50:	8fc2003c 	lw	v0,60(s8)
+  40be54:	8c420060 	lw	v0,96(v0)
+  40be58:	00402021 	addu	a0,v0,zero
+  40be5c:	8f828118 	lw	v0,-32488(gp)
+  40be60:	0040c821 	addu	t9,v0,zero
+  40be64:	0320f809 	jalr	t9
+  40be68:	00000000 	sll	zero,zero,0x0
+  40be6c:	8fdc0010 	lw	gp,16(s8)
+  40be70:	ae020060 	sw	v0,96(s0)
+  40be74:	8fc20020 	lw	v0,32(s8)
+  40be78:	00021080 	sll	v0,v0,0x2
+  40be7c:	00021940 	sll	v1,v0,0x5
+  40be80:	00621023 	subu	v0,v1,v0
+  40be84:	8fc30038 	lw	v1,56(s8)
+  40be88:	00628021 	addu	s0,v1,v0
+  40be8c:	8fc2003c 	lw	v0,60(s8)
+  40be90:	8c420064 	lw	v0,100(v0)
+  40be94:	8fc3001c 	lw	v1,28(s8)
+  40be98:	00621023 	subu	v0,v1,v0
+  40be9c:	00402021 	addu	a0,v0,zero
+  40bea0:	8f828118 	lw	v0,-32488(gp)
+  40bea4:	0040c821 	addu	t9,v0,zero
+  40bea8:	0320f809 	jalr	t9
+  40beac:	00000000 	sll	zero,zero,0x0
+  40beb0:	8fdc0010 	lw	gp,16(s8)
+  40beb4:	ae020064 	sw	v0,100(s0)
+  40beb8:	8fc2003c 	lw	v0,60(s8)
+  40bebc:	24030001 	addiu	v1,zero,1
+  40bec0:	ac430060 	sw	v1,96(v0)
+  40bec4:	8fc20020 	lw	v0,32(s8)
+  40bec8:	24420001 	addiu	v0,v0,1
+  40becc:	afc20020 	sw	v0,32(s8)
+  40bed0:	8fc20040 	lw	v0,64(s8)
+  40bed4:	8c420000 	lw	v0,0(v0)
+  40bed8:	afc20040 	sw	v0,64(s8)
+  40bedc:	8fc20040 	lw	v0,64(s8)
+  40bee0:	8c420000 	lw	v0,0(v0)
+  40bee4:	00402021 	addu	a0,v0,zero
+  40bee8:	8f828028 	lw	v0,-32728(gp)
+  40beec:	2442b2b0 	addiu	v0,v0,-19792
+  40bef0:	0040c821 	addu	t9,v0,zero
+  40bef4:	0320f809 	jalr	t9
+  40bef8:	00000000 	sll	zero,zero,0x0
+  40befc:	8fdc0010 	lw	gp,16(s8)
+  40bf00:	8fc20024 	lw	v0,36(s8)
+  40bf04:	000210c0 	sll	v0,v0,0x3
+  40bf08:	8fc30058 	lw	v1,88(s8)
+  40bf0c:	00621821 	addu	v1,v1,v0
+  40bf10:	8fc20040 	lw	v0,64(s8)
+  40bf14:	1462ffa2 	bne	v1,v0,40bda0 <do_upload_client_list@@Base+0x21c>
+  40bf18:	00000000 	sll	zero,zero,0x0
+  40bf1c:	10000002 	beq	zero,zero,40bf28 <do_upload_client_list@@Base+0x3a4>
+  40bf20:	00000000 	sll	zero,zero,0x0
+  40bf24:	00000000 	sll	zero,zero,0x0
+  40bf28:	8fc20024 	lw	v0,36(s8)
+  40bf2c:	24420001 	addiu	v0,v0,1
+  40bf30:	afc20024 	sw	v0,36(s8)
+  40bf34:	8fc20024 	lw	v0,36(s8)
+  40bf38:	28420020 	slti	v0,v0,32
+  40bf3c:	1440ff90 	bne	v0,zero,40bd80 <do_upload_client_list@@Base+0x1fc>
+  40bf40:	00000000 	sll	zero,zero,0x0
+  40bf44:	8fc20020 	lw	v0,32(s8)
+  40bf48:	00021080 	sll	v0,v0,0x2
+  40bf4c:	00021940 	sll	v1,v0,0x5
+  40bf50:	00621023 	subu	v0,v1,v0
+  40bf54:	24430020 	addiu	v1,v0,32
+  40bf58:	8fc20034 	lw	v0,52(s8)
+  40bf5c:	a8430023 	swl	v1,35(v0)
+  40bf60:	b8430020 	swr	v1,32(v0)
+  40bf64:	8fc20028 	lw	v0,40(s8)
+  40bf68:	8f838028 	lw	v1,-32728(gp)
+  40bf6c:	246403d4 	addiu	a0,v1,980
+  40bf70:	8fc50030 	lw	a1,48(s8)
+  40bf74:	00403021 	addu	a2,v0,zero
+  40bf78:	8f8281a4 	lw	v0,-32348(gp)
+  40bf7c:	0040c821 	addu	t9,v0,zero
+  40bf80:	0320f809 	jalr	t9
+  40bf84:	00000000 	sll	zero,zero,0x0
+  40bf88:	8fdc0010 	lw	gp,16(s8)
+  40bf8c:	8fc40030 	lw	a0,48(s8)
+  40bf90:	8f8280f0 	lw	v0,-32528(gp)
+  40bf94:	0040c821 	addu	t9,v0,zero
+  40bf98:	0320f809 	jalr	t9
+  40bf9c:	00000000 	sll	zero,zero,0x0
+  40bfa0:	8fdc0010 	lw	gp,16(s8)
+  40bfa4:	afc00030 	sw	zero,48(s8)
+  40bfa8:	00000000 	sll	zero,zero,0x0
+  40bfac:	10000002 	beq	zero,zero,40bfb8 <do_upload_client_list@@Base+0x434>
+  40bfb0:	00000000 	sll	zero,zero,0x0
+  40bfb4:	00000000 	sll	zero,zero,0x0
+  40bfb8:	03c0e821 	addu	sp,s8,zero
+  40bfbc:	8fbf0054 	lw	ra,84(sp)
+  40bfc0:	8fbe0050 	lw	s8,80(sp)
+  40bfc4:	8fb0004c 	lw	s0,76(sp)
+  40bfc8:	27bd0058 	addiu	sp,sp,88
+  40bfcc:	03e00008 	jr	ra
+  40bfd0:	00000000 	sll	zero,zero,0x0
+
+0040bfd4 <do_upload_one_client@@Base>:
+  40bfd4:	3c1c0002 	lui	gp,0x2
+  40bfd8:	279cc4cc 	addiu	gp,gp,-15156
+  40bfdc:	0399e021 	addu	gp,gp,t9
+  40bfe0:	27bdffb8 	addiu	sp,sp,-72
+  40bfe4:	afbf0044 	sw	ra,68(sp)
+  40bfe8:	afbe0040 	sw	s8,64(sp)
+  40bfec:	afb0003c 	sw	s0,60(sp)
+  40bff0:	03a0f021 	addu	s8,sp,zero
+  40bff4:	afbc0010 	sw	gp,16(sp)
+  40bff8:	afc40048 	sw	a0,72(s8)
+  40bffc:	8fc20048 	lw	v0,72(s8)
+  40c000:	1440000e 	bne	v0,zero,40c03c <do_upload_one_client@@Base+0x68>
+  40c004:	00000000 	sll	zero,zero,0x0
+  40c008:	8f828028 	lw	v0,-32728(gp)
+  40c00c:	24420330 	addiu	v0,v0,816
+  40c010:	00402021 	addu	a0,v0,zero
+  40c014:	8f828028 	lw	v0,-32728(gp)
+  40c018:	244503e4 	addiu	a1,v0,996
+  40c01c:	24060145 	addiu	a2,zero,325
+  40c020:	8f828150 	lw	v0,-32432(gp)
+  40c024:	0040c821 	addu	t9,v0,zero
+  40c028:	0320f809 	jalr	t9
+  40c02c:	00000000 	sll	zero,zero,0x0
+  40c030:	8fdc0010 	lw	gp,16(s8)
+  40c034:	1000009b 	beq	zero,zero,40c2a4 <do_upload_one_client@@Base+0x2d0>
+  40c038:	00000000 	sll	zero,zero,0x0
+  40c03c:	afc00030 	sw	zero,48(s8)
+  40c040:	afc0002c 	sw	zero,44(s8)
+  40c044:	afc00024 	sw	zero,36(s8)
+  40c048:	8f828138 	lw	v0,-32456(gp)
+  40c04c:	0040c821 	addu	t9,v0,zero
+  40c050:	0320f809 	jalr	t9
+  40c054:	00000000 	sll	zero,zero,0x0
+  40c058:	8fdc0010 	lw	gp,16(s8)
+  40c05c:	afc20018 	sw	v0,24(s8)
+  40c060:	240200c0 	addiu	v0,zero,192
+  40c064:	afc2001c 	sw	v0,28(s8)
+  40c068:	8fc2001c 	lw	v0,28(s8)
+  40c06c:	00402021 	addu	a0,v0,zero
+  40c070:	8f82817c 	lw	v0,-32388(gp)
+  40c074:	0040c821 	addu	t9,v0,zero
+  40c078:	0320f809 	jalr	t9
+  40c07c:	00000000 	sll	zero,zero,0x0
+  40c080:	8fdc0010 	lw	gp,16(s8)
+  40c084:	afc20024 	sw	v0,36(s8)
+  40c088:	8fc20024 	lw	v0,36(s8)
+  40c08c:	14400015 	bne	v0,zero,40c0e4 <do_upload_one_client@@Base+0x110>
+  40c090:	00000000 	sll	zero,zero,0x0
+  40c094:	8f828028 	lw	v0,-32728(gp)
+  40c098:	24500394 	addiu	s0,v0,916
+  40c09c:	8f828110 	lw	v0,-32496(gp)
+  40c0a0:	0040c821 	addu	t9,v0,zero
+  40c0a4:	0320f809 	jalr	t9
+  40c0a8:	00000000 	sll	zero,zero,0x0
+  40c0ac:	8fdc0010 	lw	gp,16(s8)
+  40c0b0:	8c420000 	lw	v0,0(v0)
+  40c0b4:	02002021 	addu	a0,s0,zero
+  40c0b8:	8f838028 	lw	v1,-32728(gp)
+  40c0bc:	246503e4 	addiu	a1,v1,996
+  40c0c0:	24060155 	addiu	a2,zero,341
+  40c0c4:	00403821 	addu	a3,v0,zero
+  40c0c8:	8f828150 	lw	v0,-32432(gp)
+  40c0cc:	0040c821 	addu	t9,v0,zero
+  40c0d0:	0320f809 	jalr	t9
+  40c0d4:	00000000 	sll	zero,zero,0x0
+  40c0d8:	8fdc0010 	lw	gp,16(s8)
+  40c0dc:	10000071 	beq	zero,zero,40c2a4 <do_upload_one_client@@Base+0x2d0>
+  40c0e0:	00000000 	sll	zero,zero,0x0
+  40c0e4:	8fc2001c 	lw	v0,28(s8)
+  40c0e8:	8fc40024 	lw	a0,36(s8)
+  40c0ec:	00002821 	addu	a1,zero,zero
+  40c0f0:	00403021 	addu	a2,v0,zero
+  40c0f4:	8f828188 	lw	v0,-32376(gp)
+  40c0f8:	0040c821 	addu	t9,v0,zero
+  40c0fc:	0320f809 	jalr	t9
+  40c100:	00000000 	sll	zero,zero,0x0
+  40c104:	8fdc0010 	lw	gp,16(s8)
+  40c108:	8fc20024 	lw	v0,36(s8)
+  40c10c:	afc20028 	sw	v0,40(s8)
+  40c110:	8fc30028 	lw	v1,40(s8)
+  40c114:	8f828028 	lw	v0,-32728(gp)
+  40c118:	244203c0 	addiu	v0,v0,960
+  40c11c:	00602021 	addu	a0,v1,zero
+  40c120:	00402821 	addu	a1,v0,zero
+  40c124:	24060020 	addiu	a2,zero,32
+  40c128:	8f828148 	lw	v0,-32440(gp)
+  40c12c:	0040c821 	addu	t9,v0,zero
+  40c130:	0320f809 	jalr	t9
+  40c134:	00000000 	sll	zero,zero,0x0
+  40c138:	8fdc0010 	lw	gp,16(s8)
+  40c13c:	8fc20028 	lw	v0,40(s8)
+  40c140:	24420024 	addiu	v0,v0,36
+  40c144:	afc20020 	sw	v0,32(s8)
+  40c148:	8fc40020 	lw	a0,32(s8)
+  40c14c:	8f858070 	lw	a1,-32656(gp)
+  40c150:	24060020 	addiu	a2,zero,32
+  40c154:	8f8280cc 	lw	v0,-32564(gp)
+  40c158:	0040c821 	addu	t9,v0,zero
+  40c15c:	0320f809 	jalr	t9
+  40c160:	00000000 	sll	zero,zero,0x0
+  40c164:	8fdc0010 	lw	gp,16(s8)
+  40c168:	8fc20020 	lw	v0,32(s8)
+  40c16c:	24420020 	addiu	v0,v0,32
+  40c170:	afc20020 	sw	v0,32(s8)
+  40c174:	8fc20020 	lw	v0,32(s8)
+  40c178:	afc2002c 	sw	v0,44(s8)
+  40c17c:	8fc40048 	lw	a0,72(s8)
+  40c180:	8f828028 	lw	v0,-32728(gp)
+symbol not exported: fill_client_info
+
+===== references to known HostInfo protobuf field labels =====
+----- firmware-src/RootFS-unpacked/bin/confsrv -----
+   4375 string_lower_mac
+   4386 set_mem_config
+   4395 memcpy
+   439c check_hw_enable_status
+   43b3 access
+   43ba fopen
+   43c0 fgets
+   43c6 strsep
+   43cd fclose
+   43d4 g_confctl_debug_list
+   43e9 putchar
+   43f1 confctl_report_map
+   4404 confctl_node_msg_init
+--
+   4c05 memcmp
+   4c0c __errno_location
+   4c1d strncpy
+   4c25 update_remark_to_hash_table
+   4c41 ifaddrs_ethaddr_aton
+   4c56 ifaddrs_ethaddr_ntoa
+   4c6b device_mark_list__unpack
+   4c84 init_remark_hash_table
+   4c9b get_all_client_remark
+   4cb1 confctl_module_debug_en
+   4cc9 print_remark_hash_table
+   4ce1 device_mark_list__free_unpacked
+   4d01 save_all_client_remark
+   4d18 free_the_hash_table
+--
+   5c55 ifaddrs_get_network_addr_seg
+   5c72 ifaddrs_ipmask_to_numeric
+   5c8c deleteWifiGuestRouteRule
+   5ca5 addWifiGuestRouteRule
+   5cbb check_get_new_ipaddr_by_hostid
+   5cda dhcp_cfg__unpack
+   5ceb prod_check_ip_conflict
+   5d02 prod_check_change_lanip_handle
+   5d21 updateWifiGuestNatRule
+   5d38 updateWifiGuestRouteRule
+   5d51 dhcp_cfg__free_unpacked
+   5d69 dhcp_cfg__descriptor
+   5d7e dhcp_cfg__get_packed_size
+--
+   6aa4 handle_to_highdevice
+   6ab9 high_device_config__free_unpacked
+   6adb unregister_timeout_check
+   6af4 string_upper_mac
+   6b05 rtl_ethaddr_ntoa
+   6b16 file_get_wl_assoc_msg
+   6b2c file_get_wired_assoc_msg
+   6b45 g_add_node_rst_head
+   6b59 tmp_sn
+   6b60 check_addnode_online
+   6b75 print_granted_add_nodes
+   6b8d g_add_node_head
+   6b9d update_client_node_list
+--
+  68714 	dns1 : %s
+  68720 	dns2 : %s
+  6872c [%s][%d][lilin] invalid param.
+  6874c 	wan%d ipnetcfg : 
+  68760 	ipaddr : %s
+  68770 	mask : %s
+  6877c 	gateway : %s
+  6878c wan%d.manual.dns.en
+  687a0 [%s][%d]wandns->automic = %d
+  687c8 wan%d.manual.dns1
+  687e0 wan%d.manual.dns2
+  687f4 wan%d.mtutype
+  68804 wan%d.%s.ip
+  68810 wan%d.%s.mask
+  68820 wan%d.%s.gateway
+  68834 [%s][%d][luminais] !wanport->static_info
+  68860 wan%d.ip
+  6886c [%s][%d][luminais] ipaddr is null
+  68890 wan%d.mask
+  6889c [%s][%d][luminais] mask is null
+  688c0 wan%d.gateway
+  688d0 [%s][%d][luminais] gateway is null
+  688f4 [%s][%d][luminais] !wandnscfg
+  68914 wan%d.dns1
+  68920 [%s][%d][luminais] dns1 is null
+  68944 wan%d.dns2
+--
+  689ac wan%d.ppoe.pwd
+  689bc wan%d.ppoe.mtu
+  689cc wan%d.ppoe.ac
+  689dc wan%d.ppoe.sev
+  689ec wan%d.ppoe.double.access
+  68a08 wan%d.pppoe.encrypt.type
+  68a24 [%s][%d] invalid param.
+  68a40 [%s][%d] !wanport->rsadsl
+  68a5c wan%d.ppoe.mode
+  68a6c [%s][%d] !wanport->rsapptp
+  68a88 wan%d.pptp.user
+  68a98 wan%d.pptp.pwd
+  68aa8 wan%d.pptp.serverip
+--
+  6feb0   led:          %d     
+  6fecc   mode:         %s     
+  6fee8   fwversion:    %s     
+  6ff04   ip:           %s     
+  6ff20   ethaddr_l:    %s     
+  6ff3c   ethaddr_r:    %s     
+  6ff58   bssid_nband:  %s     
+  6ff74   bssid_aband:  %s     
+  6ff90   assoc_num:    %d     
+  6ffac   assoc_node%d: sn:%s    wl2g_rssi:%d    wl5g_rssi:%d    wired_rssi:%d    peer_flag:%d
+  70004 ****************end**************
+  70028 [%s][%d][luminais] client_sn_lkup %s failed.
+  70058 [%s][%d][luminais] malloc failed. (%d)%m
+  70085 [1;32m[%s][%d] : 
+--
+  70678 [%s][%d][luminais] 	%d	led : %d
+  7069c [%s][%d][luminais] 	%d	location : %s
+  706c4 [%s][%d][luminais] 	%d	mode : %s
+  706e8 [%s][%d][luminais] 	%d	fwversion : %s
+  70710 [%s][%d][luminais] 	%d	ipaddr : %s
+  70734 [%s][%d][luminais] 	%d	ethaddr_l : %s
+  7075c [%s][%d][luminais] 	%d	ethaddr_r : %s
+  70784 [%s][%d][luminais] 	%d	bssid_nband : %s
+  707b0 [%s][%d][luminais] 	%d	bssid_aband : %s
+  707dc [%s][%d][luminais] 	assoc_sn_cnt : %d
+  70804 [%s][%d][luminais] assoc_list<%d> : 
+  7082c [%s][%d][luminais] 	%d	assoc_sn : %s
+  70854 [%s][%d][luminais] 	%d	wl2g_rssi : %d
+  7087c [%s][%d][luminais] 	%d	wl5g_rssi : %d
+  708a4 [%s][%d][luminais] 	%d	wired_en : %d
+  708cc [%s][%d][luminais] 0 == assoc_num
+  708f0 [%s][%d]%s check_node_is_assoc fail, change to offline!!!
+  7092d [1;32m[%s][%d] : 
+  70943 [1;35mprint_node_msg_list 1
+  70965 [1;32m[%s][%d] : 
+--
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+--
+  72747 [1;35mnow - last_time < 500000
+  7276c [%s][%d][luminais] NULL == g_ip_info
+  72795 [1;32m[%s][%d] : 
+  727ab [1;35mnow : %llu, last_time : %llu, time_interval : %f
+  727e8 [%s][%d][luminais] ifaddrs_ethaddr_aton %s failed.
+  7281d [1;32m[%s][%d] : 
+  72833 [1;35mprint_host_list
+  72850 sys.cfg.stamp
+  72860 [%s][%d][luminais] all client remark same with cloud.
+  72898 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_mark_list_u failed
+  728dc update_client_remark
+  728f4 confctl_cli_key
+  72905 [1;32m[%s][%d] : 
+--
+  73a7c ap_common_so
+  73ae0 prod_common_so
+  73ba4 wl.guest.dhcps_ip
+  73bbc wl.guest.dhcps_mask
+  73bd0 iptables -t nat -N guest_access_post%d
+  73bf8 iptables -t nat -A POSTROUTING -j guest_access_post%d
+  73c30 iptables -t nat -A guest_access_post%d -s %s/%s -o %s -j MASQUERADE
+  73c74 iptables -t nat -F guest_access_post%d
+  73c9c iptables -t nat -D POSTROUTING -j guest_access_post%d
+  73cd4 iptables -t nat -X guest_access_post%d
+  73cfc wl.guest.dhcps_ifname
+  73d14 wans.flag
+  73d20 %s    %d    param error.
+  73d3c wl.guest.dhcps_dns1
+  73d50 wl.guest.dhcps_dns2
+  73d64 %s    %d get start ip addr failed
+  73d88 wl.guest.dhcps_ipstart
+  73da0 %s    %d get end ip addr failed
+--
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+--
+  74bcc open %s failed
+  74bdc killall -9 wan_detect
+  74bf4 /var/mib.mem
+  74c04 set_realtek_opmode
+  74c18 [%s][%d][luminais] DHCP can access to INTERNET
+  74c48 [%s][%d][luminais] wan_detect done
+  74c6c [%s][%d][luminais] get wan_detect result failed
+  74ca0 wan_detect &
+  74cb0 [%s][%d][luminais] get wan_detect result success : %d
+  74ce8 %s %d:lilin|wanconntype.conntype:%d 
+  74d10 0.0.0.0
+  74d18 %s %d:lilin| fill default router mode wan port status 
+  74d50 /etc/lan.ini
+--
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+----- firmware-src/RootFS-unpacked/bin/confcli -----
+   26e2 memset
+   26e9 sprintf
+   26f1 get_eth_name
+   26fe ifaddrs_get_if_netmac
+   2714 ifaddrs_ethaddr_ntoa
+   2729 strcpy
+   2730 ifaddrs_get_lan_ifname
+   2747 ifaddrs_get_ifip
+   2758 _td_snprintf
+   2765 memcpy
+   276c cmd_pub
+   2774 free
+   2779 cm_timeout
+--
+   2a8c string_lower_mac
+   2a9d doSystemCmd
+   2aa9 set_mem_config
+   2ab8 check_hw_enable_status
+   2acf access
+   2ad6 fopen
+   2adc fgets
+   2ae2 strsep
+   2ae9 fclose
+   2af0 g_confctl_debug_list
+   2b05 putchar
+   2b0d confctl_get_master_wlan_cli
+   2b29 conf_msg_define
+--
+   2fe4 __assert
+   2fed memcmp
+   2ff4 __errno_location
+   3005 update_remark_to_hash_table
+   3021 ifaddrs_ethaddr_aton
+   3036 device_mark_list__unpack
+   304f init_remark_hash_table
+   3066 get_all_client_remark
+   307c confctl_module_debug_en
+   3094 print_remark_hash_table
+   30ac device_mark_list__free_unpacked
+   30cc save_all_client_remark
+   30e3 free_the_hash_table
+--
+   3a4d save_this_node_led_conf
+   3a65 mib_save_restore_log
+   3a7a systool_handle_restore_some_for_button
+   3aa1 string_upper_mac
+   3ab2 rtl_ethaddr_ntoa
+   3ac3 file_get_wl_assoc_msg
+   3ad9 file_get_wired_assoc_msg
+   3af2 guest_enable_flag
+   3b04 wlan_cfg_all__unpack
+   3b19 prod_change_root_passwd
+   3b31 wlan_cfg_all__free_unpacked
+   3b4d wlan_cfg_all__descriptor
+   3b66 wlan_cfg__init
+--
+   3c51 set_wan_russia_l2tp
+   3c65 set_wan_dns
+   3c71 set_wan_ipnetcfg
+   3c82 wan_cfg__free_unpacked
+   3c99 check_get_new_ipaddr_by_hostid
+   3cb8 dhcp_cfg__unpack
+   3cc9 prod_check_ip_conflict
+   3ce0 prod_check_change_lanip_handle
+   3cff dhcp_cfg__free_unpacked
+   3d17 get_cloud_remark_hash_table
+   3d33 update_all_client_remark_to_local
+   3d55 del_client_assistant_device_cli
+   3d75 auto_maint__unpack
+--
+  33f24 	dns1 : %s
+  33f30 	dns2 : %s
+  33f3c [%s][%d][lilin] invalid param.
+  33f5c 	wan%d ipnetcfg : 
+  33f70 	ipaddr : %s
+  33f80 	mask : %s
+  33f8c 	gateway : %s
+  33f9c wan%d.manual.dns.en
+  33fb0 [%s][%d]wandns->automic = %d
+  33fd8 wan%d.manual.dns1
+  33ff0 wan%d.manual.dns2
+  34004 wan%d.mtutype
+  34014 wan%d.%s.ip
+  34020 wan%d.%s.mask
+  34030 wan%d.%s.gateway
+  34044 [%s][%d][luminais] !wanport->static_info
+  34070 wan%d.ip
+  3407c [%s][%d][luminais] ipaddr is null
+  340a0 wan%d.mask
+  340ac [%s][%d][luminais] mask is null
+  340d0 wan%d.gateway
+  340e0 [%s][%d][luminais] gateway is null
+  34104 [%s][%d][luminais] !wandnscfg
+  34124 wan%d.dns1
+  34130 [%s][%d][luminais] dns1 is null
+  34154 wan%d.dns2
+--
+  341bc wan%d.ppoe.pwd
+  341cc wan%d.ppoe.mtu
+  341dc wan%d.ppoe.ac
+  341ec wan%d.ppoe.sev
+  341fc wan%d.ppoe.double.access
+  34218 wan%d.pppoe.encrypt.type
+  34234 [%s][%d] invalid param.
+  34250 [%s][%d] !wanport->rsadsl
+  3426c wan%d.ppoe.mode
+  3427c [%s][%d] !wanport->rsapptp
+  34298 wan%d.pptp.user
+  342a8 wan%d.pptp.pwd
+  342b8 wan%d.pptp.serverip
+--
+  43bf8 common_so
+  43c5c ap_common_so
+  43cc0 prod_common_so
+  43d84 qos.en.app
+  43d90 wan1.uprate
+  43d9c wan1.downrate
+  43dac qos.timestamp
+  43dbc [%s::%d] malloc fail.
+  43dd4 [%s][%d][luminais] qos_rule__unpack failed.
+  43e04 %llu
+  43e0c sys.cfg.stamp
+  43e24 128000
+  43e2c op=0
+  43e34 log.time.enable
+----- firmware-src/RootFS-unpacked/lib/libucapi.so -----
+   2683 uc_api_lib_hand_qos_get_uplimit_hdl_reg
+   26ab uc_api_enable_m_ol_host
+   26c3 uc_api_lib_ol_hosts_get_hdl_reg
+   26e3 uc_api_enable_m_rub_net
+   26fb uc_api_lib_access_user_hdl_reg
+   271a uc_api_lib_rub_net_get_hdl_reg
+   2739 uc_api_lib_rub_net_set_hdl_reg
+   2758 uc_api_lib_history_list_get_hdl_reg
+   277c uc_api_lib_history_list_clear_hdl_reg
+   27a2 uc_api_lib_black_list_get_hdl_reg
+   27c4 uc_api_lib_black_list_flush_hdl_reg
+   27e8 uc_api_lib_whitelist_get_hdl_reg
+   2809 uc_api_lib_whitelist_add_hdl_reg
+--
+  1e8dc CMD_HAND_QOS_MAX_UPLIMIT
+  1e8f8 M_OL_HOSTS
+  1e904 CMD_OL_HOSTS_GET
+  1e918 M_RUB_NET
+  1e924 CMD_RUB_NET_ACCESS_USER_OPERATE
+  1e944 CMD_RUB_NET_STATUS_GET
+  1e95c CMD_RUB_NET_STATUS_SET
+  1e974 CMD_RUB_NET_HISTORY_LIST_GET
+  1e994 CMD_RUB_NET_HISTORY_LIST_CLEAR
+  1e9b4 CMD_RUB_NET_BLACK_LIST_GET
+  1e9d0 CMD_RUB_NET_BLACK_LIST_FLUSH
+  1e9f0 CMD_RUB_NET_WHITE_LIST_GET
+  1ea0c CMD_RUB_NET_WHITE_LIST_ADD

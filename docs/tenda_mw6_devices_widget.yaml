@@ -1,0 +1,18 @@
+# Tenda MW6 — dedykowana karta urządzeń
+#
+# Od wersji 1.6.0 integracja sama udostępnia i ładuje kartę JavaScript.
+# Nie wymaga auto-entities, template-entity-row, helperów ani ręcznego zasobu.
+
+type: custom:tenda-mw6-card
+title: Tenda MW6 — urządzenia
+layout_options:
+  grid_columns: full
+
+# Opcjonalne wartości początkowe (późniejsze wybory karta zapisuje w przeglądarce):
+# sort: device       # device, ip, download, upload
+# order: auto        # auto, asc, desc
+# period: total      # total, day, month
+# unit: MB           # MB, GB
+#
+# Przy wielu integracjach MW6 można pokazać tylko jeden wpis:
+# entry_id: wpisz_id_wpisu_konfiguracyjnego

@@ -1,0 +1,145 @@
+===== RUN 78 GOAL =====
+Disassemble event_add_queue and identify the queue object / downstream dispatch path used by event type 64.
+===== event_add_queue 0x21030..0x211a0 =====
+
+firmware-src/RootFS-unpacked/lib/libcloud.so:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+00021030 <event_add_queue@@Base>:
+   21030:	3c1c0007 	lui	gp,0x7
+   21034:	279c2340 	addiu	gp,gp,9024
+   21038:	0399e021 	addu	gp,gp,t9
+   2103c:	27bdffb8 	addiu	sp,sp,-72
+   21040:	afbf0044 	sw	ra,68(sp)
+   21044:	afb60040 	sw	s6,64(sp)
+   21048:	afb5003c 	sw	s5,60(sp)
+   2104c:	afb40038 	sw	s4,56(sp)
+   21050:	afb30034 	sw	s3,52(sp)
+   21054:	afb20030 	sw	s2,48(sp)
+   21058:	afb1002c 	sw	s1,44(sp)
+   2105c:	afb00028 	sw	s0,40(sp)
+   21060:	afbc0020 	sw	gp,32(sp)
+   21064:	8f998b34 	lw	t9,-29900(gp)
+   21068:	00809821 	move	s3,a0
+   2106c:	00e02021 	move	a0,a3
+   21070:	00e08821 	move	s1,a3
+   21074:	00a09021 	move	s2,a1
+   21078:	00c0a821 	move	s5,a2
+   2107c:	0320f809 	jalr	t9
+   21080:	8fb60058 	lw	s6,88(sp)
+   21084:	8fbc0020 	lw	gp,32(sp)
+   21088:	1040003b 	beqz	v0,21178 <event_add_queue@@Base+0x148>
+   2108c:	00408021 	move	s0,v0
+   21090:	8f828570 	lw	v0,-31376(gp)
+   21094:	8f868030 	lw	a2,-32720(gp)
+   21098:	8f878030 	lw	a3,-32720(gp)
+   2109c:	8c440000 	lw	a0,0(v0)
+   210a0:	24020b35 	li	v0,2869
+   210a4:	afa20010 	sw	v0,16(sp)
+   210a8:	8f828030 	lw	v0,-32720(gp)
+   210ac:	8f998274 	lw	t9,-32140(gp)
+   210b0:	24c669f4 	addiu	a2,a2,27124
+   210b4:	244260b4 	addiu	v0,v0,24756
+   210b8:	24e75968 	addiu	a3,a3,22888
+   210bc:	00002821 	move	a1,zero
+   210c0:	afa20014 	sw	v0,20(sp)
+   210c4:	8f948018 	lw	s4,-32744(gp)
+   210c8:	0320f809 	jalr	t9
+   210cc:	afb30018 	sw	s3,24(sp)
+   210d0:	8fbc0020 	lw	gp,32(sp)
+   210d4:	8f998bb0 	lw	t9,-29776(gp)
+   210d8:	0320f809 	jalr	t9
+   210dc:	2684c6f0 	addiu	a0,s4,-14608
+   210e0:	10400007 	beqz	v0,21100 <event_add_queue@@Base+0xd0>
+   210e4:	8fbc0020 	lw	gp,32(sp)
+   210e8:	8f82899c 	lw	v0,-30308(gp)
+   210ec:	8f99845c 	lw	t9,-31652(gp)
+   210f0:	2685c6f0 	addiu	a1,s4,-14608
+   210f4:	0320f809 	jalr	t9
+   210f8:	8c44001c 	lw	a0,28(v0)
+   210fc:	8fbc0020 	lw	gp,32(sp)
+   21100:	ae130008 	sw	s3,8(s0)
+   21104:	12400007 	beqz	s2,21124 <event_add_queue@@Base+0xf4>
+   21108:	ae16000c 	sw	s6,12(s0)
+   2110c:	8f99819c 	lw	t9,-32356(gp)
+   21110:	02402821 	move	a1,s2
+   21114:	26040018 	addiu	a0,s0,24
+   21118:	0320f809 	jalr	t9
+   2111c:	2406001c 	li	a2,28
+   21120:	8fbc0020 	lw	gp,32(sp)
+   21124:	12200008 	beqz	s1,21148 <event_add_queue@@Base+0x118>
+   21128:	ae110010 	sw	s1,16(s0)
+   2112c:	8f99819c 	lw	t9,-32356(gp)
+   21130:	8e040014 	lw	a0,20(s0)
+   21134:	02a02821 	move	a1,s5
+   21138:	0320f809 	jalr	t9
+   2113c:	02203021 	move	a2,s1
+   21140:	10000002 	b	2114c <event_add_queue@@Base+0x11c>
+   21144:	8fbc0020 	lw	gp,32(sp)
+   21148:	ae000014 	sw	zero,20(s0)
+   2114c:	8f998624 	lw	t9,-31196(gp)
+   21150:	8fbf0044 	lw	ra,68(sp)
+   21154:	8fb60040 	lw	s6,64(sp)
+   21158:	8fb5003c 	lw	s5,60(sp)
+   2115c:	8fb40038 	lw	s4,56(sp)
+   21160:	8fb30034 	lw	s3,52(sp)
+   21164:	8fb20030 	lw	s2,48(sp)
+   21168:	8fb1002c 	lw	s1,44(sp)
+   2116c:	8fb00028 	lw	s0,40(sp)
+   21170:	03200008 	jr	t9
+   21174:	27bd0048 	addiu	sp,sp,72
+   21178:	8fbf0044 	lw	ra,68(sp)
+   2117c:	8fb60040 	lw	s6,64(sp)
+   21180:	8fb5003c 	lw	s5,60(sp)
+   21184:	8fb40038 	lw	s4,56(sp)
+   21188:	8fb30034 	lw	s3,52(sp)
+   2118c:	8fb20030 	lw	s2,48(sp)
+   21190:	8fb1002c 	lw	s1,44(sp)
+   21194:	8fb00028 	lw	s0,40(sp)
+   21198:	03e00008 	jr	ra
+   2119c:	27bd0048 	addiu	sp,sp,72
+===== SYMBOLS NEAR QUEUE / EVENT =====
+   339: 0001e764   184 FUNC    GLOBAL DEFAULT   10 event_queue_destory
+   583: 0001d814    52 FUNC    GLOBAL DEFAULT   10 event_queue_only_one
+   620: 0001ed74   104 FUNC    GLOBAL DEFAULT   10 send_event_failure_message
+   628: 00020d7c   124 FUNC    GLOBAL DEFAULT   10 connect_dispatcher
+   667: 000214d8  1236 FUNC    GLOBAL DEFAULT   10 svr_ready_event_handle
+   674: 0003fb9c   220 FUNC    GLOBAL DEFAULT   10 do_event_version_multiq_ok
+   734: 000211a0   152 FUNC    GLOBAL DEFAULT   10 upload_statistics
+   771: 00020980   272 FUNC    GLOBAL DEFAULT   10 do_event_con_svr_fail
+   826: 0001ef90   140 FUNC    GLOBAL DEFAULT   10 do_event_upgradeq_ing
+   855: 0001ef04   140 FUNC    GLOBAL DEFAULT   10 do_event_speedtest_ing
+   878: 0001f01c   140 FUNC    GLOBAL DEFAULT   10 do_event_memcheck_not_enough
+   911: 0003fc78   356 FUNC    GLOBAL DEFAULT   10 do_event_versionq_ok
+   938: 0001f4c0   292 FUNC    GLOBAL DEFAULT   10 do_event_account_info_u_ok
+   956: 0001f134   148 FUNC    GLOBAL DEFAULT   10 do_event_policy_versionq_fail
+   966: 0001f25c   144 FUNC    GLOBAL DEFAULT   10 do_event_data_port_failed
+   967: 00020df8   568 FUNC    GLOBAL DEFAULT   10 start_event_task
+   970: 0001f0a8   140 FUNC    GLOBAL DEFAULT   10 do_event_memcheck_fail
+   983: 00021238   320 FUNC    GLOBAL DEFAULT   10 do_event_versionq_fail
+  1022: 0001f2ec   144 FUNC    GLOBAL DEFAULT   10 do_event_data_port_ok
+  1033: 0001e43c    76 FUNC    GLOBAL DEFAULT   10 start_upload_statistic
+  1042: 0001eddc   148 FUNC    GLOBAL DEFAULT   10 do_event_account_info_u_failed
+  1053: 00020870   272 FUNC    GLOBAL DEFAULT   10 do_event_auth_svr_fail
+  1084: 00033be0   268 FUNC    GLOBAL DEFAULT   10 _send_event_failure_message
+  1087: 00020720   336 FUNC    GLOBAL DEFAULT   10 event_stat_clear
+  1098: 0001f37c   324 FUNC    GLOBAL DEFAULT   10 do_event_cmd_fail
+  1129: 0001ea00    92 FUNC    GLOBAL DEFAULT   10 del_event
+  1188: 0002a7b0   476 FUNC    GLOBAL DEFAULT   10 cmd_disp_dispatch
+  1193: 00021030   368 FUNC    GLOBAL DEFAULT   10 event_add_queue
+  1224: 0003faa8   244 FUNC    GLOBAL DEFAULT   10 do_event_policy_versionq_ok
+  1232: 00022978    24 FUNC    GLOBAL DEFAULT   10 delay_connect_dispatcher
+  1234: 0001d764    64 FUNC    GLOBAL DEFAULT   10 get_event_by_type
+  1239: 0001ec18   348 FUNC    GLOBAL DEFAULT   10 do_event_svr_not_ready
+  1248: 0001d7a4    80 FUNC    GLOBAL DEFAULT   10 get_not_send_event_by_type
+  1291: 0001eaf0   296 FUNC    GLOBAL DEFAULT   10 alloc_new_event
+  1311: 0003f1f0    40 FUNC    GLOBAL DEFAULT   10 ol_upgrade_event_is_doing
+  1349: 00021a64   352 FUNC    GLOBAL DEFAULT   10 do_event_task
+  1359: 000219ac   184 FUNC    GLOBAL DEFAULT   10 do_event_auth_svr_ok
+  1362: 0001ee70   148 FUNC    GLOBAL DEFAULT   10 do_event_account_info_q_failed
+  1379: 00045858    32 FUNC    GLOBAL DEFAULT   10 band_test_event_is_doing
+  1400: 0001f5e4   220 FUNC    GLOBAL DEFAULT   10 do_event_account_info_q_ok
+  1401: 000247a8   248 FUNC    GLOBAL DEFAULT   10 m_cloud_dispatcher_refresh
+  1434: 0001f1c8   148 FUNC    GLOBAL DEFAULT   10 do_event_version_multiq_fail

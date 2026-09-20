@@ -1,0 +1,36 @@
+name: Python smoke tests
+
+on:
+  push:
+    paths:
+      - "tools/**/*.py"
+      - "custom_components/**/*.py"
+      - "custom_components/**/*.js"
+      - "tests/**/*.py"
+      - ".github/workflows/python-smoke.yml"
+  pull_request:
+    paths:
+      - "tools/**/*.py"
+      - "custom_components/**/*.py"
+      - "custom_components/**/*.js"
+      - "tests/**/*.py"
+      - ".github/workflows/python-smoke.yml"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile project Python
+        run: python -m compileall -q tools custom_components tests
+      - name: Check bundled Lovelace card
+        run: node --check custom_components/tenda_mw6/tenda-mw6-card.js
+      - name: Test Lovelace card logic
+        run: node tests/test_card.js
+      - name: Run MW6 protocol tests
+        run: python -m unittest discover -s tests -v
+      - name: Check MW6 probe CLI
+        run: python tools/mw6_probe.py --help

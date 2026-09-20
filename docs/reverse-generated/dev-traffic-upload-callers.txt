@@ -1,0 +1,101 @@
+===== RUN 113 GOAL =====
+Find callers of cmd_cloud_info_dev_traffic_upload @ 0x30ae0 and identify how its input arguments are produced.
+===== GOT ENTRY / GP OFFSET =====
+GOT=0x8bb58 OFFSET=-30744
+===== DIRECT RELOCATIONS / SYMBOL REFERENCES =====
+===== CALLSITES USING THE TARGET GOT OFFSET =====
+===== DIRECT TEXT REFERENCES TO 0x30ae0 =====
+27717-   30abc:	8fb60038 	lw	s6,56(sp)
+27718-   30ac0:	8fb50034 	lw	s5,52(sp)
+27719-   30ac4:	8fb40030 	lw	s4,48(sp)
+27720-   30ac8:	8fb3002c 	lw	s3,44(sp)
+27721-   30acc:	8fb20028 	lw	s2,40(sp)
+27722-   30ad0:	8fb10024 	lw	s1,36(sp)
+27723-   30ad4:	8fb00020 	lw	s0,32(sp)
+27724-   30ad8:	03e00008 	jr	ra
+27725-   30adc:	27bd0048 	addiu	sp,sp,72
+27726-
+27727:00030ae0 <cmd_cloud_info_dev_traffic_upload@@Base>:
+27728:   30ae0:	3c1c0006 	lui	gp,0x6
+27729-   30ae4:	279c2890 	addiu	gp,gp,10384
+27730-   30ae8:	0399e021 	addu	gp,gp,t9
+27731-   30aec:	27bdfb98 	addiu	sp,sp,-1128
+27732-   30af0:	afbf0464 	sw	ra,1124(sp)
+27733-   30af4:	afb50460 	sw	s5,1120(sp)
+27734-   30af8:	afb4045c 	sw	s4,1116(sp)
+27735-   30afc:	afb30458 	sw	s3,1112(sp)
+27736-   30b00:	afb20454 	sw	s2,1108(sp)
+27737-   30b04:	afb10450 	sw	s1,1104(sp)
+27738-   30b08:	afb0044c 	sw	s0,1100(sp)
+27739-   30b0c:	afbc0018 	sw	gp,24(sp)
+27740-   30b10:	00809021 	move	s2,a0
+27741-   30b14:	00c08821 	move	s1,a2
+27742-   30b18:	00e0a821 	move	s5,a3
+27743:   30b1c:	14a00043 	bnez	a1,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+27744-   30b20:	00001021 	move	v0,zero
+27745-   30b24:	8f9981ec 	lw	t9,-32276(gp)
+27746-   30b28:	0320f809 	jalr	t9
+27747-   30b2c:	00000000 	nop
+27748:   30b30:	1040002f 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+27749-   30b34:	8fbc0018 	lw	gp,24(sp)
+27750-   30b38:	8f9980c0 	lw	t9,-32576(gp)
+27751-   30b3c:	0320f809 	jalr	t9
+27752-   30b40:	24040003 	li	a0,3
+27753-   30b44:	8fbc0018 	lw	gp,24(sp)
+27754:   30b48:	10400029 	beqz	v0,30bf0 <cmd_cloud_info_dev_traffic_upload@@Base+0x110>
+27755-   30b4c:	00409821 	move	s3,v0
+27756-   30b50:	8f998bd4 	lw	t9,-29740(gp)
+27757-   30b54:	27b40044 	addiu	s4,sp,68
+27758-   30b58:	02802021 	move	a0,s4
+27759-   30b5c:	00002821 	move	a1,zero
+27760-   30b60:	0320f809 	jalr	t9
+27761-   30b64:	24060400 	li	a2,1024
+27762-   30b68:	8fbc0018 	lw	gp,24(sp)
+27763-   30b6c:	24020400 	li	v0,1024
+27764-   30b70:	27b00028 	addiu	s0,sp,40
+27765-   30b74:	8f99819c 	lw	t9,-32356(gp)
+27766-   30b78:	02402821 	move	a1,s2
+27767-   30b7c:	02002021 	move	a0,s0
+27768-   30b80:	2406001c 	li	a2,28
+27769-   30b84:	afb40020 	sw	s4,32(sp)
+27770-   30b88:	0320f809 	jalr	t9
+27771-   30b8c:	afa20024 	sw	v0,36(sp)
+27772-   30b90:	8fbc0018 	lw	gp,24(sp)
+--
+27776-   30ba0:	24020003 	li	v0,3
+27777-   30ba4:	a3a20029 	sb	v0,41(sp)
+27778-   30ba8:	2402003e 	li	v0,62
+27779-   30bac:	afb30034 	sw	s3,52(sp)
+27780-   30bb0:	a3a2002a 	sb	v0,42(sp)
+27781-   30bb4:	02202021 	move	a0,s1
+27782-   30bb8:	02a02821 	move	a1,s5
+27783-   30bbc:	27a60020 	addiu	a2,sp,32
+27784-   30bc0:	0320f809 	jalr	t9
+27785-   30bc4:	27a70024 	addiu	a3,sp,36
+27786:   30bc8:	14400018 	bnez	v0,30c2c <cmd_cloud_info_dev_traffic_upload@@Base+0x14c>
+27787-   30bcc:	8fbc0018 	lw	gp,24(sp)
+27788-   30bd0:	8f998554 	lw	t9,-31404(gp)
+27789-   30bd4:	8fa60024 	lw	a2,36(sp)
+27790-   30bd8:	8fa70020 	lw	a3,32(sp)
+27791-   30bdc:	02002021 	move	a0,s0
+27792-   30be0:	0320f809 	jalr	t9
+27793-   30be4:	24050001 	li	a1,1
+27794:   30be8:	10000011 	b	30c30 <cmd_cloud_info_dev_traffic_upload@@Base+0x150>
+27795-   30bec:	8fbf0464 	lw	ra,1124(sp)
+27796-   30bf0:	8f828570 	lw	v0,-31376(gp)
+27797-   30bf4:	8f868028 	lw	a2,-32728(gp)
+27798-   30bf8:	8f878028 	lw	a3,-32728(gp)
+27799-   30bfc:	8c440000 	lw	a0,0(v0)
+27800-   30c00:	24020298 	li	v0,664
+27801-   30c04:	afa20010 	sw	v0,16(sp)
+27802-   30c08:	8f828028 	lw	v0,-32728(gp)
+27803-   30c0c:	8f998274 	lw	t9,-32140(gp)
+27804-   30c10:	24c694d0 	addiu	a2,a2,-27440
+27805-   30c14:	24428fb8 	addiu	v0,v0,-28744
+27806-   30c18:	afa20014 	sw	v0,20(sp)
+27807-   30c1c:	24e78e78 	addiu	a3,a3,-29064
+27808-   30c20:	0320f809 	jalr	t9
+27809-   30c24:	24050002 	li	a1,2
+27810-   30c28:	24020001 	li	v0,1
+27811-   30c2c:	8fbf0464 	lw	ra,1124(sp)
+27812-   30c30:	8fb50460 	lw	s5,1120(sp)

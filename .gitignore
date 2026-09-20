@@ -1,0 +1,34 @@
+# Local captures and router exports
+*.pcap
+*.pcapng
+*.cap
+*.har
+*.ovpn
+
+# Secrets, certificates, and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+secrets.yaml
+configuration.local.yaml
+
+# Home Assistant runtime data and local device maps
+.storage/
+home-assistant_v2.db*
+device_map.local.*
+devices.local.*
+
+# Python and editor files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.vscode/
+.idea/

@@ -1,0 +1,26 @@
+name: Validate HACS integration
+
+on:
+  push:
+    paths:
+      - "custom_components/**"
+      - "hacs.json"
+      - ".github/workflows/validate-hacs.yml"
+  pull_request:
+    paths:
+      - "custom_components/**"
+      - "hacs.json"
+      - ".github/workflows/validate-hacs.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate-hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate repository as a HACS integration
+        uses: hacs/action@main
+        with:
+          category: integration
+          ignore: brands description topics

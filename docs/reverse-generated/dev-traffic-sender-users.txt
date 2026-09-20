@@ -1,0 +1,7 @@
+===== RUN 72 GOAL =====
+Find every ELF or file outside libucapi.so that references uc_api_m_cloud_info_send_dev_traffic.
+===== DYNAMIC SYMBOL USERS =====
+--- firmware-src/RootFS-unpacked/lib/libucapi.so
+    52: 00007698    76 FUNC    GLOBAL DEFAULT   10 uc_api_m_cloud_info_send_dev_traffic
+===== STRING USERS (DLSYM / TABLES) =====
+firmware-src/RootFS-unpacked/lib/libucapi.so

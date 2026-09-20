@@ -1,0 +1,22 @@
+===== RUN 160: nested WAN rate protobuf =====
+
+===== ROOT WanRate =====
+{'name': 'wan', 'id': 1, 'label': 2, 'type': 16, 'quant': 12, 'offset': 16, 'descriptor': 0, 'descriptor_name': '_Jv_RegisterClasses', 'default': 0}
+
+===== NESTED MESSAGE DESCRIPTORS =====
+
+===== RELATED SYMBOLS =====
+0x00021c50 size=104 wan_port_rate__unpack
+0x00021f00 size=160 wan_rate__pack_to_buffer
+0x00022008 size=160 wan_rate__free_unpacked
+0x00021b10 size=160 wan_port_rate__pack
+0x00021e60 size=160 wan_rate__pack
+0x00021fa0 size=104 wan_rate__unpack
+0x00021a78 size=152 wan_port_rate__get_packed_size
+0x00021cb8 size=160 wan_port_rate__free_unpacked
+0x00021dc8 size=152 wan_rate__get_packed_size
+0x00021bb0 size=160 wan_port_rate__pack_to_buffer
+0x0003fdf0 size=60 wan_rate__descriptor
+0x0003fd84 size=60 wan_port_rate__descriptor
+0x00021a0c size=108 wan_port_rate__init
+0x00021d58 size=112 wan_rate__init

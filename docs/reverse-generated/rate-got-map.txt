@@ -1,0 +1,640 @@
+===== ELF/GOT + dynamic symbols =====
+  [ 5] .dynsym           DYNSYM          0040154c 00154c 0028c0 10   A  6   1  4
+  [23] .got.plt          PROGBITS        0048f154 07f154 000010 00  WA  0   0  4
+  [24] .got              PROGBITS        0048f170 07f170 000a24 04 WAp  0   0 16
+     4: 0044ae8c   576 FUNC    GLOBAL DEFAULT   12 print_for_debug_srv
+    41: 0045b058   576 FUNC    GLOBAL DEFAULT   12 print_for_debug
+   263: 0040b13c   536 FUNC    GLOBAL DEFAULT   12 print_confctl_debug_list
+   301: 0040af24   536 FUNC    GLOBAL DEFAULT   12 confctl_module_debug_en
+   309: 0048f070   192 OBJECT  GLOBAL DEFAULT   21 g_confctl_debug_list
+   347: 00465e50     0 FUNC    GLOBAL DEFAULT  UND host_info__init
+   387: 00465be0     0 FUNC    GLOBAL DEFAULT  UND netlink_get_statistic_info
+   447: 004658b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__get_packed_size
+   463: 004657b0     0 FUNC    GLOBAL DEFAULT  UND host_lists__pack
+   506: 00465540     0 FUNC    GLOBAL DEFAULT  UND log_debug_print
+   563: 00000000     0 OBJECT  GLOBAL DEFAULT  UND host_lists__descriptor
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+===== GetHostList exact call sites =====
+--- callsite 0x4351f8 ---
+47078-  4351d0:	0320f809 	jalr	t9
+47079-  4351d4:	00000000 	nop
+47080-  4351d8:	8fdc0010 	lw	gp,16(s8)
+47081-  4351dc:	27c20024 	addiu	v0,s8,36
+47082-  4351e0:	00402021 	move	a0,v0
+47083-  4351e4:	8fc50018 	lw	a1,24(s8)
+47084-  4351e8:	8fc60020 	lw	a2,32(s8)
+47085-  4351ec:	8f82832c 	lw	v0,-31956(gp)
+47086-  4351f0:	24423e3c 	addiu	v0,v0,15932
+47087-  4351f4:	0040c821 	move	t9,v0
+47088:  4351f8:	0320f809 	jalr	t9
+47089-  4351fc:	00000000 	nop
+47090-  435200:	8fdc0010 	lw	gp,16(s8)
+47091-  435204:	afc2001c 	sw	v0,28(s8)
+47092-  435208:	8fc2001c 	lw	v0,28(s8)
+47093-  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+47094-  435210:	00000000 	nop
+--- callsite 0x435228 ---
+47090-  435200:	8fdc0010 	lw	gp,16(s8)
+47091-  435204:	afc2001c 	sw	v0,28(s8)
+47092-  435208:	8fc2001c 	lw	v0,28(s8)
+47093-  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+47094-  435210:	00000000 	nop
+47095-  435214:	27c20024 	addiu	v0,s8,36
+47096-  435218:	00402021 	move	a0,v0
+47097-  43521c:	8f82832c 	lw	v0,-31956(gp)
+47098-  435220:	24424258 	addiu	v0,v0,16984
+47099-  435224:	0040c821 	move	t9,v0
+47100:  435228:	0320f809 	jalr	t9
+47101-  43522c:	00000000 	nop
+47102-  435230:	8fdc0010 	lw	gp,16(s8)
+47103-  435234:	2404000f 	li	a0,15
+47104-  435238:	8f828240 	lw	v0,-32192(gp)
+47105-  43523c:	0040c821 	move	t9,v0
+47106-  435240:	0320f809 	jalr	t9
+--- callsite 0x4352b4 ---
+47125-  43528c:	0320f809 	jalr	t9
+47126-  435290:	00000000 	nop
+47127-  435294:	8fdc0010 	lw	gp,16(s8)
+47128-  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+47129-  43529c:	00000000 	nop
+47130-  4352a0:	27c20024 	addiu	v0,s8,36
+47131-  4352a4:	00402021 	move	a0,v0
+47132-  4352a8:	8f82832c 	lw	v0,-31956(gp)
+47133-  4352ac:	244207b0 	addiu	v0,v0,1968
+47134-  4352b0:	0040c821 	move	t9,v0
+47135:  4352b4:	0320f809 	jalr	t9
+47136-  4352b8:	00000000 	nop
+47137-  4352bc:	8fdc0010 	lw	gp,16(s8)
+47138-  4352c0:	27c20024 	addiu	v0,s8,36
+47139-  4352c4:	00402021 	move	a0,v0
+47140-  4352c8:	8f828700 	lw	v0,-30976(gp)
+47141-  4352cc:	0040c821 	move	t9,v0
+===== all references to netlink/stat symbols =====
+===== readelf reloc/GOT context =====
+   375: 00465ca0     0 FUNC    GLOBAL DEFAULT  UND check_product_is_simgle_image
+   376: 00465c90     0 FUNC    GLOBAL DEFAULT  UND router_cfg__pack
+   377: 00465c80     0 FUNC    GLOBAL DEFAULT  UND wlan_cfg_all__pack
+   378: 00465c70     0 FUNC    GLOBAL DEFAULT  UND prod_check_change_lanip_handle
+   379: 00465c60     0 FUNC    GLOBAL DEFAULT  UND flash_upgradefw
+   380: 00465c50     0 FUNC    GLOBAL DEFAULT  UND high_device_config__init
+   381: 00465c40     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__pack
+   382: 00465c30     0 FUNC    GLOBAL DEFAULT  UND ether_ntoa_r
+   383: 00465c20     0 FUNC    GLOBAL DEFAULT  UND stat
+   384: 00465c10     0 FUNC    GLOBAL DEFAULT  UND atoi
+   385: 00465c00     0 FUNC    GLOBAL DEFAULT  UND assign_get_cfg_fn
+   386: 00465bf0     0 FUNC    GLOBAL DEFAULT  UND mesh_node_list__get_packed_size
+   387: 00465be0     0 FUNC    GLOBAL DEFAULT  UND netlink_get_statistic_info
+   388: 00465bd0     0 FUNC    GLOBAL DEFAULT  UND free
+   389: 00465bc0     0 FUNC    GLOBAL DEFAULT  UND mf_lists__free_unpacked
+   390: 00465bb0     0 FUNC    GLOBAL DEFAULT  UND set_extdns_by_lang
+   391: 00465ba0     0 FUNC    GLOBAL DEFAULT  UND mesh_id_info__get_packed_size
+   392: 00465b90     0 FUNC    GLOBAL DEFAULT  UND CommitCfm
+   393: 00465b80     0 FUNC    GLOBAL DEFAULT  UND wan_port_cfg__init
+   394: 00465b70     0 FUNC    GLOBAL DEFAULT  UND wan_port_power__pack
+   395: 00465b60     0 FUNC    GLOBAL DEFAULT  UND wan_port_status__init
+   396: 00000000     0 OBJECT  GLOBAL DEFAULT  UND is_suit__descriptor
+   397: 00465b50     0 FUNC    GLOBAL DEFAULT  UND GetValue
+   398: 00465b40     0 FUNC    GLOBAL DEFAULT  UND systool_upfile_handle_new
+   399: 00465b30     0 FUNC    GLOBAL DEFAULT  UND dhcp_cfg__free_unpacked
+--
+   614: 00464f50     0 FUNC    GLOBAL DEFAULT  UND mf_rule__init
+   615: 00464f40     0 FUNC    GLOBAL DEFAULT  UND access
+   616: 00464f30     0 FUNC    GLOBAL DEFAULT  UND mxp_info__init
+   617: 00464f20     0 FUNC    GLOBAL DEFAULT  UND apmib_init
+   618: 00464f10     0 FUNC    GLOBAL DEFAULT  UND router_cfg__free_unpacked
+   619: 00000000     0 FUNC    GLOBAL DEFAULT  UND send_force_upgrade
+   620: 00464f00     0 FUNC    GLOBAL DEFAULT  UND mesh_node_list__pack
+   621: 00464ef0     0 FUNC    GLOBAL DEFAULT  UND gettimeofday
+   622: 00000000     0 OBJECT  GLOBAL DEFAULT  UND wan_port_power__descriptor
+   623: 00464ee0     0 FUNC    GLOBAL DEFAULT  UND uc_api_m_cloud_info_send_node_status
+   624: 00464ed0     0 FUNC    GLOBAL DEFAULT  UND sscanf
+   625: 00464ec0     0 FUNC    GLOBAL DEFAULT  UND wan_port_power__get_packed_size
+   626: 00000000     0 OBJECT  GLOBAL DEFAULT  UND g_ip_info
+   627: 00464eb0     0 FUNC    GLOBAL DEFAULT  UND user_group__pack
+   628: 00464ea0     0 FUNC    GLOBAL DEFAULT  UND time_info__free_unpacked
+   629: 00000000     0 OBJECT  GLOBAL DEFAULT  UND auto_maint__descriptor
+   630: 00464e90     0 FUNC    GLOBAL DEFAULT  UND cmd_pub
+   631: 00464e80     0 FUNC    GLOBAL DEFAULT  UND auto_maint__free_unpacked
+   632: 00464e70     0 FUNC    GLOBAL DEFAULT  UND high_device_config__free_unpacked
+   633: 00464e60     0 FUNC    GLOBAL DEFAULT  UND ugw_proc_recv_msg
+   634: 00464e50     0 FUNC    GLOBAL DEFAULT  UND ifaddrs_ethaddr_ntoa
+   635: 00464e40     0 FUNC    GLOBAL DEFAULT  UND device_assistant__unpack
+   636: 00000000     0 OBJECT  GLOBAL DEFAULT  UND proto_sys_basic_info__descriptor
+   637: 00464e30     0 FUNC    GLOBAL DEFAULT  UND __uClibc_main
+   638: 00464e20     0 FUNC    GLOBAL DEFAULT  UND register_conn_esta_notify_cb
+--
+  0048f740 -31264(gp) 00465ca0 00465ca0 FUNC    UND check_product_is_simgle_image
+  0048f744 -31260(gp) 00465c90 00465c90 FUNC    UND router_cfg__pack
+  0048f748 -31256(gp) 00465c80 00465c80 FUNC    UND wlan_cfg_all__pack
+  0048f74c -31252(gp) 00465c70 00465c70 FUNC    UND prod_check_change_lanip_handle
+  0048f750 -31248(gp) 00465c60 00465c60 FUNC    UND flash_upgradefw
+  0048f754 -31244(gp) 00465c50 00465c50 FUNC    UND high_device_config__init
+  0048f758 -31240(gp) 00465c40 00465c40 FUNC    UND dhcp_cfg__pack
+  0048f75c -31236(gp) 00465c30 00465c30 FUNC    UND ether_ntoa_r
+  0048f760 -31232(gp) 00465c20 00465c20 FUNC    UND stat
+  0048f764 -31228(gp) 00465c10 00465c10 FUNC    UND atoi
+  0048f768 -31224(gp) 00465c00 00465c00 FUNC    UND assign_get_cfg_fn
+  0048f76c -31220(gp) 00465bf0 00465bf0 FUNC    UND mesh_node_list__get_packed_size
+  0048f770 -31216(gp) 00465be0 00465be0 FUNC    UND netlink_get_statistic_info
+  0048f774 -31212(gp) 00465bd0 00465bd0 FUNC    UND free
+  0048f778 -31208(gp) 00465bc0 00465bc0 FUNC    UND mf_lists__free_unpacked
+  0048f77c -31204(gp) 00465bb0 00465bb0 FUNC    UND set_extdns_by_lang
+  0048f780 -31200(gp) 00465ba0 00465ba0 FUNC    UND mesh_id_info__get_packed_size
+  0048f784 -31196(gp) 00465b90 00465b90 FUNC    UND CommitCfm
+  0048f788 -31192(gp) 00465b80 00465b80 FUNC    UND wan_port_cfg__init
+  0048f78c -31188(gp) 00465b70 00465b70 FUNC    UND wan_port_power__pack
+  0048f790 -31184(gp) 00465b60 00465b60 FUNC    UND wan_port_status__init
+  0048f794 -31180(gp) 00000000 00000000 OBJECT  UND is_suit__descriptor
+  0048f798 -31176(gp) 00465b50 00465b50 FUNC    UND GetValue
+  0048f79c -31172(gp) 00465b40 00465b40 FUNC    UND systool_upfile_handle_new
+  0048f7a0 -31168(gp) 00465b30 00465b30 FUNC    UND dhcp_cfg__free_unpacked
+--
+  0048fafc -30308(gp) 00464f50 00464f50 FUNC    UND mf_rule__init
+  0048fb00 -30304(gp) 00464f40 00464f40 FUNC    UND access
+  0048fb04 -30300(gp) 00464f30 00464f30 FUNC    UND mxp_info__init
+  0048fb08 -30296(gp) 00464f20 00464f20 FUNC    UND apmib_init
+  0048fb0c -30292(gp) 00464f10 00464f10 FUNC    UND router_cfg__free_unpacked
+  0048fb10 -30288(gp) 00000000 00000000 FUNC    UND send_force_upgrade
+  0048fb14 -30284(gp) 00464f00 00464f00 FUNC    UND mesh_node_list__pack
+  0048fb18 -30280(gp) 00464ef0 00464ef0 FUNC    UND gettimeofday
+  0048fb1c -30276(gp) 00000000 00000000 OBJECT  UND wan_port_power__descriptor
+  0048fb20 -30272(gp) 00464ee0 00464ee0 FUNC    UND uc_api_m_cloud_info_send_node_status
+  0048fb24 -30268(gp) 00464ed0 00464ed0 FUNC    UND sscanf
+  0048fb28 -30264(gp) 00464ec0 00464ec0 FUNC    UND wan_port_power__get_packed_size
+  0048fb2c -30260(gp) 00000000 00000000 OBJECT  UND g_ip_info
+  0048fb30 -30256(gp) 00464eb0 00464eb0 FUNC    UND user_group__pack
+  0048fb34 -30252(gp) 00464ea0 00464ea0 FUNC    UND time_info__free_unpacked
+  0048fb38 -30248(gp) 00000000 00000000 OBJECT  UND auto_maint__descriptor
+  0048fb3c -30244(gp) 00464e90 00464e90 FUNC    UND cmd_pub
+  0048fb40 -30240(gp) 00464e80 00464e80 FUNC    UND auto_maint__free_unpacked
+  0048fb44 -30236(gp) 00464e70 00464e70 FUNC    UND high_device_config__free_unpacked
+  0048fb48 -30232(gp) 00464e60 00464e60 FUNC    UND ugw_proc_recv_msg
+  0048fb4c -30228(gp) 00464e50 00464e50 FUNC    UND ifaddrs_ethaddr_ntoa
+  0048fb50 -30224(gp) 00464e40 00464e40 FUNC    UND device_assistant__unpack
+  0048fb54 -30220(gp) 00000000 00000000 OBJECT  UND proto_sys_basic_info__descriptor
+  0048fb58 -30216(gp) 00464e30 00464e30 FUNC    UND __uClibc_main
+  0048fb5c -30212(gp) 00464e20 00464e20 FUNC    UND register_conn_esta_notify_cb
+===== GetHostList 0x4351d0-0x4352c0 =====
+
+firmware-src/RootFS-unpacked/bin/confsrv:     file format elf32-tradlittlemips
+
+
+Disassembly of section .text:
+
+004351d0 <confctl_get_host_list@@Base+0x234>:
+  4351d0:	0320f809 	jalr	t9
+  4351d4:	00000000 	nop
+  4351d8:	8fdc0010 	lw	gp,16(s8)
+  4351dc:	27c20024 	addiu	v0,s8,36
+  4351e0:	00402021 	move	a0,v0
+  4351e4:	8fc50018 	lw	a1,24(s8)
+  4351e8:	8fc60020 	lw	a2,32(s8)
+  4351ec:	8f82832c 	lw	v0,-31956(gp)
+  4351f0:	24423e3c 	addiu	v0,v0,15932
+  4351f4:	0040c821 	move	t9,v0
+  4351f8:	0320f809 	jalr	t9
+  4351fc:	00000000 	nop
+  435200:	8fdc0010 	lw	gp,16(s8)
+  435204:	afc2001c 	sw	v0,28(s8)
+  435208:	8fc2001c 	lw	v0,28(s8)
+  43520c:	14400067 	bnez	v0,4353ac <confctl_get_host_list@@Base+0x410>
+  435210:	00000000 	nop
+  435214:	27c20024 	addiu	v0,s8,36
+  435218:	00402021 	move	a0,v0
+  43521c:	8f82832c 	lw	v0,-31956(gp)
+  435220:	24424258 	addiu	v0,v0,16984
+  435224:	0040c821 	move	t9,v0
+  435228:	0320f809 	jalr	t9
+  43522c:	00000000 	nop
+  435230:	8fdc0010 	lw	gp,16(s8)
+  435234:	2404000f 	li	a0,15
+  435238:	8f828240 	lw	v0,-32192(gp)
+  43523c:	0040c821 	move	t9,v0
+  435240:	0320f809 	jalr	t9
+  435244:	00000000 	nop
+  435248:	8fdc0010 	lw	gp,16(s8)
+  43524c:	1040000c 	beqz	v0,435280 <confctl_get_host_list@@Base+0x2e4>
+  435250:	00000000 	nop
+  435254:	8f82822c 	lw	v0,-32212(gp)
+  435258:	2442281c 	addiu	v0,v0,10268
+  43525c:	00402021 	move	a0,v0
+  435260:	8f82822c 	lw	v0,-32212(gp)
+  435264:	24452f98 	addiu	a1,v0,12184
+  435268:	240607b7 	li	a2,1975
+  43526c:	8f8287c8 	lw	v0,-30776(gp)
+  435270:	0040c821 	move	t9,v0
+  435274:	0320f809 	jalr	t9
+  435278:	00000000 	nop
+  43527c:	8fdc0010 	lw	gp,16(s8)
+  435280:	2404000f 	li	a0,15
+  435284:	8f828240 	lw	v0,-32192(gp)
+  435288:	0040c821 	move	t9,v0
+  43528c:	0320f809 	jalr	t9
+  435290:	00000000 	nop
+  435294:	8fdc0010 	lw	gp,16(s8)
+  435298:	10400009 	beqz	v0,4352c0 <confctl_get_host_list@@Base+0x324>
+  43529c:	00000000 	nop
+  4352a0:	27c20024 	addiu	v0,s8,36
+  4352a4:	00402021 	move	a0,v0
+  4352a8:	8f82832c 	lw	v0,-31956(gp)
+  4352ac:	244207b0 	addiu	v0,v0,1968
+  4352b0:	0040c821 	move	t9,v0
+  4352b4:	0320f809 	jalr	t9
+  4352b8:	00000000 	nop
+  4352bc:	8fdc0010 	lw	gp,16(s8)
+===== candidate local functions / rate references =====
+42469:  4309ec:	24442244 	addiu	a0,v0,8772
+42530:  430ae0:	2444fdf0 	addiu	a0,v0,-528
+42539:  430b04:	2444fdf0 	addiu	a0,v0,-528
+42863:  431014:	24442330 	addiu	a0,v0,9008
+42932:  431128:	24442340 	addiu	a0,v0,9024
+42947:  431164:	24442354 	addiu	a0,v0,9044
+42962:  4311a0:	24442368 	addiu	a0,v0,9064
+43081:  43137c:	24440014 	addiu	a0,v0,20
+43105:  4313dc:	24440026 	addiu	a0,v0,38
+43126:  431430:	24440066 	addiu	a0,v0,102
+43512:  431a38:	2444fdf0 	addiu	a0,v0,-528
+44578:  432ad0:	24440000 	addiu	a0,v0,0
+44586:  432af0:	2444000c 	addiu	a0,v0,12
+45441:  433844:	27c40028 	addiu	a0,s8,40
+46129:  434304:	27c40058 	addiu	a0,s8,88
+46197:  434414:	27c40058 	addiu	a0,s8,88
+47103:  435234:	2404000f 	li	a0,15
+47122:  435280:	2404000f 	li	a0,15
+47867:  435e1c:	24440012 	addiu	a0,v0,18
+47946:  435f58:	24440012 	addiu	a0,v0,18
+48266:  436458:	24440010 	addiu	a0,v0,16
+48575:  436924:	244429b8 	addiu	a0,v0,10680
+48969:  436f44:	27c4035c 	addiu	a0,s8,860
+49144:  437200:	27c40040 	addiu	a0,s8,64
+49193:  4372c4:	27c40040 	addiu	a0,s8,64
+49872:  437d50:	24442b30 	addiu	a0,v0,11056
+50016:  437f90:	24442b30 	addiu	a0,v0,11056
+50257:  43834c:	24442b30 	addiu	a0,v0,11056
+50898:  438d38:	27c40018 	addiu	a0,s8,24
+50960:  438e28:	24442cd0 	addiu	a0,v0,11472
+51094:  439038:	24442b30 	addiu	a0,v0,11056
+51252:  4392b0:	24442cd0 	addiu	a0,v0,11472
+51403:  43950c:	24442cd0 	addiu	a0,v0,11472
+51916:  439cf8:	27c40020 	addiu	a0,s8,32
+51937:  439d4c:	27c40030 	addiu	a0,s8,48
+51948:  439d78:	24443bd0 	addiu	a0,v0,15312
+51956:  439d98:	24443bf8 	addiu	a0,v0,15352
+51995:  439e2c:	24443c74 	addiu	a0,v0,15476
+52009:  439e64:	24443c9c 	addiu	a0,v0,15516
+52023:  439e9c:	24443cd4 	addiu	a0,v0,15572
+52079:  439f74:	27c4060c 	addiu	a0,s8,1548
+52144:  43a078:	24440001 	addiu	a0,v0,1
+52216:  43a190:	27c40020 	addiu	a0,s8,32
+52238:  43a1e8:	27c40030 	addiu	a0,s8,48
+52248:  43a210:	27c40020 	addiu	a0,s8,32
+52373:  43a3f4:	27c4060c 	addiu	a0,s8,1548
+52538:  43a688:	24443ba4 	addiu	a0,v0,15268
+52546:  43a6a8:	24443d3c 	addiu	a0,v0,15676
+52554:  43a6c8:	24443d50 	addiu	a0,v0,15696
+52651:  43a84c:	27c40064 	addiu	a0,s8,100
+52772:  43aa30:	2404000f 	li	a0,15
+52886:  43abf0:	24443f00 	addiu	a0,v0,16128
+53129:  43afbc:	27c4016c 	addiu	a0,s8,364
+53530:  43b5f8:	244448a4 	addiu	a0,v0,18596
+53543:  43b62c:	244448b8 	addiu	a0,v0,18616
+===== rate/debug strings with offsets =====
+   589d print_group_node_info_to_map
+   58ba usleep
+   58c1 is_the_node_not_in_table
+   58da save_mesh_node_group_conf
+   58f4 save_this_node_led_conf
+   590c update_group_node_info_to_map
+   592a hal_get_mac
+   5936 ether_ntoa_r
+   5943 inet_ntoa
+   594d ntohl
+   5953 uc_api_m_cloud_info_send_dev_device
+   5977 host_info__init
+   5987 netlink_get_statistic_info
+   59a2 g_ip_info
+   59ac __floatundisf
+   59ba __divsf3
+   59c3 __lesf2
+   59cb __extendsfdf2
+   59d9 inet_addr
+   59e3 __fixunssfdi
+   59f0 devic_marks__init
+   5a02 host_lists__descriptor
+   5a19 host_lists__get_packed_size
+   5a35 host_lists__pack
+   5a46 device_mark_list__descriptor
+   5a63 device_mark_list__get_packed_size
+   5a85 device_mark_list__pack
+   5a9c uc_api_m_cloud_info_send_dev_mark_list_u
+   5ac5 get_cloud_remark_hash_table
+   5ae1 update_all_client_remark_to_local
+   5b03 strtoul
+   5b0b mac_add
+   5b13 device_assistant__descriptor
+   5b30 device_assistant__unpack
+   5b49 device_assistant__free_unpacked
+   5b69 device_assistant__get_packed_size
+   5b8b device_assistant__pack
+--
+   5e95 get_wan_internet_result
+   5ead wan_conn_type__get_packed_size
+   5ecc wan_conn_type__pack
+   5ee0 file_get_value_from_ini
+   5ef8 get_sys_mode
+   5f05 system_wan_get_link_status
+   5f20 file_wan_ip_info_get
+   5f35 wan_port_status__init
+   5f4b wan_pppoe_diag_errcode
+   5f62 router_wan_port_diag_errcode
+   5f7f wan_diag__init
+   5f8e wan_port_rate__init
+   5fa2 get_wan_statistics
+   5fb5 wan_status__descriptor
+   5fcc wan_status__get_packed_size
+   5fe8 wan_status__pack
+   5ff9 n_wan_diag__descriptor
+   6010 n_wan_diag__get_packed_size
+   602c n_wan_diag__pack
+   603d wan_rate__descriptor
+   6052 wan_rate__get_packed_size
+   606c wan_rate__pack
+   607b wan_port_power__descriptor
+   6096 wan_port_power__get_packed_size
+   60b6 wan_port_power__pack
+   60cb wan_cfg__descriptor
+   60df print_wan_cfg
+   60ed wan_cfg__get_packed_size
+   6106 wan_cfg__pack
+   6114 wan_cfg__unpack
+   6124 sched_reboot_mode_change_handle
+   6144 set_wan_connect_type
+   6159 set_wan_dhcp
+   6166 set_wan_static
+   6175 set_wan_pppoe
+   6183 set_wan_russia_pppoe
+   6198 set_wan_russia_pptp
+--
+   6598 multi_upgrade_send_downloadinfo_request_to_map
+   65c7 conf_send_connect_server_state
+   65e6 conf_send_downloadend_state
+   6602 conf_send_downloading_state
+   661e g_upgrade_sched_reboot_srv
+   6639 rand
+   663e __floatsidf
+   664a __muldf3
+   6653 __divdf3
+   665c __fixdfsi
+   6666 strtok
+   666d sched_reboot_time_check_srv
+   6689 get_interface_statistics
+   66a2 print_for_debug_srv
+   66b6 __udivdi3
+   66c0 upgrade_sched_reboot_timeout_check_srv
+   66e7 upgrade_sched_reboot_timeout_event_srv
+   670e conf_handle_mpp_download_info
+   672c check_mem_before
+   673d upgrade_image_to_flash
+   6754 conf_send_reboot_msg_to_map
+   6770 conf_send_write_flash_msg_to_map
+   6791 ucloud_set_upgrade_reboot_cfg_srv
+   67b3 monitor_start
+   67c1 upgrade_msg_to_map
+   67d4 init_mesh_upgrade
+   67e6 get_internet_status
+   67fa eanble_inter_chk_request
+   6813 enable_conn_innernet
+   6828 mesh_id_info__descriptor
+   6841 get_mesh_info
+   684f mesh_id_info__get_packed_size
+   686d mesh_id_info__pack
+   6880 enable_upgrade_hdl
+   6893 enable_device_id_hdl
+   68a8 md5_update
+   68b3 md5_init
+--
+  67914 usage : 
+  67920 	echo <module_id 1>[,<module_id 2>,<module_id 3> ... ] > %s
+  67960 mib_save_manage
+  67970 mib_load_manage
+  67980 mib_load_manage
+  67990 conf_msg_cmd_init
+  679c0 map_report
+  679cc ReportAssocMsg
+  679dc request_grp_info
+  679f0 restore_zero_report
+  67a04 device_list_upload
+  67a18 rqst_client_hostname
+  67a30 GetHostList
+  67a3c SetHostMarks
+  67a4c GetRemarklist
+  67a5c update_remark_request
+  67a74 SetDhcpsCfg
+  67a80 GetDhcpsCfg
+  67a8c GetNodeStatus
+  67a9c GrantNodeAdd
+  67aac GrantNodeDel
+  67abc SetLedStatus
+  67acc SetNodeLocation
+  67adc DiagLogUpload
+  67aec GetAuthSTA
+  67af8 Login
+  67b00 GetBasicInfo
+  67b10 GetWlanCfg
+  67b1c SetWlanCfg
+  67b28 GetGuestCfg
+  67b34 SetGuestCfg
+  67b40 GetWanDetect
+  67b50 GetWanStatus
+  67b60 GetWanDiag
+  67b6c SetWanCfg
+  67b78 GetWanCfg
+  67b84 IsWanLineUp
+--
+  72118 [%s][%d][luminais] ip_count = %d
+  7213c  <%d> : ip : %s, mac : %s
+  72158  	up_bytes = %llu, last_up_bytes = %llu
+  72184  	down_bytes = %llu, last_down_bytes = %llu
+  721b4 [%s][%d][luminais] n_hosts = %d
+  721d8  	ipaddr : %s
+  721e8  	ethaddr : %s
+  721f8  	name : %s
+  72208  	assoc_sn : %s
+  7221c  	condtion_time : %d
+  72234  	access : %s
+  72244  	has_signal : %d, signal : %d
+  72264  	uprate : %d
+  72274  	downrate : %d
+  72288  	upload_type : %s
+  7229c dhcp rqst
+  722a8 timeout chk
+  722b4  	up_time : %d
+  722c4  	interface_name : %s
+  722dc  	host_name : %s
+  722f0 [%s][%d][luminais] all = %d
+  72310 [%s][%d][luminais] count = %d
+  72330  	%d	name : %s
+  72340  	%d	signal : %d
+  72354  	%d	uprate : %d
+  72368  	%d	downrate : %d
+  7237c [%s][%d][luminais] invalid param.
+  723a0 [%s][%d][luminais] uc_api_m_cloud_info_send_dev_device failed
+  723e0 [%s][%d][luminais] invalid param.
+  72404 [%s][%d][luminais] malloc failed. (%d)%m
+  72431 [1;32m[%s][%d] : 
+  72447 [1;35mnew client is uploaded
+  7246d [1;32m[%s][%d] : 
+  72483 [1;35mgoto online
+  7249c NOVA
+  724a8 [%s][%d][luminais] nova node : %s
+  724cc [%s][%d][luminais] %s belong to nova
+  724f5 [1;32m[%s][%d] : 
+  7250b [1;35mmesh_node_sn = %s
+  72529 [1;32m[%s][%d] : 
+  7253f [1;35mclient_num = %d
+  7255d [1;32m[%s][%d] : 
+  72573 [1;35mprint_device_client_info
+  72599 [1;32m[%s][%d] : 
+  725af [1;35mprint_client_hash_table
+  725d5 [1;32m[%s][%d] : 
+  725eb [1;35mgoto offline
+  72604 malloc device_client_info failed : (%d)%m
+  72630 [%s][%d][luminais] alloc_roam_client_info failed.
+  72664 [%s][%d][luminais] not find any roam client info
+--
+  72e70 fill_cloud_info_device_upload_all
+  72e94 confctl_update_remark_request_handle
+  72ebc cloud_dev_mark_list_handle
+  72ed8 send_cloud_dev_mark_list_to_map
+  72ef8 upload_local_diff_remark_to_cloud
+  72f1c transform_remark_hash_to_dev_mark
+  72f40 get_local_diff_remark_from_cloud
+  72f64 rm_same_remark_from_local
+  72f80 confctl_get_remark_list
+  72f98 confctl_get_host_list
+  72fb0 fill_remark_lists_info
+  72fc8 fill_remark_info_from_remark_hash_tab
+  72ff0 fill_host_lists_rate
+  73008 find_client_in_online_ip_info
+  73028 fill_host_lists_info
+  73040 fill_host_info_from_client_status
+  73064 confctl_rqst_client_hostname
+  73084 response_roam_client_info
+  730a0 get_roam_client_info
+  730b8 update_to_roam_info_list
+  730d4 add_to_roam_info_list
+  730ec find_in_roam_info_list
+  73104 free_roam_client_info_list
+  73120 device_client_offline_check
+  7313c confctl_device_list_upload
+  73158 update_list_to_client_hash_table
+  7317c update_client_info_to_hash_table
+  731a0 add_new_client_to_hash_table
+  731c0 upload_client_online_status_change
+  731e4 transform_client_status_to_user_device
+  7320c print_upload_cloud_client_status
+  73230 print_device_client_info
+  7324c print_host_list
+  7325c print_online_ip_info
+  73274 print_client_hash_table
+  7328c print_nova_client_list
+  732a4 init_local_nova_node
+  732bc update_nova_client_list
+  732d4 add_to_nova_list
+  732e8 find_in_nova_list
+  732fc del_from_offline_client_list
+  7331c add_to_offline_client_list
+  73338 init_client_list_hdr
+  733d8 monitor
+  733f8 /var/pm_socket
+  7343c timer
+  7345c /var/tm_socket
+  734a0 cfms
+  734c0 /var/cfm_socket
+  73504 logserver
+  73524 /var/plog_socket
+  73568 netctrl
+  73588 /var/nt_socket
+  735cc multiWAN
+  735ec /var/mw_socket
+  73630 network_check
+  73650 /var/network_ck_socket
+  73694 cfmc
+--
+  744f4 /var/arp_receive
+  74558 /var/ate
+  7459c auto_discover
+  745bc /var/auto_discover
+  74600 device_list
+  74620 /var/device_list_socket
+  74664 ucloud_ctl
+  746c8 common_so
+  7472c ap_common_so
+  74790 prod_common_so
+  74854 [%s][%d][luminais] wan%d : 
+  74874  	idx : %d
+  74880  	uprate : %d
+  74890  	downrate : %d
+  748a4  	%d	total_up : %d
+  748b8  	%d	total_down : %d
+  748e4 [%s][%d][luminais] invalid param.
+  74908 [%s][%d][luminais] malloc failed. (%d)%m
+  74934 wan%d.manual.dns.en
+  7494c wan%d.manual.dns1
+  74964 [%s][%d][luminais] strdup failed
+  74988 wan%d.manual.dns2
+  7499c wan%d.%s.ip
+  749a8 wan%d.%s.mask
+  749b8 wan%d.%s.gateway
+  749cc wan%d.dns1
+  749d8 wan%d.dns2
+  749e4 wan%d.ip
+  749f0 wan%d.mask
+  749fc wan%d.gateway
+  74a0c wan%d.ppoe.userid
+  74a20 wan%d.ppoe.pwd
+  74a30 wan%d.ppoe.mtu
+  74a40 1480
+  74a48 wan%d.ppoe.ac
+  74a58 wan%d.ppoe.sev
+  74a68 [%s][%d][lilin] invalid param.
+  74a88 [%s][%d][lilin] malloc failed. (%d)%m
+--
+  7e914 arp_receive
+  7e934 /var/arp_receive
+  7e998 /var/ate
+  7e9dc auto_discover
+  7e9fc /var/auto_discover
+  7ea40 device_list
+  7ea60 /var/device_list_socket
+  7eaa4 ucloud_ctl
+  7eb08 common_so
+  7eb6c ap_common_so
+  7ebd0 prod_common_so
+  7ec94 qos.en.app
+  7eca0 wan1.uprate
+  7ecac wan1.downrate
+  7ecbc qos.timestamp
+  7eccc [%s::%d] malloc fail.
+  7ece4 [%s][%d][luminais] qos_rule__unpack failed.
+  7ed14 %llu
+  7ed1c sys.cfg.stamp
+  7ed34 128000
+  7ed3c op=0
+  7ed44 log.time.enable
+  7ed54 Debug->%s: %s(%d)--
+  7ed6c ../confctl_nos_api.c
+  7ed84 conf_set_nos_cfg_cli
+  7ed9c conf_set_nos_cfg_cli
+  7edb4 conf_set_nos_cfg
+  7edc8 conf_set_nos_cfg
+  7eddc conf_get_nos_cfg
+  7fb98 GCC: (GNU) 3.3.2
+  7fba9 GCC: (Realtek MSDK-4.4.7 Build 2001) 4.4.7
+  84705 .shstrtab
+  8470f .interp
+  84717 .reginfo
+  84720 .dynamic
+  84729 .hash
+  8472f .dynsym
+  84737 .dynstr
