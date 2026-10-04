@@ -11,6 +11,7 @@ from .api import (
     TendaMW6Client,
     TendaMW6Error,
     TendaMW6InventorySummary,
+    TendaMW6Qos,
     TendaMW6TransferReadiness,
     summarize_inventory,
     summarize_transfer_readiness,
@@ -35,15 +36,25 @@ class TendaMW6Coordinator(DataUpdateCoordinator[list[TendaMW6Client]]):
         self.api = api
         self.device_aliases = device_aliases or {}
         self._last_reported_online_at: datetime | None = None
+        # Global QoS caps, refreshed on a best-effort basis on every poll.
+        self.qos: TendaMW6Qos | None = None
 
     async def _async_update_data(self) -> list[TendaMW6Client]:
         try:
             clients = await self.hass.async_add_executor_job(self.api.get_clients)
             if summarize_inventory(clients).reported_online:
                 self._last_reported_online_at = dt_util.utcnow()
-            return clients
         except (OSError, TendaMW6Error) as exc:
             raise UpdateFailed(f"Unable to read Tenda MW6 clients: {exc}") from exc
+
+        # QoS is secondary data: a failure to read it must NEVER fail the client
+        # poll.
+        try:
+            self.qos = await self.hass.async_add_executor_job(self.api.get_qos)
+        except (OSError, TendaMW6Error) as exc:
+            self.logger.debug("QoS read unavailable: %s", exc)
+
+        return clients
 
     def client_display_name(self, client: TendaMW6Client) -> str:
         """Return a configured alias or the best name reported by the MW6."""

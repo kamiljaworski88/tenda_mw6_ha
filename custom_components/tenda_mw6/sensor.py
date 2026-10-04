@@ -38,6 +38,8 @@ async def async_setup_entry(
             TendaMW6AggregateTransferSensor(coordinator, entry, "download", "day"),
             TendaMW6AggregateTransferSensor(coordinator, entry, "upload", "month"),
             TendaMW6AggregateTransferSensor(coordinator, entry, "download", "month"),
+            TendaMW6QosSensor(coordinator, entry, "upload"),
+            TendaMW6QosSensor(coordinator, entry, "download"),
         ]
     )
 
@@ -348,6 +350,45 @@ class TendaMW6AggregateTransferSensor(TendaMW6AggregateSensorBase, RestoreEntity
             "has_valid_sample": self._has_valid_sample,
             "source": "locally integrated sum of online MW6 instantaneous KiB/s",
             "maximum_sample_gap_s": 30,
+        }
+
+
+class TendaMW6QosSensor(TendaMW6AggregateSensorBase):
+    """Global bandwidth cap (QoS) of the mesh, read-only.
+
+    Raw value as returned by the firmware (QOS_GET field); the exact unit is
+    unconfirmed, hence a diagnostic-category entity with no displayed unit.
+    ``direction`` is "upload" or "download".
+    """
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_icon = "mdi:speedometer"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: TendaMW6Coordinator,
+        entry: ConfigEntry,
+        direction: str,
+    ) -> None:
+        super().__init__(coordinator, entry)
+        self._direction = direction
+        self._attr_unique_id = f"{entry.entry_id}_qos_{direction}_cap"
+        self._attr_name = f"QoS {direction} cap"
+
+    @property
+    def native_value(self) -> int | None:
+        qos = self.coordinator.qos
+        if qos is None:
+            return None
+        return qos.up_cap if self._direction == "upload" else qos.down_cap
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {
+            "source": "MW6 QOS_GET (read-only)",
+            "unit_confirmed": False,
+            "note": "raw firmware value, unit unconfirmed",
         }
 
 

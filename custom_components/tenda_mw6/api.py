@@ -14,6 +14,10 @@ AUTH_GET_STA = 0x00
 AUTH_LOGIN = 0x01
 MESH_HOSTS_MODULE = 0x14
 MESH_HOSTS_GET = 0x00
+# "MESH_ADVANCE" module: advanced mesh configuration.
+# QOS_GET is an observed read-only command returning the global bandwidth caps.
+MESH_ADVANCE_MODULE = 0x17
+MESH_ADVANCE_QOS_GET = 0x08
 LOGIN_ACCOUNT_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 
 
@@ -37,6 +41,19 @@ class TendaMW6Client:
     raw_online: int | None
     raw_uprate: int | None
     raw_downrate: int | None
+
+
+@dataclass(frozen=True, slots=True)
+class TendaMW6Qos:
+    """Global bandwidth caps (QoS) reported by the mesh.
+
+    Values are raw, as returned by the firmware; the exact unit is unconfirmed
+    (observed at 1,024,000, likely bytes/s). They are therefore exposed as
+    diagnostics only.
+    """
+
+    up_cap: int | None
+    down_cap: int | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -169,27 +186,65 @@ class TendaMW6Api:
         """Authenticate and verify that MESH_HOSTS can be read."""
         self.get_clients()
 
+    def _authenticate(self, sock: socket.socket) -> int:
+        """Perform GET_STA then LOGIN on an open connection.
+
+        Centralizes the authentication sequence shared by the read operations.
+
+        Args:
+            sock: TCP connection already opened to the master node.
+
+        Returns:
+            The next transaction id to use.
+
+        Raises:
+            TendaMW6AuthError: if the router rejects the login.
+        """
+        tid = 0xA0
+        sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_GET_STA))
+        _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_GET_STA)
+
+        tid = (tid + 1) & 0xFF
+        sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_LOGIN, self._login_payload))
+        login = _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_LOGIN)
+        if _status(login["payload"]) != 0:
+            raise TendaMW6AuthError("Router rejected login account")
+        return (tid + 1) & 0xFF
+
     def get_clients(self) -> list[TendaMW6Client]:
         with socket.create_connection((self.host, self.port), timeout=self.timeout) as sock:
             sock.settimeout(self.timeout)
-            tid = 0xA0
+            tid = self._authenticate(sock)
 
-            sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_GET_STA))
-            _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_GET_STA)
-
-            tid = (tid + 1) & 0xFF
-            sock.sendall(_build_request(tid, AUTH_MODULE, AUTH_LOGIN, self._login_payload))
-            login = _expect_response(_recv_frame(sock), AUTH_MODULE, AUTH_LOGIN)
-            if _status(login["payload"]) != 0:
-                raise TendaMW6AuthError("Router rejected login account")
-
-            tid = (tid + 1) & 0xFF
             sock.sendall(_build_request(tid, MESH_HOSTS_MODULE, MESH_HOSTS_GET))
             hosts = _expect_response(_recv_frame(sock), MESH_HOSTS_MODULE, MESH_HOSTS_GET)
             status, records = _decode_mesh_hosts(hosts["payload"])
             if status != 0:
                 raise TendaMW6Error(f"MESH_HOSTS returned status={status}")
             return records
+
+    def get_qos(self) -> TendaMW6Qos:
+        """Read the global bandwidth caps (QoS) of the mesh.
+
+        **Read-only** operation (QOS_GET, observed). No write is sent to the
+        router.
+
+        Returns:
+            The up/down caps (raw, unit unconfirmed).
+
+        Raises:
+            TendaMW6AuthError: if authentication fails.
+            TendaMW6Error / OSError: on a network or response problem.
+        """
+        with socket.create_connection((self.host, self.port), timeout=self.timeout) as sock:
+            sock.settimeout(self.timeout)
+            tid = self._authenticate(sock)
+
+            sock.sendall(_build_request(tid, MESH_ADVANCE_MODULE, MESH_ADVANCE_QOS_GET))
+            resp = _expect_response(
+                _recv_frame(sock), MESH_ADVANCE_MODULE, MESH_ADVANCE_QOS_GET
+            )
+            return _decode_qos(resp["payload"])
 
 
 def _build_request(tid: int, module: int, command: int, payload: bytes = b"") -> bytes:
@@ -243,6 +298,25 @@ def _status(payload: bytes) -> int:
     if len(payload) < 4:
         raise TendaMW6Error("Response payload too short")
     return int.from_bytes(payload[:4], "little", signed=True)
+
+
+def _decode_qos(payload: bytes) -> TendaMW6Qos:
+    """Decode the QOS_GET response into up/down caps.
+
+    The up cap is protobuf field 2, the down cap is field 3. Missing fields yield
+    ``None`` (rather than an error), since the QoS configuration may be empty.
+
+    Example:
+        >>> q = _decode_qos(bytes.fromhex("0000000008001080c03e1880c03e2000"))
+        >>> (q.up_cap, q.down_cap)
+        (1024000, 1024000)
+    """
+    _status(payload)  # validates length; the status itself is unused here
+    values: dict[int, int] = {}
+    for field_no, wire_type, value in _protobuf_fields(payload[4:]):
+        if wire_type == 0 and isinstance(value, int):
+            values[field_no] = value
+    return TendaMW6Qos(up_cap=values.get(2), down_cap=values.get(3))
 
 
 def _read_varint(buf: bytes, pos: int) -> tuple[int, int]:

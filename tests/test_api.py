@@ -45,6 +45,24 @@ class InventorySummaryTest(unittest.TestCase):
         self.assertEqual(len(clients), 1)
         self.assertEqual(clients[0].access, "wired")
 
+    def test_decode_qos_extracts_up_and_down_caps(self) -> None:
+        """QOS_GET exposes the up/down bandwidth caps (fields 2 and 3)."""
+        # Observed frame: status (4 bytes) then protobuf
+        #   08 00            field 1 = 0
+        #   10 80 c0 3e      field 2 (up)   = 1,024,000
+        #   18 80 c0 3e      field 3 (down) = 1,024,000
+        #   20 00            field 4 = 0
+        payload = bytes.fromhex("0000000008001080c03e1880c03e2000")
+        qos = API._decode_qos(payload)
+        self.assertEqual(qos.up_cap, 1_024_000)
+        self.assertEqual(qos.down_cap, 1_024_000)
+
+    def test_decode_qos_handles_missing_fields(self) -> None:
+        """Without cap fields, values stay None rather than raising."""
+        qos = API._decode_qos(b"\x00\x00\x00\x00")
+        self.assertIsNone(qos.up_cap)
+        self.assertIsNone(qos.down_cap)
+
     def test_estimate_transfer_uses_kib_per_second(self) -> None:
         self.assertEqual(API.estimate_transfer_bytes(3, 10.5), 32256.0)
         self.assertEqual(API.estimate_transfer_bytes(None, 10), 0.0)
